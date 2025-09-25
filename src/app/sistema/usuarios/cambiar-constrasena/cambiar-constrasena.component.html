@@ -40,7 +40,7 @@
               <p-divider />
 
               <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                <li>Al menos una minúscula o mayuscula</li>
+                <li>Al menos una letra minúscula o mayúscula</li>
                 <li>Al menos un número</li>
                 <li>Mínimo 8 caracteres</li>
               </ul>
@@ -108,8 +108,12 @@
     </div>
   </div>
   <div footer class="flex justify-content-end gap-2">
-    <p-button label="Cancelar" severity="secondary" (onClick)="accionCloseItem.emit()" />
-    <p-button [label]="'Guardar'" [disabled]="!this.form.valid" (onClick)="enviarFormulario()" />
+    <p-button label="Cancelar" severity="secondary" (onClick)="accionCloseItem.emit()"></p-button>
+    <p-button
+      [label]="'Guardar'"
+      [disabled]="!form.valid"
+      (onClick)="enviarFormulario()"
+    ></p-button>
   </div>
 </app-modal-primeng>
 

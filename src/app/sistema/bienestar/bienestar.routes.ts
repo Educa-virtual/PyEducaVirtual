@@ -28,55 +28,358 @@ import { InformeDiscapacidadComponent } from './informe-estadistico/informe-disc
 import { InformeRecreacionComponent } from './informe-estadistico/informe-recreacion/informe-recreacion.component';
 import { InformeDemograficoComponent } from './informe-estadistico/informe-demografico/informe-demografico.component';
 import { SeguimientoBienestarComponent } from './seguimiento-bienestar/seguimiento-bienestar.component';
+import {
+  ADMINISTRADOR_DREMO,
+  APODERADO,
+  ASISTENTE_SOCIAL,
+  DIRECTOR_IE,
+  DOCENTE,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  ESTUDIANTE,
+  SUBDIRECTOR_IE,
+} from '@/app/servicios/seg/perfiles';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+
+const roles_directivos = [
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  ASISTENTE_SOCIAL,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  ADMINISTRADOR_DREMO,
+];
+
+const registran_ficha = [
+  ESTUDIANTE,
+  APODERADO,
+  DOCENTE,
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  ASISTENTE_SOCIAL,
+];
 
 const routes: Routes = [
-  { path: 'gestion-fichas', component: GestionFichasComponent },
+  {
+    path: 'gestion-fichas',
+    component: GestionFichasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Gestión de Fichas',
+      icon: 'pi pi-user-edit',
+      expectedRole: [DIRECTOR_IE, SUBDIRECTOR_IE, ASISTENTE_SOCIAL],
+    },
+  },
   {
     path: 'gestion-fichas-apoderado',
     component: GestionFichasApoderadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Gestión de Fichas Apoderado',
+      icon: 'pi pi-user-edit',
+      expectedRole: [APODERADO],
+    },
   },
-  { path: 'ficha-declaracion/:id', component: FichaDeclaracionComponent },
-  { path: 'ficha-declaracion', component: FichaDeclaracionComponent },
+  {
+    path: 'ficha-declaracion/:id',
+    component: FichaDeclaracionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Registrar Ficha',
+      icon: 'pi pi-user-edit',
+      expectedRole: registran_ficha,
+    },
+  },
+  {
+    path: 'ficha-declaracion',
+    component: FichaDeclaracionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Declaración de Ficha',
+      icon: 'pi pi-user-edit',
+      expectedRole: registran_ficha,
+    },
+  },
   {
     path: 'ficha/:id',
     component: FichaComponent,
     children: [
-      { path: '', redirectTo: 'general', pathMatch: 'full' },
-      { path: 'general', component: FichaGeneralComponent },
-      { path: 'familia', component: FichaFamiliaComponent },
-      { path: 'economico', component: FichaEconomicoComponent },
-      { path: 'vivienda', component: FichaViviendaComponent },
-      { path: 'alimentacion', component: FichaAlimentacionComponent },
-      { path: 'discapacidad', component: FichaDiscapacidadComponent },
-      { path: 'salud', component: FichaSaludComponent },
-      { path: 'recreacion', component: FichaRecreacionComponent },
+      {
+        path: '',
+        redirectTo: 'general',
+        pathMatch: 'full',
+      },
+      {
+        path: 'general',
+        component: FichaGeneralComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'familia',
+        component: FichaFamiliaComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'economico',
+        component: FichaEconomicoComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'vivienda',
+        component: FichaViviendaComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'alimentacion',
+        component: FichaAlimentacionComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'discapacidad',
+        component: FichaDiscapacidadComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'salud',
+        component: FichaSaludComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
+      {
+        path: 'sociocultural',
+        component: FichaRecreacionComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: registran_ficha },
+      },
     ],
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Ficha',
+      icon: 'pi pi-user-edit',
+      expectedRole: registran_ficha,
+    },
   },
-  { path: 'recordario-fechas', component: RecordatorioFechasComponent },
-  { path: 'gestionar-encuestas', component: GestionarEncuestasComponent },
-  { path: 'encuesta', component: EncuestaComponent },
-  { path: 'encuesta/:id', component: EncuestaComponent },
-  { path: 'encuesta/:id/preguntas', component: EncuestaPreguntasComponent },
-  { path: 'encuesta/:id/respuestas', component: EncuestaRespuestasComponent },
-  { path: 'encuesta/:id/resumen', component: EncuestaResumenComponent },
-  { path: 'encuesta/:id/ver', component: EncuestaVerComponent },
-  { path: 'encuesta/:id/ver/:matricula', component: EncuestaVerComponent },
+  {
+    path: 'recordario-fechas',
+    component: RecordatorioFechasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-bell',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        ADMINISTRADOR_DREMO,
+        ESTUDIANTE,
+        DOCENTE,
+      ],
+    },
+  },
+  {
+    path: 'gestionar-encuestas',
+    component: GestionarEncuestasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        ESTUDIANTE,
+        APODERADO,
+      ],
+    },
+  },
+  {
+    path: 'encuesta',
+    component: EncuestaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+      ],
+    },
+  },
+  {
+    path: 'encuesta/:id',
+    component: EncuestaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        APODERADO,
+      ],
+    },
+  },
+  {
+    path: 'encuesta/:id/preguntas',
+    component: EncuestaPreguntasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        APODERADO,
+      ],
+    },
+  },
+  {
+    path: 'encuesta/:id/respuestas',
+    component: EncuestaRespuestasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        APODERADO,
+      ],
+    },
+  },
+  {
+    path: 'encuesta/:id/resumen',
+    component: EncuestaResumenComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+      ],
+    },
+  },
+  {
+    path: 'encuesta/:id/ver',
+    component: EncuestaVerComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [ESTUDIANTE],
+    },
+  },
+  {
+    path: 'encuesta/:id/ver/:matricula',
+    component: EncuestaVerComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-list-check',
+      expectedRole: [
+        DIRECTOR_IE,
+        SUBDIRECTOR_IE,
+        ASISTENTE_SOCIAL,
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        ESTUDIANTE,
+        APODERADO,
+      ],
+    },
+  },
   {
     path: 'informe-estadistico',
     component: InformeEstadisticoComponent,
     children: [
-      { path: '', redirectTo: 'familia', pathMatch: 'full' },
-      { path: 'familia', component: InformeFamiliaComponent },
-      { path: 'economico', component: InformeEconomicoComponent },
-      { path: 'vivienda', component: InformeViviendaComponent },
-      { path: 'alimentacion', component: InformeAlimentacionComponent },
-      { path: 'discapacidad', component: InformeDiscapacidadComponent },
-      { path: 'salud', component: InformeSaludComponent },
-      { path: 'recreacion', component: InformeRecreacionComponent },
-      { path: 'demografico', component: InformeDemograficoComponent },
+      {
+        path: '',
+        redirectTo: 'familia',
+        pathMatch: 'full',
+      },
+      {
+        path: 'familia',
+        component: InformeFamiliaComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'economico',
+        component: InformeEconomicoComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'vivienda',
+        component: InformeViviendaComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'alimentacion',
+        component: InformeAlimentacionComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'discapacidad',
+        component: InformeDiscapacidadComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'salud',
+        component: InformeSaludComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'sociocultural',
+        component: InformeRecreacionComponent,
+        data: { expectedRole: roles_directivos },
+      },
+      {
+        path: 'demografico',
+        component: InformeDemograficoComponent,
+        data: { expectedRole: roles_directivos },
+      },
     ],
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Informe estadístico',
+      icon: 'pi pi-chart-line',
+      expectedRole: roles_directivos,
+    },
   },
-  { path: 'seguimiento-bienestar', component: SeguimientoBienestarComponent },
+  {
+    path: 'seguimiento-bienestar',
+    component: SeguimientoBienestarComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: 'Seguimiento de bienestar',
+      icon: 'pi pi-eye',
+      expectedRole: roles_directivos,
+    },
+  },
 ];
 
 export class AppRoutingModule {}

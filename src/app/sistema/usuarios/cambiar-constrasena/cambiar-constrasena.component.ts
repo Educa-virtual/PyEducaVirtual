@@ -24,11 +24,8 @@ export class CambiarConstrasenaComponent {
     private fb: FormBuilder,
     private messageService: MessageService,
     private usuariosService: UsuariosService
-    //private _GeneralService: GeneralService,
-    //private _ConstantesService: ConstantesService
   ) {
-    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
     this.form = this.fb.group(
       {
@@ -38,8 +35,6 @@ export class CambiarConstrasenaComponent {
           [Validators.required, Validators.minLength(8), Validators.pattern(passwordPattern)],
         ],
         confirmarContrasena: ['', Validators.required],
-        //iCredId: [this._ConstantesService.iCredId],
-        //iPersId: [this._ConstantesService.iPersId],
       },
       {
         validators: this.validadorCoincidenciacontrasena,

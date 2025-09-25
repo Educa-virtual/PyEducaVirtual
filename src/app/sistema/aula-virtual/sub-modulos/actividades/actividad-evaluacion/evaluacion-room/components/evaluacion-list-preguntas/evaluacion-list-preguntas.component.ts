@@ -7,6 +7,7 @@ import { removeHTML } from '@/app/shared/utils/remove-html';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { EvaluacionPreguntasService } from '@/app/servicios/eval/evaluacion-preguntas.service';
 import { EncabezadoPreguntasService } from '@/app/servicios/eval/encabezado-preguntas.service';
+import { environment } from '@/environments/environment';
 
 @Component({
   selector: 'app-evaluacion-list-preguntas',
@@ -27,6 +28,8 @@ export class EvaluacionListPreguntasComponent implements OnChanges {
   private _ConstantesService = inject(ConstantesService);
   private _EvaluacionPreguntasService = inject(EvaluacionPreguntasService);
   private _EncabezadoPreguntasService = inject(EncabezadoPreguntasService);
+
+  backend = environment.backend;
 
   ngOnChanges(changes) {
     if (changes.preguntas.currentValue) {
@@ -198,5 +201,9 @@ export class EvaluacionListPreguntasComponent implements OnChanges {
 
   mostrarMensajeToast(message) {
     this._MessageService.add(message);
+  }
+
+  updateUrl(item) {
+    item.cAlternativaImagen = 'images/no-image.png';
   }
 }

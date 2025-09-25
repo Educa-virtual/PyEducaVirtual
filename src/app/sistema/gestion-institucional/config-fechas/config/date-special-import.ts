@@ -1,13 +1,15 @@
-import { dateSpecialTableColumns } from '../table/date-special-table-columns'
+import { nationalHoliday } from '../table/national-holiday-table-columns';
 
-export const dateSpecialStructureImport = {
-    sheetName: undefined,
-    structures: [
-        {
-            header: 'A3:E3',
-            data: 'B4',
-            columns: dateSpecialTableColumns,
-            inTableColumn: true,
-        },
-    ],
-}
+export const nationalHolidayStructureImport = {
+  sheetName: undefined,
+  structures: [
+    {
+      header: 'B2:E2',
+      data: 'B3',
+      columns: {
+        inTableColumns: nationalHoliday.columns,
+      },
+      inTableColumn: true,
+    },
+  ],
+};

@@ -1,38 +1,49 @@
 <div class="flex align-items-center gap-2">
-    <div class="flex flex-column text-xs">
-        <span class="p-0 font-semibold display-none">{{ name }}</span>
-        <span class="p-0 font-semibold display-none">{{
-            selectedModulo['cPerfilNombre']
-        }}</span>
+  <div class="flex flex-column text-xs">
+    <span class="p-0 font-semibold display-none">{{ name }}</span>
+    <span class="p-0 font-semibold display-none">{{ selectedModulo['cPerfilNombre'] }}</span>
 
-        <!-- <p-dropdown [options]="modulos" [(ngModel)]="selectedModulo" optionValue="iModuloId" optionLabel="cModuloNombre"
+    <!-- <p-dropdown [options]="modulos" [(ngModel)]="selectedModulo" optionValue="iModuloId" optionLabel="cModuloNombre"
             placeholder="Módulo" styleClass="border-0 h-2rem align-items-center"
             (onChange)="changePerfil()"></p-dropdown> -->
-    </div>
-    <p-avatar
-        [image]="fotografia"
-        size="large"
-        shape="circle"
-        class="display-none"
-        (onImageError)="
-            fotografia = './assets/images/icons/IconUserAccount.png'
-        "
-    />
+  </div>
+  <!--<p-avatar
+    [image]="fotografia"
+    size="large"
+    shape="circle"
+    class="display-none"
+    (onImageError)="fotografia = './assets/images/icons/IconUserAccount.png'"
+  />-->
+  <img
+    [src]="fotografia"
+    alt=""
+    width="40vw"
+    height="40vh"
+    class="perfil-redondo display-none"
+    (error)="fotografia = './assets/images/icons/IconUserAccount.png'"
+  />
 
-    <button class="p-link button-menu" (click)="menu.toggle($event)">
-        <i class="pi pi-sort-down-fill"></i>
-    </button>
+  <button class="p-link button-menu" (click)="menu.toggle($event)">
+    <i class="pi pi-sort-down-fill"></i>
+  </button>
 </div>
 
-<p-menu #menu [model]="items" [popup]="true" styleClass="w-15rem" />
+<p-menu
+  #menu
+  [model]="items"
+  [popup]="true"
+  styleClass="w-15rem custom-popup-menu"
+  appendTo="body"
+/>
 @if (selectedPerfil?.iPerfilId !== 0) {
-    <app-perfil
-        [showModal]="showModal"
-        (accionCloseItem)="showModal = false"
-    ></app-perfil>
+  <app-perfil
+    [showModal]="showModalDatosPersonales"
+    (accionCloseItem)="showModalDatosPersonales = false"
+    [(fotoParent)]="fotografia"
+  ></app-perfil>
 
-    <app-cambiar-constrasena
-        [showModal]="showModalChangePassword"
-        (accionCloseItem)="showModalChangePassword = false"
-    ></app-cambiar-constrasena>
+  <app-cambiar-constrasena
+    [showModal]="showModalChangePassword"
+    (accionCloseItem)="showModalChangePassword = false"
+  ></app-cambiar-constrasena>
 }

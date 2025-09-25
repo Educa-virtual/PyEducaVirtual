@@ -27,7 +27,7 @@
         <p-dropdown
           #filtro_tipo
           [options]="tipos_seguimiento"
-          [showClear]="false"
+          showClear="true"
           placeholder="Seleccione un tipo de seguimiento"
           styleClass="group-element"
           appendTo="body"
@@ -58,7 +58,7 @@
   [style]="{ width: '56rem' }"
   [modal]="true"
   [contentStyle]="{ overflow: 'auto' }"
-  (onClose)="clearForm()"
+  (onHide)="clearForm()"
 >
   <ng-content>
     <p-messages severity="info" *ngIf="!seguimiento_bloqueado">
@@ -83,36 +83,6 @@
               [style]="{ flex: '1', width: '100%' }"
               styleClass="group-element"
               [readonly]="seguimiento_registrado"
-            />
-          </p-inputGroup>
-        </div>
-        <div class="col-12 md:col-6">
-          <p-inputGroup>
-            <p-inputGroupAddon> Prioridad * </p-inputGroupAddon>
-            <p-dropdown
-              [options]="prioridades"
-              formControlName="iPrioridad"
-              filter="false"
-              showClear="false"
-              appendTo="body"
-              placeholder="Seleccione"
-              [style]="{ flex: '1', width: '100%' }"
-              styleClass="group-element"
-            />
-          </p-inputGroup>
-        </div>
-        <div class="col-12 md:col-6">
-          <p-inputGroup>
-            <p-inputGroupAddon>
-              <span>Fecha *</span>
-            </p-inputGroupAddon>
-            <p-calendar
-              formControlName="dSeguimFecha"
-              iconDisplay="input"
-              showIcon="true"
-              appendTo="body"
-              [style]="{ flex: '1', width: '100%' }"
-              styleClass="group-element"
             />
           </p-inputGroup>
         </div>
@@ -228,11 +198,62 @@
             ></textarea>
           </p-inputGroup>
         </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon> Fase * </p-inputGroupAddon>
+            <p-dropdown
+              [options]="fases"
+              formControlName="iFase"
+              filter="false"
+              showClear="false"
+              appendTo="body"
+              placeholder="Seleccione"
+              [style]="{ flex: '1', width: '100%' }"
+              styleClass="group-element"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon> Prioridad * </p-inputGroupAddon>
+            <p-dropdown
+              [options]="prioridades"
+              formControlName="iPrioridad"
+              filter="false"
+              showClear="false"
+              appendTo="body"
+              placeholder="Seleccione"
+              [style]="{ flex: '1', width: '100%' }"
+              styleClass="group-element"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <span>Fecha *</span>
+            </p-inputGroupAddon>
+            <p-calendar
+              formControlName="dSeguimFecha"
+              iconDisplay="input"
+              showIcon="true"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+              inputStyleClass="group-element"
+              [maxDate]="fecha_actual"
+            />
+          </p-inputGroup>
+        </div>
         @if (seguimiento_bloqueado) {
           <div class="col-12">
-            <p-card>
-              <a href="#" class="p-button-link p-button-text">Descargar</a>
-            </p-card>
+            <p-inputGroup styleClass="vertical-group">
+              <p-inputGroupAddon>
+                <a href="#" class="underline text-white" (click)="descargarSeguimiento()">
+                  <i class="pi pi-fw pi-download mr-2"></i>
+                  <span>Descargar Archivo Adjunto</span>
+                </a>
+              </p-inputGroupAddon>
+            </p-inputGroup>
           </div>
         } @else {
           <div class="col-12">
@@ -241,11 +262,12 @@
                 <span>Cargar ficha de seguimiento (PDF máximo 10MB) *</span>
               </p-inputGroupAddon>
               <p-fileUpload
-                name="cSeguimArchivo"
-                (onUpload)="handleArchivo($event)"
+                #fileUpload
+                name="archivo"
                 [multiple]="false"
                 accept=".pdf"
                 fileLimit="1"
+                showUploadButton="false"
                 invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
                 invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
                 invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
@@ -253,6 +275,7 @@
                 invalidFileLimitMessageDetail="solo debe subir {0} archivo."
                 invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
                 maxFileSize="10485760"
+                (onSelect)="handleArchivo($event)"
               >
               </p-fileUpload>
             </p-inputGroup>
@@ -264,7 +287,7 @@
     <div class="flex justify-content-end gap-2">
       <p-button
         icon="pi pi-left-arrow"
-        label="Cancelar"
+        label="Salir"
         (onClick)="salir()"
         styleClass="p-button-secondary"
       />
@@ -289,7 +312,7 @@
 <p-dialog
   header="Historial de Seguimiento"
   [(visible)]="visibleDialogPersona"
-  [style]="{ width: '56rem' }"
+  [style]="{ width: '76rem' }"
   [modal]="true"
   [contentStyle]="{ overflow: 'auto' }"
 >

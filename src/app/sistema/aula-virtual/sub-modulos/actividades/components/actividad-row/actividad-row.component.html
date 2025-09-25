@@ -2,22 +2,26 @@
   class="card mb-5 relative overflow-visible transition-all hover:bg-gray-100 hover:shadow-md"
   [style]="obtenerStyleActividad(actividad['iEstadoActividad'])"
 >
+  <!-- Etiqueta de tipo -->
   <div class="w-full flex justify-start">
     <span [ngClass]="asignarColorActividad()" class="tag ml-3 font-bold">
       {{ actividad.cActTipoNombre }}
     </span>
   </div>
 
-  <div class="flex flex-nowrap w-full justify-content-between items-start">
-    <div class="flex gap-4 font-normal">
+  <!-- Contenedor principal -->
+  <div class="flex flex-wrap md:flex-nowrap w-full items-start gap-4">
+    <!-- Columna izquierda: icono + título + fechas -->
+    <div class="flex gap-4 font-normal flex-1">
       <app-icon
         [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
         [color]="'text-blue-500'"
         class="align-content-center"
       />
-      <div class="flex flex-column my-2 align-items-start max-w-[calc(100%-140px)]">
+      <div class="my-2 w-full md:max-w-[calc(100%-140px)]">
+        <!-- 🔹 Título en su propia línea -->
         <span
-          class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
+          class="block text-xl font-semibold text-gray-800 leading-snug truncate"
           [title]="actividad?.cProgActTituloLeccion"
         >
           {{
@@ -26,6 +30,8 @@
               : actividad?.cProgActTituloLeccion
           }}
         </span>
+
+        <!-- 🔹 Fechas en la siguiente línea -->
         <div
           class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
         >
@@ -46,47 +52,55 @@
         </div>
       </div>
     </div>
-    @if (actividad['iEstado'] === 1) {
-      <div class="tag-right-borrador ml-3 font-bold">Borrador</div>
-    }
-    @if (actividad['iEstado'] === 2) {
-      <div class="tag-right-publicado ml-3 font-bold">Publicado</div>
-    }
-    @if (actividad['iEstado'] === 10) {
-      <div class="tag-right-finalizado ml-3 font-bold">Finalizado</div>
-    }
-    <div class="flex flex-column align-items-end justify-content-center gap-2 shrink-0">
-      <ng-container
-        *ngIf="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad as acciones"
-      >
-        <div *ngIf="acciones.length > 1">
-          <button
-            [rounded]="true"
-            pButton
-            pRipple
-            class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-            (click)="$event.stopPropagation(); menuActividad.toggle($event)"
-          >
-            <i class="pi pi-ellipsis-h text-blue-500"></i>
-          </button>
-        </div>
-        <div *ngIf="acciones.length === 1">
-          <p-button
-            [rounded]="true"
-            [icon]="acciones[0].icon"
-            [label]="acciones[0].label"
-            (onClick)="
-              actionSelected.emit({
-                actividad: this.actividad,
-                action: acciones[0].accion,
-              })
-            "
-          />
-        </div>
-      </ng-container>
+
+    <!-- Columna derecha: estado + botón -->
+    <div class="flex flex-row items-end md:items-center gap-2 shrink-0 ml-auto">
+      @if (actividad['iEstado'] === 1) {
+        <div class="tag-right-borrador font-bold">Borrador</div>
+      }
+      @if (actividad['iEstado'] === 2) {
+        <div class="tag-right-publicado font-bold">Publicado</div>
+      }
+      @if (actividad['iEstado'] === 10) {
+        <div class="tag-right-finalizado font-bold">Finalizado</div>
+      }
+
+      <!-- Botón -->
+      <div class="flex flex-col align-items-end justify-content-center gap-2 shrink-0">
+        <ng-container
+          *ngIf="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad as acciones"
+        >
+          <div *ngIf="acciones.length > 1">
+            <button
+              [rounded]="true"
+              pButton
+              pRipple
+              class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+              (click)="$event.stopPropagation(); menuActividad.toggle($event)"
+            >
+              <i class="pi pi-ellipsis-h text-blue-500"></i>
+            </button>
+          </div>
+          <div *ngIf="acciones.length === 1">
+            <p-button
+              [rounded]="true"
+              [icon]="acciones[0].icon"
+              [label]="acciones[0].label"
+              (onClick)="
+                actionSelected.emit({
+                  actividad: this.actividad,
+                  action: acciones[0].accion,
+                })
+              "
+            />
+          </div>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- Menú contextual -->
 <p-menu
   #menuActividad
   [model]="actividad.iActTipoId | appActividadConfig: 'acciones' : actividad"
@@ -104,7 +118,6 @@
       } @else {
         <i class="{{ item.icon }}"></i>
       }
-
       <span>{{ item.label }}</span>
     </button>
   </ng-template>

@@ -21,6 +21,10 @@
   border-radius: 0rem;
 }
 
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
+}
+
 :host ::ng-deep .p-inputgroup .group-element:last-child,
 :host ::ng-deep .p-inputgroup .p-inputtextarea,
 :host ::ng-deep .p-inputgroup .group-element.p-inputtext {
@@ -61,6 +65,10 @@
 :host ::ng-deep .p-inputgroup.vertical-group .group-element .p-dropdown {
   width: 100% !important;
   border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
 }
 
 :host ::ng-deep .p-inputgroup.vertical-group .group-element:last-child,
@@ -191,6 +199,12 @@
   color: var(--primary-color-text) !important;
 }
 
+:host ::ng-deep .p-overlaypanel {
+  z-index: 1000 !important;
+  top: 50px !important;
+  left: 0px !important;
+}
+
 .card {
   background: var(--surface-card);
   border: 1px solid var(--surface-border);
@@ -205,4 +219,51 @@
 
 .card-alerta {
   border-left: 15px solid var(--red-500);
+}
+
+.card-disabled {
+  border-left: 15px solid var(--gray-500);
+}
+
+.card-warning {
+  border-left: 15px solid var(--yellow-500);
+}
+
+:host ::ng-deep .p-message-wrapper {
+  display: inline-block;
+}
+
+// Media query para impresión en resumen de encuesta
+@media print {
+  ::ng-deep .topbar {
+    visibility: hidden !important;
+    display: none !important;
+  }
+
+  :host ::ng-deep canvas {
+    width: max-content !important;
+    max-width: 100% !important;
+  }
+
+  :host ::ng-deep .col-12 {
+    page-break-inside: avoid;
+  }
+
+  :host ::ng-deep .p-overlaypanel {
+    display: contents !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+
+  :host ::ng-deep .p-overlaypanel-content {
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  @page {
+    margin: 1cm;
+  }
 }

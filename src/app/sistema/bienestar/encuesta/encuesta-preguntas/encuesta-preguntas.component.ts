@@ -23,7 +23,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     PreguntaEscalaComponent,
   ],
   templateUrl: './encuesta-preguntas.component.html',
-  styleUrl: './../../gestionar-encuestas/gestionar-encuestas.component.scss',
+  styleUrl: './encuesta-preguntas.component.scss',
 })
 export class EncuestaPreguntasComponent implements OnInit {
   iEncuId: number;
@@ -62,6 +62,9 @@ export class EncuestaPreguntasComponent implements OnInit {
     });
     this.breadCrumbItems = [
       {
+        label: 'Bienestar social',
+      },
+      {
         label: 'Gestionar encuestas',
         routerLink: '/bienestar/gestionar-encuestas',
       },
@@ -88,8 +91,8 @@ export class EncuestaPreguntasComponent implements OnInit {
         iEncuPregId: [null],
         iEncuPregTipoId: [null, Validators.required],
         iEncuPregOrden: [null],
-        cEncuPregContenido: [null, Validators.required],
-        cEncuPregAdicional: [null],
+        cEncuPregContenido: [null, [Validators.required, Validators.maxLength(500)]],
+        cEncuPregAdicional: [null, [Validators.maxLength(500)]],
       });
     } catch (error) {
       console.error('Error creando formulario:', error);

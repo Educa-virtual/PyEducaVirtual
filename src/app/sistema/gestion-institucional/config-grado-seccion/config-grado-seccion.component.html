@@ -1,75 +1,71 @@
 <p-toast />
 @if (opcion === 'step') {
-    <div>
-        <app-container-page
-            title="Lista de configuración"
-            [actions]="actionsContainer"
-            (accionBtnItem)="accionBtnItem($event)"
-        >
-            <div class="card">
-                <p-steps [model]="items" [readonly]="false"></p-steps>
-            </div>
+  <div>
+    <app-container-page
+      title="Lista de configuración"
+      [actions]="actionsContainer"
+      (accionBtnItem)="accionBtnItem($event)"
+    >
+      <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+      </div>
 
-            <router-outlet></router-outlet>
-        </app-container-page>
-    </div>
+      <router-outlet></router-outlet>
+    </app-container-page>
+  </div>
 }
 
-@if (
-    opcion === 'inicio' ||
-    opcion === 'seleccionar' ||
-    opcion === 'manual' ||
-    opcion === 'auto'
-) {
-    <div>
-        @if (btnInvalido) {
-            <app-container-page
-                title="Lista de secciones y grados asignados"
-                [actions]="accionesPrincipal"
-                (accionBtnItem)="accionBtnItemTable($event)"
-            >
-                <div class="card">
-                    <app-table-primeng
-                        [columnas]="columns"
-                        [showCaption]="true"
-                        [data]="configuracion_lista"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="false"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actions"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
+@if (opcion === 'inicio' || opcion === 'seleccionar' || opcion === 'manual' || opcion === 'auto') {
+  <div>
+    @if (btnInvalido) {
+      <app-container-page
+        title="Lista de secciones y grados asignados"
+        [actions]="accionesPrincipal"
+        (accionBtnItem)="accionBtnItemTable($event)"
+      >
+        <div class="card">
+          <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="configuracion_lista"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="false"
+            [(selectedRowData)]="selectedItems"
+            [actions]="actions"
+          >
+            <!-- <ng-container slot="caption-content"> </ng-container> -->
+          </app-table-primeng>
 
-                    <ng-container slot="caption-content"> </ng-container>
-                </div>
-            </app-container-page>
-        } @else {
-            <app-container-page
-                title="Lista de secciones y grados asignados"
-                [actions]="[]"
-                (accionBtnItem)="accionBtnItemTable($event)"
-            >
-                <div class="card">
-                    <app-table-primeng
-                        [columnas]="columns"
-                        [showCaption]="true"
-                        [data]="configuracion_lista"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="false"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actions"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
+          <ng-container slot="caption-content"> </ng-container>
+        </div>
+      </app-container-page>
+    } @else {
+      <app-container-page
+        title="Lista de secciones y grados asignados"
+        [actions]="[]"
+        (accionBtnItem)="accionBtnItemTable($event)"
+      >
+        <div class="card">
+          <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="configuracion_lista"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="false"
+            [(selectedRowData)]="selectedItems"
+            [actions]="actions"
+          >
+            <!-- <ng-container slot="caption-content"> </ng-container> -->
+          </app-table-primeng>
 
-                    <ng-container slot="caption-content"> </ng-container>
-                </div>
-            </app-container-page>
-        }
-    </div>
+          <ng-container slot="caption-content"> </ng-container>
+        </div>
+      </app-container-page>
+    }
+  </div>
 }
 
+<!-- 
 <p-dialog
     header="{{ caption }}"
     [(visible)]="visible"
@@ -111,64 +107,43 @@
             </div>
             @if (opcion === 'manual') {
                 <div class="field col-12 md:col-12">
-                    <!--generacion manual -->
-                    <p><strong>IMPORTANTE</strong></p>
-                    <p>
-                        Al seleccionar esta opcióm deberá completar información
-                        relacionada a los
-                        <strong
-                            >ambientes, grados, edades, secciones y planes de
-                            estudios, horas del docente y la asignación de
-                            grados y secciones</strong
-                        >
-                    </p>
-                    <p-button
-                        label="Siguiente"
-                        (onClick)="accionBtnItem('sel-manual')"
-                        styleClass="p-button-primary"
-                    />
-                </div>
-            }
-            @if (opcion === 'auto') {
-                <div class="field col-12 md:col-12">
-                    <!--generacion automatica -->
-                    <p>
-                        <strong>IMPORTANTE </strong> <i>{{ selAnio }}</i>
-                    </p>
-                    <P
-                        >Al seleccionar esta opcióm se importará informacion de
-                        <strong
-                            >ambientes, grados, edades, secciones y planes de
-                            estudios</strong
-                        >
-                        de la configuracion correspondiente al año seleccionado
-                    </P>
-                    <p>
-                        El usuario deberá completar la información relacionado a
-                        las
-                        <strong
-                            >horas del docente y la asignación de grados y
-                            secciones</strong
-                        >
-                    </p>
-                    <app-table-primeng
-                        [columnas]="columnsLista"
-                        [showCaption]="false"
-                        [data]="configuracion_lista"
-                        (accionBtnItem)="accionBtnItemTable($event)"
-                        [showPaginator]="false"
-                        [(selectedRowData)]="selectedItems"
-                        [actions]="actionsLista"
-                    >
-                        <!-- <ng-container slot="caption-content"> </ng-container> -->
-                    </app-table-primeng>
-                    <p-button
-                        label="Siguiente"
-                        (onClick)="accionBtnItem('sel-auto')"
-                        styleClass="p-button-warning"
-                    />
-                </div>
-            }
-        </div>
-    }
-</p-dialog>
+                    <!--generacion manual 
+<p><strong>IMPORTANTE</strong></p>
+<p>
+    Al seleccionar esta opcióm deberá completar información
+    relacionada a los
+    <strong>ambientes, grados, edades, secciones y planes de
+        estudios, horas del docente y la asignación de
+        grados y secciones</strong>
+</p>
+<p-button label="Siguiente" (onClick)="accionBtnItem('sel-manual')" styleClass="p-button-primary" />
+</div>
+}
+@if (opcion === 'auto') {
+<div class="field col-12 md:col-12">
+    <!--generacion automatica 
+    <p>
+        <strong>IMPORTANTE </strong> <i>{{ selAnio }}</i>
+    </p>
+    <P>Al seleccionar esta opcióm se importará informacion de
+        <strong>ambientes, grados, edades, secciones y planes de
+            estudios</strong>
+        de la configuracion correspondiente al año seleccionado
+    </P>
+    <p>
+        El usuario deberá completar la información relacionado a
+        las
+        <strong>horas del docente y la asignación de grados y
+            secciones</strong>
+    </p>
+    <app-table-primeng [columnas]="columnsLista" [showCaption]="false" [data]="configuracion_lista"
+        (accionBtnItem)="accionBtnItemTable($event)" [showPaginator]="false" [(selectedRowData)]="selectedItems"
+        [actions]="actionsLista">
+        <!-- <ng-container slot="caption-content"> </ng-container> 
+    </app-table-primeng>
+    <p-button label="Siguiente" (onClick)="accionBtnItem('sel-auto')" styleClass="p-button-warning" />
+</div>
+}
+</div>
+}
+</p-dialog> -->

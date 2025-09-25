@@ -7,13 +7,14 @@ import { NotfoundComponent } from './shared/notfound/notfound.component';
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component';
 import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component';
 import { NewMantenimientoUsuarioComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/new-mantenimiento-usuario.component';
-import { BuzonDirectorComponent } from './sistema/director/buzon-director/buzon-director.component';
+
 import { RecursosComponent } from './sistema/ere/informes-ere/recursos-ere/recursos.component';
 import { SimpleListaAreasComponent } from './sistema/ere/evaluaciones/areas/simple-lista-areas/simple-lista-areas.component';
 import { EspecialistaSimpleAreaComponent } from './sistema/ere/evaluaciones/areas/especialista-simple-area/especialista-simple-area.component';
 import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/asignar-rol-personal/asignar-rol-personal.component';
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component';
-import { AuxiliarComponent } from './sistema/administrativo/auxiliar/auxiliar.component';
+import { AsistenciasComponent } from './sistema/administrativo/auxiliar/asistencias/asistencias.component';
+import { ReporteAsistenciasComponent } from './sistema/administrativo/auxiliar/reporte-asistencias/reporte-asistencias.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -38,6 +39,10 @@ export const routes: Routes = [
         loadChildren: () => import('./sistema/ere/ere.routes'),
       },
       {
+        path: 'buzon-sugerencias',
+        loadChildren: () => import('./sistema/buzon-sugerencias/buzon-sugerencias.routes'),
+      },
+      {
         path: 'estudiante',
         loadChildren: () => import('./sistema/estudiante/estudiante.routes'),
       },
@@ -52,20 +57,12 @@ export const routes: Routes = [
         loadChildren: () => import('./sistema/usuarios/sin-rol-asignado/sin-rol-asignado.routes'),
       },
       {
-        path: 'encuestas',
-        loadChildren: () => import('./sistema/encuestas/encuestas.routes'),
-      },
-      {
         path: 'actualizacion-docente',
         loadChildren: () => import('./sistema/actualizacion-docente/actualizacion-docente.routes'),
       },
       {
         path: 'new-mantenimiento-usuario',
         component: NewMantenimientoUsuarioComponent,
-      },
-      {
-        path: 'buzon-director',
-        component: BuzonDirectorComponent,
       },
       {
         path: 'recursos',
@@ -89,7 +86,11 @@ export const routes: Routes = [
       },
       {
         path: 'asistencia-auxiliar',
-        component: AuxiliarComponent,
+        component: AsistenciasComponent,
+      },
+      {
+        path: 'reporte-asistencia-auxiliar',
+        component: ReporteAsistenciasComponent,
       },
     ],
   },

@@ -1,345 +1,474 @@
-import { PrimengModule } from '@/app/primeng.module'
-import { InputNumberModule } from 'primeng/inputnumber'
+import { PrimengModule } from '@/app/primeng.module';
+import { InputNumberModule } from 'primeng/inputnumber';
 import {
-    Component,
-    EventEmitter,
-    Input,
-    OnChanges,
-    OnInit,
-    Output,
-    SimpleChanges,
-} from '@angular/core'
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
-
-// Modelo para representar un bloque o receso
-export interface BloqueHorario {
-    inicio: string // Hora de inicio (formato HH:mm)
-    fin: string // Hora de fin (formato HH:mm)
-    tipo: string // "Bloque" o "Receso"
-    descripcion: string // Nombre del bloque o receso
-}
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  IActionTable,
+  TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component';
+import { MessageService } from 'primeng/api';
+import { GeneralService } from '@/app/servicios/general.service';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 
 @Component({
-    selector: 'app-block-horario',
-    standalone: true,
-    imports: [PrimengModule, InputNumberModule],
-    templateUrl: './block-horario.component.html',
-    styleUrl: './block-horario.component.scss',
+  selector: 'app-block-horario',
+  standalone: true,
+  imports: [PrimengModule, InputNumberModule, TablePrimengComponent],
+  templateUrl: './block-horario.component.html',
+  styleUrl: './block-horario.component.scss',
 })
-export class BlockHorarioComponent implements OnChanges, OnInit {
-    @Output() addBlockHorario = new EventEmitter()
-    @Input() bloque
-    @Input() visible_bloque
-    @Input() option
-    @Input() items
-    @Input() horarios
+export class BlockHorarioComponent implements OnChanges {
+  @Output() act_iConfBloqueId = new EventEmitter();
 
-    form: FormGroup
-    formGenerador: FormGroup
+  @Input() iConfBloqueId;
+  @Input() iNumBloque: number = 0; // Número de bloques, se puede ajustar según sea necesario
+  @Input() iIntervalo: number = 45; // Intervalo en minutos, se puede ajustar según sea necesario
+  @Input() iEstado: number = 1; // Estado del bloque, se puede ajustar según sea necesario
 
-    open_modal: boolean = false
-    personalizar: boolean = false
-    bloques: any[] = []
-    visible_block_registrado: boolean = false
-    visble_block_generado: boolean = false
+  formGenerador: FormGroup;
 
-    lista_bloque = [
-        { iTipoBloqueId: 1, cBloque: 'Bloque lectivo' },
-        { iTipoBloqueId: 2, cBloque: 'Receso' },
-    ]
+  bloques: any = [];
+  bloque_asignado: number = 0; // Variable para almacenar el bloque asignado
 
-    constructor(private fb: FormBuilder) {}
+  private _confirmService = inject(ConfirmationModalService);
+  constructor(
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private query: GeneralService
+  ) {}
 
-    ngOnInit() {
-        console.log(this.horarios, ' registro en com ifhorarios')
+  private inicializacionPendiente = false;
 
-        this.form = this.fb.group({
-            bloques: this.fb.array([]),
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      (changes['iConfBloqueId'] && changes['iConfBloqueId'].currentValue) ||
+      (changes['iNumBloque'] && changes['iNumBloque'].currentValue) ||
+      (changes['iIntervalo'] && changes['iIntervalo'].currentValue) ||
+      (changes['iEstado'] && changes['iEstado'].currentValue)
+    ) {
+      if (!this.inicializacionPendiente) {
+        this.inicializacionPendiente = true;
+        setTimeout(() => {
+          this.inicializarFormulario();
+          this.inicializacionPendiente = false;
+        });
+      }
+    }
+  }
+
+  inicializarFormulario() {
+    this.formGenerador = this.fb.group({
+      iDetBloqueId: [0], // ID del bloque, se puede ajustar según sea necesario
+      iConfBloqueId: [0], // ID de la configuración del bloque, se puede ajustar según sea necesario
+      tBloqueInicio: [null, Validators.required],
+      tBloqueFin: [{ value: null, disabled: true }, Validators.required],
+      iEstado: [1, Validators.required], // Estado del bloque, se puede ajustar según sea necesario
+    });
+
+    this.getDetailsBloque(); // Cargar los bloques al iniciar el componente
+  }
+
+  getDetailsBloque() {
+    const params = 'iConfBloqueId=' + Number(this.iConfBloqueId);
+    this.query
+      .searchCalAcademico({
+        esquema: 'hor',
+        tabla: 'detalle_bloques',
+        campos: '*',
+        condicion: params,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.bloques = data.data;
+          this.bloque_asignado = this.bloques.length; // Verifica la longitud de los bloques obtenidos
+          //Inhabilita si ya los bloques estan completos
+          if (Number(this.bloque_asignado) >= Number(this.iNumBloque)) {
+            this.formGenerador.get('iEstado')?.setValue(null); // Deshabilitar el estado si se alcanzó el número máximo de bloques
+          } else {
+            this.formGenerador.get('iEstado')?.setValue(1); // Habilitar el estado si no se alcanzó el número máximo de bloques
+          }
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'danger',
+            summary: 'Mensaje del Sistema',
+            detail:
+              'Error al cargar los datos del horario: ' + error?.error?.message ||
+              'Ocurrió un error inesperado',
+          });
+        },
+        // complete: () => {
+        //   this.messageService.add({
+        //     severity: 'success',
+        //     summary: 'Mensaje del Sistema',
+        //     detail: 'Se cargar los registros del horario correctamente',
+        //   });
+        // },
+      });
+  }
+
+  toSeconds(hora: string): number {
+    const [h, m, s] = hora.split(':').map(Number);
+    return h * 3600 + m * 60 + (s || 0);
+  }
+
+  agregarBloque() {
+    /*
+    this.sumarIntervalo();
+    //validar que no sea menor--------------------------------
+    const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
+    const bloqueMax = this.bloques.reduce((prev, current) =>
+      prev.tFin > current.tFin ? prev : current
+    );
+
+    const dtfin = bloqueMax.tBloqueFin;
+    const hFin = dtfin.substring(0, 8);
+
+    if (this.toSeconds(hFin) > this.toSeconds(tInicio)) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado no puede ser menor al anterior.',
+      });
+      const [hours, minutes, seconds] = hFin.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, seconds || 0);
+
+      this.formGenerador.get('tBloqueInicio')?.setValue(date);
+      return;
+    }
+   
+   */
+
+    this.sumarIntervalo();
+
+    // obtener inicio desde formulario
+    const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
+
+    // buscar bloque máximo
+    let bloqueMax: any = null;
+    if (this.bloques?.length > 0) {
+      bloqueMax = this.bloques.reduce((prev, current) =>
+        prev.tFin > current.tFin ? prev : current
+      );
+    }
+
+    // si no existe bloqueMax, no seguimos validando
+    if (!bloqueMax) {
+      const params = JSON.stringify({
+        iConfBloqueId: this.iConfBloqueId, // ID de la configuración del bloque, se puede ajustar según sea necesario
+        tBloqueInicio: this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value),
+        tBloqueFin: this.toHHMMSS(this.formGenerador.get('tBloqueFin')?.value),
+      });
+
+      this.query
+        .addCalAcademico({
+          json: params, //this.formHorario.getRawValue(),
+          _opcion: 'addConfigDetalleBloque',
         })
-
-        this.formGenerador = this.fb.group({
-            dtInicio: ['', Validators.required],
-            dtFin: ['', Validators.required],
-            n_bloque: [0],
-            n_receso: [0],
-            h_bloque: [0],
-            cHorarioIeNombre: ['', Validators.required],
-        })
-
-        //this.generar();
-
-        if (this.visible_bloque) {
-            this.open_modal = false
-            console.log(this.bloque, ' registro en com if visible')
-            // this.mostrarModal()
-        }
-        // Cargar bloques desde el @Input()
-        if (this.bloques && this.bloques.length > 0) {
-            console.log(this.bloques, 'Que llega al componente')
-            this.bloques.forEach((bloque) => this.agregarBloque(bloque))
-        }
+        .subscribe({
+          error: error => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Mensaje del sistema',
+              detail:
+                'Error. No se proceso petición de registro: ' + error?.error?.message ||
+                'Ocurrió un error inesperado',
+            });
+          },
+          complete: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Mensaje del sistema',
+              detail: 'Proceso exitoso',
+            });
+            this.getDetailsBloque();
+          },
+        });
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        // if (this.visible_bloque) {
-        //     console.log(this.horarios, ' registro en com if visible')
-        //     this.mostrarModal()
-        // }
+    // ahora sí existe tBloqueFin
+    const dtfin = bloqueMax.tBloqueFin;
+    const hFin = dtfin.substring(0, 8);
 
-        if (changes['horarios'] && changes['horarios'].currentValue) {
-            console.log(this.visible_bloque, ' registro en com if')
-            //     if (this.visible_bloque) {
-            console.log(this.bloque, ' registro en com if visible_bloque')
-            //         this.mostrarModal()
-        }
-        if (this.items && this.items.length > 0) {
-            console.log(this.items, 'Que llega al componente items')
-            this.visble_block_generado = false
-            this.visible_block_registrado = true
-        }
+    if (this.toSeconds(hFin) > this.toSeconds(tInicio)) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado no puede ser menor al anterior.',
+      });
+
+      const [hours, minutes, seconds] = hFin.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, seconds || 0);
+
+      this.formGenerador.get('tBloqueInicio')?.setValue(date);
+      return;
     }
 
-    // Getter para obtener el FormArray
-    get bloquesFormArray(): FormArray {
-        return this.form.get('bloques') as FormArray
+    //----------------------------------------------
+    if (!this.validarFechas()) {
+      this._confirmService.openAlert({
+        header: 'El bloque seleccionado ya existe.',
+      });
+      return; // Detiene el flujo si es duplicado
     }
 
-    // Método para crear un bloque
-    private crearBloque(bloque?: {
-        inicio: string
-        fin: string
-        tipo: string
-        descripcion: string
-    }): FormGroup {
-        return this.fb.group({
-            inicio: [bloque?.inicio || '', Validators.required],
-            fin: [bloque?.fin || '', Validators.required],
-            tipo: [bloque?.tipo || 'Bloque', Validators.required],
-            descripcion: [bloque?.descripcion || '', Validators.required],
-        })
+    const params = JSON.stringify({
+      iConfBloqueId: this.iConfBloqueId, // ID de la configuración del bloque, se puede ajustar según sea necesario
+      tBloqueInicio: this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value),
+      tBloqueFin: this.toHHMMSS(this.formGenerador.get('tBloqueFin')?.value),
+    });
+
+    this.query
+      .addCalAcademico({
+        json: params, //this.formHorario.getRawValue(),
+        _opcion: 'addConfigDetalleBloque',
+      })
+      .subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail:
+              'Error. No se proceso petición de registro: ' + error?.error?.message ||
+              'Ocurrió un error inesperado',
+          });
+        },
+        complete: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Proceso exitoso',
+          });
+          this.getDetailsBloque();
+        },
+      });
+  }
+
+  eliminarBloque(id: number) {
+    const params = {
+      esquema: 'hor',
+      tabla: 'detalle_bloques',
+      campo: 'iDetBloqueId',
+      valorId: id,
+    };
+    this.query.deleteAcademico(params).subscribe({
+      error: error => {
+        // console.error('Error fetching ambiente:', error)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje de error',
+          detail:
+            'NO se pudo eliminar registro' + error?.error?.message || 'Ocurrió un error inesperado',
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Eliminado',
+          detail: 'Registro eliminado correctamente',
+        });
+        this.getDetailsBloque();
+      },
+    });
+  }
+
+  cerrarBloque() {
+    const items = { iConfBloqueId: this.iConfBloqueId };
+    const params = { accion: 'finalizar', item: items };
+
+    this.act_iConfBloqueId.emit(params);
+  }
+
+  validarFechas(): boolean {
+    const existe = this.bloques.some((bloque: any) => {
+      const horaBloque = this.extraerHora(bloque.tBloqueInicio);
+      const inicio = this.extraerHora(this.formGenerador.get('tBloqueInicio')?.value);
+
+      return horaBloque === inicio;
+    });
+
+    if (existe) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia del sistema',
+        detail: 'El bloque ya existe.',
+      });
+      return false; // Bloque ya existe
+    } else {
+      return true; // Bloque no existe
+    }
+  }
+
+  sumarIntervalo() {
+    const inicio: Date = this.formGenerador.get('tBloqueInicio')?.value;
+
+    if (inicio) {
+      const fin = new Date(inicio); // crea una copia de la fecha
+      fin.setMinutes(fin.getMinutes() + Number(this.iIntervalo)); // suma 45 minutos
+
+      this.formGenerador.get('tBloqueFin')?.setValue(fin);
+    }
+  }
+
+  toHHMMSS(value: any): string {
+    if (!value) return '';
+
+    if (value instanceof Date) {
+      return value.toTimeString().slice(0, 8);
     }
 
-    //   // Cargar los bloques iniciales en el FormArray
-    //   cargarBloques(): void {
-    //     this.bloques.forEach((bloque) => {
-    //       this.bloquesFormArray.push(
-    //         this.fb.group({
-    //           inicio: [bloque.inicio, [Validators.required]],
-    //           fin: [bloque.fin, [Validators.required]],
-    //           tipo: [bloque.tipo, [Validators.required]],
-    //           descripcion: [bloque.descripcion, [Validators.required]],
-    //         })
-    //       );
-    //     });
-    //   }
+    if (typeof value === 'string') {
+      // Si ya está en formato 'HH:mm:ss' o 'HH:mm'
+      if (/^\d{2}:\d{2}(:\d{2})?$/.test(value)) {
+        return value.length === 5 ? value + ':00' : value;
+      }
 
-    // Añadir un nuevo bloque
-    // Método para agregar un bloque
-    agregarBloque(bloque?: {
-        inicio: string
-        fin: string
-        tipo: string
-        descripcion: string
-    }): void {
-        this.bloquesFormArray.push(this.crearBloque(bloque))
+      // Intentar parsear si es otra string de fecha
+      const d = new Date(value);
+      if (!isNaN(d.getTime())) {
+        return d.toTimeString().slice(0, 8);
+      }
     }
 
-    // Eliminar un bloque
-    eliminarBloque(index: number): void {
-        this.bloquesFormArray.removeAt(index)
+    return '';
+  }
+
+  extraerHora(fecha: any): string {
+    if (!fecha) return '';
+
+    let dateObj: Date;
+
+    if (fecha instanceof Date) {
+      dateObj = fecha;
+    } else if (typeof fecha === 'string') {
+      dateObj = new Date('1970-01-01T' + fecha); // convierte string HH:mm:ss a Date
+    } else {
+      return '';
     }
 
-    // Guardar los cambios (emite o procesa los datos)
-    guardar(): void {
-        const bloques_array = this.bloquesFormArray.value
-        let cont_block = 0
-        let cont_receso = 8
-
-        const _array = bloques_array.map((horario) => ({
-            ...horario,
-            tipo: horario.tipo === 'Bloque' ? ++cont_block : ++cont_receso,
-            cHorarioIeNombre: this.formGenerador.get('cHorarioIeNombre')?.value,
-        }))
-
-        this.addBlockHorario.emit(_array)
-
-        if (this.form.valid) {
-            console.log('Bloques guardados:', this.bloquesFormArray.value)
-        } else {
-            console.error('El formulario es inválido')
-        }
-
-        this.visble_block_generado = false
-        this.visible_block_registrado = true
+    if (isNaN(dateObj.getTime())) {
+      return '';
     }
 
-    accionBtnItem(event: any) {
-        switch (event) {
-            case 'guardar':
-                const registro = this.form.value
-                this.addBlockHorario.emit(registro)
-                break
-        }
-    }
+    const horas = dateObj.getHours().toString().padStart(2, '0');
+    const minutos = dateObj.getMinutes().toString().padStart(2, '0');
 
-    removeItem(index: number): void {
-        index = index - 1
-        this.items.splice(index, 1)
-    }
-    // addItem(){
-    //     const iBloqueHorarioId = this.form.get('iBloqueHorarioId')?.value;
-    //     const dtHorarioHInicio = this.form.get('dtHorarioHInicio')?.value;
-    //     const dtHorarioHFin = this.form.get('dtHorarioHFin')?.value;
+    return `${horas}:${minutos}`;
+  }
 
-    //     // Función para extraer solo la hora en formato HH:mm
-    //     const extractTime = (date: any): string => {
-    //         if (!date) return '';
-    //         const parsedDate = new Date(date);
-    //         const hours = parsedDate.getHours().toString().padStart(2, '0');
-    //         const minutes = parsedDate.getMinutes().toString().padStart(2, '0');
-    //         return `${hours}:${minutes}`;
-    //     };
+  //   toHHMMSS(value: any): string {
+  //     if (!value) return '';
 
-    //     if (iBloqueHorarioId && dtHorarioHInicio && dtHorarioHFin) {
-    //       const cBloqueHorarioNombre = this.bloques.find(option => option.iBloqueHorarioId === iBloqueHorarioId)?.cBloqueHorarioNombre || 'Sin bloque';
-    //       const iTipoBloqueId = this.bloques.find(option => option.iBloqueHorarioId === iBloqueHorarioId)?.iTipoBloqueId || 'Sin bloque';
-    //       this.items.push({
-    //         id: this.items.length + 1,
-    //         inicio: extractTime(dtHorarioHInicio),
-    //         fin: extractTime(dtHorarioHFin),
-    //         iBloqueHorarioId: iBloqueHorarioId,
-    //         bloque: cBloqueHorarioNombre,
-    //         iTipoBloqueId: iTipoBloqueId
-    //       });
-    //     } else {
-    //       console.error('Error: Verifica que todos los campos del formulario estén llenos.');
-    //     }
+  //     if (value instanceof Date) {
+  //       return value.toTimeString().slice(0, 8);
+  //     }
+
+  //     if (typeof value === 'string') {
+  //       // Si ya está en formato 'HH:mm:ss' o 'HH:mm'
+  //       if (/^\d{2}:\d{2}(:\d{2})?$/.test(value)) {
+  //         return value.length === 5 ? value + ':00' : value;
+  //       }
+
+  //       // Intentar parsear si es otra string de fecha
+  //       const d = new Date(value);
+  //       if (!isNaN(d.getTime())) {
+  //         return d.toTimeString().slice(0, 8);
+  //       }
+  //     }
+
+  //     return '';
+  //   }
+
+  accionBtnItemTable({ accion, item }) {
+    // if (accion === 'editar') {
+
     // }
-
-    accionBtnItemTable({ accion, item }) {
-        if (accion === 'editar') {
-            console.log(item, 'btnTable')
-        }
-        if (accion === 'retornar') {
-            alert('Desea retornar')
-            //this.router.navigate(['/gestion-institucional/configGradoSeccion'])
-        }
+    if (accion === 'eliminar') {
+      this._confirmService.openConfiSave({
+        message: '¿Estás seguro de que deseas eliminar?',
+        header: 'Advertencia de autoguardado',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          // Acción para eliminar el registro
+          this.eliminarBloque(item.iDetBloqueId);
+        },
+        reject: () => {
+          // Mensaje de cancelación (opcional)
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Cancelado',
+            detail: 'Acción cancelada',
+          });
+        },
+      });
+      //this.router.navigate(['/gestion-institucional/configGradoSeccion'])
     }
+  }
 
-    generar() {
-        // this.formGenerador.get('dtInicio')?.setValue('07:00');
-        // this.formGenerador.get('dtFin')?.setValue('12:30');
-        // this.formGenerador.get('n_bloque')?.setValue(7);
-        // this.formGenerador.get('n_receso')?.setValue(1);
-        // this.formGenerador.get('h_bloque')?.setValue(45);
-        this.visble_block_generado = true
-        this.visible_block_registrado = false
+  columnsBloque = [
+    {
+      type: 'item',
+      width: '1rem',
+      field: 'item',
+      header: 'N°',
+      text_header: 'center',
+      text: 'center',
+    },
 
-        const dtInicio = this.formGenerador.get('dtInicio')?.value
-        const dtFin = this.formGenerador.get('dtFin')?.value
+    {
+      type: 'time',
+      width: '5rem',
+      field: 'tBloqueInicio',
+      header: 'Inicio de Bloque',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'time',
+      width: '5rem',
+      field: 'tBloqueFin',
+      header: 'Fin de Bloque',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'estado-activo',
+      width: '5rem',
+      field: 'iEstado',
+      header: 'Activo',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'actions',
+      width: '3rem',
+      field: 'actions',
+      header: 'Acciones',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
 
-        // const inicio = dtInicio.getHours().toString().padStart(2, "0");
-        // const fin = ("0" + dtFin).slice(-2);
-
-        //const dtInicio = new Date("2024-12-30T07:30:00"); // Ejemplo
-        //const dtFin = new Date("2024-12-30T12:30:00"); // Ejemplo
-
-        // Obtener las horas y minutos formateados
-        const inicioHora = dtInicio.getHours().toString().padStart(2, '0')
-        const inicioMinuto = dtInicio.getMinutes().toString().padStart(2, '0')
-
-        const finHora = dtFin.getHours().toString().padStart(2, '0')
-        const finMinuto = dtFin.getMinutes().toString().padStart(2, '0')
-
-        // Concatenar para obtener el formato HH:mm
-        const inicio = `${inicioHora}:${inicioMinuto}`
-        const fin = `${finHora}:${finMinuto}`
-
-        this.generarHorario(
-            inicio,
-            fin,
-            this.formGenerador.get('n_bloque')?.value,
-            this.formGenerador.get('n_receso')?.value,
-            this.formGenerador.get('h_bloque')?.value
-        )
-    }
-    // Función para generar los bloques y recesos
-    generarHorario(
-        inicioTurno: string, // Hora de inicio del turno (formato HH:mm)
-        finTurno: string, // Hora de fin del turno (formato HH:mm)
-        numeroBloques: number, // Número total de bloques
-        numeroRecesos: number, // Número total de recesos
-        horaAcademica: number
-    ): void {
-        // const { inicioTurno, finTurno, numeroBloques, numeroRecesos } = this.form.value;
-
-        const bloques: BloqueHorario[] = []
-        const duracionBloque = horaAcademica // Duración fija de cada bloque en minutos
-        const duracionReceso = 15 // Duración fija de cada receso en minutos
-
-        const inicio = new Date(`1970-01-01T${inicioTurno}:00`)
-        const fin = new Date(`1970-01-01T${finTurno}:00`)
-        const tiempoTotal = (fin.getTime() - inicio.getTime()) / 60000 // Tiempo total del turno en minutos
-
-        if (numeroBloques + numeroRecesos <= 0 || tiempoTotal <= 0) {
-            throw new Error('Los datos de entrada no son válidos.')
+  actions: IActionTable[] = [
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: rowData => {
+        if (Number(this.iEstado) === 0 || rowData.iEstado === 1) {
+          return true; // Mostrar el botón si el estado es 1
         }
-
-        const tiempoNecesario =
-            numeroBloques * duracionBloque + numeroRecesos * duracionReceso
-
-        console.log(
-            tiempoNecesario,
-            'tiempoNecesario',
-            tiempoTotal,
-            'tiempoTotal'
-        )
-        if (tiempoNecesario > tiempoTotal) {
-            throw new Error(
-                'El tiempo del turno no es suficiente para acomodar los bloques y recesos.'
-            )
-        }
-
-        const horaActual = new Date(inicio)
-        let bloqueCount = 1
-        let recesoCount = 1
-
-        for (let i = 1; i <= numeroBloques + numeroRecesos; i++) {
-            const horaInicio = horaActual.toTimeString().slice(0, 5)
-            let duracion = duracionBloque
-            let tipo = 'Bloque'
-            let descripcion = `Bloque ${bloqueCount}`
-
-            if (
-                i %
-                    Math.ceil(
-                        (numeroBloques + numeroRecesos) / numeroRecesos
-                    ) ===
-                0
-            ) {
-                duracion = duracionReceso
-                tipo = 'Receso'
-                descripcion = `Receso ${recesoCount}`
-                recesoCount++
-            } else {
-                bloqueCount++
-            }
-
-            horaActual.setMinutes(horaActual.getMinutes() + duracion)
-            const horaFin = horaActual.toTimeString().slice(0, 5)
-
-            bloques.push({
-                inicio: horaInicio,
-                fin: horaFin,
-                tipo,
-                descripcion,
-            })
-        }
-        this.bloques = bloques
-        this.bloquesFormArray.clear()
-        this.bloques.forEach((bloque) => this.agregarBloque(bloque))
-
-        console.log(this.bloques, 'this.bloques')
-        // this.horarioGenerado.emit(bloques); // Emitir el horario generado
-    }
+        return false; // Ocultar el botón en otros casos
+      },
+      //isVisible: () => !this.iEstado or
+    },
+  ];
 }

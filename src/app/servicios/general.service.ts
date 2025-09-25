@@ -297,6 +297,13 @@ export class GeneralService {
     );
   }
 
+  //nuevoa
+  obtenerCursosDiasHorarios(data: any) {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/obtenerCursosDiasHorarios`, data);
+  }
+  guardarRemoverCursosDiasHorarios(data: any) {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/CursosDiasHorarios`, data);
+  }
   agregarCurriculas(data: any) {
     return this.http.post(`${baseUrl}/administrador/addCurriculas`, data);
   }
@@ -325,5 +332,51 @@ export class GeneralService {
   }
   removerArchivo(data: any) {
     return this.http.post(`${baseUrl}/general/remover-archivo`, data);
+  }
+  getRecibirDatos(data) {
+    switch (data.petition) {
+      case 'post':
+        this.url = this.http.post(
+          `${baseUrl}/` + data.group + '/' + data.prefix + '/' + data.ruta,
+          data.data
+        );
+        break;
+      default:
+        break;
+    }
+    return this.url;
+  }
+  getRecibirMultimedia(data) {
+    switch (data.petition) {
+      case 'post':
+        this.url = this.http.post(
+          `${baseUrl}/` + data.group + '/' + data.prefix + '/' + data.ruta,
+          data.data,
+          {
+            responseType: 'blob',
+          }
+        );
+        break;
+      default:
+        break;
+    }
+    return this.url;
+  }
+  getMultipleMedia(data) {
+    switch (data.petition) {
+      case 'post':
+        this.url = this.http.post(
+          `${baseUrl}/` + data.group + '/' + data.prefix + '/' + data.ruta,
+          data.data
+        );
+        break;
+      default:
+        break;
+    }
+    return this.url;
+  }
+
+  subirSvgPizarra(data: any) {
+    return this.http.post(`${baseUrl}/general/subir-svg-pizarra`, data);
   }
 }

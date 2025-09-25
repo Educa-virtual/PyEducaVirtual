@@ -10,10 +10,20 @@
     </span>
   </ng-template>
   <ng-template pTemplate="icons" class="flex justify-content-center">
-    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="!encuesta_bloqueada">
-      <button
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
         size="small"
-        pButton
+        pTooltip="Salir"
+        tooltipPosition="top"
+        (onClick)="salir()"
+        severity="secondary"
+      >
+        <i class="pi pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Salir</span>
+      </p-button>
+      <p-button
+        *ngIf="!encuesta_bloqueada"
+        size="small"
         pTooltip="Registrar encuesta"
         tooltipPosition="top"
         (click)="agregarPregunta()"
@@ -21,130 +31,121 @@
       >
         <i class="pi pi-plus"></i>
         <span class="ml-2 hidden sm:block">Agregar pregunta</span>
-      </button>
+      </p-button>
     </div>
   </ng-template>
-  <div class="grid p-fluid mt-3" *ngFor="let pregunta of preguntas; let i = index">
-    @switch (+pregunta.iEncuPregTipoId) {
-      <!-- Pregunta cerrada Si/No -->
-      @case (1) {
-        <div class="col-12">
-          <app-pregunta-cerrada
-            [addonLabel]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
-            [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
-            [controlDisabled]="encuesta_bloqueada"
-          />
-          <ng-template #infoAdicional>
-            {{ pregunta.cEncuPregAdicional }}
-          </ng-template>
-          <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2" *ngIf="!encuesta_bloqueada">
-            <p-button
-              label="Borrar"
-              icon="pi pi-trash"
-              severity="danger"
-              iconPos="left"
-              size="small"
-              pTooltip="Borrar pregunta"
-              tooltipPosition="top"
-              (click)="borrarPregunta(pregunta)"
+  <p-scrollPanel [style]="{ width: '100%', height: '60vh' }">
+    <div class="grid p-fluid mt-3" *ngFor="let pregunta of preguntas; let i = index">
+      @switch (+pregunta.iEncuPregTipoId) {
+        <!-- Pregunta cerrada Si/No -->
+        @case (1) {
+          <div class="col-12">
+            <app-pregunta-cerrada
+              [addonLabel]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
+              [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
+              [controlDisabled]="encuesta_bloqueada"
             />
-            <p-button
-              label="Editar"
-              icon="pi pi-file-edit"
-              severity="success"
-              iconPos="left"
-              size="small"
-              pTooltip="Editar pregunta"
-              tooltipPosition="top"
-              (click)="editarPregunta(pregunta)"
-            />
+            <ng-template #infoAdicional>
+              {{ pregunta.cEncuPregAdicional }}
+            </ng-template>
+            <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2" *ngIf="!encuesta_bloqueada">
+              <p-button
+                label="Borrar"
+                icon="pi pi-trash"
+                severity="danger"
+                iconPos="left"
+                size="small"
+                pTooltip="Borrar pregunta"
+                tooltipPosition="top"
+                (click)="borrarPregunta(pregunta)"
+              />
+              <p-button
+                label="Editar"
+                icon="pi pi-file-edit"
+                severity="success"
+                iconPos="left"
+                size="small"
+                pTooltip="Editar pregunta"
+                tooltipPosition="top"
+                (click)="editarPregunta(pregunta)"
+              />
+            </div>
           </div>
-        </div>
-      }
-      <!-- Pregunta de texto -->
-      @case (2) {
-        <div class="col-12">
-          <app-pregunta-abierta
-            [addonLabel]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
-            [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
-            [controlDisabled]="encuesta_bloqueada"
-          />
-          <ng-template #infoAdicional>
-            {{ pregunta.cEncuPregAdicional }}
-          </ng-template>
-          <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2" *ngIf="!encuesta_bloqueada">
-            <p-button
-              label="Borrar"
-              icon="pi pi-trash"
-              severity="danger"
-              iconPos="left"
-              size="small"
-              pTooltip="Borrar pregunta"
-              tooltipPosition="top"
-              (click)="borrarPregunta(pregunta)"
+        }
+        <!-- Pregunta de texto -->
+        @case (2) {
+          <div class="col-12">
+            <app-pregunta-abierta
+              [addonLabel]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
+              [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
+              [controlDisabled]="encuesta_bloqueada"
             />
-            <p-button
-              label="Editar"
-              icon="pi pi-file-edit"
-              severity="success"
-              iconPos="left"
-              size="small"
-              pTooltip="Editar pregunta"
-              tooltipPosition="top"
-              (click)="editarPregunta(pregunta)"
-            />
+            <ng-template #infoAdicional>
+              {{ pregunta.cEncuPregAdicional }}
+            </ng-template>
+            <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2" *ngIf="!encuesta_bloqueada">
+              <p-button
+                label="Borrar"
+                icon="pi pi-trash"
+                severity="danger"
+                iconPos="left"
+                size="small"
+                pTooltip="Borrar pregunta"
+                tooltipPosition="top"
+                (click)="borrarPregunta(pregunta)"
+              />
+              <p-button
+                label="Editar"
+                icon="pi pi-file-edit"
+                severity="success"
+                iconPos="left"
+                size="small"
+                pTooltip="Editar pregunta"
+                tooltipPosition="top"
+                (click)="editarPregunta(pregunta)"
+              />
+            </div>
           </div>
-        </div>
-      }
-      <!-- Pregunta de escalas 1 a 5 -->
-      @case (3) {
-        <div class="col-12">
-          <app-pregunta-escala
-            [addonLabel]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
-            [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
-            [controlDisabled]="encuesta_bloqueada"
-            [jsonAlternativas]="pregunta.jsonAlternativas"
-          />
-          <ng-template #infoAdicional>
-            {{ pregunta.cEncuPregAdicional }}
-          </ng-template>
-          <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2" *ngIf="!encuesta_bloqueada">
-            <p-button
-              label="Borrar"
-              icon="pi pi-trash"
-              severity="danger"
-              iconPos="left"
-              size="small"
-              pTooltip="Borrar pregunta"
-              tooltipPosition="top"
-              (click)="borrarPregunta(pregunta)"
+        }
+        <!-- Pregunta de escalas 1 a 5 -->
+        @case (3) {
+          <div class="col-12">
+            <app-pregunta-escala
+              [addonLabel]="pregunta.iEncuPregOrden + '. ' + pregunta.cEncuPregContenido"
+              [infoAdicional]="pregunta.cEncuPregAdicional ? infoAdicional : null"
+              [controlDisabled]="encuesta_bloqueada"
+              [jsonAlternativas]="pregunta.jsonAlternativas"
             />
-            <p-button
-              label="Editar"
-              icon="pi pi-file-edit"
-              severity="success"
-              iconPos="left"
-              size="small"
-              pTooltip="Editar pregunta"
-              tooltipPosition="top"
-              (click)="editarPregunta(pregunta)"
-            />
+            <ng-template #infoAdicional>
+              {{ pregunta.cEncuPregAdicional }}
+            </ng-template>
+            <div class="flex flex-row-reverse flex-wrap gap-2 p-2 mb-2" *ngIf="!encuesta_bloqueada">
+              <p-button
+                label="Borrar"
+                icon="pi pi-trash"
+                severity="danger"
+                iconPos="left"
+                size="small"
+                pTooltip="Borrar pregunta"
+                tooltipPosition="top"
+                (click)="borrarPregunta(pregunta)"
+              />
+              <p-button
+                label="Editar"
+                icon="pi pi-file-edit"
+                severity="success"
+                iconPos="left"
+                size="small"
+                pTooltip="Editar pregunta"
+                tooltipPosition="top"
+                (click)="editarPregunta(pregunta)"
+              />
+            </div>
           </div>
-        </div>
+        }
       }
-    }
-  </div>
-
-  <div class="flex justify-content-end">
-    <p-button
-      label="Salir"
-      (onClick)="salir()"
-      icon="pi pi-arrow-left"
-      iconPos="left"
-      severity="secondary"
-      [hidden]="pregunta_registrada"
-    />
-  </div>
+    </div>
+  </p-scrollPanel>
 </p-panel>
 
 <p-dialog
@@ -222,6 +223,7 @@
               formControlName="cEncuPregContenido"
               pInputTextarea
               placeholder="Escriba"
+              maxLength="500"
               [rows]="3"
               class="group-element"
               [style.minHeight]="3"
@@ -242,6 +244,7 @@
               formControlName="cEncuPregAdicional"
               pInputTextarea
               placeholder="Escriba"
+              maxLength="500"
               [rows]="3"
               class="group-element"
               [style.minHeight]="3"

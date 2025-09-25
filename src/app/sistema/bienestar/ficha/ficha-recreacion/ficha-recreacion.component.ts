@@ -11,6 +11,8 @@ import { DropdownInputComponent } from '../shared/dropdown-input/dropdown-input.
 import { DropdownSimpleComponent } from '../shared/dropdown-simple/dropdown-simple.component';
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-recreacion',
@@ -39,6 +41,12 @@ export class FichaRecreacionComponent implements OnInit {
   tipos_familiares: Array<any> = [];
   relacion_familia: Array<any> = [];
   estados_relacion: Array<any> = [];
+  lenguas: Array<any> = [];
+  etnias: Array<any> = [];
+
+  perfil: any;
+  es_estudiante_apoderado: boolean = false;
+  formLabels: any;
 
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
@@ -49,15 +57,18 @@ export class FichaRecreacionComponent implements OnInit {
     private datosFichaBienestar: DatosFichaBienestarService,
     private router: Router,
     private route: ActivatedRoute,
-    private funcionesBienestar: FuncionesBienestarService
+    private funcionesBienestar: FuncionesBienestarService,
+    private store: LocalStoreService
   ) {
     this.compartirFicha.setActiveIndex(7);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit() {
@@ -82,11 +93,35 @@ export class FichaRecreacionComponent implements OnInit {
       iEstadoRelFamiliar: [null],
       iTransporteId: [null],
       cTransporteOtro: ['', Validators.maxLength(80)],
+      iLenguaId: [null],
+      cLenguaOtro: ['', Validators.maxLength(80)],
+      iEtniaId: [null],
+      cEtniaOtro: ['', Validators.maxLength(120)],
+      jsonLenguas: [null],
       jsonDeportes: [null],
       jsonPasatiempos: [null],
       jsonProblemas: [null],
       jsonTransportes: [null],
+      bFichaDGOcupaCargoIE: [false],
+      cFichaDGOcupaCargoIE: ['', Validators.maxLength(120)],
+      bFichaDGPerteneceClubInteres: [false],
+      cFichaDGPerteneceClubInteres: ['', Validators.maxLength(120)],
     });
+
+    this.formLabels = {
+      bFichaDGAsistioConsultaPsicologica: this.es_estudiante_apoderado
+        ? '¿El estudiante recibe atención psicológica?'
+        : '¿Usted recibe atención psicológica?',
+      iEstadoRelFamiliar: this.es_estudiante_apoderado
+        ? '¿Cómo es la relación del estudiante con su familia?'
+        : '¿Cómo es su relación con su familia?',
+      iLenguaId: this.es_estudiante_apoderado
+        ? '¿Cuál es la lengua materna con la que el estudiante aprendió a hablar en su niñez?'
+        : '¿Cuál es la lengua materna con la que aprendió a hablar en su niñez?',
+      iEtniaId: this.es_estudiante_apoderado
+        ? 'Por sus costumbres y antepasados, el estudiante se siente o considera:'
+        : 'Por sus costumbres y antepasados, usted se siente o considera:',
+    };
 
     this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
       this.deportes = this.datosFichaBienestar.getDeportes(data?.deportes);
@@ -95,6 +130,8 @@ export class FichaRecreacionComponent implements OnInit {
       this.pasatiempos = this.datosFichaBienestar.getPasatiempos(data?.pasatiempos);
       this.actividades = this.datosFichaBienestar.getActividades(data?.actividades);
       this.tipos_familiares = this.datosFichaBienestar.getTiposFamiliares(data?.tipos_familiares);
+      this.lenguas = this.datosFichaBienestar.getLenguas(data?.lenguas);
+      this.etnias = this.datosFichaBienestar.getEtnias(data?.etnias);
       this.estados_relacion = this.datosFichaBienestar.getEstadosRelacion();
     });
 
@@ -166,6 +203,18 @@ export class FichaRecreacionComponent implements OnInit {
     );
     this.funcionesBienestar.formatearFormControl(
       this.formRecreacion,
+      'iLenguaId',
+      data.iLenguaId,
+      'number'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
+      'iEtniaId',
+      data.iEtniaId,
+      'number'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
       'bFichaDGPerteneceLigaDeportiva',
       data.bFichaDGPerteneceLigaDeportiva,
       'boolean'
@@ -180,6 +229,18 @@ export class FichaRecreacionComponent implements OnInit {
       this.formRecreacion,
       'bFichaDGAsistioConsultaPsicologica',
       data.bFichaDGAsistioConsultaPsicologica,
+      'boolean'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
+      'bFichaDGPerteneceClubInteres',
+      data.bFichaDGPerteneceClubInteres,
+      'boolean'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formRecreacion,
+      'bFichaDGOcupaCargoIE',
+      data.bFichaDGOcupaCargoIE,
       'boolean'
     );
 

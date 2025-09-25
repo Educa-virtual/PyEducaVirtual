@@ -1,47 +1,51 @@
-<div class="grid col">
-  <div class="card col-4 mr-2">
-    <app-toolbar-primeng title="Sesiones de Aprendizaje"></app-toolbar-primeng>
-    @if (iPerfilId === DOCENTE) {
-      <div class="flex justify-content-end ml-auto mb-2 mx-4 mr-5">
-        <button
-          size="small"
-          icon="pi pi-plus"
-          label="Agregar Sesión de Aprendizaje"
-          [rounded]="true"
-          class="p-button-success"
-          pButton
-          pRipple
-          (click)="showModalSesionAprendizaje = true"
-        ></button>
-      </div>
-    }
-    <div class="flex flex-column">
-      @if (contenidoSemanas.length > 0) {
-        <app-card-orderlist
-          [data]="contenidoSemanas"
-          (datoSeleccionado)="obtenerActividadesxiContenidoSemId($event)"
-        >
-        </app-card-orderlist>
-        <p-divider></p-divider>
-      }
-      @if (contenidoSemanas.length === 0) {
-        <div class="card">
-          <app-no-data [showIcon]="'NO-DATA'" [mensaje]="'No hay lista de semanas'"></app-no-data>
+<div class="grid">
+  <div class="col-12 md:col-4">
+    <app-toolbar-primeng
+      [title]="iCapacitacionId ? 'Sesión Formativa' : 'Sesiones de Aprendizaje'"
+    ></app-toolbar-primeng>
+    <div class="card">
+      @if (iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR) {
+        <div class="flex justify-content-end ml-auto mb-2 mx-4 mr-5">
+          <button
+            size="small"
+            icon="pi pi-plus"
+            [label]="iCapacitacionId ? 'Agregar Sesión Formativa' : 'Agregar Sesión de Aprendizaje'"
+            [rounded]="true"
+            class="p-button-success"
+            pButton
+            pRipple
+            (click)="showModalSesionAprendizaje = true"
+          ></button>
         </div>
       }
-    </div>
+      <div class="flex flex-column">
+        @if (contenidoSemanas.length > 0) {
+          <app-card-orderlist
+            [data]="contenidoSemanas"
+            (datoSeleccionado)="obtenerActividadesxiContenidoSemId($event)"
+          >
+          </app-card-orderlist>
+          <p-divider></p-divider>
+        }
+        @if (contenidoSemanas.length === 0) {
+          <div class="card">
+            <app-no-data [showIcon]="'NO-DATA'" [mensaje]="'No hay lista de semanas'"></app-no-data>
+          </div>
+        }
+      </div>
 
-    <p-menu #menuContenido [model]="accionesContenido" [popup]="true">
-      <ng-template pTemplate="item" let-item>
-        <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
-          <span>
-            {{ item.label }}
-          </span>
-        </a>
-      </ng-template>
-    </p-menu>
+      <p-menu #menuContenido [model]="accionesContenido" [popup]="true">
+        <ng-template pTemplate="item" let-item>
+          <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
+            <span>
+              {{ item.label }}
+            </span>
+          </a>
+        </ng-template>
+      </p-menu>
+    </div>
   </div>
-  <div class="card col">
+  <div class="col-12 md:col-8">
     <ng-container *ngIf="datos">
       <app-toolbar-primeng
         [header]="datos.cTitulo + ':'"
@@ -51,6 +55,7 @@
       >
       </app-toolbar-primeng>
     </ng-container>
+
     <div class="grid mt-1" *ngIf="datos">
       <div class="col md:col-6">
         <p-inputGroup>
@@ -67,7 +72,7 @@
         </p-inputGroup>
       </div>
       <div class="col md:col-6">
-        @if (iPerfilId === DOCENTE) {
+        @if (iPerfilId === DOCENTE || iPerfilId === INSTRUCTOR) {
           <div class="flex justify-content-end mx-4 mr-5">
             <div class="flex align-content-center">
               <button
@@ -129,6 +134,7 @@
   [datosSesion]="datosSesion"
   [accion]="accion"
   [idSesion]="contenidoSemanas.length + 1"
+  [bCapacitacion]="iCapacitacionId ? true : false"
   (dataSesion)="guardarSesionDeAprendizaje($event)"
   (editarSesion)="actualizarSesionDeAprendizaje($event)"
   (accionCloseForm)="showModalSesionAprendizaje = false; datosSesion = null; accion = null"

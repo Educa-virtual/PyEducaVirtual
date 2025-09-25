@@ -1,7 +1,7 @@
 const inicio = {
   label: 'Inicio',
   icon: 'pi pi-fw pi-home',
-  routerLink: [''],
+  // routerLink: [''],
 };
 
 /*export const evaluacionesEre = {
@@ -19,7 +19,44 @@ export const reportesEre = {
 export const administradorDremo = [
   {
     items: [
-      inicio,
+      {
+        label: 'Administracion',
+        icon: 'pi pi-fw pi-home',
+        // routerLink: [''],
+      },
+      // inicio,
+      {
+        label: 'Administrador IE',
+        icon: 'pi pi-warehouse',
+        items: [
+          {
+            label: 'Gestión de feriados nacionales',
+            icon: 'pi pi-calendar',
+            routerLink: ['/gestion-institucional/fechas-nacionales'],
+          },
+          {
+            label: 'Gestión del año académico',
+            icon: 'pi pi-calendar-clock',
+            routerLink: ['/gestion-institucional/years-academicos'],
+          },
+          {
+            label: 'Gestión de ciclos',
+            icon: 'pi pi-stopwatch',
+            routerLink: ['/gestion-institucional/ciclo'],
+          },
+        ],
+      },
+      {
+        label: 'Mantenimiento IE',
+        icon: 'pi pi-config',
+        items: [
+          {
+            label: 'Curricula',
+            icon: 'pi pi-star',
+            routerLink: ['/administrador/mantenimiento-curricula'],
+          },
+        ],
+      },
       /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',
@@ -100,11 +137,11 @@ export const administradorDremo = [
             icon: 'pi pi-user',
             routerLink: ['/actualizacion-docente/instructores'],
           },
-          {
-            label: 'Resultados del curso',
-            icon: 'pi pi-user',
-            routerLink: ['/actualizacion-docente/resultados'],
-          },
+          // {
+          //   label: 'Resultados del curso',
+          //   icon: 'pi pi-user',
+          //   routerLink: ['/actualizacion-docente/resultados'],
+          // },
         ],
       },
       {
@@ -234,11 +271,31 @@ export const especialistaUgel = [
         ],
       },
       {
-        label: 'Encuestas',
-        icon: 'pi pi-list-check',
-        routerLink: ['./encuestas/categorias'],
+        label: 'Bienestar Social',
+        icon: 'pi pi-fw pi-check-square',
+        items: [
+          {
+            label: 'Gestionar encuestas',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/bienestar/gestionar-encuestas'],
+          },
+          {
+            label: 'Recordatorios de cumpleaños',
+            icon: 'pi pi-fw pi-bell',
+            routerLink: ['/bienestar/recordario-fechas'],
+          },
+          {
+            label: 'Seguimiento de bienestar',
+            icon: 'pi pi-fw pi-eye',
+            routerLink: ['/bienestar/seguimiento-bienestar'],
+          },
+          {
+            label: 'Informes y estadística',
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: ['/bienestar/informe-estadistico'],
+          },
+        ],
       },
-      reportesEre,
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',

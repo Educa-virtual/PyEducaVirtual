@@ -1,29 +1,43 @@
+<p-toast />
 <app-container-page
-    title="Asignar horas"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+  title="Asignar horas"
+  [actions]="accionesPrincipal"
+  (accionBtnItem)="accionBtnItemTable($event)"
 >
-    <div class="card">
-        <p-steps [model]="items" [readonly]="true"></p-steps>
+  <div class="card">
+    <p-steps [model]="items" [readonly]="true"></p-steps>
+  </div>
+  <div class="card">
+    <app-table-primeng
+      [columnas]="columns"
+      [showCaption]="true"
+      [data]="docentes"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showPaginator]="true"
+      [(selectedRowData)]="accionBtnItemTable"
+      [actions]="actions"
+    >
+      <ng-container slot="caption-content"> </ng-container>
+    </app-table-primeng>
+    <div class="flex justify-content-end">
+      <p-button (onClick)="confirm()" [disabled]="!form.valid" label="Siguiente" />
     </div>
-    <div class="card">
-        <app-table-primeng
-            [columnas]="columns"
-            [showCaption]="true"
-            [data]="docentes"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="true"
-            [(selectedRowData)]="accionBtnItemTable"
-            [actions]="actions"
-        >
-            <ng-container slot="caption-content"> </ng-container>
-        </app-table-primeng>
-        <div class="flex justify-content-end">
-            <p-button
-                (onClick)="confirm()"
-                [disabled]="!form.valid"
-                label="Siguiente"
-            />
-        </div>
-    </div>
+  </div>
+
+  <p-dialog
+    [(visible)]="showFormulario"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [maximizable]="true"
+    [closable]="true"
+    [dismissableMask]="true"
+    [header]="'Agregar Personal'"
+  >
+    <app-form-docente
+      [configuracion]="config"
+      [docente]="docente"
+      [c_accion]="c_accion"
+      (accionBtnItem)="accionBtnItemTable($event)"
+    ></app-form-docente>
+  </p-dialog>
 </app-container-page>

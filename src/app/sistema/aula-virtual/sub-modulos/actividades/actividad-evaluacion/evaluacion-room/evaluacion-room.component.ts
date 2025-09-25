@@ -10,13 +10,14 @@ import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.com
 import { TabDescripcionActividadesComponent } from '../../components/tab-descripcion-actividades/tab-descripcion-actividades.component';
 import { EvaluacionesService } from '@/app/servicios/eval/evaluaciones.service';
 import { EvaluacionPreguntasComponent } from '../evaluacion-preguntas/evaluacion-preguntas.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component';
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component';
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component';
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component';
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component';
 import { Location } from '@angular/common';
+import { INSTRUCTOR, PARTICIPANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-evaluacion-room',
@@ -49,6 +50,7 @@ export class EvaluacionRoomComponent implements OnInit {
   private _EvaluacionesService = inject(EvaluacionesService);
   private _MessageService = inject(MessageService);
   private _ActivatedRoute = inject(ActivatedRoute);
+  private _Router = inject(Router);
 
   rubricas = [
     // {
@@ -57,40 +59,26 @@ export class EvaluacionRoomComponent implements OnInit {
     // },
   ];
 
-  tabs = [
-    {
-      title: 'Descripción',
-      icon: 'pi pi-list',
-      tab: 'descripcion',
-      //tab:0
-    },
-    {
-      title: 'Preguntas',
-      icon: 'pi-pen-to-square',
-      tab: 'preguntas',
-      isVisible: !(this._ConstantesService.iPerfilId === DOCENTE),
-      //tab:1
-    },
-    {
-      title: 'Calificar',
-      icon: 'pi-list-check',
-      tab: 'calificar',
-      isVisible: !(this._ConstantesService.iPerfilId === DOCENTE),
-      //tab:2
-    },
-    {
-      title: 'Rendir Evaluación',
-      icon: 'pi-check-circle',
-      tab: 'rendir-examen',
-      isVisible: !(this._ConstantesService.iPerfilId === ESTUDIANTE),
-      //tab:3
-    },
-  ];
+  isDocente: boolean =
+    this._ConstantesService.iPerfilId === DOCENTE ||
+    this._ConstantesService.iPerfilId === INSTRUCTOR;
+
+  isEstudiante: boolean =
+    this._ConstantesService.iPerfilId === ESTUDIANTE ||
+    this._ConstantesService.iPerfilId === PARTICIPANTE;
+
+  tabs = [];
 
   activeIndex: number = 0;
   tabSeleccionado: string = 'descripcion';
   obtenerIndex(event) {
     this.tabSeleccionado = event.tab;
+    this.activeIndex = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+
+    this._Router.navigate([], {
+      queryParams: { tab: this.tabSeleccionado },
+      queryParamsHandling: 'merge',
+    });
   }
 
   obtenerRubricas() {
@@ -125,9 +113,6 @@ export class EvaluacionRoomComponent implements OnInit {
   public iPerfilId = this._ConstantesService.iPerfilId;
   public evaluacion;
   public cEvaluacionInstrucciones;
-  public DOCENTE = DOCENTE;
-  public ESTUDIANTE = ESTUDIANTE;
-  isDocente: boolean = this._ConstantesService.iPerfilId === DOCENTE;
 
   iNivelCicloId: string | number;
   iCursoId: string | number;
@@ -167,6 +152,51 @@ export class EvaluacionRoomComponent implements OnInit {
     this.params.idDocCursoId = this._ActivatedRoute.snapshot.queryParamMap.get('idDocCursoId');
 
     //this.obtenerRubricas()
+    if (this.isDocente) {
+      this.tabs = [
+        {
+          title: 'Descripción',
+          icon: 'pi pi-list',
+          tab: 'descripcion',
+        },
+        {
+          title: 'Preguntas',
+          icon: 'pi-pen-to-square',
+          tab: 'preguntas',
+        },
+        {
+          title: 'Calificar',
+          icon: 'pi-list-check',
+          tab: 'calificar',
+          isVisible: !this.isDocente,
+        },
+      ];
+    }
+
+    if (this.isEstudiante) {
+      this.tabs = [
+        {
+          title: 'Descripción',
+          icon: 'pi pi-list',
+          tab: 'descripcion',
+        },
+        {
+          title: 'Rendir Evaluación',
+          icon: 'pi-check-circle',
+          tab: 'rendir-examen',
+        },
+      ];
+    }
+    this._ActivatedRoute.queryParams.subscribe(params => {
+      const tabParam = params['tab'];
+
+      if (tabParam) {
+        this.tabSeleccionado = tabParam;
+        const index = this.tabs.findIndex(t => t.tab === this.tabSeleccionado);
+
+        this.activeIndex = index !== -1 ? index : 0;
+      }
+    });
   }
   goBack() {
     this.location.back();

@@ -31,9 +31,23 @@ export class DatosInformeBienestarService {
   ugeles: Array<object>;
   zonas: Array<object>;
   tipo_sectores: Array<object>;
+  estados: Array<object>;
+  tipos_personas: Array<object>;
+  areas: Array<object>;
 
   antiguo_form: any;
   reportes: any;
+
+  TIPO_PERSONA_ESTUDIANTE: number = 1;
+  TIPO_PERSONA_DOCENTE: number = 2;
+  TIPO_PERSONA_ADMINISTRATIVO: number = 3;
+
+  private tipoPersonaSubject = new BehaviorSubject<number | null>(this.TIPO_PERSONA_ESTUDIANTE);
+  tipoPersona$ = this.tipoPersonaSubject.asObservable();
+
+  setTipoPersona(tipo: number) {
+    this.tipoPersonaSubject.next(tipo);
+  }
 
   private activeIndex = new BehaviorSubject<number | null>(null);
 
@@ -43,10 +57,6 @@ export class DatosInformeBienestarService {
 
   setActiveIndex(index: number) {
     this.activeIndex.next(index);
-  }
-
-  crearReporte(data: any) {
-    return this.http.post(`${baseUrl}/bienestar/crearReporte`, data);
   }
 
   private reportesSubject = new BehaviorSubject<any>(null);
@@ -73,11 +83,21 @@ export class DatosInformeBienestarService {
     return this.sexos;
   }
 
+  getEstados() {
+    if (!this.estados) {
+      this.estados = [
+        { label: 'EN PROCESO', value: 1 },
+        { label: 'EN BLANCO', value: 0 },
+      ];
+    }
+    return this.estados;
+  }
+
   obtenerParametros(data: any) {
     if (!this.parametros) {
       return this.http.post(`${baseUrl}/bienestar/crearReporte`, data).pipe(
         map((data: any) => {
-          this.parametros = data.data[0];
+          this.parametros = data.data;
           return this.parametros;
         })
       );
@@ -196,6 +216,30 @@ export class DatosInformeBienestarService {
     return this.ugeles;
   }
 
+  getTiposPersonas(data: any) {
+    if (!this.tipos_personas && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_personas = items.map(tipo_persona => ({
+        value: tipo_persona.iTipoPersId,
+        label: tipo_persona.cTipoPersNombre,
+      }));
+      return this.tipos_personas;
+    }
+    return this.tipos_personas;
+  }
+
+  getAreas(data: any) {
+    if (!this.areas && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.areas = items.map(area => ({
+        value: area.iCursoId,
+        label: area.cCursoNombre,
+      }));
+      return this.areas;
+    }
+    return this.areas;
+  }
+
   getInstitucionesEducativas(data: any) {
     if (!this.instituciones_educativas && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
@@ -215,7 +259,6 @@ export class DatosInformeBienestarService {
   }
 
   filterInstitucionesEducativas(
-    iEvaluacionId: any,
     iNivelTipoId: any,
     iDsttId: any,
     iZonaId: any,
@@ -223,9 +266,6 @@ export class DatosInformeBienestarService {
     iUgelId: any
   ) {
     let ies_tmp: Array<object> = this.instituciones_educativas;
-    if (!iNivelTipoId) {
-      return null;
-    }
     if (iNivelTipoId) {
       ies_tmp = ies_tmp.filter((ie: any) => {
         if (ie.iNivelTipoId == iNivelTipoId) {

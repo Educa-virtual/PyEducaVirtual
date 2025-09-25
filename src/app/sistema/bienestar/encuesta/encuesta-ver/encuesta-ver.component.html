@@ -14,7 +14,7 @@
   </ng-template>
 
   <div class="grid p-fluid">
-    <div class="col-12 md:col-4">
+    <div class="col-12 md:col-5">
       <div class="grid p-fluid">
         <div class="col-12">
           <p-messages severity="info" class="my-0">
@@ -24,7 +24,9 @@
                   <i class="pi pi-pen-to-square text-xl mr-3"></i>
                   <span class="flex flex-column">
                     <span class="font-bold mb-1">Descripción</span>
-                    <span class="m-0 text-secondary">{{ encuesta?.cEncuDescripcion }}</span>
+                    <span class="m-0 text-secondary text-justify">{{
+                      encuesta?.cEncuDescripcion
+                    }}</span>
                   </span>
                 </li>
                 <li class="flex py-3">
@@ -37,9 +39,10 @@
                 <li class="flex py-3">
                   <i class="pi pi-lock text-xl mr-3"></i>
                   <span class="flex flex-column">
-                    <span class="font-bold mb-1">Permisos</span>
+                    <span class="font-bold mb-1">Permisos asignados</span>
                     <span class="m-0 text-secondary">
                       <ul class="p-0">
+                        <li>CREADOR: VER RESPUESTAS, VER RESUMEN</li>
                         @for (permiso of encuesta?.permisos_detalle; track $index) {
                           <li>
                             {{ permiso?.permiso }}
@@ -55,7 +58,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 md:col-8">
+    <div class="col-12 md:col-7">
       <div class="grid p-fluid" *ngFor="let pregunta of preguntas; let i = index">
         @switch (+pregunta.iEncuPregTipoId) {
           <!-- Pregunta cerrada Si/No -->

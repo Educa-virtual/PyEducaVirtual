@@ -1,130 +1,121 @@
 <form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
-    <div class="grid">
-        <div class="col-12" [hidden]="!contenidoSemana">
-            <p-messages
-                [(value)]="semana"
-                [enableService]="false"
-                [closable]="false"
-            />
-        </div>
-        <!-- Mostrar el título -->
-        <div class="col-12 md:col-8">
-            <p-inputGroup>
-                <p-inputGroupAddon>Título</p-inputGroupAddon>
-                <input
-                    type="text"
-                    pInputText
-                    placeholder="Ingrese el título del foro"
-                    formControlName="cForoTitulo"
-                />
-            </p-inputGroup>
-        </div>
-        <!-- Mostrar las Categorias en un Select -->
-        <div class="col-12 md:col-4">
-            <p-inputGroup>
-                <p-inputGroupAddon>Categoría</p-inputGroupAddon>
-                <p-dropdown
-                    [options]="categorias"
-                    formControlName="iForoCatId"
-                    styleClass="w-full"
-                    optionValue="iForoCatId"
-                    optionLabel="cForoCatDescripcion"
-                    placeholder="Seleccione una categoría"
-                    appendTo="body"
-                />
-            </p-inputGroup>
-        </div>
-        <!-- Mostrar descripción -->
-        <div class="col-12">
-            <label for="descripcion" class="mt-1"
-                >Descripción
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <div class="mt-2">
-                <p-editor
-                    id="descripcion"
-                    placeholder="Escribe una Descripción "
-                    formControlName="cForoDescripcion"
-                    [style]="{ height: 'auto', overflow: 'hidden' }"
-                />
-            </div>
-        </div>
-        <!-- Asignar Los tiempos -->
-        <div class="col-12 md:col-6 gap-3">
-            <p-inputGroup>
-                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
-                <p-calendar
-                    formControlName="dtForoInicio"
-                    [iconDisplay]="'input'"
-                    styleClass="w-full"
-                    [showIcon]="true"
-                    [showTime]="true"
-                    [hourFormat]="'24'"
-                    inputId="dtForoInicio"
-                    appendTo="body"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 md:col-6 gap-3">
-            <p-inputGroup>
-                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
-                <p-calendar
-                    formControlName="dtForoFin"
-                    [iconDisplay]="'input'"
-                    styleClass="w-full"
-                    [showIcon]="true"
-                    [showTime]="true"
-                    [hourFormat]="'24'"
-                    inputId="dtForoFin"
-                    [appendTo]="'body'"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 mt-1">
-            <app-types-files-upload-primeng
-                [nameFile]="'foros'"
-                [nameOption]="'foros'"
-                [typesFiles]="typesFiles"
-                (actionTypesFileUpload)="accionBtnItem($event)"
-                [filesUrl]="filesUrl"
-            ></app-types-files-upload-primeng>
-        </div>
+  <div class="grid">
+    <div class="col-12" [hidden]="!contenidoSemana">
+      <p-messages [(value)]="semana" [enableService]="false" [closable]="false" />
     </div>
+    <!-- Mostrar el título -->
+    <div class="col-12 md:col-8">
+      <p-inputGroup>
+        <p-inputGroupAddon>Título</p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          placeholder="Ingrese el título del foro"
+          formControlName="cForoTitulo"
+        />
+      </p-inputGroup>
+    </div>
+    <!-- Mostrar las Categorias en un Select -->
+    <div class="col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon>Categoría</p-inputGroupAddon>
+        <p-dropdown
+          [options]="categorias"
+          formControlName="iForoCatId"
+          styleClass="w-full"
+          optionValue="iForoCatId"
+          optionLabel="cForoCatDescripcion"
+          placeholder="Seleccione una categoría"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <!-- Mostrar descripción -->
+    <div class="col-12">
+      <label for="descripcion" class="mt-1"
+        >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+      >
+      <div class="mt-2">
+        <p-editor
+          id="descripcion"
+          placeholder="Escribe una Descripción "
+          formControlName="cForoDescripcion"
+          [style]="{ height: 'auto', overflow: 'hidden' }"
+        />
+      </div>
+    </div>
+    <!-- Asignar Los tiempos -->
+    <div class="col-12 md:col-6 gap-3">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+        <p-calendar
+          formControlName="dtForoInicio"
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          [showTime]="true"
+          [hourFormat]="'24'"
+          inputId="dtForoInicio"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6 gap-3">
+      <p-inputGroup>
+        <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+        <p-calendar
+          formControlName="dtForoFin"
+          [iconDisplay]="'input'"
+          styleClass="w-full"
+          [showIcon]="true"
+          [showTime]="true"
+          [hourFormat]="'24'"
+          inputId="dtForoFin"
+          [appendTo]="'body'"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 mt-1">
+      <app-types-files-upload-primeng
+        [nameFile]="'foros'"
+        [nameOption]="'foros'"
+        [typesFiles]="typesFiles"
+        (actionTypesFileUpload)="accionBtnItem($event)"
+        [filesUrl]="filesUrl"
+      ></app-types-files-upload-primeng>
+    </div>
+  </div>
 </form>
 <!-- button de cancelar y guardar -->
 <div
-    class="flex justify-content-end gap-2 pt-3"
-    style="
-        position: sticky;
-        bottom: 0;
-        background-color: #fff;
-        padding: 1rem;
-        border-top: 1px solid #ddd;
-    "
+  class="flex justify-content-end gap-2 pt-3"
+  style="
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    padding: 1rem;
+    border-top: 1px solid #ddd;
+  "
 >
-    <button
-        pButton
-        pRipple
-        label="Cancelar"
-        icon="pi pi-times"
-        class="p-button-secondary"
-        type="button"
-        size="small"
-        (click)="closeModal(null)"
-    ></button>
-    <button
-        pButton
-        pRipple
-        [label]="action === 'ACTUALIZAR' ? 'ACTUALIZAR' : 'GUARDAR'"
-        icon="pi pi-check"
-        size="small"
-        [class]="
-            action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'
-        "
-        (click)="submit()"
-        [loading]="isLoading"
-        [disabled]="isLoading"
-    ></button>
+  <button
+    pButton
+    pRipple
+    label="Cancelar"
+    icon="pi pi-times"
+    class="p-button-secondary"
+    type="button"
+    size="small"
+    (click)="closeModal(null)"
+  ></button>
+  <button
+    pButton
+    pRipple
+    [label]="action === 'ACTUALIZAR' ? 'ACTUALIZAR' : 'GUARDAR'"
+    icon="pi pi-check"
+    size="small"
+    [class]="action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'"
+    (click)="submit()"
+    [loading]="isLoading"
+    [disabled]="isLoading"
+  ></button>
 </div>
-
-<p-toast />

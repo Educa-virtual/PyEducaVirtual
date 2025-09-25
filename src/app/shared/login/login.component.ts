@@ -11,6 +11,9 @@ import { RecoverPasswordComponent } from '../recover-password/recover-password.c
 import { SinRolAsignadoComponent } from '../../sistema/usuarios/sin-rol-asignado/sin-rol-asignado.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DialogModule } from 'primeng/dialog';
+import { HeaderComponent } from '../header/header.component';
+import { finalize } from 'rxjs';
+import { SolicitudesRegistroService } from '@/app/sistema/administrador/gestion-usuarios/solicitudes-registro/services/solicitudes-registro.service';
 
 interface Data {
   accessToken: string;
@@ -30,18 +33,29 @@ interface Data {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [PrimengModule, RecoverPasswordComponent, SinRolAsignadoComponent, DialogModule],
+  imports: [
+    PrimengModule,
+    RecoverPasswordComponent,
+    SinRolAsignadoComponent,
+    DialogModule,
+    HeaderComponent,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   providers: [MessageService],
 })
 export class LoginComponent implements OnInit {
+  activeForm: 'login' | 'register' = 'login';
+
   showPassword: boolean;
   loading: boolean;
   loadingText: string;
   formLogin!: FormGroup;
+  formRegistro!: FormGroup;
   modalSinRolAsignado: boolean;
-  anuncio: boolean = true;
+  mostrarAnuncio: boolean = false;
+  solicitandoRegistroUsuario: boolean = false;
+  showModal: boolean = false;
 
   constructor(
     public sanitizer: DomSanitizer,
@@ -49,6 +63,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
+    private solicitudesRegistroService: SolicitudesRegistroService,
     private messageService: MessageService,
     private ConstantesService: ConstantesService,
     private store: LocalStoreService
@@ -56,6 +71,16 @@ export class LoginComponent implements OnInit {
     this.formLogin = this.fb.group({
       user: ['', Validators.required],
       pass: ['', Validators.required],
+    });
+
+    this.formRegistro = this.fb.group({
+      cDocumento: ['', Validators.required],
+      cCodigoModular: ['', Validators.required],
+      cCargo: ['', Validators.required],
+      cCorreo: ['', [Validators.required, Validators.email]],
+      cNombres: ['', [Validators.required]],
+      cApellidos: ['', [Validators.required]],
+      cComentarios: [''],
     });
   }
 
@@ -86,13 +111,6 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = false;
-
-        /*if (!response.user)
-                    return this.messageService.add({
-                        severity: 'error',
-                        summary: 'Acceso Denegado!',
-                        detail: 'No hay registros con las credenciales ingresadas',
-                    })*/
 
         const user = response.data.user;
 
@@ -139,21 +157,15 @@ export class LoginComponent implements OnInit {
       },
       complete: () => {},
       error: (error: any) => {
-        console.log('error', error);
         this.loading = false;
         this.messageService.add({
           severity: 'error',
           summary: '¡Atención!',
           detail: error.error.message,
-          /*error.pass || error.user
-                            ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
-                            : 'Verifica tus Credenciales',*/
         });
       },
     });
   }
-
-  showModal: boolean = false;
 
   accionBtnItem(elemento): void {
     const { accion } = elemento;
@@ -163,5 +175,33 @@ export class LoginComponent implements OnInit {
         this.showModal = false;
         break;
     }
+  }
+
+  switchForm(type: 'login' | 'register') {
+    this.activeForm = type;
+  }
+
+  solicitarRegistroUsuario() {
+    this.solicitandoRegistroUsuario = true;
+    this.solicitudesRegistroService
+      .solicitarRegistroUsuario(this.formRegistro.value)
+      .pipe(finalize(() => (this.solicitandoRegistroUsuario = false)))
+      .subscribe({
+        next: (response: any) => {
+          this.formRegistro.reset();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Solicitud enviada',
+            detail: response.message,
+          });
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al solicitar registro',
+            detail: error.error.message || 'Problema al solicitar registro',
+          });
+        },
+      });
   }
 }

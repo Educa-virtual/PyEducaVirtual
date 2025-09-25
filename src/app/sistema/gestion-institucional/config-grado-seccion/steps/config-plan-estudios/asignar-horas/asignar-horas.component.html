@@ -1,0 +1,238 @@
+<div class="grid mt-2">
+  <p-toast />
+  <div class="field col-12 md:col-4">
+    <div class="p-fluid mt-1" style="justify-content: space-between; align-items: center">
+      <p-fieldset
+        legend="Filtrado de datos"
+        [toggleable]="true"
+        [collapsed]="false"
+        *ngIf="mostrar"
+      >
+        <form [formGroup]="formFiltrado" class="grid">
+          <div class="col-12">
+            <span class="p-float-label">
+              <p-dropdown
+                [options]="servicio_educativo"
+                filterBy="cServEdNombre"
+                [filter]="true"
+                optionLabel="cServEdNombre"
+                optionValue="iServEdId"
+                formControlName="iServEdId"
+                styleClass="w-full"
+                ><!--  (onChange)="getCurriculaNivelServicioEducativo()"  -->
+              </p-dropdown>
+              <label for="iServEdId">Servicio Educativo ({{ serv_horas }} Hrs semanales)</label>
+            </span>
+          </div>
+
+          @if (programacion_curricular.length > 0) {
+            <div class="col-12 mt-2 grid flex align-items-end">
+              <div class="col-10">
+                <span class="p-float-label">
+                  <p-dropdown
+                    [options]="grados"
+                    filterBy="cGradoAbreviacion"
+                    optionLabel="cGradoAbreviacion"
+                    [filter]="true"
+                    optionValue="iGradoId"
+                    formControlName="iGradoId"
+                    class="max-w-max"
+                    (onChange)="getFiltradoGrado()"
+                  >
+                  </p-dropdown>
+                  <label for="iGradoId">Grado Académico</label>
+                </span>
+              </div>
+              <div class="col">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-search"
+                  class="p-button-sm p-button-primary mt-3"
+                  (click)="getFiltradoGrado()"
+                  aria-label="Agregar grado"
+                ></button>
+              </div>
+            </div>
+
+            <div class="field col-12">
+              <p-message [severity]="'warn'" [text]="mensaje" *ngIf="mensaje" closable />
+
+              <p-table [value]="grados_unicos" class="p-datatable-sm" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Grado</th>
+                    <th>Estado</th>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-grado>
+                  <tr>
+                    <td>{{ grado.cGradoAbreviacion }}</td>
+                    <td>
+                      <span
+                        class="p-tag"
+                        [ngClass]="{
+                          'p-tag-success': grado.mensaje === 'Área Curricular : ',
+                          'p-tag-warning': grado.mensaje === 'Pendiente',
+                        }"
+                      >
+                        {{ grado.mensaje }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          }
+        </form>
+      </p-fieldset>
+      <p-fieldset
+        legend="Actualización de horas"
+        [toggleable]="true"
+        [style]="{ width: '100%' }"
+        *ngIf="!mostrar"
+      >
+        <!-- <p-avatar image="assets/images/logo-proyecto.svg" class="mr-2" size="xlarge" shape="circle" /> -->
+        <form [formGroup]="formNivelGrado">
+          <div class="field col-12">
+            <span class="p-float-label">
+              <input
+                type="hidden"
+                id="iCursosNivelGradId"
+                formControlName="iCursosNivelGradId"
+                aria-describedby="iCursosNivelGradId-help"
+              />
+              <input
+                type="hidden"
+                id="iIeCursoId"
+                formControlName="iCursosNivelGradId"
+                aria-describedby="iCursosNivelGradId-help"
+              />
+
+              <input
+                pInputText
+                id="cCursoNombre"
+                formControlName="cCursoNombre"
+                aria-describedby="iIeCursoId-help"
+              />
+              <label for="cCursoNombre">Área curricular</label>
+            </span>
+          </div>
+
+          <div class="col-12 mt-2 grid flex align-items-end">
+            <div class="field col-12 md:col-4">
+              <span class="p-float-label">
+                <p-inputNumber
+                  [showButtons]="true"
+                  id="iHorasSemPresencial"
+                  formControlName="iHorasSemPresencial"
+                  aria-describedby="iHorasSemPresencial-help"
+                  [min]="0"
+                  [max]="10"
+                  (onInput)="calcularTotal()"
+                />
+                <label for="iHorasSemPresencial">Presenciales</label>
+              </span>
+            </div>
+            <div class="field col-12 md:col-4">
+              <span class="p-float-label">
+                <p-inputNumber
+                  [showButtons]="true"
+                  id="iHorasSemDomicilio"
+                  formControlName="iHorasSemDomicilio"
+                  aria-describedby="iHorasSemDomicilio-help"
+                  [min]="0"
+                  [max]="10"
+                  (onInput)="calcularTotal()"
+                />
+                <label for="iHorasSemDomicilio">Domicilio</label>
+              </span>
+            </div>
+            <div class="field col-12 md:col-4">
+              <h6 align="center">Total de horas</h6>
+              <h4 align="center">
+                {{ formNivelGrado.get('iTotalHoras')?.value }}
+              </h4>
+            </div>
+          </div>
+          <!-- <div class="field col-12">
+            <span class="p-float-label">
+              Horas acumuladas: {{ total_horas_grado }} de {{serv_horas}}
+            </span>
+          </div> -->
+          <div class="col-12 mt-2 grid flex align-items-end">
+            <div class="field col-12 md:col-8">
+              <p-checkbox
+                formControlName="cDeclaracionJurada"
+                [binary]="true"
+                label="Acepto realizar cambios"
+              />
+            </div>
+            <div class="field col-12 md:col-4">
+              <!-- icon="pi pi-search" -->
+              <button
+                pButton
+                type="button"
+                class="p-button-success"
+                size="small"
+                (click)="validarHorasMinimas()"
+                aria-label="Agregar grado"
+                [label]="'Registrar horas'"
+                [disabled]="formNivelGrado.invalid"
+              ></button>
+            </div>
+            <p-message [severity]="'warn'" [text]="mensaje" *ngIf="mensaje" closable />
+            <div>
+              <button
+                pButton
+                type="button"
+                class="p-button-danger"
+                size="small"
+                (click)="cerrarEditar()"
+                aria-label="Agregar grado"
+                [label]="'Cerrar'"
+              ></button>
+            </div>
+          </div>
+        </form>
+      </p-fieldset>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-8">
+    <!-- <p-fieldset legend="Distribución de horas por grado" [toggleable]="true" [collapsed]="false"> -->
+
+    @if (programacion_curricular.length > 0) {
+      <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="filtrado_programacion_curricular"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        rowsPerPageOptions="15"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showSearchTable]="true"
+        [placeholder]="'Ingresar datos a buscar...'"
+      >
+        <!-- <ng-container slot="caption-content"> </ng-container> -->
+      </app-table-primeng>
+    } @else {
+      <p [align]="'center'">
+        <img
+          src="assets/images/icons/sin-datos.gif"
+          alt="logo"
+          width="30%"
+          style="position: center"
+        />
+      </p>
+    }
+
+    <!-- 
+        </p-fieldset> -->
+
+    <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+      <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+  </div>
+</div>

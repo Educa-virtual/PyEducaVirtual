@@ -11,6 +11,8 @@ import { DropdownSimpleComponent } from '../../shared/dropdown-simple/dropdown-s
 import { SwitchSimpleComponent } from '../../shared/switch-simple/switch-simple.component';
 import { InputSimpleComponent } from '../../shared/input-simple/input-simple.component';
 import { FuncionesBienestarService } from '../../../services/funciones-bienestar.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-ficha-familia-registro',
@@ -54,6 +56,10 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
   fecha_actual: Date = new Date();
   ver_controles_direccion: boolean = true;
 
+  perfil: any;
+  formLabeLs: any;
+  es_estudiante_apoderado: boolean = false;
+
   private _messageService = inject(MessageService); // dialog Mensaje simple
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
 
@@ -62,14 +68,17 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     private datosFichaBienestar: DatosFichaBienestarService,
     private funcionesBienestar: FuncionesBienestarService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: LocalStoreService
   ) {
     this.route.parent?.paramMap.subscribe(params => {
       this.iFichaDGId = params.get('id');
     });
+    this.perfil = this.store.getItem('dremoPerfil');
     if (!this.iFichaDGId) {
       this.router.navigate(['/']);
     }
+    this.es_estudiante_apoderado = [ESTUDIANTE, APODERADO].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -89,6 +98,12 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       );
       this.tipos_ies = this.datosFichaBienestar.getTiposIes(data?.tipos_ies);
     });
+
+    this.formLabeLs = {
+      bFamiliarVivoConEl: this.es_estudiante_apoderado
+        ? '¿Vive en la misma dirección del estudiante?'
+        : '¿Vive en la misma dirección?',
+    };
 
     try {
       this.formFamiliar = this.fb.group({
@@ -124,6 +139,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
         iOcupacionId: [null],
         iGradoInstId: [null],
         iTipoIeEstId: [null],
+        cFamiliarTelefonoCelular: ['', Validators.maxLength(150)],
       });
     } catch (error) {
       console.log(error, 'error al inicializar formulario');
@@ -287,9 +303,9 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
    * Setea los datos de un familiar seleccionado
    * @param item datos del familiar seleccionado
    */
-  setFormFamiliar(item: FichaFamiliar) {
+  setFormFamiliar(item: any) {
+    this.formFamiliar.reset();
     if (!item) {
-      this.formFamiliar.reset();
       this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
       this.familiar_registrado = false;
       return;
@@ -352,6 +368,12 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
     );
     this.funcionesBienestar.formatearFormControl(
       this.formFamiliar,
+      'iFamiliarDireccionPiso',
+      item.iFamiliarDireccionPiso,
+      'number'
+    );
+    this.funcionesBienestar.formatearFormControl(
+      this.formFamiliar,
       'iOcupacionId',
       item.iOcupacionId,
       'number'
@@ -374,6 +396,28 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       item.dPersNacimiento,
       'date'
     );
+    this.formFamiliar.get('cPersDocumento').patchValue(item.cPersDocumento);
+    this.formFamiliar.get('cPersNombre').patchValue(item.cPersNombre);
+    this.formFamiliar.get('cPersPaterno').patchValue(item.cPersPaterno);
+    this.formFamiliar.get('cPersMaterno').patchValue(item.cPersMaterno);
+    this.formFamiliar.get('cPersSexo').patchValue(item.cPersSexo);
+    this.formFamiliar.get('cPersDomicilio').patchValue(item.cPersDomicilio);
+    this.formFamiliar.get('cTipoViaOtro').patchValue(item.cTipoViaOtro);
+    this.formFamiliar
+      .get('cFamiliarDireccionNombreVia')
+      .patchValue(item.cFamiliarDireccionNombreVia);
+    this.formFamiliar
+      .get('cFamiliarDireccionNroPuerta')
+      .patchValue(item.cFamiliarDireccionNroPuerta);
+    this.formFamiliar.get('cFamiliarDireccionBlock').patchValue(item.cFamiliarDireccionBlock);
+    this.formFamiliar.get('cFamiliarDireccionInterior').patchValue(item.cFamiliarDireccionInterior);
+    this.formFamiliar.get('cFamiliarDireccionManzana').patchValue(item.cFamiliarDireccionManzana);
+    this.formFamiliar.get('cFamiliarDireccionLote').patchValue(item.cFamiliarDireccionLote);
+    this.formFamiliar.get('cFamiliarDireccionKm').patchValue(item.cFamiliarDireccionKm);
+    this.formFamiliar
+      .get('cFamiliarDireccionReferencia')
+      .patchValue(item.cFamiliarDireccionReferencia);
+    this.formFamiliar.get('cFamiliarTelefonoCelular').patchValue(item.cFamiliarTelefonoCelular);
     this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
   }
 
@@ -387,7 +431,19 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       this.familiar_registrado = false;
       return;
     }
+
+    const iFamiliarId = this.formFamiliar.value.iFamiliarId;
+    const iTipoIdentId = this.formFamiliar.value.iTipoIdentId;
+    const cPersDocumento = this.formFamiliar.value.cPersDocumento;
+    const iTipoFamiliarId = this.formFamiliar.value.iTipoFamiliarId;
+
+    this.resetearCamposConsultables();
+    this.formFamiliar.get('iFamiliarId').setValue(iFamiliarId);
+    this.formFamiliar.get('iTipoIdentId').setValue(iTipoIdentId);
+    this.formFamiliar.get('cPersDocumento').setValue(cPersDocumento);
+    this.formFamiliar.get('iTipoFamiliarId').setValue(iTipoFamiliarId);
     this.formFamiliar.get('iFichaDGId').setValue(this.iFichaDGId);
+    this.formFamiliar.get('iPersId').setValue(item.iPersId);
     this.formFamiliar.get('cPersNombre').setValue(item.cPersNombre);
     this.formFamiliar.get('cPersPaterno').setValue(item.cPersPaterno);
     this.formFamiliar.get('cPersMaterno').setValue(item.cPersMaterno);
@@ -431,6 +487,20 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
       'date'
     );
     this.funcionesBienestar.formMarkAsDirty(this.formFamiliar);
+  }
+
+  resetearCamposConsultables() {
+    this.formFamiliar.get('cPersNombre').setValue(null);
+    this.formFamiliar.get('cPersPaterno').setValue(null);
+    this.formFamiliar.get('cPersMaterno').setValue(null);
+    this.formFamiliar.get('cPersSexo').setValue(null);
+    this.formFamiliar.get('cPersDomicilio').setValue(null);
+    this.formFamiliar.get('iTipoEstCivId').setValue(null);
+    this.formFamiliar.get('iNacionId').setValue(null);
+    this.formFamiliar.get('iDptoId').setValue(null);
+    this.formFamiliar.get('iPrvnId').setValue(null);
+    this.formFamiliar.get('iDsttId').setValue(null);
+    this.formFamiliar.get('dPersNacimiento').setValue(null);
   }
 
   guardarFamiliar() {
@@ -494,9 +564,7 @@ export class FichaFamiliaRegistroComponent implements OnInit, OnChanges {
   }
 
   salirResetearForm() {
-    if (this.familiar_registrado) {
-      this.esVisibleChange.emit(false);
-    }
+    this.esVisibleChange.emit(false);
     this.formFamiliar.reset();
     this.formFamiliar.get('iPersId')?.setValue(null);
     this.formFamiliar.get('iFichaDGId')?.setValue(null);

@@ -5,7 +5,7 @@
   </div>
 
   <div
-    class="p-3 border-1 border-blue-200 border-round bg-blue-50 mt-2 overflow-auto break-words estilo-descripcion"
+    class="p-3 border-1 border-blue-200 border-round bg-blue-50 mt-2 overflow-auto break-words estilo-descripcion mb-2"
   >
     <div [innerHTML]="item.idEncabPregId ? item.cEncabPregContenido : item.cEvalPregPregunta"></div>
   </div>
@@ -26,8 +26,9 @@
             class="mt-3 shadow-1 border-round"
             [collapseIcon]="'pi pi-chevron-up'"
             [expandIcon]="'pi pi-chevron-down'"
+            [multiple]="true"
           >
-            <p-accordionTab header="Lista de Alternativas">
+            <p-accordionTab header="Lista de Alternativas" [selected]="true">
               <ng-container *ngFor="let alternativa of pregunta.jsonAlternativas; let ida = index">
                 <div
                   class="p-2"
@@ -48,6 +49,16 @@
                       [ngModel]="alternativa.cBancoAltDescripcion"
                       readonly
                     />
+                    <div class="align-content-center p-2">
+                      <p-image
+                        [src]="backend + '/' + alternativa.cAlternativaImagen"
+                        alt="Image"
+                        width="25"
+                        height="25"
+                        [preview]="true"
+                        (onImageError)="updateUrl(alternativa)"
+                      />
+                    </div>
                     <p-checkbox
                       [binary]="true"
                       [inputId]="alternativa.id"
@@ -116,8 +127,9 @@
         class="mt-3 shadow-1 border-round"
         [collapseIcon]="'pi pi-chevron-up'"
         [expandIcon]="'pi pi-chevron-down'"
+        [multiple]="true"
       >
-        <p-accordionTab header="Lista de Alternativas">
+        <p-accordionTab header="Lista de Alternativas" [selected]="true">
           <ng-container *ngFor="let alternativa of item.jsonAlternativas; let ida = index">
             <div
               class="p-2"
@@ -134,6 +146,16 @@
                   [ngModel]="alternativa.cBancoAltDescripcion"
                   readonly
                 />
+                <div class="align-content-center p-2">
+                  <p-image
+                    [src]="backend + '/' + alternativa.cAlternativaImagen"
+                    alt="Image"
+                    width="25"
+                    height="25"
+                    [preview]="true"
+                    (onImageError)="updateUrl(alternativa)"
+                  />
+                </div>
                 <p-checkbox
                   [binary]="true"
                   [inputId]="alternativa.id"

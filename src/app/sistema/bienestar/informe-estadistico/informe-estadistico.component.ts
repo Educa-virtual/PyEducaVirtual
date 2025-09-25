@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -19,7 +26,7 @@ import { Router } from '@angular/router';
   templateUrl: './informe-estadistico.component.html',
   styleUrl: './../gestionar-encuestas/gestionar-encuestas.component.scss',
 })
-export class InformeEstadisticoComponent implements OnInit {
+export class InformeEstadisticoComponent implements OnInit, AfterViewInit {
   @ViewChild('tabMenu', { static: false }) tabMenu: TabMenu;
   title: string = 'Informes y estadística';
   activeItem: any;
@@ -27,8 +34,9 @@ export class InformeEstadisticoComponent implements OnInit {
   perfil: any;
   iYAcadId: number;
   formReportes: FormGroup;
-  cantidad_matriculados: number;
+  cantidad_personas: number;
   cantidad_fichas: number;
+  cantidad_personas_nombre: string = 'Estudiantes matriculados';
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
@@ -43,6 +51,16 @@ export class InformeEstadisticoComponent implements OnInit {
   ies: any;
   sexos: any;
   distritos: any;
+  tipos_personas: any;
+
+  TIPO_PERSONA_ESTUDIANTE: number = this.datosInformes.TIPO_PERSONA_ESTUDIANTE;
+  TIPO_PERSONA_DOCENTE: number = this.datosInformes.TIPO_PERSONA_DOCENTE;
+  TIPO_PERSONA_ADMINISTRATIVO: number = this.datosInformes.TIPO_PERSONA_ADMINISTRATIVO;
+
+  es_estudiante_apoderado: boolean = false;
+  ocultar_grado: boolean = false;
+  ocultar_seccion: boolean = false;
+  ocultar_area: boolean = true;
 
   perfiles_especialista: Array<number> = [
     ESPECIALISTA_DREMO,
@@ -50,6 +68,7 @@ export class InformeEstadisticoComponent implements OnInit {
     ADMINISTRADOR_DREMO,
   ];
   es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   private _messageService = inject(MessageService);
 
@@ -64,6 +83,7 @@ export class InformeEstadisticoComponent implements OnInit {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
 
     this.es_especialista = this.perfiles_especialista.includes(Number(this.perfil.iPerfilId));
+    this.es_especialista_ugel = Number(this.perfil.iPerfilId) == ESPECIALISTA_UGEL;
 
     this.breadCrumbItems = [
       {
@@ -83,6 +103,8 @@ export class InformeEstadisticoComponent implements OnInit {
     this.formReportes = this.fb.group({
       iCredEntPerfId: [this.perfil.iCredEntPerfId],
       iYAcadId: [this.iYAcadId],
+      iTipoPersId: [this.TIPO_PERSONA_ESTUDIANTE],
+      iCursoId: [null],
       iNivelTipoId: [null],
       iNivelGradoId: [null],
       iTipoSectorId: [null],
@@ -108,17 +130,24 @@ export class InformeEstadisticoComponent implements OnInit {
         this.nivel_tipos = this.datosInformes.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.datosInformes.getInstitucionesEducativas(data?.instituciones_educativas);
         this.distritos = this.datosInformes.getDistritos(data?.distritos);
+        this.tipos_personas = this.datosInformes.getTiposPersonas(data?.tipos_personas);
+        this.areas = this.datosInformes.getAreas(data?.areas);
         this.sexos = this.datosInformes.getSexos();
         this.datosInformes.getNivelesGrados(data?.nivel_grados);
 
-        if (!this.es_especialista) {
-          const nivel_tipo =
-            this.nivel_tipos && this.nivel_tipos.length > 0 ? this.nivel_tipos[0]['value'] : null;
-          const ie = this.ies && this.ies.length > 0 ? this.ies[0]['value'] : null;
+        if (this.nivel_tipos && this.nivel_tipos.length === 1) {
+          const nivel_tipo = this.nivel_tipos[0]['value'];
           this.formReportes.get('iNivelTipoId')?.setValue(nivel_tipo);
-          this.filterNivelesGrados(nivel_tipo);
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          const ugel = this.ugeles[0]['value'];
+          this.formReportes.get('iUgelId')?.setValue(ugel);
+        }
+        if (this.ies && this.ies.length === 1) {
+          const ie = this.ies[0]['value'];
           this.formReportes.get('iIieeId')?.setValue(ie);
         }
+        this.verReporte();
       });
 
     this.formReportes.get('iNivelTipoId').valueChanges.subscribe(value => {
@@ -153,8 +182,33 @@ export class InformeEstadisticoComponent implements OnInit {
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
     });
+    this.formReportes.get('iTipoPersId').valueChanges.subscribe(value => {
+      this.datosInformes.setTipoPersona(value);
+      this.ocultar_grado = false;
+      this.ocultar_seccion = false;
+      this.ocultar_area = false;
+      if (value == this.TIPO_PERSONA_ADMINISTRATIVO) {
+        this.ocultar_grado = true;
+        this.ocultar_seccion = true;
+        this.ocultar_area = true;
+      }
+      if (value == this.TIPO_PERSONA_ESTUDIANTE) {
+        this.ocultar_area = true;
+      }
+    });
+  }
 
-    this.verReporte();
+  getCantidadPersonasNombre(iTipoPersId: number) {
+    if (iTipoPersId == this.TIPO_PERSONA_ESTUDIANTE) {
+      return 'Estudiantes matriculados';
+    }
+    if (iTipoPersId == this.TIPO_PERSONA_DOCENTE) {
+      return 'Docentes registrados';
+    }
+    if (iTipoPersId == this.TIPO_PERSONA_ADMINISTRATIVO) {
+      return 'Administrativos registrados';
+    }
+    return '';
   }
 
   filterNivelesTipos() {
@@ -170,14 +224,12 @@ export class InformeEstadisticoComponent implements OnInit {
   }
 
   filterInstitucionesEducativas() {
-    const iEvaluacionId = this.formReportes.get('iEvaluacionId')?.value;
     const iNivelTipoId = this.formReportes.get('iNivelTipoId')?.value;
     const iDsttId = this.formReportes.get('iDsttId')?.value;
     const iZonaId = this.formReportes.get('iZonaId')?.value;
     const iTipoSectorId = this.formReportes.get('iTipoSectorId')?.value;
     const iUgelId = this.formReportes.get('iUgelId')?.value;
     this.ies = this.datosInformes.filterInstitucionesEducativas(
-      iEvaluacionId,
       iNivelTipoId,
       iDsttId,
       iZonaId,
@@ -199,7 +251,10 @@ export class InformeEstadisticoComponent implements OnInit {
           });
           return;
         }
-        this.cantidad_matriculados = reportes?.cantidad_matriculados;
+        this.cantidad_personas_nombre = this.getCantidadPersonasNombre(
+          this.formReportes.value.iTipoPersId
+        );
+        this.cantidad_personas = reportes?.cantidad_personas;
         this.cantidad_fichas = reportes?.cantidad_fichas;
         // this.router.navigate([`/bienestar/informe-estadistico/familia`])
       },
@@ -219,6 +274,10 @@ export class InformeEstadisticoComponent implements OnInit {
       this.activeItem = value;
       this.cf.detectChanges();
     });
+  }
+
+  descargarReporte() {
+    window.print();
   }
 
   /**
@@ -274,9 +333,9 @@ export class InformeEstadisticoComponent implements OnInit {
       route: '/bienestar/informe-estadistico/salud',
     },
     {
-      label: 'Recreación',
+      label: 'Sociocultural',
       icon: 'pi pi-fw pi-image',
-      route: '/bienestar/informe-estadistico/recreacion',
+      route: '/bienestar/informe-estadistico/sociocultural',
     },
     {
       label: 'Demográfico',

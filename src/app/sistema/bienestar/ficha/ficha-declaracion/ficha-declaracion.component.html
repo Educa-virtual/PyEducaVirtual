@@ -1,78 +1,64 @@
 <p-panel *ngIf="verDeclaracion">
-    <ng-template pTemplate="header">
-        <span class="text-xl">Crear Ficha socioeconómica</span>
-    </ng-template>
-    <div class="grid justify-content-center">
-        <div class="col-12 md:col-9 lg:col-6">
-            <p-card header="Declaración de consentimiento">
-                <p>
-                    <strong>La ficha socioeconómica</strong> es un documento que
-                    permite conocer la situación económica y social de los
-                    estudiantes y sus familias, con el fin de brindarles apoyo y
-                    orientación en su proceso educativo. Es importante que la
-                    información proporcionada sea veraz y completa, ya que esto
-                    permitirá una mejor atención y seguimiento por parte de las
-                    instituciones educativas.
-                </p>
-                <p>
-                    Sin embargo,
-                    <strong
-                        >solo algunos de los datos son de carácter
-                        obligatorio</strong
-                    >, el resto de datos son opcionales y se pueden dejar en
-                    blanco. No es necesario que complete todos los datos en esta
-                    sesión, puede guardar la información y continuar más tarde.
-                </p>
-                <p>
-                    Tenga en cuenta que para guardar los datos que haya
-                    registrado debe dirigirse al final de la página y hacer clic
-                    en el botón "Actualizar y continuar", si actualiza la página
-                    o pasa a otra sección sin hacer click en este botón se
-                    perderán los datos.
-                </p>
+  <ng-template pTemplate="header">
+    <span class="text-xl">Crear Ficha socioeconómica</span>
+  </ng-template>
+  <div class="grid justify-content-center">
+    <div class="col-12 md:col-9 lg:col-6">
+      <p-card header="Declaración de consentimiento" class="text-justify">
+        <p>
+          <strong>La ficha socioeconómica</strong> es un documento que permite conocer la situación
+          económica y social de los
+          {{ es_estudiante_apoderado ? 'estudiantes' : 'docentes y administrativos' }}
+          y sus familias, con el fin de brindarles apoyo y orientación{{
+            es_estudiante_apoderado ? ' en su proceso educativo' : ''
+          }}. Es importante que la información proporcionada sea veraz y completa, ya que esto
+          permitirá una mejor atención y seguimiento por parte de las instituciones educativas.
+        </p>
+        <p>
+          Sin embargo,
+          <strong>solo algunos de los datos son de carácter obligatorio</strong>, el resto de datos
+          son opcionales y se pueden dejar en blanco. No es necesario que complete todos los datos
+          en esta sesión, puede guardar la información y continuar más tarde.
+        </p>
+        <p>
+          Tenga en cuenta que para guardar los datos que haya registrado debe dirigirse al final de
+          la página y hacer clic en el botón "Actualizar y continuar", si actualiza la página o pasa
+          a otra sección sin hacer click en este botón se perderán los datos.
+        </p>
 
-                <p>
-                    Al completar este formulario,
-                    <strong>usted está dando su consentimiento</strong> para que
-                    la información proporcionada sea utilizada por
-                    <strong
-                        >la institución educativa, la Unidad de Gestión
-                        Educativa Local (UGEL) y la Dirección Regional de
-                        Educación Moquegua (DREMO)</strong
-                    >
-                    con el fin de mejorar los servicios y apoyos ofrecidos a los
-                    estudiantes y sus familias.
-                </p>
-                <p>
-                    Es importante destacar que
-                    <strong
-                        >la información proporcionada será alojada únicamente en
-                        esta plataforma</strong
-                    >, la cual es administrada por la DREMO, ubicada en la Urb.
-                    Enrique López Albujar Etapa I Mza. B Lt. 1, en el distrito
-                    de San Antonio, provincia de Mariscal Nieto, departamento de
-                    Moquegua.
-                </p>
-                <p>
-                    Al hacer clic en <strong>"Aceptar"</strong>, usted acepta
-                    que la información proporcionada sea utilizada de acuerdo
-                    con lo establecido anteriormente.
-                </p>
-            </p-card>
-        </div>
+        <p>
+          Al completar este formulario,
+          <strong>usted está dando su consentimiento</strong> para que la información proporcionada
+          sea utilizada por
+          <strong
+            >la institución educativa, la Unidad de Gestión Educativa Local (UGEL) y la Dirección
+            Regional de Educación Moquegua (DREMO)</strong
+          >
+          con el fin de mejorar los servicios y apoyos ofrecidos a los
+          {{ es_estudiante_apoderado ? 'estudiantes' : 'docentes y administrativos' }}
+          y sus familias.
+        </p>
+        <p>
+          Es importante destacar que
+          <strong>la información proporcionada será alojada únicamente en esta plataforma</strong>,
+          la cual es administrada por la DREMO, ubicada en la Urb. Enrique López Albujar Etapa I
+          Mza. B Lt. 1, en el distrito de San Antonio, provincia de Mariscal Nieto, departamento de
+          Moquegua.
+        </p>
+        <p>
+          Al hacer clic en <strong>"Aceptar"</strong>, usted acepta que la información proporcionada
+          sea utilizada de acuerdo con lo establecido anteriormente.
+        </p>
+      </p-card>
     </div>
-    <div class="flex flex-row justify-content-center gap-2 mt-4">
-        <p-button
-            label="Salir"
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            (click)="salir()"
-        />
-        <p-button
-            label="Aceptar"
-            icon="pi pi-check"
-            severity="success"
-            (click)="aceptarDeclaracion()"
-        />
-    </div>
+  </div>
+  <div class="flex flex-row justify-content-center gap-2 mt-4">
+    <p-button label="Salir" icon="pi pi-arrow-left" severity="secondary" (click)="salir()" />
+    <p-button
+      label="Aceptar"
+      icon="pi pi-check"
+      severity="success"
+      (click)="aceptarDeclaracion()"
+    />
+  </div>
 </p-panel>

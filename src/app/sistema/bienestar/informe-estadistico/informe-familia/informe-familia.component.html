@@ -43,6 +43,22 @@
       </div>
     </p-panel>
   </div>
+  @if (tipo_persona_seleccionada === TIPO_PERSONA_ESTUDIANTE) {
+    <div class="col-12 md:col-6">
+      <p-panel>
+        <ng-template pTemplate="header">
+          <span class="text-uppercase">
+            <div class="flex flex-column">
+              <div class="flex text-xl">¿Vive con sus padres?</div>
+            </div>
+          </span>
+        </ng-template>
+        <div>
+          <app-multi-chart [data_chart]="reportes_familia?.vive_con_padres" />
+        </div>
+      </p-panel>
+    </div>
+  }
   <div class="col-12 md:col-6">
     <p-panel>
       <ng-template pTemplate="header">

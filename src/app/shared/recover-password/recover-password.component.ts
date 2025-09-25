@@ -1,163 +1,163 @@
-import { PrimengModule } from '@/app/primeng.module'
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    OnChanges,
-    OnInit,
-    inject,
-} from '@angular/core'
-import { ModalPrimengComponent } from '../modal-primeng/modal-primeng.component'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { AuthService } from '@/app/servicios/auth.service'
-import { MessageService } from 'primeng/api'
+import { PrimengModule } from '@/app/primeng.module';
+import { Component, EventEmitter, Input, Output, OnChanges, OnInit } from '@angular/core';
+import { ModalPrimengComponent } from '../modal-primeng/modal-primeng.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { RecoverPasswordService } from './services/recover-password.service';
+import { finalize } from 'rxjs';
 
 @Component({
-    selector: 'app-recover-password',
-    standalone: true,
-    imports: [PrimengModule, ModalPrimengComponent],
-    templateUrl: './recover-password.component.html',
-    styleUrl: './recover-password.component.scss',
+  selector: 'app-recover-password',
+  standalone: true,
+  imports: [PrimengModule, ModalPrimengComponent],
+  templateUrl: './recover-password.component.html',
+  styleUrl: './recover-password.component.scss',
 })
 export class RecoverPasswordComponent implements OnChanges, OnInit {
-    @Output() accionBtnItem = new EventEmitter()
-    @Input() showModal: boolean = true
+  @Output() accionBtnItem = new EventEmitter();
+  @Input() showModal: boolean = true;
+  formCredencial!: FormGroup;
+  isLoading: boolean = false;
+  reenviandoCodigo: boolean = false;
+  correoMasked: string = '';
+  passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+  paso: number = 1;
 
-    private fb = inject(FormBuilder)
-    private authService = inject(AuthService)
-    private messageService = inject(MessageService)
+  showPassword: boolean = false;
+  showPasswordConfir: boolean = false;
 
-    formulario: number = 1
-    formCredencial!: FormGroup
-    loadingUsuario: boolean
-    loadingVerificarUsuario: boolean
-    loadingActualizarUsuario: boolean
+  constructor(
+    private fb: FormBuilder,
+    private recoverService: RecoverPasswordService,
+    private messageService: MessageService
+  ) {}
 
-    showPassword: boolean = false
-    showPasswordConfir: boolean = false
+  ngOnInit() {
+    this.formCredencial = this.fb.group(
+      {
+        cCredUsuario: ['', Validators.required],
+        cCodigoRecuperacion: ['', Validators.required],
+        cResetToken: ['', Validators.required],
+        contrasenaNueva: [
+          '',
+          [Validators.required, Validators.minLength(8), Validators.pattern(this.passwordPattern)],
+        ],
+        confirmarContrasena: ['', Validators.required],
+      },
+      {
+        validators: this.validadorCoincidenciaPassword,
+      }
+    );
+  }
 
-    ngOnInit() {
-        this.formCredencial = this.fb.group({
-            cUsuario: ['', Validators.required],
-            cCorreo: ['', Validators.required],
-            cCredTokenPassword: [''],
-            cPassword: [''],
-            cPasswordConfir: [''],
+  validadorCoincidenciaPassword(formGroup: FormGroup) {
+    const contrasenaNueva = formGroup.get('contrasenaNueva')?.value;
+    const confirmarContrasena = formGroup.get('confirmarContrasena')?.value;
+
+    if (contrasenaNueva !== confirmarContrasena) {
+      formGroup.get('confirmarContrasena')?.setErrors({ noCoinciden: true });
+      return { noCoinciden: true };
+    } else {
+      formGroup.get('confirmarContrasena')?.setErrors(null);
+      return null;
+    }
+  }
+
+  ngOnChanges(changes) {
+    this.paso = 1;
+    if (this.formCredencial) {
+      this.formCredencial.reset();
+    }
+
+    if (changes.showModal?.currentValue) {
+      this.showModal = changes.showModal.currentValue;
+    }
+  }
+
+  enviarCodigoRecuperacion(mostrarMensaje: boolean) {
+    this.isLoading = true;
+    this.reenviandoCodigo = true;
+    this.recoverService
+      .enviarCodigoRecuperacion(this.formCredencial.get('cCredUsuario').value)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.reenviandoCodigo = false;
         })
-    }
-    ngOnChanges(changes) {
-        this.formulario = 1
-        if (this.formCredencial) {
-            this.formCredencial.reset()
-        }
-
-        if (changes.showModal?.currentValue) {
-            this.showModal = changes.showModal.currentValue
-        }
-    }
-
-    obtenerUsuario() {
-        this.loadingUsuario = true
-        this.authService.obtenerUsuario(this.formCredencial.value).subscribe({
-            next: (response: any) => {
-                this.loadingUsuario = false
-                if (response.validated) {
-                    this.formulario = 2
-                } else {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'Los datos ingresados son errónes, comuníquese con el administrador',
-                    })
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-                this.loadingUsuario = false
-                this.messageService.add({
-                    severity: 'error',
-                    summary: '¡Atención!',
-                    detail: 'Los datos ingresados son errónes, comuníquese con el administrador',
-                })
-            },
-        })
-    }
-
-    verificarUsuario() {
-        this.loadingVerificarUsuario = true
-        this.authService.verificarUsuario(this.formCredencial.value).subscribe({
-            next: (response: any) => {
-                this.loadingVerificarUsuario = false
-                if (response.validated) {
-                    this.formulario = 3
-                } else {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'El código ingresado es incorrecto, revise su correo por favor y vuelva ingresar',
-                    })
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-                this.loadingVerificarUsuario = false
-                this.messageService.add({
-                    severity: 'error',
-                    summary: '¡Atención!',
-                    detail: 'El código ingresado es incorrecto, revise su correo por favor y vuelva ingresar',
-                })
-            },
-        })
-    }
-
-    actualizarUsuario() {
-        if (this.formCredencial.value.cPassword.length >= 6) {
-            this.loadingActualizarUsuario = true
-            this.authService
-                .actualizarUsuario(this.formCredencial.value)
-                .subscribe({
-                    next: (response: any) => {
-                        this.loadingActualizarUsuario = false
-                        if (response.validated) {
-                            this.formulario = 4
-                        } else {
-                            this.messageService.add({
-                                severity: 'error',
-                                summary: '¡Atención!',
-                                detail: 'No se pudo actualizar la contraseña, vuelva intentar o comuníquese con el administrador',
-                            })
-                        }
-                    },
-                    complete: () => {},
-                    error: (error) => {
-                        console.log(error)
-                        this.loadingActualizarUsuario = false
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: '¡Atención!',
-                            detail: 'No se pudo actualizar la contraseña, vuelva intentar o comuníquese con el administrador',
-                        })
-                    },
-                })
-        } else {
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.correoMasked = response.data.correo;
+          this.paso = 2;
+          if (mostrarMensaje) {
             this.messageService.add({
-                severity: 'error',
-                summary: '¡Atención!',
-                detail: 'La contraseña debe de tener al menos 6 caracteres como mínimo',
-            })
-        }
-    }
-    accionBtn(elemento): void {
-        const { accion } = elemento
-        const { item } = elemento
+              severity: 'success',
+              summary: 'Código enviado',
+              detail: response.message,
+            });
+          }
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al enviar código',
+            detail: error.error.message || 'Problema al enviar código',
+          });
+        },
+      });
+  }
 
-        switch (accion) {
-            case 'close-modal':
-                this.accionBtnItem.emit({ accion, item })
-                break
-        }
+  validarCodigoRecuperacion() {
+    this.isLoading = true;
+    this.recoverService
+      .validarCodigoRecuperacion(
+        this.formCredencial.get('cCredUsuario').value,
+        this.formCredencial.get('cCodigoRecuperacion').value
+      )
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (response: any) => {
+          this.paso = 3;
+          this.formCredencial.get('cResetToken').setValue(response.data.token);
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al validar código',
+            detail: error.error.message || 'Problema al enviar código',
+          });
+        },
+      });
+  }
+
+  cambiarPassword() {
+    this.isLoading = true;
+    this.recoverService
+      .cambiarPassword(this.formCredencial.value)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: () => {
+          this.paso = 4;
+          //this.formCredencial.get('cResetToken').setValue(response.token);
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al validar código',
+            detail: error.error.message || 'Problema al enviar código',
+          });
+        },
+      });
+  }
+
+  accionBtn(elemento): void {
+    const { accion } = elemento;
+    const { item } = elemento;
+
+    switch (accion) {
+      case 'close-modal':
+        this.accionBtnItem.emit({ accion, item });
+        break;
     }
+  }
 }

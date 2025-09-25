@@ -27,9 +27,10 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
   public readonly PRIORIDAD_URGENTE = 3;
 
   fases: Array<object>;
-  public readonly FASE_ATENDIDO = 1;
-  public readonly FASE_PENDIENTE = 2;
+  public readonly FASE_INICIO = 1;
+  public readonly FASE_PROCESO = 2;
   public readonly FASE_DERIVADO = 3;
+  public readonly FASE_CERRADO = 4;
 
   constructor(private http: HttpClient) {}
 
@@ -53,12 +54,22 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return this.http.post(`${baseUrl}/bienestar/actualizarSeguimiento`, data);
   }
 
+  actualizarSeguimientoArchivo(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/actualizarSeguimientoArchivo`, data);
+  }
+
   borrarSeguimiento(data: any) {
     return this.http.post(`${baseUrl}/bienestar/borrarSeguimiento`, data);
   }
 
   verDatosPersona(data: any) {
     return this.http.post(`${baseUrl}/bienestar/verDatosPersona`, data);
+  }
+
+  descargarSeguimiento(data: any) {
+    return this.http.post(`${baseUrl}/bienestar/descargarSeguimiento`, data, {
+      responseType: 'blob',
+    });
   }
 
   getTiposSeguimiento() {
@@ -105,16 +116,20 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     if (!this.fases) {
       this.fases = [
         {
-          label: 'ATENDIDO',
-          value: this.FASE_ATENDIDO,
+          label: 'INICIO',
+          value: this.FASE_INICIO,
         },
         {
-          label: 'PENDIENTE',
-          value: this.FASE_PENDIENTE,
+          label: 'PROCESO',
+          value: this.FASE_PROCESO,
         },
         {
           label: 'DERIVADO',
           value: this.FASE_DERIVADO,
+        },
+        {
+          label: 'CERRADO',
+          value: this.FASE_CERRADO,
         },
       ];
     }
@@ -138,7 +153,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     if (!this.tipos_documentos && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.tipos_documentos = items.map(doc => ({
-        vvalue: doc.iTipoIdentId,
+        value: doc.iTipoIdentId,
         label: doc.cTipoIdentSigla + ' - ' + doc.cTipoIdentNombre,
         longitud: doc.iTipoIdentLongitud,
       }));
@@ -172,7 +187,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return this.sedes;
   }
 
-  filterInstitucionesEducativas2(iNivelTipoId: any) {
+  filterInstitucionesEducativas(iNivelTipoId: any) {
     let ies_tmp: Array<object> = this.sedes;
     if (!iNivelTipoId || !this.sedes) {
       return null;
@@ -188,7 +203,7 @@ export class DatosSeguimientoBienestarService implements OnDestroy {
     return ies_tmp;
   }
 
-  filterInstitucionesEducativas(iNivel: any): Observable<any[]> {
+  filterInstitucionesEducativas2(iNivel: any): Observable<any[]> {
     return of(this.sedes).pipe(map(sedes => sedes.filter((sede: any) => sede.iNivel === iNivel)));
   }
 

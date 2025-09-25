@@ -11,7 +11,9 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
+import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-encuesta-respuestas',
@@ -22,14 +24,31 @@ import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesC
 })
 export class EncuestaRespuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
+  @ViewChild('filtros') filtros: OverlayPanel;
+  @ViewChild('overlayAnchor') overlayAnchorRef: ElementRef;
+
   iEncuId: number;
   cEncuNombre: string;
   perfil: any;
   respuestas: Array<object>;
   respuestas_filtradas: Array<object>;
+  es_especialista: boolean = false;
+  es_especialista_ugel: boolean = false;
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
+
+  formFiltros: FormGroup;
+  nivel_tipos: Array<object>;
+  nivel_grados: Array<object>;
+  tipo_sectores: Array<object>;
+  zonas: Array<object>;
+  ugeles: Array<object>;
+  distritos: Array<object>;
+  ies: Array<object>;
+  secciones: Array<object>;
+  sexos: Array<object>;
+  filtros_aplicados: number = 0;
 
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
@@ -39,13 +58,21 @@ export class EncuestaRespuestasComponent implements OnInit {
     private funcionesBienestar: FuncionesBienestarService,
     private store: LocalStoreService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iEncuId = params.params.id || 0;
     });
     this.breadCrumbItems = [
+      {
+        label: 'Bienestar social',
+      },
       {
         label: 'Gestionar encuestas',
         routerLink: '/bienestar/gestionar-encuestas',
@@ -65,9 +92,106 @@ export class EncuestaRespuestasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.formFiltros = this.fb.group({
+      iNivelTipoId: [null],
+      iTipoSectorId: [null],
+      iZonaId: [null],
+      iUgelId: [null],
+      iDsttId: [null],
+      iIieeId: [null],
+      iNivelGradoId: [null],
+      iSeccionId: [null],
+      cPersSexo: [null],
+    });
+
+    this.datosEncuestas
+      .getEncuestaParametros({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+      })
+      .subscribe((data: any) => {
+        this.distritos = this.datosEncuestas.getDistritos(data?.distritos);
+        this.secciones = this.datosEncuestas.getSecciones(data?.secciones);
+        this.zonas = this.datosEncuestas.getZonas(data?.zonas);
+        this.tipo_sectores = this.datosEncuestas.getTipoSectores(data?.tipo_sectores);
+        this.ugeles = this.datosEncuestas.getUgeles(data?.ugeles);
+        this.nivel_tipos = this.datosEncuestas.getNivelesTipos(data?.nivel_tipos);
+        this.ies = this.datosEncuestas.getInstitucionesEducativas(data?.instituciones_educativas);
+        this.distritos = this.datosEncuestas.getDistritos(data?.distritos);
+        this.sexos = this.datosEncuestas.getSexos();
+        this.datosEncuestas.getNivelesGrados(data?.nivel_grados);
+        if (this.nivel_tipos && this.nivel_tipos.length == 1) {
+          const nivel_tipo = this.nivel_tipos[0]['value'];
+          this.formFiltros.get('iNivelTipoId')?.setValue(nivel_tipo);
+          this.filterNivelesGrados(nivel_tipo);
+          this.filterInstitucionesEducativas();
+        }
+        if (this.ugeles && this.ugeles.length === 1) {
+          this.formFiltros.get('iUgelId')?.setValue(this.ugeles[0]['value']);
+          this.filterInstitucionesEducativas();
+        }
+      });
+
+    this.formFiltros.get('iNivelTipoId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iNivelGradoId')?.setValue(null);
+      this.nivel_grados = null;
+      this.filterNivelesGrados(value);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iDsttId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iZonaId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iTipoSectorId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iUgelId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iDsttId')?.setValue(null);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.distritos = null;
+      this.filterInstitucionesEducativas();
+      this.filterDistritos(value);
+    });
+
     if (this.iEncuId) {
       this.verEncuesta();
-      this.listarRespuestas();
+      this.filtrarRespuestasFormulario();
+    }
+  }
+
+  filterNivelesTipos() {
+    this.nivel_tipos = this.datosEncuestas.filterNivelesTipos();
+  }
+
+  filterNivelesGrados(iNivelTipoId: number) {
+    this.nivel_grados = this.datosEncuestas.filterNivelesGrados(iNivelTipoId);
+  }
+
+  filterDistritos(iUgelId: number) {
+    this.distritos = this.datosEncuestas.filterDistritos(iUgelId);
+  }
+
+  filterInstitucionesEducativas() {
+    this.ies = null;
+    const iNivelTipoId = this.formFiltros.get('iNivelTipoId')?.value;
+    const iDsttId = this.formFiltros.get('iDsttId')?.value;
+    const iZonaId = this.formFiltros.get('iZonaId')?.value;
+    const iTipoSectorId = this.formFiltros.get('iTipoSectorId')?.value;
+    const iUgelId = this.formFiltros.get('iUgelId')?.value;
+    this.ies = this.datosEncuestas.filterInstitucionesEducativas(
+      iNivelTipoId,
+      iDsttId,
+      iZonaId,
+      iTipoSectorId,
+      iUgelId
+    );
+    if (this.ies && this.ies.length === 1) {
+      this.formFiltros.get('iIieeId')?.setValue(this.ies[0]['value']);
     }
   }
 
@@ -102,10 +226,8 @@ export class EncuestaRespuestasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data.data.length) {
-            this.respuestas = data.data;
-            this.respuestas_filtradas = this.respuestas;
-          }
+          this.respuestas = data.data;
+          this.filtrarRespuestas();
         },
         error: error => {
           console.error('Error obteniendo respuestas:', error);
@@ -121,15 +243,76 @@ export class EncuestaRespuestasComponent implements OnInit {
   filtrarRespuestas() {
     const filtro = this.filtro.nativeElement.value;
     this.respuestas_filtradas = this.respuestas.filter((respuesta: any) => {
-      if (respuesta.cPersNombreApellidos.toLowerCase().includes(filtro.toLowerCase()))
+      if (respuesta.cEstCodigo && respuesta.cEstCodigo.toLowerCase().includes(filtro.toLowerCase()))
         return respuesta;
-      if (respuesta.cGradoNombre.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
-      if (respuesta.cSeccionNombre.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
-      if (respuesta.cIieeCodigoModular.toLowerCase().includes(filtro.toLowerCase()))
+      if (
+        respuesta.cPersNombreApellidos &&
+        respuesta.cPersNombreApellidos.toLowerCase().includes(filtro.toLowerCase())
+      )
         return respuesta;
-      if (respuesta.cIieeNombre.toLowerCase().includes(filtro.toLowerCase())) return respuesta;
+      if (
+        respuesta.cGradoNombre &&
+        respuesta.cGradoNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
+      if (
+        respuesta.cSeccionNombre &&
+        respuesta.cSeccionNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
+      if (
+        respuesta.cIieeCodigoModular &&
+        respuesta.cIieeCodigoModular.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
+      if (
+        respuesta.cIieeNombre &&
+        respuesta.cIieeNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return respuesta;
       return null;
     });
+  }
+
+  filtrarRespuestasFormulario() {
+    this.datosEncuestas
+      .listarRespuestas({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iEncuId: this.iEncuId,
+        iNivelTipoId: this.formFiltros.get('iNivelTipoId')?.value,
+        iTipoSectorId: this.formFiltros.get('iTipoSectorId')?.value,
+        iZonaId: this.formFiltros.get('iZonaId')?.value,
+        iUgelId: this.formFiltros.get('iUgelId')?.value,
+        iDsttId: this.formFiltros.get('iDsttId')?.value,
+        iIieeId: this.formFiltros.get('iIieeId')?.value,
+        iNivelGradoId: this.formFiltros.get('iNivelGradoId')?.value,
+        iSeccionId: this.formFiltros.get('iSeccionId')?.value,
+        cPersSexo: this.formFiltros.get('cPersSexo')?.value,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.contarFiltros();
+          this.respuestas = data.data;
+          this.respuestas_filtradas = this.respuestas;
+          this.filtrarRespuestas();
+          this.filtros.hide();
+        },
+        error: error => {
+          this.contarFiltros();
+          console.error('Error obteniendo respuestas:', error);
+          this._messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  contarFiltros() {
+    this.filtros_aplicados = Object.values(this.formFiltros.value).filter(
+      (value: any) => value !== null && value !== ''
+    ).length;
   }
 
   exportarExcel(iMatrId: number = null) {
@@ -138,6 +321,15 @@ export class EncuestaRespuestasComponent implements OnInit {
         iCredEntPerfId: this.perfil.iCredEntPerfId,
         iEncuId: this.iEncuId,
         iMatrId: iMatrId,
+        iNivelTipoId: this.formFiltros.get('iNivelTipoId')?.value,
+        iTipoSectorId: this.formFiltros.get('iTipoSectorId')?.value,
+        iZonaId: this.formFiltros.get('iZonaId')?.value,
+        iUgelId: this.formFiltros.get('iUgelId')?.value,
+        iDsttId: this.formFiltros.get('iDsttId')?.value,
+        iIieeId: this.formFiltros.get('iIieeId')?.value,
+        iNivelGradoId: this.formFiltros.get('iNivelGradoId')?.value,
+        iSeccionId: this.formFiltros.get('iSeccionId')?.value,
+        cPersSexo: this.formFiltros.get('cPersSexo')?.value,
       })
       .subscribe({
         next: (response: any) => {
@@ -187,9 +379,17 @@ export class EncuestaRespuestasComponent implements OnInit {
       class: 'hidden md:table-cell',
     },
     {
+      field: 'cEstCodigo',
+      type: 'text',
+      width: '15%',
+      header: 'Código',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
       field: 'cPersNombreApellidos',
       type: 'text',
-      width: '40%',
+      width: '35%',
       header: 'Estudiante',
       text_header: 'left',
       text: 'left',
@@ -218,7 +418,7 @@ export class EncuestaRespuestasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
       class: () => {
-        if ([ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId)) {
+        if (this.es_especialista) {
           return 'hidden md:table-cell';
         }
         return 'hidden';
@@ -232,7 +432,7 @@ export class EncuestaRespuestasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
       class: () => {
-        if ([ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(this.perfil.iPerfilId)) {
+        if (this.es_especialista) {
           return 'hidden md:table-cell';
         }
         return 'hidden';

@@ -300,6 +300,11 @@ const estudiante = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Buzón de sugerencias',
         icon: 'pi pi-fw pi-envelope',
         routerLink: ['/buzon-sugerencias/estudiante'],
@@ -931,6 +936,11 @@ const apoderado = [
             routerLink: ['/bienestar/gestionar-encuestas'],
           },
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
       // {
       //   label: 'Notificaciones y anuncios',

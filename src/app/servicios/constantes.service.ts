@@ -927,6 +927,27 @@ const apoderado = [
           },
         ],
       },
+      {
+        label: 'Reportes académicos',
+        icon: 'pi pi-chart-bar',
+        items: [
+          {
+            label: 'Progreso',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/apoderado/reportes-academicos/progreso'],
+          },
+          /*{
+            label: 'Académico',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/estudiante/reportes-academicos/academico'],
+          },
+          {
+            label: 'Resultados ERE',
+            icon: 'pi pi-fw pi-ticket',
+            routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
+          },*/
+        ],
+      },
       // {
       //   label: 'Notificaciones y anuncios',
       //   icon: 'pi pi-megaphone',

@@ -43,7 +43,7 @@ export class ResumenEncuestaComponent {
   secciones: Array<object>;
   sexos: Array<object>;
   areas: Array<object>;
-  perfiles: Array<object>;
+  participantes: Array<object>;
   filtros_aplicados: number = 0;
 
   formResumen: FormGroup;
@@ -65,6 +65,10 @@ export class ResumenEncuestaComponent {
 
   GRAFICO_BARRA: number = this.encuestasService.GRAFICO_BARRA;
   GRAFICO_CIRCULAR: number = this.encuestasService.GRAFICO_CIRCULAR;
+
+  ocultar_grado: boolean = false;
+  ocultar_seccion: boolean = false;
+  ocultar_area: boolean = true;
 
   constructor(
     private encuestasService: EncuestasService,
@@ -124,7 +128,7 @@ export class ResumenEncuestaComponent {
         this.ies = this.encuestasService.getInstitucionesEducativas(data?.instituciones_educativas);
         this.distritos = this.encuestasService.getDistritos(data?.distritos);
         this.areas = this.encuestasService.getAreas(data?.areas);
-        this.perfiles = this.encuestasService.getPerfiles(data?.perfiles);
+        this.participantes = this.encuestasService.getParticipantes(data?.participantes);
         this.sexos = this.encuestasService.getSexos();
         this.encuestasService.getNivelesGrados(data?.nivel_grados);
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {

@@ -12,7 +12,14 @@ import { EncuestasService } from '../services/encuestas.services';
 import { SlicePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
+import {
+  APODERADO,
+  DIRECTOR_IE,
+  DOCENTE,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+} from '@/app/servicios/seg/perfiles';
+import { ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-respuestas-encuesta',
@@ -58,6 +65,16 @@ export class RespuestasEncuestaComponent implements OnInit {
   filtros_aplicados: number = 0;
 
   USUARIO_ENCUESTADO: number = this.encuestasService.USUARIO_ENCUESTADO;
+
+  ocultar_nivel: boolean = false;
+  ocultar_gestion: boolean = false;
+  ocultar_zona: boolean = false;
+  ocultar_ugel: boolean = false;
+  ocultar_distrito: boolean = false;
+  ocultar_ie: boolean = false;
+  ocultar_grado: boolean = false;
+  ocultar_seccion: boolean = false;
+  ocultar_area: boolean = false;
 
   constructor(
     private encuestasService: EncuestasService,
@@ -156,6 +173,78 @@ export class RespuestasEncuestaComponent implements OnInit {
       this.distritos = null;
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
+    });
+
+    this.formFiltros.get('iPerfilId').valueChanges.subscribe(value => {
+      switch (value) {
+        case ESPECIALISTA_DREMO:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = true;
+          this.ocultar_zona = true;
+          this.ocultar_ugel = true;
+          this.ocultar_distrito = true;
+          this.ocultar_ie = true;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+        case ESPECIALISTA_UGEL:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = true;
+          this.ocultar_zona = true;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = true;
+          this.ocultar_ie = true;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+        case DIRECTOR_IE:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = true;
+          this.ocultar_seccion = true;
+          this.ocultar_area = true;
+          break;
+        case DOCENTE:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+        case APODERADO:
+        case ESTUDIANTE:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = true;
+          break;
+        default:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+      }
     });
 
     if (this.iEncuId) {

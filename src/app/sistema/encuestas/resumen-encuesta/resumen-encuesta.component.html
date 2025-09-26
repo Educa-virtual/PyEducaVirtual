@@ -33,6 +33,32 @@
               <div class="grid">
                 <div class="col-12 md:col-6">
                   <p-inputGroup>
+                    <p-inputGroupAddon>Participantes</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="participantes"
+                      [showClear]="false"
+                      formControlName="iPerfilId"
+                      placeholder="Seleccione un tipo de participante"
+                      styleClass="group-element"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Áreas</p-inputGroupAddon>
+                    <p-dropdown
+                      [options]="areas"
+                      [showClear]="false"
+                      formControlName="iCursoId"
+                      placeholder="Seleccione un área"
+                      styleClass="group-element"
+                      [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
                       [options]="nivel_tipos"

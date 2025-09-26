@@ -167,6 +167,10 @@ export class EncuestasService implements OnDestroy {
     });
   }
 
+  verResumen(data: any) {
+    return this.http.post(`${baseUrl}/enc/verResumen`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */

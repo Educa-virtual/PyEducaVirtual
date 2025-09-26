@@ -17,6 +17,7 @@ import { LlenadoPreguntasEncuestaComponent } from './llenado-preguntas-encuesta/
 import { VerEncuestaComponent } from './ver-encuesta/ver-encuesta.component';
 import { GestionEncuestasComponent } from './gestion-encuestas/gestion-encuestas.component';
 import { RespuestasEncuestaComponent } from './respuestas-encuesta/respuestas-encuesta.component';
+import { ResumenEncuestaComponent } from './resumen-encuesta/resumen-encuesta.component';
 
 const encuestadores = [
   ADMINISTRADOR_DREMO,
@@ -138,6 +139,16 @@ const routes: Routes = [
       es_encuestador: false,
       expectedRole: encuestadores,
       breadcrumb: 'Ver Respuestas',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/resumen',
+    component: ResumenEncuestaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      es_encuestador: false,
+      expectedRole: encuestadores,
+      breadcrumb: 'Ver Resumen',
     },
   },
 ];

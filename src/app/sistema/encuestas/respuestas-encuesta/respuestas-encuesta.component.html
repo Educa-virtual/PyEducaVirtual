@@ -188,11 +188,13 @@
                   </p-inputGroup>
                 </div>
                 <div class="col-12">
-                  <p-button
-                    label="Aplicar"
-                    severity="success"
-                    (click)="filtrarRespuestasFormulario()"
-                  />
+                  <div class="flex flex-wrap gap-2">
+                    <p-button
+                      label="Aplicar"
+                      severity="success"
+                      (click)="filtrarRespuestasFormulario()"
+                    />
+                  </div>
                 </div>
               </div>
             </form>
@@ -215,3 +217,5 @@
     [showCaption]="false"
   />
 </p-panel>
+
+<p-toast></p-toast>

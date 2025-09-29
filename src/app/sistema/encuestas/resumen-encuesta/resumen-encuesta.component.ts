@@ -9,23 +9,37 @@ import { MenuItem } from 'primeng/api';
 import { EncuestasService } from '../services/encuestas.services';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ActivatedRoute } from '@angular/router';
-import { ESPECIALISTA_DREMO, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
+import {
+  APODERADO,
+  DIRECTOR_IE,
+  DOCENTE,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  ESTUDIANTE,
+} from '@/app/servicios/seg/perfiles';
 import { WordcloudChartComponent } from '../../bienestar/encuesta/encuesta-resumen/wordcloud-chart/wordcloud-chart.component';
+import { SlicePipe } from '@angular/common';
+import { MultiChartComponent } from '../../bienestar/shared/multi-chart/multi-chart.component';
 
 @Component({
   selector: 'app-resumen-encuesta',
   standalone: true,
-  imports: [StepsModule, ButtonModule, PrimengModule, WordcloudChartComponent],
+  imports: [StepsModule, ButtonModule, PrimengModule, WordcloudChartComponent, MultiChartComponent],
   templateUrl: './resumen-encuesta.component.html',
   styleUrl: './resumen-encuesta.component.scss',
+  providers: [SlicePipe],
 })
 export class ResumenEncuestaComponent {
   @ViewChild('filtros') filtros: OverlayPanel;
   @ViewChild('overlayAnchor') overlayAnchorRef: ElementRef;
 
   perfil: any;
+
+  encuesta: any;
+  iCateId: number;
   iEncuId: number;
   cEncuNombre: string;
+
   preguntas: Array<any>;
   tipos_reportes: Array<object>;
   tipos_graficos: Array<object>;
@@ -66,16 +80,23 @@ export class ResumenEncuestaComponent {
   GRAFICO_BARRA: number = this.encuestasService.GRAFICO_BARRA;
   GRAFICO_CIRCULAR: number = this.encuestasService.GRAFICO_CIRCULAR;
 
+  ocultar_nivel: boolean = false;
+  ocultar_gestion: boolean = false;
+  ocultar_zona: boolean = false;
+  ocultar_ugel: boolean = false;
+  ocultar_distrito: boolean = false;
+  ocultar_ie: boolean = false;
   ocultar_grado: boolean = false;
   ocultar_seccion: boolean = false;
-  ocultar_area: boolean = true;
+  ocultar_area: boolean = false;
 
   constructor(
     private encuestasService: EncuestasService,
     private store: LocalStoreService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private cf: ChangeDetectorRef
+    private cf: ChangeDetectorRef,
+    private slicePipe: SlicePipe
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
     this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
@@ -83,6 +104,7 @@ export class ResumenEncuestaComponent {
     );
     this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
+      this.iCateId = params.params.iCateId || 0;
       this.iEncuId = params.params.iEncuId || 0;
     });
     this.setBreadCrumbs();
@@ -174,6 +196,78 @@ export class ResumenEncuestaComponent {
       this.filterDistritos(value);
     });
 
+    this.formFiltros.get('iPerfilId').valueChanges.subscribe(value => {
+      switch (value) {
+        case ESPECIALISTA_DREMO:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = true;
+          this.ocultar_zona = true;
+          this.ocultar_ugel = true;
+          this.ocultar_distrito = true;
+          this.ocultar_ie = true;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+        case ESPECIALISTA_UGEL:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = true;
+          this.ocultar_zona = true;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = true;
+          this.ocultar_ie = true;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+        case DIRECTOR_IE:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = true;
+          this.ocultar_seccion = true;
+          this.ocultar_area = true;
+          break;
+        case DOCENTE:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+        case APODERADO:
+        case ESTUDIANTE:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = true;
+          break;
+        default:
+          this.ocultar_nivel = false;
+          this.ocultar_gestion = false;
+          this.ocultar_zona = false;
+          this.ocultar_ugel = false;
+          this.ocultar_distrito = false;
+          this.ocultar_ie = false;
+          this.ocultar_grado = false;
+          this.ocultar_seccion = false;
+          this.ocultar_area = false;
+          break;
+      }
+    });
+
     this.tipos_reportes = this.encuestasService.getTiposReportes();
     this.tipos_graficos = this.encuestasService.getTiposGraficos();
 
@@ -182,26 +276,29 @@ export class ResumenEncuestaComponent {
   }
 
   setBreadCrumbs() {
-    this.breadCrumbItems = [
-      {
-        label: 'Bienestar social',
-      },
-      {
-        label: 'Gestionar encuestas',
-        routerLink: '/bienestar/gestionar-encuestas',
-      },
-      {
-        label: 'Encuesta',
-        routerLink: `/bienestar/encuesta/${this.iEncuId}`,
-      },
-      {
-        label: 'Resumen',
-      },
-    ];
     this.breadCrumbHome = {
       icon: 'pi pi-home',
       routerLink: '/',
     };
+    this.breadCrumbItems = [
+      { label: 'Encuestas' },
+      { label: 'Categorias', routerLink: `/encuestas/categorias` },
+      {
+        label: this.encuesta?.cCateNombre
+          ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
+          : 'Categoría',
+      },
+      {
+        label: 'Gestionar encuestas',
+        routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
+      },
+      {
+        label: this.encuesta?.cEncuNombre
+          ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))
+          : 'Encuesta',
+      },
+      { label: 'Gestionar respuestas' },
+    ];
   }
 
   filterNivelesTipos() {
@@ -253,6 +350,8 @@ export class ResumenEncuestaComponent {
         iNivelGradoId: this.formFiltros.get('iNivelGradoId')?.value,
         iSeccionId: this.formFiltros.get('iSeccionId')?.value,
         cPersSexo: this.formFiltros.get('cPersSexo')?.value,
+        iPerfilId: this.formFiltros.get('iPerfilId')?.value,
+        iCursoId: this.formFiltros.get('iCursoId')?.value,
       })
       .subscribe({
         next: (data: any) => {
@@ -426,7 +525,9 @@ export class ResumenEncuestaComponent {
       .subscribe({
         next: (data: any) => {
           if (data.data) {
+            this.encuesta = data.data;
             this.cEncuNombre = data.data.cEncuNombre;
+            this.setBreadCrumbs();
           }
         },
         error: error => {

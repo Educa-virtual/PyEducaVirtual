@@ -17,7 +17,6 @@
           #overlayAnchor
           (click)="filtros.toggle($event)"
           icon="pi pi-filter"
-          class="flex"
           severity="success"
           [label]="'Ver filtros aplicados (' + filtros_aplicados + ')'"
         />
@@ -31,25 +30,25 @@
           <ng-template pTemplate="content">
             <form [formGroup]="formFiltros" class="p-fluid">
               <div class="grid">
-                <div class="col-12 md:col-6">
+                <div class="col-12" [ngClass]="ocultar_area ? 'col-12' : 'md:col-6'">
                   <p-inputGroup>
                     <p-inputGroupAddon>Participantes</p-inputGroupAddon>
                     <p-dropdown
                       [options]="participantes"
-                      [showClear]="false"
+                      [showClear]="true"
                       formControlName="iPerfilId"
-                      placeholder="Seleccione un tipo de participante"
+                      placeholder="Seleccione el tipo de participante"
                       styleClass="group-element"
                       [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12 md:col-6" [hidden]="ocultar_area">
                   <p-inputGroup>
-                    <p-inputGroupAddon>Áreas</p-inputGroupAddon>
+                    <p-inputGroupAddon>Área</p-inputGroupAddon>
                     <p-dropdown
                       [options]="areas"
-                      [showClear]="false"
+                      [showClear]="true"
                       formControlName="iCursoId"
                       placeholder="Seleccione un área"
                       styleClass="group-element"
@@ -57,7 +56,11 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div
+                  class="col-12"
+                  [ngClass]="ocultar_grado ? 'col-12' : 'md:col-6'"
+                  [hidden]="ocultar_nivel"
+                >
                   <p-inputGroup>
                     <p-inputGroupAddon>Nivel</p-inputGroupAddon>
                     <p-dropdown
@@ -70,7 +73,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12 md:col-6" [hidden]="ocultar_grado">
                   <p-inputGroup>
                     <p-inputGroupAddon>Grado</p-inputGroupAddon>
                     <p-dropdown
@@ -84,7 +87,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6" *ngIf="es_especialista">
+                <div class="col-12 md:col-6" *ngIf="es_especialista" [hidden]="ocultar_gestion">
                   <p-inputGroup>
                     <p-inputGroupAddon>Gestión</p-inputGroupAddon>
                     <p-dropdown
@@ -97,7 +100,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6" *ngIf="es_especialista">
+                <div class="col-12 md:col-6" *ngIf="es_especialista" [hidden]="ocultar_zona">
                   <p-inputGroup>
                     <p-inputGroupAddon>Zona</p-inputGroupAddon>
                     <p-dropdown
@@ -110,7 +113,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6" *ngIf="es_especialista">
+                <div class="col-12 md:col-6" *ngIf="es_especialista" [hidden]="ocultar_ugel">
                   <p-inputGroup>
                     <p-inputGroupAddon>UGEL</p-inputGroupAddon>
                     <p-dropdown
@@ -123,7 +126,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6" *ngIf="es_especialista">
+                <div class="col-12 md:col-6" *ngIf="es_especialista" [hidden]="ocultar_distrito">
                   <p-inputGroup>
                     <p-inputGroupAddon>Distrito</p-inputGroupAddon>
                     <p-dropdown
@@ -137,7 +140,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12">
+                <div class="col-12" [hidden]="ocultar_ie">
                   <p-inputGroup>
                     <p-inputGroupAddon>I. E.</p-inputGroupAddon>
                     <p-dropdown
@@ -151,7 +154,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12 md:col-6" [hidden]="ocultar_seccion">
                   <p-inputGroup>
                     <p-inputGroupAddon>Sección</p-inputGroupAddon>
                     <p-dropdown
@@ -165,7 +168,7 @@
                     ></p-dropdown>
                   </p-inputGroup>
                 </div>
-                <div class="col-12 md:col-6">
+                <div class="col-12" [ngClass]="ocultar_seccion ? 'col-12' : 'md:col-6'">
                   <p-inputGroup>
                     <p-inputGroupAddon>Género</p-inputGroupAddon>
                     <p-dropdown
@@ -224,22 +227,7 @@
         >
           <ng-container *ngIf="pregunta.resumen">
             <div class="grid text-panel" [formGroup]="getFormResumenPregunta(i)">
-              <div class="col-12 md:col-6" *ngIf="+pregunta.iTipoPregId !== TIPO_PREG_TEXTO">
-                <p-inputGroup>
-                  <p-inputGroupAddon>Tipo de gráfico</p-inputGroupAddon>
-                  <p-dropdown
-                    [options]="tipos_graficos"
-                    formControlName="iTipoGrafico"
-                    [filter]="true"
-                    [showClear]="false"
-                    appendTo="body"
-                    placeholder="Seleccione"
-                    [style]="{ flex: '1', width: '100%' }"
-                    styleClass="group-element"
-                  />
-                </p-inputGroup>
-              </div>
-              <div class="col-12 md:col-6" *ngIf="+pregunta.iTipoPregId === TIPO_PREG_TEXTO">
+              <div class="col-12" *ngIf="+pregunta.iTipoPregId === TIPO_PREG_TEXTO">
                 <p-inputGroup>
                   <p-inputGroupAddon>Tipo de reporte</p-inputGroupAddon>
                   <p-dropdown
@@ -255,27 +243,17 @@
                 </p-inputGroup>
               </div>
               <div class="col-12" *ngIf="+pregunta.iTipoPregId !== TIPO_PREG_TEXTO">
-                <p-chart
-                  *ngIf="getFormResumenPregunta(i).get('iTipoGrafico')?.value === GRAFICO_BARRA"
-                  type="bar"
-                  [data]="pregunta.resumen_grafico"
-                  [options]="options_bar"
-                  [plugins]="plugin_bar"
-                  style="width: 100%"
-                />
-                <p-chart
-                  *ngIf="getFormResumenPregunta(i).get('iTipoGrafico')?.value === GRAFICO_CIRCULAR"
-                  type="pie"
-                  [data]="pregunta.resumen_grafico"
-                  [options]="options_pie"
-                  [plugins]="plugin_pie"
-                  class="col-12 md:col-6"
-                  height="300px"
-                />
+                <app-multi-chart [data_chart]="pregunta.resumen" />
               </div>
               <div class="col-12" *ngIf="+pregunta.iTipoPregId === TIPO_PREG_TEXTO">
+                <p-message
+                  *ngIf="!pregunta.resumen_grafico"
+                  severity="info"
+                  text="No hay datos para mostrar"
+                />
                 <p-chart
                   *ngIf="
+                    pregunta.resumen_grafico &&
                     getFormResumenPregunta(i).get('iTipoReporte')?.value === TIPO_REPORTE_LISTA
                   "
                   type="bar"
@@ -286,6 +264,7 @@
                 />
                 <app-wordcloud-chart
                   *ngIf="
+                    pregunta.resumen_wordcloud &&
                     getFormResumenPregunta(i).get('iTipoReporte')?.value === TIPO_REPORTE_INDIVIDUAL
                   "
                   [wordCloudData]="pregunta.resumen_wordcloud"
@@ -299,3 +278,5 @@
     </div>
   </form>
 </p-panel>
+
+<p-toast></p-toast>

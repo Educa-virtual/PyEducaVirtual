@@ -115,8 +115,8 @@ export class GestionEncuestasComponent implements OnInit {
         iTipoUsuario: this.USUARIO_ENCUESTADOR,
       })
       .subscribe({
-        next: (resp: any) => {
-          this.encuestas = resp.data;
+        next: (data: any) => {
+          this.encuestas = data.data;
           this.encuestas_filtradas = this.encuestas;
         },
         error: error => {
@@ -133,39 +133,21 @@ export class GestionEncuestasComponent implements OnInit {
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value;
     this.encuestas_filtradas = this.encuestas.filter(encuesta => {
-      if (encuesta.cEncNombre && encuesta.cEncNombre.toLowerCase().includes(filtro.toLowerCase()))
+      if (encuesta.cEncuNombre && encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase()))
+        return encuesta;
+      if (encuesta.cCateNombre && encuesta.cCateNombre.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
       if (
-        encuesta.cEncCatNombre &&
-        encuesta.cEncCatNombre.toLowerCase().includes(filtro.toLowerCase())
+        encuesta.cTiemDurNombre &&
+        encuesta.cTiemDurNombre.toLowerCase().includes(filtro.toLowerCase())
       )
         return encuesta;
-      if (
-        encuesta.cEncDurNombre &&
-        encuesta.cEncDurNombre.toLowerCase().includes(filtro.toLowerCase())
-      )
+      if (encuesta.dEncuInicio && encuesta.dEncuInicio.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
-      if (encuesta.dEncInicio && encuesta.dEncInicio.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
-      if (encuesta.dEncFin && encuesta.dEncFin.toLowerCase().includes(filtro.toLowerCase()))
+      if (encuesta.dEncuFin && encuesta.dEncuFin.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
       return null;
     });
-  }
-
-  verEncuesta() {
-    console.log('Ver encuesta:', this.selectedItem);
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Ver encuesta',
-      detail: `Viendo encuesta: ${this.selectedItem.cTituloEncuesta}`,
-    });
-  }
-
-  editarEncuesta(item: any) {
-    this.router.navigate([
-      `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
-    ]);
   }
 
   eliminarEncuesta(item: any) {
@@ -218,21 +200,6 @@ export class GestionEncuestasComponent implements OnInit {
           });
         },
       });
-  }
-
-  abrirDialogoNuevaEncuesta() {
-    this.mostrarDialogoNuevaEncuesta = true;
-  }
-
-  cerrarDialogoNuevaEncuesta() {
-    this.mostrarDialogoNuevaEncuesta = false;
-  }
-
-  abrirDialogoAccesosEncuesta() {
-    this.mostrarDialogoAccesosEncuesta = true;
-  }
-  cerrarDialogoAccesosEncuesta() {
-    this.mostrarDialogoAccesosEncuesta = false;
   }
 
   accionBtnItemTable({ accion, item }) {

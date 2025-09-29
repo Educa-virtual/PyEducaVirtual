@@ -432,7 +432,7 @@ export class EncuestaComponent implements OnInit {
       return;
     }
 
-    if (this.accesos.length == 0) {
+    if (this.formEncuesta.get('accesos').value.length == 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
@@ -441,7 +441,7 @@ export class EncuestaComponent implements OnInit {
       return;
     }
 
-    if (this.poblacion.length == 0) {
+    if (this.formEncuesta.get('poblacion').value.length == 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
@@ -493,7 +493,7 @@ export class EncuestaComponent implements OnInit {
       return;
     }
 
-    if (this.poblacion.length == 0) {
+    if (this.formEncuesta.get('poblacion').value.length == 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
@@ -502,7 +502,7 @@ export class EncuestaComponent implements OnInit {
       return;
     }
 
-    if (this.accesos.length == 0) {
+    if (this.formEncuesta.get('accesos').value.length == 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',

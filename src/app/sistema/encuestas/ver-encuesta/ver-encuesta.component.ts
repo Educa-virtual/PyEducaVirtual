@@ -68,7 +68,7 @@ export class VerEncuestaComponent implements OnInit {
       this.iPersId = params.params.iPersId || 0;
     });
     this.route.data.subscribe((data: any) => {
-      this.es_encuestador = data.es_encuestador;
+      this.es_encuestador = Boolean(+data.es_encuestador);
     });
   }
 
@@ -292,10 +292,10 @@ export class VerEncuestaComponent implements OnInit {
   }
 
   salir() {
-    if (this.USUARIO_ENCUESTADO) {
-      this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas`]);
-    } else {
+    if (this.es_encuestador) {
       this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-encuestas`]);
+    } else {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/lista-encuestas`]);
     }
   }
 

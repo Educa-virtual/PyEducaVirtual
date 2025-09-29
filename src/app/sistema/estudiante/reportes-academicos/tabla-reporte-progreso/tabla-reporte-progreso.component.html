@@ -52,14 +52,14 @@
     </tbody>
   </table>
 </div>
-<div class="mt-4 flex justify-content-end w-full" *ngIf="vista === 'estudiante'">
+<div class="mt-4 flex justify-content-end w-full" *ngIf="vista === 'estudiante' || 'apoderado'">
   <button
     pButton
     pRipple
     pTooltip="Descargar reporte"
     tooltipPosition="top"
     class="p-button-danger"
-    (click)="descargarReporteEstudiante()"
+    (click)="vista === 'estudiante' ? descargarReporteEstudiante() : descargarReporteApoderado()"
   >
     <i class="pi pi-download"></i>
     <span class="ml-2 hidden sm:block">Descargar reporte</span>

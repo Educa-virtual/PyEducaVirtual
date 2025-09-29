@@ -6,6 +6,7 @@ import { SeguimientoApoderadoComponent } from './seguimiento-apoderado/seguimien
 import { NotificacionApoderadoComponent } from './notificacion-apoderado/notificacion-apoderado.component';
 import { RegistroApoderadoComponent } from './registro-apoderado/registro-apoderado.component';
 import { APODERADO } from '@/app/servicios/seg/perfiles';
+import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso/reporte-progreso.component';
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 
@@ -19,7 +20,7 @@ const routes: Routes = [
   { path: 'registro-apoderado', component: RegistroApoderadoComponent },
   {
     path: 'reportes-academicos/progreso',
-    //component: ReporteProgresoComponent,
+    component: ReporteProgresoComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [APODERADO],

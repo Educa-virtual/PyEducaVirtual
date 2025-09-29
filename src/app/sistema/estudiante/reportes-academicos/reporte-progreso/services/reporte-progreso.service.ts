@@ -29,6 +29,15 @@ export class ReporteProgresoService {
     );
   }
 
+  generarReportePdfApoderado(iMatrId: string) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/apoderados/reportes-academicos/progreso/${iMatrId}/pdf`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
   obtenerReporteDirector(cPersDocumento, iYAcadId: number) {
     return this.http.get(
       `${this.urlBackendApi}/acad/directores/reportes-academicos/progreso/${iYAcadId.toString()}/estudiante/${cPersDocumento}`

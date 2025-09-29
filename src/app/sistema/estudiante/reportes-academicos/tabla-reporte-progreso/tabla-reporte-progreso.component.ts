@@ -16,7 +16,8 @@ export class TablaReporteProgresoComponent implements OnChanges {
   singleOpen: boolean = false;
   @Input() courses: any[] = [];
   @Input() iYAcadId: number;
-  @Input() vista: string; //estudiante | director
+  @Input() vista: string; //estudiante | director | apoderado
+  @Input() iMatrId: string;
 
   constructor(
     private reporteProgresoService: ReporteProgresoService,
@@ -39,6 +40,24 @@ export class TablaReporteProgresoComponent implements OnChanges {
       });
     } else {
       this.expanded[id] = !this.expanded[id];
+    }
+  }
+
+  async descargarReporteApoderado() {
+    try {
+      const response: Blob = await firstValueFrom(
+        this.reporteProgresoService.generarReportePdfApoderado(this.iMatrId)
+      );
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(response);
+      link.download = 'Reporte de progreso.pdf';
+      link.click();
+    } catch (err: any) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Problema al descargar el archivo',
+        detail: err?.error?.message || 'Error desconocido',
+      });
     }
   }
 

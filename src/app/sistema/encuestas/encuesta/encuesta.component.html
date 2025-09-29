@@ -7,7 +7,11 @@
       <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
     </div>
   </ng-template>
-  <ng-template pTemplate="icons" class="flex justify-content-center">
+  <ng-template
+    *ngIf="encuesta_registrada && this.iEncuId"
+    pTemplate="icons"
+    class="flex justify-content-center"
+  >
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
         label="Ver preguntas"
@@ -27,7 +31,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -161,7 +165,7 @@
             severity="success"
             icon="pi pi-arrow-right"
             iconPos="right"
-            (onClick)="nextCallback.emit()"
+            (onClick)="handleNextEncuestaPoblacion(nextCallback)"
           />
         </div>
       </ng-template>
@@ -170,7 +174,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -384,7 +388,7 @@
             severity="success"
             icon="pi pi-arrow-right"
             iconPos="right"
-            (onClick)="nextCallback.emit()"
+            (onClick)="handleNextPoblacionPermisos(nextCallback)"
           />
         </div>
       </ng-template>
@@ -393,7 +397,7 @@
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
-          (click)="onClick.emit()"
+          (click)="handlePanelClick(onClick, active)"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -404,15 +408,15 @@
           >
             <i class="pi pi-unlock" style="font-size: 1.5rem"></i>
           </span>
-          <span class="hidden md:block font-bold text-primary">Permisos</span>
+          <span class="hidden md:block font-bold text-primary">Accesos</span>
         </button>
       </ng-template>
       <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
         <p-messages severity="info">
           <ng-template pTemplate>
             <p>
-              <strong>El creador de la encuesta tiene todos los permisos por defecto.</strong>
-              Cada perfil tendrá permisos dentro de su jurisdicción, por ejemplo: los especialistas
+              <strong>El creador de la encuesta tiene todos los accesos por defecto.</strong>
+              Cada perfil tendrá accesos dentro de su jurisdicción, por ejemplo: los especialistas
               solo de su UGEL, los directores solo de su I.E., etc.
             </p>
           </ng-template>

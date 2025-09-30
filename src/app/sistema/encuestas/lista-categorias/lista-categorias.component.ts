@@ -176,11 +176,22 @@ export class CategoriasEncuestaComponent implements OnInit {
   }
 
   listarEncuestas(iCateId: any) {
-    this.router.navigate([`/encuestas/categorias/${iCateId}/lista-encuestas`]);
+    if (iCateId == null) {
+      /* Es enlace a encuestas de bienestar */
+      this.router.navigate([`/bienestar/gestionar-encuestas`]);
+    } else {
+      this.router.navigate([`/encuestas/categorias/${iCateId}/lista-encuestas`]);
+    }
   }
 
   gestionarEncuestas(iCateId: any) {
-    this.router.navigate([`/encuestas/categorias/${iCateId}/gestion-encuestas`]);
+    console.log(iCateId, 'gestion categoria');
+    if (iCateId == null) {
+      /* Es enlace a encuestas de bienestar */
+      this.router.navigate([`/bienestar/gestionar-encuestas`]);
+    } else {
+      this.router.navigate([`/encuestas/categorias/${iCateId}/gestion-encuestas`]);
+    }
   }
 
   setBtnItems(categoria: any): MenuItem[] {
@@ -194,14 +205,14 @@ export class CategoriasEncuestaComponent implements OnInit {
         label: 'Editar Categoría',
         icon: 'pi pi-pencil',
         command: () => this.editarCategoria(categoria?.iCateId),
-        visible: this.puede_crear,
+        visible: Boolean(+categoria?.puede_crear) && this.puede_crear,
       },
       {
         label: 'Borrar Categoría',
         icon: 'pi pi-trash',
         command: () => this.borrarCategoria(categoria?.iCateId),
-        visible: this.puede_crear,
-        disabled: categoria?.iTotalEncuestas > 0,
+        visible: Boolean(+categoria?.puede_crear) && this.puede_crear,
+        disabled: !categoria?.puede_crear || categoria?.iTotalEncuestas > 0,
       },
     ];
   }

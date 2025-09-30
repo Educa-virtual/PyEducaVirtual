@@ -119,6 +119,6 @@ export class FichaDeclaracionComponent implements OnInit {
   }
 
   salir() {
-    this.router.navigate(['/bienestar/gestion-fichas-apoderado']);
+    this.router.navigate(['/']);
   }
 }

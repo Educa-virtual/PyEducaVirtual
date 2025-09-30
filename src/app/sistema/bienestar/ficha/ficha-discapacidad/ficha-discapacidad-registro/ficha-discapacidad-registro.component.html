@@ -99,6 +99,8 @@
               invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
               maxFileSize="10485760"
               (onSelect)="handleArchivo($event)"
+              (onClear)="handleArchivo($event)"
+              (onRemove)="handleArchivo($event)"
             >
             </p-fileUpload>
           </p-inputGroup>

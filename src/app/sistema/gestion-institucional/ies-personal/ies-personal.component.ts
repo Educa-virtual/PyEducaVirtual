@@ -187,13 +187,13 @@ export class IesPersonalComponent implements OnInit {
           this.personal_ies = item.map(persona => ({
             ...persona,
             nombre_completo: (
-              persona.cPersDocumento +
+              (persona.cPersDocumento ?? '') +
               ' ' +
-              persona.cPersPaterno +
+              (persona.cPersPaterno ?? '') +
               ' ' +
-              persona.cPersMaterno +
+              (persona.cPersMaterno ?? '') +
               ' ' +
-              persona.cPersNombre
+              (persona.cPersNombre ?? '')
             ).trim(),
           }));
 
@@ -341,13 +341,13 @@ export class IesPersonalComponent implements OnInit {
           this.docentes = item.map(persona => ({
             ...persona,
             nombre_completo: (
-              persona.cPersDocumento +
+              (persona.cPersDocumento ?? '') +
               ' ' +
-              persona.cPersPaterno +
+              (persona.cPersPaterno ?? '') +
               ' ' +
-              persona.cPersMaterno +
+              (persona.cPersMaterno ?? '') +
               ' ' +
-              persona.cPersNombre
+              (persona.cPersNombre ?? '')
             ).trim(),
           }));
           console.log(this.docentes, 'docentes');

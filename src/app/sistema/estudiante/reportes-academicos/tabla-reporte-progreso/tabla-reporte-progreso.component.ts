@@ -43,7 +43,7 @@ export class TablaReporteProgresoComponent implements OnChanges {
     }
   }
 
-  async descargarReporteApoderado() {
+  /*async descargarReporteApoderado() {
     try {
       const response: Blob = await firstValueFrom(
         this.reporteProgresoService.generarReportePdfApoderado(this.iMatrId)
@@ -59,7 +59,7 @@ export class TablaReporteProgresoComponent implements OnChanges {
         detail: err?.error?.message || 'Error desconocido',
       });
     }
-  }
+  }*/
 
   async descargarReporteEstudiante() {
     try {

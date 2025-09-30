@@ -58,7 +58,7 @@
         <div class="col-12">
           <full-calendar #calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
-              <div class="fc-event-time">{{ formatTime(arg.event) }}</div>
+              <div class="fc-event-time">{{ formatearHora(arg.event.start) }}</div>
               <div class="fc-event-title">
                 {{ arg.event.title }}
               </div>

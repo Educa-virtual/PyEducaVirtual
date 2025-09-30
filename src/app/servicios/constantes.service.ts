@@ -42,11 +42,11 @@ const docente = [
         icon: 'pi pi-fw pi-bell',
         routerLink: ['/docente/comunicados'],
       },
-      {
-        label: 'Portafolio',
-        icon: 'pi pi-fw pi-folder',
-        routerLink: ['/docente/portafolio'],
-      },
+      // {
+      //   label: 'Portafolio',
+      //   icon: 'pi pi-fw pi-folder',
+      //   routerLink: ['/docente/portafolio'],
+      // },
       {
         label: 'Mis Áreas Curriculares',
         icon: 'pi pi-fw pi-book',
@@ -361,7 +361,7 @@ const administrador = [
               routerLink: ['/administrador/backup-bd'],
             },*/
 
-      {
+      /*{
         label: 'Gestión de usuarios',
         icon: 'pi pi-fw pi-user',
         items: [
@@ -376,6 +376,11 @@ const administrador = [
             routerLink: ['/administrador/gestion-usuarios/solicitudes-registro'],
           },
         ],
+      },*/
+      /*{
+        label: 'Gestión de usuarios',
+        icon: 'pi pi-fw pi-book',
+        routerLink: ['/administrador/gestion-usuarios'],
       },
       {
         label: 'Informes y Estadísticas',
@@ -387,6 +392,11 @@ const administrador = [
             routerLink: ['/administrador/logro-alcanzado'],
           },
         ],
+      },*/
+      {
+        label: 'Gestión de usuarios',
+        icon: 'pi pi-fw pi-book',
+        routerLink: ['/administrador/gestion-usuarios'],
       },
 
       // {

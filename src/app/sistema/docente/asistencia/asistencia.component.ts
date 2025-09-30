@@ -242,7 +242,9 @@ export class AsistenciaComponent implements OnInit {
     this.leyenda.filter(index => {
       index.contar = 0;
     });
+
     this.events.filter(index => {
+      console.log('revisando 3', index);
       this.captura = index.title.split(' : ');
 
       if (this.captura.length > 1) {
@@ -484,9 +486,6 @@ export class AsistenciaComponent implements OnInit {
           item.bgColor = seleccionar.bgColor;
           item.cTipoAsiNombre = seleccionar.cTipoAsiNombre;
         });
-        // this.data.map(index => {
-        //   index.bgcolor = this.estado[index.iTipoAsiId];
-        // });
         this.countAsistenciasModal();
         break;
       case 'get_curso_horario':

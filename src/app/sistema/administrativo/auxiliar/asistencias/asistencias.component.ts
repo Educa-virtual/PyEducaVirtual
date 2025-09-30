@@ -51,7 +51,11 @@ export class AsistenciasComponent implements OnInit {
   estado: boolean = false;
   temporal: any = [];
   archivos: any = [];
-  messages = [{ severity: 'info', detail: 'Este Registro solo marca la hora de entrada' }];
+  marcador: any;
+  buscar: boolean = true;
+  messages = [
+    { severity: 'info', detail: 'Este Registro solo marca la hora de Ingreso del Alumnado' },
+  ];
   tipoAsistencia = [
     {
       iTipoAsiId: '1',
@@ -234,55 +238,51 @@ export class AsistenciasComponent implements OnInit {
     }
   }
   escaner(qr: string) {
-    const extraer = qr.split('|');
-    if (extraer.length > 0) {
-      this.visible = true;
-      this.datos.cEstCodigo = extraer[1];
-      this.datos.cPersDocumento = extraer[0];
+    if (this.buscar) {
+      this.buscar = false;
+      const extraer = qr.split('|');
+      if (extraer.length > 0) {
+        this.visible = true;
+        this.datos.cEstCodigo = extraer[1];
+        this.datos.cPersDocumento = extraer[0];
 
-      const enlace = {
-        petition: 'post',
-        group: 'asi',
-        prefix: 'grupos',
-        ruta: 'buscar-lista-estudiantes',
-        data: {
-          opcion: 'buscar-estudiante-qr',
-          cEstCodigo: this.datos.cEstCodigo,
-          cPersDocumento: this.datos.cPersDocumento,
-          iSedeId: this.dremoPerfil.iSedeId,
-          iYAcadId: this.dremoiYAcadId,
-        },
-      };
+        const enlace = {
+          petition: 'post',
+          group: 'asi',
+          prefix: 'grupos',
+          ruta: 'buscar-lista-estudiantes',
+          data: {
+            opcion: 'buscar-estudiante-qr',
+            cEstCodigo: this.datos.cEstCodigo,
+            cPersDocumento: this.datos.cPersDocumento,
+            iSedeId: this.dremoPerfil.iSedeId,
+            iYAcadId: this.dremoiYAcadId,
+          },
+        };
 
-      this.servicioGeneral.getRecibirDatos(enlace).subscribe({
-        next: data => {
-          this.codigo = data.data[0];
-          const fecha = new Date();
-          const fechas =
-            fecha.getFullYear() +
-            '-' +
-            (fecha.getMonth() + 1).toString().padStart(2, '0') +
-            '-' +
-            fecha.getDate().toString().padStart(2, '0');
-          const hora =
-            fecha.getHours().toString().padStart(2, '0') +
-            ':' +
-            fecha.getMinutes().toString().padStart(2, '0') +
-            ':' +
-            fecha.getSeconds().toString().padStart(2, '0');
-          const fechaCompleta = new Date(fechas + ' ' + hora);
-          this.codigo.dtAsistencia = fechaCompleta;
-          const marcar = this.codigo.dtTurnoInicia > fechaCompleta ? 1 : 2;
-          this.codigo.iTipoAsiId = marcar;
-        },
-        error: () => {
-          this.mensajeError('Mensaje del sistema', 'Error al buscar alumnos');
-        },
-      });
+        this.servicioGeneral.getRecibirDatos(enlace).subscribe({
+          next: data => {
+            this.codigo = data.data[0];
+            if (!this.codigo) {
+              this.mensajeError('Mensaje del sistema', 'No se encontro el registro');
+              this.visible = false;
+              this.buscar = true;
+              return;
+            }
+            this.codigo.dtAsistencia = this.marcador;
+          },
+          error: () => {
+            this.mensajeError('Mensaje del sistema', 'Error al buscar alumnos');
+            this.buscar = true;
+          },
+        });
+      }
     }
   }
 
-  guardarAsistenciaSacnner() {
+  guardarAsistenciaScanner() {
+    const marcar = this.codigo.dtTurnoInicia > this.codigo.dtAsistencia ? 1 : 2;
+    this.codigo.iTipoAsiId = marcar;
     const enlace = {
       petition: 'post',
       group: 'asi',
@@ -313,10 +313,12 @@ export class AsistenciasComponent implements OnInit {
         }
         this.temporal.push(this.codigo);
         this.visible = false;
+        this.buscar = true;
       },
       error: () => {
         this.mensajeError('Mensaje del sistema', 'Error al guardar asistencia');
         this.visible = false;
+        this.buscar = true;
       },
     });
   }

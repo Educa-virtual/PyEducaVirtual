@@ -312,7 +312,7 @@
         </div>
       </p-tabPanel>
       <p-tabPanel header="Registrar por QR">
-        <div class="grid h-full">
+        <div class="grid">
           <div class="col-12 lg:col-6">
             <zxing-scanner
               *ngIf="scanner"
@@ -323,17 +323,36 @@
             </zxing-scanner>
             <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
           </div>
-          <div class="col-12 lg:col-6 card">
+          <div class="col-12 lg:col-6 card grid">
             <div class="col-12">
               <p-messages [(value)]="messages" [enableService]="false" [closable]="false" />
             </div>
             <div class="col-12">
+              <p-calendar
+                appendTo="body"
+                styleClass="w-full"
+                inputId="calendar-24h"
+                [(ngModel)]="marcador"
+                [showIcon]="true"
+                [showTime]="true"
+              />
+            </div>
+            <div class="col-12 xl:col-6">
               <p-button
                 class="expandir"
                 severity="success"
                 label="Registrar"
                 icon="pi pi-qrcode"
-                (click)="scanner = !scanner; progreso = true; estado = true"
+                (click)="scanner = true; progreso = true; estado = true"
+              ></p-button>
+            </div>
+            <div class="col-12 xl:col-6">
+              <p-button
+                class="expandir"
+                severity="primary"
+                label="Cerrar Registro"
+                icon="pi pi-lock"
+                (click)="scanner = false; progreso = false; estado = false"
               ></p-button>
             </div>
             <p-table
@@ -374,22 +393,35 @@
   [style]="{ width: '35rem' }"
 >
   <div class="flex align-items-center mt-3 mb-3">
-    <div class="font-semibold">Nombre Completo: {{ codigo.completo }}</div>
+    <div class="font-semibold">
+      Nombre Completo: {{ codigo.completo ? codigo.completo : 'No encontrado' }}
+    </div>
   </div>
   <div class="flex align-items-center mb-3">
-    <div class="font-semibold">DNI: {{ codigo.cPersDocumento }}</div>
+    <div class="font-semibold">
+      DNI: {{ codigo.cPersDocumento ? codigo.cPersDocumento : 'No encontrado' }}
+    </div>
   </div>
   <div class="flex align-items-center mb-5">
     <div class="font-semibold">
-      Fecha y Hora de Registro: {{ codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+      Fecha y Hora de Registro:
+      {{
+        codigo.dtAsistencia ? (codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss') : 'No encontrado'
+      }}
     </div>
   </div>
   <div class="flex justify-content-end">
-    <p-button class="mr-2" label="Cancel" severity="secondary" (onClick)="visible = false" />
     <p-button
+      class="mr-2"
+      label="Cancel"
+      severity="secondary"
+      (onClick)="visible = false; buscar = true"
+    />
+    <p-button
+      *ngIf="codigo.dtAsistencia"
       label="Guardar Asistencia"
       severity="success"
-      (onClick)="guardarAsistenciaSacnner()"
+      (onClick)="guardarAsistenciaScanner()"
     />
   </div>
 </p-dialog>

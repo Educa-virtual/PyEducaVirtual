@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompartirFichaService } from '../../services/compartir-ficha.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service';
@@ -9,29 +9,23 @@ import { SwitchInputComponent } from '../shared/switch-input/switch-input.compon
 import { FuncionesBienestarService } from '../../services/funciones-bienestar.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { APODERADO, ESTUDIANTE } from '@/app/servicios/seg/perfiles';
+import { FichaDiscapacidadRegistroComponent } from './ficha-discapacidad-registro/ficha-discapacidad-registro.component';
 
 @Component({
   selector: 'app-ficha-discapacidad',
   standalone: true,
-  imports: [PrimengModule, SwitchInputComponent],
+  imports: [PrimengModule, SwitchInputComponent, FichaDiscapacidadRegistroComponent],
   templateUrl: './ficha-discapacidad.component.html',
   styleUrl: './ficha-discapacidad.component.scss',
 })
 export class FichaDiscapacidadComponent implements OnInit {
   iFichaDGId: any = null;
   formDiscapacidad: FormGroup;
-  visibleProgramaInput: Array<boolean>;
-  visibleLimitacionesInput: Array<boolean>;
   ficha_registrada: boolean = false;
-  discapacidades: Array<object>;
 
   perfil: any;
   es_estudiante_apoderado: boolean = false;
   formLabels: any;
-
-  get controles_discapacidades(): FormArray {
-    return this.formDiscapacidad.get('controles_discapacidades') as FormArray;
-  }
 
   private _messageService = inject(MessageService);
 
@@ -65,8 +59,6 @@ export class FichaDiscapacidadComponent implements OnInit {
         cFichaDGCodigoOMAPED: [null, Validators.maxLength(50)],
         bOtroProgramaDiscapacidad: [false],
         cOtroProgramaDiscapacidad: [null, Validators.maxLength(50)],
-        controles_discapacidades: this.fb.array([]),
-        jsonDiscapacidades: [null],
       });
     } catch (error) {
       console.log(error, 'error inicializando formulario');
@@ -80,13 +72,6 @@ export class FichaDiscapacidadComponent implements OnInit {
         ? '¿El estudiante está registrado en algún programa?'
         : '¿Está registrado/a en algún programa?',
     };
-
-    this.datosFichaBienestar.getFichaParametros().subscribe((data: any) => {
-      this.discapacidades = this.datosFichaBienestar.getDiscapacidades(data?.discapacidades);
-      if (this.discapacidades.length > 0) {
-        this.crearControlesDiscapacidades(this.discapacidades);
-      }
-    });
 
     if (this.iFichaDGId) {
       this.verFichaDiscapacidad();
@@ -127,43 +112,7 @@ export class FichaDiscapacidadComponent implements OnInit {
       data.bOtroProgramaDiscapacidad,
       'boolean'
     );
-    if (data.discapacidades) {
-      const discapacidades = JSON.parse(data.discapacidades).map((discapacidad: any) => {
-        return {
-          value: discapacidad.iDiscId,
-          estado: discapacidad.bDiscFicha == 1 ? true : false,
-          obs: discapacidad.cDiscFichaObs || null,
-        };
-      });
-      this.crearControlesDiscapacidades(discapacidades);
-    }
-
     this.funcionesBienestar.formMarkAsDirty(this.formDiscapacidad);
-  }
-
-  crearControlesDiscapacidades(discapacidades: Array<object>) {
-    const formArray = this.formDiscapacidad.get('controles_discapacidades') as FormArray;
-    formArray.clear();
-    this.discapacidades.map((param: any) => {
-      const registro = discapacidades.find((registro: any) => registro.value === param.value);
-      let grupo: FormGroup = null;
-      if (!registro) {
-        grupo = this.fb.group({
-          iDiscId: [param.value],
-          bDiscFicha: [false],
-          cDiscFichaObs: [null],
-        });
-        formArray.push(grupo);
-      } else {
-        grupo = this.fb.group({
-          iDiscId: [param.value],
-          bDiscFicha: [registro['estado']],
-          cDiscFichaObs: [registro['obs']],
-        });
-        formArray.push(grupo);
-        grupo.get('bDiscFicha').setValue(registro['estado'], { emitEvent: true });
-      }
-    });
   }
 
   actualizar() {
@@ -175,10 +124,6 @@ export class FichaDiscapacidadComponent implements OnInit {
       });
       return;
     }
-
-    this.formDiscapacidad
-      .get('jsonDiscapacidades')
-      .setValue(JSON.stringify(this.controles_discapacidades.value));
 
     this.datosFichaBienestar.actualizarFichaDiscapacidad(this.formDiscapacidad.value).subscribe({
       next: () => {

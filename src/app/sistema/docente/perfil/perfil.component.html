@@ -1,22 +1,18 @@
 <app-modal-primeng
   [title]="'Mis datos personales'"
   [showModal]="showModal"
-  [width]="'45rem'"
+  [width]="'60rem'"
   (accionBtnItem)="accionCloseItem.emit()"
 >
   <form class="grid mt-4" [formGroup]="formPersonas">
-    <div class="col-12 md:col-5 flex flex-column align-items-center">
+    <div class="col-12 md:col-5 align-items-center">
       <app-image-upload-primeng
-        (actionImageUpload)="accionBtnItem($event)"
+        (actionImageUpload)="actualizarRutaFotoPerfil($event)"
         [urlFoto]="formPersonas.value.cPersFotografia"
       ></app-image-upload-primeng>
     </div>
     <div class="col-12 md:col-7">
       <div class="grid">
-        <!--<div class="col-12 mt-2">
-                    <h3 class="text-primary">Datos Personales</h3>
-                    <p-divider></p-divider>
-                </div>-->
         <div class="col-12">
           <p-inputGroup>
             <p-inputGroupAddon> Apellidos </p-inputGroupAddon>
@@ -112,8 +108,8 @@
   </div>
 </app-modal-primeng>
 <p-toast></p-toast>
-<app-form-verificar-correo
+<!--<app-form-verificar-correo
   [showModalVerificarCorreo]="showModalVerificarCorreo"
   [iPersConId]="iPersConId"
   (accionBtnItem)="accionBtnItem($event)"
-></app-form-verificar-correo>
+></app-form-verificar-correo>-->

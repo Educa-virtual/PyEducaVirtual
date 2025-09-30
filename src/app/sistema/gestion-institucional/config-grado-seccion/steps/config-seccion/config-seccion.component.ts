@@ -572,14 +572,14 @@ export class ConfigSeccionComponent implements OnInit {
       text: 'center',
     },
 
-    {
-      type: 'text',
-      width: '30%',
-      field: 'nombres',
-      header: 'Tutor',
-      text_header: 'center',
-      text: 'center',
-    },
+    // {
+    //   type: 'text',
+    //   width: '30%',
+    //   field: 'nombres',
+    //   header: 'Tutor',
+    //   text_header: 'center',
+    //   text: 'center',
+    // },
 
     {
       type: 'text',

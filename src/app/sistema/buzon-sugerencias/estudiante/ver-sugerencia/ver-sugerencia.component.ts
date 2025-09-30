@@ -31,29 +31,7 @@ export class VerSugerenciaComponent implements OnInit, OnChanges {
   @Input() selectedItem: any = null;
   sugerenciaHtml: SafeHtml = '';
   respuestaHtml: SafeHtml = '';
-  //private _selectedItem: any
   archivos: any[] = [];
-  //nombreDirector: string = 'Director: '
-  //fechaRespuesta: string = 'Fecha de respuesta'
-
-  /*@Input()
-      set selectedItem(value: any) {
-          this._selectedItem = value
-          if (this.form) {
-              this.form.patchValue({
-                  cNombreEstudiante: this._selectedItem?.cNombreEstudiante,
-                  dtFechaCreacion: this._selectedItem?.dtFechaCreacion,
-                  cAsunto: this._selectedItem?.cAsunto,
-                  cPrioridadNombre: this._selectedItem?.cPrioridadNombre,
-                  cSugerencia: this._selectedItem?.cSugerencia,
-                  cRespuesta: this._selectedItem?.cRespuesta,
-              })
-              this.obtenerArchivosSugerencia()
-          }
-      }*/
-  /*get selectedItem(): any {
-          return this._selectedItem
-      }*/
   constructor(
     private fb: FormBuilder,
     private buzonSugerenciasService: BuzonSugerenciasEstudianteService,

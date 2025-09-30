@@ -17,7 +17,7 @@
           #overlayAnchor
           (click)="filtros.toggle($event)"
           icon="pi pi-filter"
-          class="w-full"
+          class="flex"
           severity="success"
           [label]="'Ver filtros aplicados (' + filtros_aplicados + ')'"
         />
@@ -153,7 +153,21 @@
                   </p-inputGroup>
                 </div>
                 <div class="col-12">
-                  <p-button label="Aplicar" severity="success" (click)="verResumen()" />
+                  <div class="flex flex-wrap gap-2">
+                    <p-button
+                      label="Aplicar"
+                      severity="success"
+                      (click)="verResumen()"
+                      class="flex"
+                    />
+                    <p-button
+                      label="Descargar gráficos"
+                      icon="pi pi-download"
+                      class="p-button-warning"
+                      class="flex"
+                      (onClick)="descargarReporte()"
+                    />
+                  </div>
                 </div>
               </div>
             </form>

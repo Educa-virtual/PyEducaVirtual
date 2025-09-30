@@ -51,7 +51,10 @@ export class FichaDeclaracionComponent implements OnInit {
   ) {
     this.iPersId = this.route.snapshot.params['id'] || 0;
     this.perfil = this.store.getItem('dremoPerfil');
-    if (this.perfiles_permitidos.includes(Number(this.perfil.iPerfilId))) {
+    if (
+      Number(this.perfil.iPerfilId) !== APODERADO &&
+      Number(this.iPersId) !== this.perfil.iPersId
+    ) {
       this.iPersId = Number(this.perfil.iPersId);
       this.router.navigate([`/bienestar/ficha-declaracion/${this.iPersId}`]);
     }
@@ -116,6 +119,6 @@ export class FichaDeclaracionComponent implements OnInit {
   }
 
   salir() {
-    this.router.navigate(['/bienestar/gestion-fichas-apoderado']);
+    this.router.navigate(['/']);
   }
 }

@@ -323,6 +323,13 @@
   <p-fieldset legend="Adicionales" [toggleable]="true">
     <div class="grid p-fluid">
       <div class="col-12">
+        <app-input-simple
+          inputType="text"
+          [inputControl]="$any(formFamiliar.controls['cFamiliarTelefonoCelular'])"
+          addonLabel="Teléfono o celular de contacto"
+        />
+      </div>
+      <div class="col-12">
         <app-dropdown-simple
           addonLabel="Ocupación"
           [dropdownItems]="ocupaciones"

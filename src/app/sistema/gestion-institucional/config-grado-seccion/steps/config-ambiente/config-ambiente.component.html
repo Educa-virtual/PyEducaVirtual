@@ -131,6 +131,7 @@
             <label for="iAmbienteAforo">Aforo máximo</label>
           </span>
         </div>
+
         <div class="field col-12 md:col-4">
           <span class="p-float-label">
             <input
@@ -174,12 +175,47 @@
             <h3>Estado</h3>
           </span>
         </div>
+
         <div class="field col-12 md:col-2">
           <span class="p-float-label">
             <p-inputSwitch formControlName="bAmbienteEstado" [trueValue]="1" [falseValue]="0" />
           </span>
         </div>
-
+        <div class="field col-12 md:col-8">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link" style="color: #333437"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              [placeholder]="filesUrl.length ? filesUrl[0]['name'] : 'seleccionar imagen'"
+              class="w-full p-inputtext-sm opacity-100"
+              pInputText
+              readonly
+            />
+            <button
+              pButton
+              pRipple
+              type="button"
+              severity="primary"
+              class="p-button-primary btn-file-image"
+            >
+              <i class="pi pi-upload"></i
+              ><input type="file" (change)="onUploadChange($event, 'ambiente')" accept=".png " />
+            </button>
+            <button
+              type="button"
+              (click)="openLink(filesUrl.length ? filesUrl[0]['ruta'] : null)"
+              [disabled]="!filesUrl"
+              pButton
+              icon="pi pi-eye"
+              class="p-button-info"
+            >
+              &nbsp;
+            </button>
+          </p-inputGroup>
+        </div>
         <div class="field col-12 md:col-4">
           <span class="p-float-label">
             @if (option === 'crear') {

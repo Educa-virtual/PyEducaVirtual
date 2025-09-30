@@ -1,6 +1,6 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 
-<p-panel>
+<p-panel id="seccion_imprimible">
   <ng-template pTemplate="header">
     <div class="flex justify-between align-center">
       <span class="text-xl">{{ title }}</span>
@@ -31,6 +31,13 @@
             <small></small>
           </div>
         </p-fieldset>
+        <br />
+        <p-button
+          label="Descargar gráficos"
+          icon="pi pi-download"
+          class="p-button-warning"
+          (onClick)="descargarReporte()"
+        />
       </div>
 
       <!-- FILTROS -->

@@ -70,6 +70,7 @@ export class ConfigResumenComponent implements OnInit {
     this.items = this.stepService.itemsStep;
     this.configuracion = this.stepService.configuracion;
     this.perfil = this.stepService.perfil;
+    console.log(this.perfil, 'this.perfil');
   }
 
   ngOnInit(): void {
@@ -227,6 +228,8 @@ export class ConfigResumenComponent implements OnInit {
         totalHorasPendientes: this.totalHorasPendientes,
         perfil: this.perfil,
         configuracion: this.configuracion,
+        lista_grados: this.lista_grados,
+        tablaPivot: this.tablaPivot,
       },
     };
     this.query.generarPdf(params).subscribe({
@@ -235,7 +238,7 @@ export class ConfigResumenComponent implements OnInit {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'archivo.pdf';
+        a.download = 'reporte_ambientes.pdf';
         a.click();
         window.URL.revokeObjectURL(url);
       },

@@ -7,12 +7,20 @@
             placeholder="Módulo" styleClass="border-0 h-2rem align-items-center"
             (onChange)="changePerfil()"></p-dropdown> -->
   </div>
-  <p-avatar
+  <!--<p-avatar
     [image]="fotografia"
     size="large"
     shape="circle"
     class="display-none"
     (onImageError)="fotografia = './assets/images/icons/IconUserAccount.png'"
+  />-->
+  <img
+    [src]="fotografia"
+    alt=""
+    width="40vw"
+    height="40vh"
+    class="perfil-redondo display-none"
+    (error)="fotografia = './assets/images/icons/IconUserAccount.png'"
   />
 
   <button class="p-link button-menu" (click)="menu.toggle($event)">
@@ -31,6 +39,7 @@
   <app-perfil
     [showModal]="showModalDatosPersonales"
     (accionCloseItem)="showModalDatosPersonales = false"
+    [(fotoParent)]="fotografia"
   ></app-perfil>
 
   <app-cambiar-constrasena

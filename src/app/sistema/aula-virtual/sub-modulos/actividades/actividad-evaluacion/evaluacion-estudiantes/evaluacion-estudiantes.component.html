@@ -1,344 +1,312 @@
 <app-toolbar-primeng [title]="'Evaluación Formativa: ' + (evaluacion?.cHeader || '')">
-  <!-- <p class="font-bold text-black">
-        {{ iPreguntaId }} de {{ evaluacion?.preguntas?.length }}
-    </p> -->
 </app-toolbar-primeng>
-<div class="bg-white shadow-lg rounded-lg p-4 h-64 flex justify-content-end" [class]="classTime">
-  <app-time [inicio]="dInicio" [fin]="evaluacion?.dFin" (accionTime)="timeEvent($event)"></app-time>
-</div>
-<div class="card col-12 mb-5 p-3 mt-2 relative" *ngFor="let item of preguntas; let i = index">
-  <div class="tag ml-3 font-bold">
-    #{{ i + 1 }} {{ item.cTipo }}:
-    <ng-container *ngIf="item.idEncabPregId"> &nbsp;{{ item.cEncabPregTitulo }} </ng-container>
-  </div>
+
+<div
+  class="grid align-items-center"
+  *ngIf="!bLoadingPreguntas && !mensajeError && preguntas.length"
+>
+  <!-- Columna izquierda -->
   <div
-    class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2 overflow-auto break-words"
+    class="col-12 md:col-2 flex justify-content-center md:justify-content-start align-items-center"
   >
-    <div [innerHTML]="item.idEncabPregId ? item.cEncabPregContenido : item.cEvalPregPregunta"></div>
+    <p-button
+      [text]="true"
+      label="Recargar"
+      severity="primary"
+      class="p-button-text p-button-rounded p-button-sm ml-0 md:ml-3"
+      icon="pi pi-refresh"
+      (onClick)="obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(evaluacion?.iEvaluacionId)"
+    >
+    </p-button>
   </div>
 
-  <div class="grid">
-    <div class="col-12 mt-3" *ngIf="item.cEvalPregTextoAyuda">
-      <p-message
-        styleClass="w-full"
-        severity="info"
-        [text]="'Texto de ayuda: ' + item.cEvalPregTextoAyuda"
-      ></p-message>
-    </div>
-    @if (item.idEncabPregId) {
-      <div class="col-12">
-        <div class="grid mt-2 mx-2">
-          <ng-container *ngFor="let jsonPreguntas of item.jsonPreguntas; let y = index">
-            <!-- {{jsonPreguntas.jsonAlternativas|json}} -->
+  <!-- Columna centro -->
+  <div class="col-12 md:col-6 flex justify-content-center align-items-center">
+    <p-button
+      *ngFor="let item of preguntas; let i = index"
+      (onClick)="activeIndex = i"
+      [rounded]="true"
+      [label]="i + 1 + ''"
+      styleClass="w-2rem h-2rem p-0 mx-1"
+      [outlined]="activeIndex !== i"
+      size="small"
+      [severity]="item.iMarcado ? 'success' : 'primary'"
+    />
+  </div>
 
+  <!-- Columna derecha -->
+  <div
+    class="col-12 md:col-4 flex justify-content-center md:justify-content-end align-items-center"
+    [class]="classTime"
+  >
+    <app-time
+      [inicio]="dInicio"
+      [fin]="evaluacion?.dFin"
+      (accionTime)="timeEvent($event)"
+    ></app-time>
+  </div>
+</div>
+
+<!-- Mensaje de error -->
+<div class="card col-12 mb-5 p-3 mt-2 relative" *ngIf="mensajeError">
+  <p-messages severity="error">
+    <ng-template pTemplate>
+      <div class="flex align-items-center justify-content-between w-full">
+        <div class="ml-2 font-bold">{{ mensajeError }}</div>
+        <p-button
+          [text]="true"
+          label="Recargar"
+          severity="danger"
+          class="p-button-text p-button-rounded p-button-sm ml-3"
+          icon="pi pi-refresh"
+          (onClick)="
+            obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(evaluacion?.iEvaluacionId)
+          "
+        >
+        </p-button>
+      </div>
+    </ng-template>
+  </p-messages>
+</div>
+
+<!-- Mensaje de no hay preguntas -->
+<div
+  class="card col-12 mb-5 p-3 mt-2 relative"
+  *ngIf="!bLoadingPreguntas && !mensajeError && !preguntas.length"
+>
+  <p-messages severity="info">
+    <ng-template pTemplate>
+      <div class="flex align-items-center justify-content-between w-full">
+        <div class="ml-2 font-bold">No hay aún preguntas para esta evaluación formativa.</div>
+        <p-button
+          [text]="true"
+          label="Recargar"
+          severity="info"
+          class="p-button-text p-button-rounded p-button-sm ml-3"
+          icon="pi pi-refresh"
+          (onClick)="
+            obtenerEvaluacionPreguntasxiEvaluacionIdxiEstudianteId(evaluacion?.iEvaluacionId)
+          "
+        >
+        </p-button>
+      </div>
+    </ng-template>
+  </p-messages>
+</div>
+
+<!-- Preguntas -->
+<ng-container *ngIf="!bLoadingPreguntas && !mensajeError && preguntas.length">
+  <div class="card col-12 mb-5 p-3 mt-4">
+    <ng-container *ngFor="let item of preguntas; let i = index">
+      <!-- Solo mostrar el contenido de la pregunta activa -->
+      <div [hidden]="activeIndex !== i">
+        <div class="grid">
+          <div [class]="item.bArgumentar ? 'col-12 md:col-7' : 'col-12'">
+            <div class="tag ml-3 font-bold">
+              #{{ i + 1 }} {{ item.cTipo }}:
+              <ng-container *ngIf="item.idEncabPregId">
+                &nbsp;{{ item.cEncabPregTitulo }}
+              </ng-container>
+            </div>
+
+            <!-- Enunciado principal -->
             <div
-              class="col-12 p-3 p-2 border-1 border-orange-200 border-round bg-orange-50 min-h-10rem mt-2"
+              class="p-3 border-1 border-blue-200 border-round bg-blue-50 min-h-10rem mt-2 overflow-auto break-words"
             >
-              <span class="font-bold">Pregunta: {{ i + 1 }}.{{ y + 1 }}</span>
-              <div [innerHTML]="jsonPreguntas.cEvalPregPregunta"></div>
-            </div>
-            <div class="col-12 mt-3" *ngIf="jsonPreguntas.cEvalPregTextoAyuda">
-              <p-message
-                styleClass="w-full"
-                severity="info"
-                [text]="'Texto de ayuda: ' + jsonPreguntas.cEvalPregTextoAyuda"
-              ></p-message>
+              <div
+                [innerHTML]="item.idEncabPregId ? item.cEncabPregContenido : item.cEvalPregPregunta"
+              ></div>
             </div>
 
-            <ng-container *ngIf="[3, '3'].includes(jsonPreguntas.iTipoPregId)">
-              <div class="col-12">
-                <div class="flex mt-2 ml-2">
-                  <textarea
-                    class="w-full"
-                    rows="4"
-                    placeholder="Ingrese su respuesta"
-                    pInputText
-                    [(ngModel)]="jsonPreguntas.cRptaTexto"
-                    (blur)="enviarRpta('libre', itemPreguntas, jsonPreguntas)"
-                    [disabled]="bloquearRespuestas"
-                  ></textarea>
-                </div>
+            <div class="grid">
+              <!-- Texto de ayuda -->
+              <div class="col-12 mt-3" *ngIf="item.cEvalPregTextoAyuda">
+                <p-message
+                  styleClass="w-full"
+                  severity="info"
+                  [text]="'Texto de ayuda: ' + item.cEvalPregTextoAyuda"
+                ></p-message>
               </div>
-            </ng-container>
-            <ng-container *ngFor="let alternativa of jsonPreguntas.jsonAlternativas">
-              <div class="col-12" *ngIf="[1, '1', 4, '4'].includes(jsonPreguntas.iTipoPregId)">
-                <div class="flex mt-2 ml-2">
-                  <p-radioButton
-                    [inputId]="alternativa.cBancoAltLetra"
-                    [value]="alternativa.cBancoAltLetra"
-                    [(ngModel)]="jsonPreguntas.cRptaRadio"
-                    [name]="'preg_' + jsonPreguntas.iPreguntaId"
-                    (onClick)="enviarRpta('unica', alternativa, jsonPreguntas)"
-                    [disabled]="bloquearRespuestas"
-                  >
-                  </p-radioButton>
-                  &nbsp;&nbsp;
-                  <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
+
+              <!-- Preguntas con encabezado -->
+              <ng-container *ngIf="item.idEncabPregId">
+                <div
+                  class="col-12 grid mt-2 mx-2"
+                  *ngFor="let jsonPreguntas of item.jsonPreguntas; let y = index"
+                >
+                  <div [class]="jsonPreguntas.bArgumentar ? 'col-12 md:col-7' : 'col-12'">
+                    <!-- Subpregunta -->
+                    <div
+                      class="col-12 p-3 p-2 border-1 border-orange-200 border-round bg-orange-50 min-h-10rem mt-2"
+                    >
+                      <span class="font-bold">Pregunta: {{ i + 1 }}.{{ y + 1 }}</span>
+                      <div [innerHTML]="jsonPreguntas.cEvalPregPregunta"></div>
+                    </div>
+
+                    <!-- Texto de ayuda subpregunta -->
+                    <div class="col-12 mt-3" *ngIf="jsonPreguntas.cEvalPregTextoAyuda">
+                      <p-message
+                        styleClass="w-full"
+                        severity="info"
+                        [text]="'Texto de ayuda: ' + jsonPreguntas.cEvalPregTextoAyuda"
+                      ></p-message>
+                    </div>
+
+                    <!-- Respuesta abierta -->
+                    <ng-container *ngIf="[3, '3'].includes(jsonPreguntas.iTipoPregId)">
+                      <div class="col-12">
+                        <div class="flex mt-2 ml-2">
+                          <textarea
+                            class="w-full"
+                            rows="4"
+                            placeholder="Ingrese su respuesta"
+                            pInputText
+                            [(ngModel)]="jsonPreguntas.cRptaTexto"
+                            [disabled]="bloquearRespuestas"
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div class="col-12 text-right" *ngIf="!bloquearRespuestas">
+                        <p-button
+                          (onClick)="enviarRpta('libre', itemPreguntas, jsonPreguntas)"
+                          [label]="'Guardar respuesta'"
+                          size="small"
+                          [severity]="'success'"
+                        />
+                      </div>
+                    </ng-container>
+
+                    <!-- Alternativas -->
+                    <ng-container *ngFor="let alternativa of jsonPreguntas.jsonAlternativas">
+                      <!-- Opción única -->
+                      <ng-container *ngIf="[1, '1', 4, '4'].includes(jsonPreguntas.iTipoPregId)">
+                        <div class="col-12">
+                          <div class="flex mt-2 ml-2">
+                            <p-radioButton
+                              [inputId]="alternativa.cBancoAltLetra"
+                              [value]="alternativa.cBancoAltLetra"
+                              [(ngModel)]="jsonPreguntas.cRptaRadio"
+                              [name]="'preg_' + jsonPreguntas.iPreguntaId"
+                              (onClick)="enviarRpta('unica', alternativa, jsonPreguntas)"
+                              [disabled]="bloquearRespuestas"
+                            ></p-radioButton>
+                            &nbsp;&nbsp;
+                            <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <!-- Opción múltiple -->
+                      <ng-container *ngIf="[2, '2'].includes(jsonPreguntas.iTipoPregId)">
+                        <div class="col-12">
+                          <div class="flex mt-2 ml-2">
+                            <p-checkbox
+                              [inputId]="alternativa.cBancoAltLetra"
+                              [value]="alternativa.cBancoAltLetra"
+                              [(ngModel)]="jsonPreguntas.cRptaCheck"
+                              [binary]="false"
+                              (onChange)="enviarRpta('multiple', alternativa, jsonPreguntas)"
+                              [disabled]="bloquearRespuestas"
+                            ></p-checkbox>
+                            &nbsp;&nbsp;
+                            <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+
+                  <!-- Pizarra subpregunta -->
+                  <div *ngIf="jsonPreguntas.bArgumentar" class="col-12 md:col-5">
+                    <app-pizarra-digital
+                      (exportImageSvg)="guardarDibujo($event)"
+                      [id]="jsonPreguntas.iEvalPregId"
+                      [svgUrl]="jsonPreguntas.cEvalRptaPizarraBase64"
+                    ></app-pizarra-digital>
+                  </div>
                 </div>
-              </div>
-              <div class="col-12" *ngIf="[2, '2'].includes(jsonPreguntas.iTipoPregId)">
-                <div class="flex mt-2 ml-2">
-                  <p-checkbox
-                    [inputId]="alternativa.cBancoAltLetra"
-                    [value]="alternativa.cBancoAltLetra"
-                    [(ngModel)]="jsonPreguntas.cRptaCheck"
-                    [binary]="false"
-                    (onChange)="enviarRpta('multiple', jsonPreguntas, item)"
-                    [disabled]="bloquearRespuestas"
-                  >
-                  </p-checkbox>
-                  &nbsp;&nbsp;
-                  <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
+              </ng-container>
+
+              <!-- Pregunta sin encabezado -->
+              <ng-container *ngIf="!item.idEncabPregId">
+                <!-- Respuesta abierta -->
+                <ng-container *ngIf="[3, '3'].includes(item.iTipoPregId)">
+                  <div class="col-12">
+                    <div class="flex mt-2 ml-2">
+                      <textarea
+                        class="w-full"
+                        rows="4"
+                        placeholder="Ingrese su respuesta"
+                        pInputText
+                        [(ngModel)]="item.cRptaTexto"
+                        [disabled]="bloquearRespuestas"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="col-12 text-right" *ngIf="!bloquearRespuestas">
+                    <p-button
+                      (onClick)="enviarRpta('libre', itemPreguntas, item)"
+                      [label]="'Guardar respuesta'"
+                      size="small"
+                      [severity]="'success'"
+                    />
+                  </div>
+                </ng-container>
+
+                <!-- Alternativas -->
+                <ng-container *ngFor="let alternativa of item.jsonAlternativas">
+                  <!-- Opción única -->
+                  <ng-container *ngIf="[1, '1', 4, '4'].includes(item.iTipoPregId)">
+                    <div class="col-12">
+                      <div class="flex mt-2 ml-2">
+                        <p-radioButton
+                          [inputId]="alternativa.cBancoAltLetra"
+                          [value]="alternativa.cBancoAltLetra"
+                          [(ngModel)]="item.cRptaRadio"
+                          [name]="'preg_' + item.iPreguntaId"
+                          (onClick)="enviarRpta('unica', alternativa, item)"
+                          [disabled]="bloquearRespuestas"
+                        ></p-radioButton>
+                        &nbsp;&nbsp;
+                        <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  <!-- Opción múltiple -->
+                  <ng-container *ngIf="[2, '2'].includes(item.iTipoPregId)">
+                    <div class="col-12">
+                      <div class="flex mt-2 ml-2">
+                        <p-checkbox
+                          [inputId]="alternativa.cBancoAltLetra"
+                          [value]="alternativa.cBancoAltLetra"
+                          [(ngModel)]="item.cRptaCheck"
+                          [binary]="false"
+                          (onChange)="enviarRpta('multiple', alternativa, item)"
+                          [disabled]="bloquearRespuestas"
+                        ></p-checkbox>
+                        &nbsp;&nbsp;
+                        <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Pizarra principal -->
+          <div *ngIf="item.bArgumentar" class="col-12 md:col-5">
+            <app-pizarra-digital
+              (exportImageSvg)="guardarDibujo($event)"
+              [id]="item.iEvalPregId"
+              [svgUrl]="item.cEvalRptaPizarraBase64"
+            ></app-pizarra-digital>
+          </div>
         </div>
       </div>
-    }
-    @if (!item.idEncabPregId) {
-      <ng-container *ngIf="[3, '3'].includes(item.iTipoPregId)">
-        <div class="col-12">
-          <div class="flex mt-2 ml-2">
-            <textarea
-              class="w-full"
-              rows="4"
-              placeholder="Ingrese su respuesta"
-              pInputText
-              [(ngModel)]="item.cRptaTexto"
-              (blur)="enviarRpta('libre', itemPreguntas, item)"
-              [disabled]="bloquearRespuestas"
-            ></textarea>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngFor="let alternativa of item.jsonAlternativas">
-        <div class="col-12" *ngIf="[1, '1', 4, '4'].includes(item.iTipoPregId)">
-          <div class="flex mt-2 ml-2">
-            <p-radioButton
-              [inputId]="alternativa.cBancoAltLetra"
-              [value]="alternativa.cBancoAltLetra"
-              [(ngModel)]="item.cRptaRadio"
-              [name]="'preg_' + item.iPreguntaId"
-              (onClick)="enviarRpta('unica', alternativa, item)"
-              [disabled]="bloquearRespuestas"
-            >
-            </p-radioButton>
-            &nbsp;&nbsp;
-            <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
-          </div>
-        </div>
-        <div class="col-12" *ngIf="[2, '2'].includes(item.iTipoPregId)">
-          <div class="flex mt-2 ml-2">
-            <p-checkbox
-              [inputId]="alternativa.cBancoAltLetra"
-              [value]="alternativa.cBancoAltLetra"
-              [(ngModel)]="item.cRptaCheck"
-              [binary]="false"
-              (onChange)="enviarRpta('multiple', alternativa, item)"
-              [disabled]="bloquearRespuestas"
-            >
-            </p-checkbox>
-            &nbsp;&nbsp;
-            <div [innerHTML]="alternativa.cBancoAltDescripcion"></div>
-          </div>
-        </div>
-        <!-- <div class="col-12" *ngIf="[3, '3'].includes(item.iTipoPregId)">
-          <div class="flex mt-2 ml-2">
-            <textarea
-              class="w-full"
-              rows="4"
-              placeholder="Ingrese su respuesta"
-              pInputText
-              [(ngModel)]="alternativa.cRptaTexto"
-              (blur)="enviarRpta('libre', itemPreguntas, item)"
-              [disabled]="bloquearRespuestas"
-            ></textarea>
-          </div>
-        </div> -->
-      </ng-container>
-    }
-    <div class="col-12"></div>
-    <div class="col-12"></div>
+    </ng-container>
   </div>
-</div>
+</ng-container>
 
-<!-- <div class="grid m-2">
-    <div *ngIf="iPreguntaId > 0 && preguntas?.length >= iPreguntaId">
-        <div class="grid">
-            @if (itemPreguntas['iTipoPregId']) {
-            <div class="col-12">
-                <p class="font-bold">Pregunta {{ iPreguntaId }}</p>
-            </div>
-            <div class="col-12">
-                <div [innerHTML]="itemPreguntas['cBancoPregunta']"></div>
-            </div>
-            @switch (itemPreguntas['iTipoPregId']) {
-            @case (1) {
-            <div class="col-12 px-2" *ngIf="itemPreguntas['alternativas']?.length > 0">
-                <div *ngFor="
-                                    let alternativa of itemPreguntas[
-                                        'alternativas'
-                                    ];
-                                    let i = index
-                                ">
-                    <div class="flex mt-1">
-                        <p-radioButton [inputId]="'alternativa'" name="alternativa"
-                            [value]="alternativa['cBancoAltLetra']" [(ngModel)]="
-                                            itemPreguntas['cRptaRadio']
-                                        " (onClick)="
-                                            enviarRpta('unica', itemPreguntas)
-                                        " />
-                        &nbsp;&nbsp;
-                        <div [innerHTML]="
-                                            alternativa['cBancoAltDescripcion']
-                                        "></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 mt-3" *ngIf="itemPreguntas['cBancoTextoAyuda']">
-                <p-message styleClass="w-full" severity="info" [text]="
-                                    'Texto de ayuda: ' +
-                                    itemPreguntas['cBancoTextoAyuda']
-                                "></p-message>
-            </div>
-            }
-            @case (2) {
-            <div class="col-12 px-2" *ngIf="itemPreguntas['alternativas']?.length > 0">
-                <div *ngFor="
-                                    let alternativa of itemPreguntas[
-                                        'alternativas'
-                                    ]
-                                ">
-                    <div class="flex mt-1">
-                        <p-checkbox [(ngModel)]="alternativa.cRptaCheck" [value]="alternativa['cBancoAltLetra']"
-                            (onChange)="
-                                            enviarRpta(
-                                                'multiple',
-                                                itemPreguntas
-                                            )
-                                        " />
-                        &nbsp;&nbsp;
-                        <div [innerHTML]="
-                                            alternativa['cBancoAltDescripcion']
-                                        "></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mt-3" *ngIf="itemPreguntas['cBancoTextoAyuda']">
-                <p-message styleClass="w-full" severity="info" [text]="
-                                    'Texto de ayuda: ' +
-                                    itemPreguntas['cBancoTextoAyuda']
-                                "></p-message>
-            </div>
-            }
-            @case (3) {
-            <div class="col-12 px-2">
-                <textarea class="w-full" rows="4" placeholder="Ingrese su respuesta" pInputText
-                    [(ngModel)]="itemPreguntas['cRptaTexto']" (blur)="enviarRpta('libre', itemPreguntas)"></textarea>
-            </div>
-            }
-            }
-            } @else {
-            <div class="col-12">
-                <p class="font-bold">Enunciado</p>
-                {{ itemPreguntas['cEncabPregDescripcion'] }}
-            </div>
-            <div class="col-6">
-
-            </div>
-            <div class="col-6 grid">
-                @for (item of itemPreguntas['preguntas']; track item.id) {
-                <div class="col-12">
-                    <div [innerHTML]="item['cBancoPregunta']"></div>
-                </div>
-
-                @switch (item['iTipoPregId']) {
-                @case (1) {
-                <div class="col-12 px-2" *ngIf="item['alternativas']?.length > 0">
-                    <div *ngFor="
-                                            let alternativa of item[
-                                                'alternativas'
-                                            ];
-                                            let i = index
-                                        ">
-                        <div class="flex mt-1">
-                            <p-radioButton [inputId]="'alternativa'" name="alternativa" [value]="
-                                                    alternativa[
-                                                        'cBancoAltLetra'
-                                                    ]
-                                                " [(ngModel)]="item['cRptaRadio']" (onClick)="
-                                                    enviarRpta('unica', item)
-                                                " />
-                            &nbsp;&nbsp;
-                            <div [innerHTML]="
-                                                    alternativa[
-                                                        'cBancoAltDescripcion'
-                                                    ]
-                                                "></div>
-                        </div>
-                    </div>
-                </div>
-                }
-                @case (2) {
-                <div class="col-12 px-2" *ngIf="item['alternativas']?.length > 0">
-                    <div *ngFor="
-                                            let alternativa of item[
-                                                'alternativas'
-                                            ]
-                                        ">
-                        <div class="flex mt-1">
-                            <p-checkbox [(ngModel)]="
-                                                    alternativa.cRptaCheck
-                                                " [value]="
-                                                    alternativa[
-                                                        'cBancoAltLetra'
-                                                    ]
-                                                " (onChange)="
-                                                    enviarRpta('multiple', item)
-                                                " />
-                            &nbsp;&nbsp;
-                            <div [innerHTML]="
-                                                    alternativa[
-                                                        'cBancoAltDescripcion'
-                                                    ]
-                                                "></div>
-                        </div>
-                    </div>
-                </div>
-                }
-                @case (3) {
-                <div class="col-12 px-2">
-                    <textarea class="w-full" rows="4" placeholder="Ingrese su respuesta" pInputText
-                        [(ngModel)]="item['cRptaTexto']" (blur)="enviarRpta('libre', item)"></textarea>
-                </div>
-                }
-                }
-                }
-            </div>
-            }
-             <div class="col-6 mt-2" align="left">
-                <p-button label="Atrás" severity="secondary" *ngIf="iPreguntaId > 1"
-                    (onClick)="regresarPregunta()"></p-button>
-            </div>
-            <div class="col-6 mt-2" align="right">
-                <p-button label="Siguiente" severity="primary" *ngIf="evaluacion?.preguntas?.length > iPreguntaId"
-                    (onClick)="siguienteEvaluacion()"></p-button>
-                <p-button label="Finalizar Evaluación" severity="primary"
-                    *ngIf="evaluacion?.preguntas?.length === iPreguntaId" (onClick)="finalizarEvaluacion()"></p-button>
-            </div> -
-        </div>
-    </div>
-</div> -->
 <p-toast />
-
-<p-confirmDialog>
-  <ng-template pTemplate="message" let-message>
-    <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
-      <i class="pi pi-exclamation-circle text-6xl text-primary-500"></i>
-      <p>{{ message.message }}</p>
-    </div>
-  </ng-template>
-</p-confirmDialog>
-<div class="col-12 floating-header"></div>

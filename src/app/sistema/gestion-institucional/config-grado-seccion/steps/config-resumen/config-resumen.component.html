@@ -67,7 +67,7 @@
           <div class="field col-12 md:col-3">
             <p-inputGroup>
               <p-inputGroupAddon
-                >Total de Docentes Asignados:
+                >Areas con docente:
                 {{ docentes_Asignados }}
               </p-inputGroupAddon>
             </p-inputGroup>
@@ -75,7 +75,7 @@
 
           <div class="field col-12 md:col-3">
             <p-inputGroup>
-              <p-inputGroupAddon>Docentes pendientes: {{ docentes_pendientes }} </p-inputGroupAddon>
+              <p-inputGroupAddon>Areas sin Docente: {{ docentes_pendientes }} </p-inputGroupAddon>
             </p-inputGroup>
           </div>
         </div>
@@ -85,7 +85,7 @@
             <thead>
               <tr>
                 <th>N°</th>
-                <th>Curso</th>
+                <th>Área curricular</th>
                 <th *ngFor="let grado of lista_grados">Grado {{ grado.cGradoNombre }}</th>
               </tr>
             </thead>

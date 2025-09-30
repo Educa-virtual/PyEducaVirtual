@@ -5,6 +5,34 @@
       <ng-template pTemplate="header">
         <span class="text-uppercase">
           <div class="flex flex-column">
+            <div class="flex text-xl">Lengua Materna</div>
+          </div>
+        </span>
+      </ng-template>
+      <div>
+        <app-multi-chart [data_chart]="reportes_recreacion?.lengua_materna" />
+      </div>
+    </p-panel>
+  </div>
+  <div class="col-12 md:col-6">
+    <p-panel>
+      <ng-template pTemplate="header">
+        <span class="text-uppercase">
+          <div class="flex flex-column">
+            <div class="flex text-xl">Etnia</div>
+          </div>
+        </span>
+      </ng-template>
+      <div>
+        <app-multi-chart [data_chart]="reportes_recreacion?.etnia" />
+      </div>
+    </p-panel>
+  </div>
+  <div class="col-12 md:col-6">
+    <p-panel>
+      <ng-template pTemplate="header">
+        <span class="text-uppercase">
+          <div class="flex flex-column">
             <div class="flex text-xl">Deportes que practica</div>
           </div>
         </span>

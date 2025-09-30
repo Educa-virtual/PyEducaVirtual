@@ -1,0 +1,11 @@
+@import './../../gestionar-encuestas/gestionar-encuestas.component.scss';
+
+:host ::ng-deep .p-scrollpanel {
+  padding-right: 1em !important;
+}
+
+:host ::ng-deep .p-scrollpanel-bar {
+  background-color: var(--bg-header-modal) !important;
+  opacity: 1 !important;
+  transition: background-color 0.2s !important;
+}

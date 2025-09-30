@@ -42,11 +42,11 @@ const docente = [
         icon: 'pi pi-fw pi-bell',
         routerLink: ['/docente/comunicados'],
       },
-      {
-        label: 'Portafolio',
-        icon: 'pi pi-fw pi-folder',
-        routerLink: ['/docente/portafolio'],
-      },
+      // {
+      //   label: 'Portafolio',
+      //   icon: 'pi pi-fw pi-folder',
+      //   routerLink: ['/docente/portafolio'],
+      // },
       {
         label: 'Mis Áreas Curriculares',
         icon: 'pi pi-fw pi-book',

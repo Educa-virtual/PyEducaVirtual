@@ -486,9 +486,6 @@ export class AsistenciaComponent implements OnInit {
           item.bgColor = seleccionar.bgColor;
           item.cTipoAsiNombre = seleccionar.cTipoAsiNombre;
         });
-        // this.data.map(index => {
-        //   index.bgcolor = this.estado[index.iTipoAsiId];
-        // });
         this.countAsistenciasModal();
         break;
       case 'get_curso_horario':

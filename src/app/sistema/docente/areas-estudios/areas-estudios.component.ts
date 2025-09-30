@@ -400,6 +400,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         this.reglamentoInterno = JSON.parse(datos.reglamento) || null;
         this.itinerarioInterno = JSON.parse(datos.itinerario) || null;
         this.formato = JSON.parse(datos.portafolio) || null;
+        console.log('revicion', this.formato);
       },
       error: err => {
         console.log(err);

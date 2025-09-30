@@ -292,7 +292,9 @@
         <input
           type="text"
           pInputText
-          [placeholder]="formato.length ? formato[0]['name'] : 'Nombre del Itinerario'"
+          [placeholder]="
+            formato && formato.length > 0 ? formato[0]['name'] : 'Nombre del Itinerario'
+          "
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -309,7 +311,7 @@
         </button>
         <button
           type="button"
-          (click)="descargarArchivo(formato.length ? formato[0]['ruta'] : null)"
+          (click)="descargarArchivo(formato && formato.length > 0 ? formato[0]['ruta'] : null)"
           [disabled]="!formato"
           pButton
           icon="pi pi-eye"
@@ -328,7 +330,9 @@
         <input
           type="text"
           pInputText
-          [placeholder]="formato.length ? formato[1]['name'] : 'Nombre del Itinerario'"
+          [placeholder]="
+            formato && formato.length > 0 ? formato[1]['name'] : 'Nombre del Itinerario'
+          "
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -345,7 +349,7 @@
         </button>
         <button
           type="button"
-          (click)="descargarArchivo(formato.length ? formato[1]['ruta'] : null)"
+          (click)="descargarArchivo(formato && formato.length > 0 ? formato[1]['ruta'] : null)"
           [disabled]="!formato"
           pButton
           icon="pi pi-eye"
@@ -364,7 +368,9 @@
         <input
           type="text"
           pInputText
-          [placeholder]="formato.length ? formato[2]['name'] : 'Nombre del Itinerario'"
+          [placeholder]="
+            formato && formato.length > 0 ? formato[2]['name'] : 'Nombre del Itinerario'
+          "
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -386,7 +392,7 @@
         </button>
         <button
           type="button"
-          (click)="descargarArchivo(formato.length ? formato[2]['ruta'] : null)"
+          (click)="descargarArchivo(formato && formato.length > 0 ? formato[2]['ruta'] : null)"
           [disabled]="!formato"
           pButton
           icon="pi pi-eye"

@@ -237,6 +237,12 @@ export class AsistenciasComponent implements OnInit {
       this.mensajeError('Mensaje del sistema', 'Debes Ingresar los Datos Solicitados');
     }
   }
+
+  /**
+   * @param buscar se encarga de permitir la busqueda evita que se repita la accion
+   * cada vez que se escanea un codigo
+   * @param extraer se encarga de separar el dni y codigo
+   */
   escaner(qr: string) {
     if (this.buscar) {
       this.buscar = false;

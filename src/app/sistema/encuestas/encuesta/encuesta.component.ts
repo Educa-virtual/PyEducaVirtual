@@ -423,6 +423,7 @@ export class EncuestaComponent implements OnInit {
     this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
+    this.messageService.clear();
     if (this.formEncuesta.invalid) {
       this.messageService.add({
         severity: 'warn',
@@ -484,6 +485,7 @@ export class EncuestaComponent implements OnInit {
     this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
+    this.messageService.clear();
     if (this.formEncuesta.invalid) {
       this.messageService.add({
         severity: 'warn',
@@ -544,6 +546,7 @@ export class EncuestaComponent implements OnInit {
     if (item) {
       this.formPoblacion.patchValue(item);
     }
+    this.messageService.clear();
     if (this.formPoblacion.value.iPerfilId === null) {
       this.encuestasService.formMarkAsDirty(this.formPoblacion);
       this.messageService.add({
@@ -586,13 +589,14 @@ export class EncuestaComponent implements OnInit {
       this.formPoblacion.get('iIieeId')?.setValue(this.ies[0]['value']);
     }
 
-    this.obtenerPoblacionObjetivo();
+    this.obtenerPoblacionObjetivo(form);
   }
 
   agregarAcceso(item: any = null) {
     if (item) {
       this.formAccesos.patchValue(item);
     }
+    this.messageService.clear();
     if (this.formAccesos.value.iPerfilId === null || this.formAccesos.value.iPermId === null) {
       this.encuestasService.formMarkAsDirty(this.formAccesos);
       this.messageService.add({
@@ -650,13 +654,13 @@ export class EncuestaComponent implements OnInit {
               Number(data.data.iPoblacionObjetivo) === Number(this.cantidad_poblacion)
             ) {
               this.poblacion = this.poblacion.filter(
-                (poblacion: any) => ultima_poblacion.iEncuPobId != poblacion.iEncuPobId
+                (poblacion: any) => ultima_poblacion.iPobId != poblacion.iPobId
               );
               this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
               this.messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail: 'La última población objetivo indicada es cero, seleccione otra',
+                detail: `La población objetivo indicada (${ultima_poblacion.poblacion}) es cero, seleccione otra`,
               });
             }
             /** Luego cargar cantidad acumulada de población objetivo */

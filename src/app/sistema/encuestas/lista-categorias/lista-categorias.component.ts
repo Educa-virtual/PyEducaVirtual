@@ -47,7 +47,7 @@ export class CategoriasEncuestaComponent implements OnInit {
     DIRECTOR_IE,
     SUBDIRECTOR_IE,
   ];
-  crea_categorias = [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO];
+  crea_categorias = [ADMINISTRADOR_DREMO];
   puede_crear = false;
   USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADO;
 

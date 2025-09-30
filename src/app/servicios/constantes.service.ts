@@ -42,11 +42,11 @@ const docente = [
         icon: 'pi pi-fw pi-bell',
         routerLink: ['/docente/comunicados'],
       },
-      {
-        label: 'Portafolio',
-        icon: 'pi pi-fw pi-folder',
-        routerLink: ['/docente/portafolio'],
-      },
+      // {
+      //   label: 'Portafolio',
+      //   icon: 'pi pi-fw pi-folder',
+      //   routerLink: ['/docente/portafolio'],
+      // },
       {
         label: 'Mis Áreas Curriculares',
         icon: 'pi pi-fw pi-book',
@@ -732,6 +732,11 @@ const administracion = [
             label: 'Reportes académicos',
             icon: 'pi pi-book',
             routerLink: ['/gestion-institucional/reportes-academicos'],
+          },
+          {
+            label: 'Reporte de Asistencia',
+            icon: 'pi pi-chart-bar',
+            routerLink: ['reporte-asistencia-auxiliar'],
           },
           {
             label: 'Estadisticas y ranking de mérito',

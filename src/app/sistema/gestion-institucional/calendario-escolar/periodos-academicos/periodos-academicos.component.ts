@@ -207,7 +207,7 @@ export class PeriodosAcademicosComponent extends MostrarErrorComponent implement
 
     // Configuración de periodos según cantidad
     const periodosConfig = {
-      4: { cantidad: 2, meses: 6, label: 'Semestre' },
+      6: { cantidad: 2, meses: 6, label: 'Semestre' },
       3: { cantidad: 3, meses: 3, label: 'Trimestre' },
       2: { cantidad: 4, meses: 3, label: 'Bimestre' },
     };

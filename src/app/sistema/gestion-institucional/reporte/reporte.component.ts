@@ -49,6 +49,7 @@ export class ReporteComponent {
   cursos: string[] = [];
   tablaEstudiantes: any[] = [];
   iYAcadId: number;
+  anioEscolar: number;
   courses: any = []; //Para la tabla del reporte
 
   constructor(
@@ -61,6 +62,7 @@ export class ReporteComponent {
     this.grados = JSON.parse(this.ConstantesService.grados);
     this.years = this.ConstantesService.years;
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.anioEscolar = this.store.getItem('dremoYear');
   }
 
   limpiar() {
@@ -205,18 +207,44 @@ export class ReporteComponent {
   buscarDocumento() {
     if (this.documento != '') {
       this.courses = [];
+      this.identidad = [];
       this.persona = false;
-      const params = {
-        petition: 'post',
-        group: 'aula-virtual',
-        prefix: 'academico',
-        ruta: 'obtener_datos',
-        data: {
-          cPersDocumento: this.documento,
-          iIieeId: this.iiee,
-        },
-      };
-      this.getInformation(params, 'obtenerHistorial');
+      this.reporteProgresoService
+        .buscarEstudiantePorDocumentoSede(this.documento, this.iYAcadId)
+        .subscribe({
+          next: (response: any) => {
+            //this.courses = response.data;
+
+            if (response.data) {
+              this.persona = true;
+              this.identidad = [
+                {
+                  nombre: response.data.cPersNombre,
+                  paterno: response.data.cPersPaterno,
+                  materno: response.data.cPersMaterno,
+                },
+              ];
+            }
+          },
+          error: err => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Problema al obtener reporte',
+              detail: err.error.message || 'Error desconocido',
+            });
+          },
+        });
+      /*const params = {
+              petition: 'post',
+              group: 'aula-virtual',
+              prefix: 'academico',
+              ruta: 'obtener_datos',
+              data: {
+                cPersDocumento: this.documento,
+                iIieeId: this.iiee,
+              },
+            };
+            this.getInformation(params, 'obtenerHistorial');*/
     } else {
       this.messageService.add({
         severity: 'error',
@@ -239,59 +267,59 @@ export class ReporteComponent {
     this.getReportePdf(params);
   }
   /*mostrarHistorial() {
-        this.historial = JSON.parse(this.datos[0]['historial'])
-        this.fila = []
-        this.columna = []
-        this.historial.forEach((item) => {
-            const area = this.fila.find(
-                (box) => box.cCursoNombre === item.cCursoNombre
-            )
-            if (!area) {
-                this.fila.push({
-                    cCursoNombre: item.cCursoNombre,
-                    nota: [{ promedio: item.nDetMatrPromedio }],
-                })
-            } else {
-                const nuevo = this.fila.find(
-                    (box) => box.cCursoNombre === item.cCursoNombre
-                )
-                nuevo.nota.push({ promedio: item.nDetMatrPromedio })
-            }
-            const encabezado = this.columna.find(
-                (box) => box.cGradoAbreviacion === item.cGradoAbreviacion
-            )
-            if (!encabezado) {
-                this.columna.push({
-                    cGradoAbreviacion: item.cGradoAbreviacion,
-                    cYAcadNombre: item.cYAcadNombre,
-                })
-            }
-        })
+          this.historial = JSON.parse(this.datos[0]['historial'])
+          this.fila = []
+          this.columna = []
+          this.historial.forEach((item) => {
+              const area = this.fila.find(
+                  (box) => box.cCursoNombre === item.cCursoNombre
+              )
+              if (!area) {
+                  this.fila.push({
+                      cCursoNombre: item.cCursoNombre,
+                      nota: [{ promedio: item.nDetMatrPromedio }],
+                  })
+              } else {
+                  const nuevo = this.fila.find(
+                      (box) => box.cCursoNombre === item.cCursoNombre
+                  )
+                  nuevo.nota.push({ promedio: item.nDetMatrPromedio })
+              }
+              const encabezado = this.columna.find(
+                  (box) => box.cGradoAbreviacion === item.cGradoAbreviacion
+              )
+              if (!encabezado) {
+                  this.columna.push({
+                      cGradoAbreviacion: item.cGradoAbreviacion,
+                      cYAcadNombre: item.cYAcadNombre,
+                  })
+              }
+          })
 
-        this.final = [
-            { promedio: '#' },
-            { promedio: 'Resultados' },
-            { promedio: '-' },
-            { promedio: '-' },
-            { promedio: '-' },
-            { promedio: '-' },
-            { promedio: '-' },
-        ]
+          this.final = [
+              { promedio: '#' },
+              { promedio: 'Resultados' },
+              { promedio: '-' },
+              { promedio: '-' },
+              { promedio: '-' },
+              { promedio: '-' },
+              { promedio: '-' },
+          ]
 
-        this.columna.sort((a, b) => {
-            return a.cYAcadNombre - b.cYAcadNombre
-        })
-        this.fila.sort((a, b) => {
-            return a.cCursoNombre.localeCompare(b.cCursoNombre)
-        })
-        this.fila.forEach((box) => {
-            box.nota.sort((a, b) => {
-                return a.year - b.year
-            })
-        })
+          this.columna.sort((a, b) => {
+              return a.cYAcadNombre - b.cYAcadNombre
+          })
+          this.fila.sort((a, b) => {
+              return a.cCursoNombre.localeCompare(b.cCursoNombre)
+          })
+          this.fila.forEach((box) => {
+              box.nota.sort((a, b) => {
+                  return a.year - b.year
+              })
+          })
 
-        this.historico = true
-    }*/
+          this.historico = true
+      }*/
 
   generarReporteEstudiante() {
     this.reporteProgresoService.obtenerReporteDirector(this.documento, this.iYAcadId).subscribe({
@@ -356,25 +384,25 @@ export class ReporteComponent {
     const { item } = event;
 
     switch (accion) {
-      case 'obtenerHistorial':
-        this.datos = item;
-        if (this.datos) {
-          this.identidad = [
-            {
-              nombre: this.datos[0]['cEstNombres'],
-              paterno: this.datos[0]['cEstPaterno'],
-              materno: this.datos[0]['cEstMaterno'],
-            },
-          ];
-          this.persona = true;
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Sin datos para mostrar',
-            detail: 'No se encontraron datos para mostrar con el documento ingresado',
-          });
-        }
-        break;
+      /*case 'obtenerHistorial':
+              this.datos = item;
+              if (this.datos) {
+                this.identidad = [
+                  {
+                    nombre: this.datos[0]['cEstNombres'],
+                    paterno: this.datos[0]['cEstPaterno'],
+                    materno: this.datos[0]['cEstMaterno'],
+                  },
+                ];
+                this.persona = true;
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Sin datos para mostrar',
+                  detail: 'No se encontraron datos para mostrar con el documento ingresado',
+                });
+              }
+              break;*/
       case 'obtenerAcademicoGrado':
         this.academicoGrado = item;
         this.notas = JSON.parse(this.academicoGrado[0]['notas']);

@@ -14,27 +14,45 @@
         <!-- contenido de busqueda por estudiante-->
         <div class="block mt-3">
           <p-fieldset class="w-full">
-            <ng-template pTemplate="header">Buscar por Estudiante</ng-template>
-            <div class="flex">
-              <p-floatLabel class="mr-1">
-                <input id="DNI" type="text" pInputText [(ngModel)]="documento" maxlength="8" />
-                <label for="DNI">Documento de Identidad</label>
-              </p-floatLabel>
-              <p-button
-                class="mr-1"
-                label="Buscar"
-                icon="pi pi-search"
-                (click)="buscarDocumento()"
-              />
-              <button
-                pButton
-                pRipple
-                label="Limpiar"
-                icon="pi pi-eraser"
-                class="p-button-warning"
-                (click)="limpiar()"
-              ></button>
+            <ng-template pTemplate="header">Buscar por estudiante</ng-template>
+
+            <div class="grid p-fluid">
+              <div class="field col-12 md:col-2">
+                <p-inputGroup>
+                  <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
+                  <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
+                </p-inputGroup>
+              </div>
+              <div class="field col-12 md:col-2">
+                <p-inputGroup>
+                  <p-inputGroupAddon class="mi-addon-primary">DNI:</p-inputGroupAddon>
+                  <input
+                    id="DNI"
+                    type="text"
+                    pInputText
+                    [(ngModel)]="documento"
+                    placeholder="Ingrese DNI"
+                    maxlength="8"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="field col-12 md:col-2">
+                <button
+                  pButton
+                  pRipple
+                  (click)="buscarDocumento()"
+                  icon="pi pi-search"
+                  label="Buscar"
+                  class="p-button-success"
+                ></button>
+              </div>
             </div>
+            <p>
+              <small class="mb-3"
+                >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar,
+                seleccione otra opción</small
+              >
+            </p>
           </p-fieldset>
         </div>
         <div class="block mt-3">
@@ -46,8 +64,8 @@
           >
             <ng-template pTemplate="header">
               <tr>
-                <th>Apellido Paterno</th>
-                <th>Apellido Materno</th>
+                <th>Apellido paterno</th>
+                <th>Apellido materno</th>
                 <th>Nombre</th>
                 <th>Seleccionar</th>
               </tr>
@@ -89,7 +107,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th>#</th>
-                <th>Areas Curricular</th>
+                <th>Áreas curriculares</th>
                 <th *ngFor="let col of columna">
                   <div class="text-center">Año : {{ col.cYAcadNombre }}</div>
                   <div class="text-center">Grado : {{ col.cGradoAbreviacion }}</div>

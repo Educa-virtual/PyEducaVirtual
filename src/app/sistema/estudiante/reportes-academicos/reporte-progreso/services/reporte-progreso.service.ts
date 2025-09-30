@@ -55,4 +55,10 @@ export class ReporteProgresoService {
       `${this.urlBackendApi}/acad/estudiantes/matriculas/anio-academico/${iYAcadId.toString()}/existe`
     );
   }
+
+  buscarEstudiantePorDocumentoSede(cPersDocumento, iYAcadId) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/directores/estudiantes/${cPersDocumento}/anio/${iYAcadId.toString()}`
+    );
+  }
 }

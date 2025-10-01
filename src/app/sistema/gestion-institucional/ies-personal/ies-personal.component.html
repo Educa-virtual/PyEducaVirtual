@@ -9,6 +9,7 @@
       [showCaption]="true"
       [data]="personal_ies"
       (accionBtnItem)="accionBtnItemTable($event)"
+      [showAdvancedFilter]="true"
       [showPaginator]="true"
       [(selectedRowData)]="selectedItems"
       [actions]="actions"
@@ -74,26 +75,45 @@
             Ingrese un número válido mayor de 1 a 40.
           </small>
         </div>
+        <div class="field col-6">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="tipos_documentos"
+              formControlName="iTipoIdentId"
+              optionLabel="nombre"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+            />
+            <label for="iTipoIdentId">Tipo de documento *</label>
+          </span>
+        </div>
         <div class="field col-12 md:col-4">
           <span class="p-float-label">
             <input
               pInputText
-              id="dni"
-              (onclick)="buscarDni()"
-              formControlName="dni"
-              aria-describedby="dni-help"
+              id="cPersDocumento"
+              (onclick)="validarPersona()"
+              formControlName="cPersDocumento"
+              aria-describedby="cPersDocumento-help"
             />
             <input type="hidden" formControlName="iPersId" />
 
-            <label for="dni">Documento</label>
+            <label for="cPersDocumento">Documento</label>
           </span>
         </div>
         <div class="field col-12 md:col-2">
-          <p-button label="Validar" styleClass="w-full" (onClick)="buscarDni()" />
+          <p-button
+            label="Validar"
+            icon="pi pi-search"
+            styleClass="p-button-success"
+            (onClick)="validarPersona()"
+          />
         </div>
 
-        <div class="field col-12 md:col-6">
-          {{ mensaje }}
+        <div class="field col-12">
+          <p-message [severity]="sever" [text]="mensaje" styleClass="p-mr-2"></p-message>
         </div>
 
         @if (option) {
@@ -171,6 +191,7 @@
           [disabled]="form.invalid"
           (onClick)="accionBtnItem('editar')"
           styleClass="p-button-warning"
+          icon="pi pi-save"
         />
       }
       @if (c_accion === 'agregar') {
@@ -179,6 +200,7 @@
           [disabled]="form.invalid"
           (onClick)="accionBtnItem('guardar')"
           styleClass="p-button-primary"
+          icon="pi pi-save"
         />
       }
     </form>

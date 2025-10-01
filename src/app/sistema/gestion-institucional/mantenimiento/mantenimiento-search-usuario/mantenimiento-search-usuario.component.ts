@@ -112,11 +112,13 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
           this.lista_accesos = item.map(persona => ({
             ...persona,
             nombre_completo: (
-              persona.cPersPaterno +
+              (persona.cPersDocumento ?? '') +
               ' ' +
-              persona.cPersMaterno +
+              (persona.cPersPaterno ?? '') +
               ' ' +
-              persona.cPersNombre
+              (persona.cPersMaterno ?? '') +
+              ' ' +
+              (persona.cPersNombre ?? '')
             ).trim(),
           }));
         },
@@ -373,14 +375,6 @@ export class MantenimientoSearchUsuarioComponent implements OnChanges, OnInit {
       text: 'left',
     },
 
-    {
-      type: 'text',
-      width: '20%',
-      field: 'cPersDocumento',
-      header: 'Documento',
-      text_header: 'center',
-      text: 'center',
-    },
     {
       type: 'text',
       width: '40%',

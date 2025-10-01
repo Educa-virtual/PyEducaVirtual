@@ -230,11 +230,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            cPortafolioItinerario.length
-              ? cPortafolioItinerario[0]['name']
-              : 'Nombre del Itinerario'
-          "
+          [placeholder]="itinerarioInterno ? itinerarioInterno[0].name : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -246,20 +242,13 @@
           severity="primary"
           class="p-button-primary btn-file-image"
         >
-          <i class="pi pi-upload"></i
-          ><input
-            #itinerario
-            type="file"
-            (change)="subirPortafolio(itinerario, 'itinerario')"
-            accept=".pdf "
-          />
+          <i class="pi pi-upload"></i>
+          <input #itinerario type="file" (change)="guardarItinerario(itinerario)" accept=".pdf " />
         </button>
         <button
           type="button"
-          (click)="
-            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
-          "
-          [disabled]="!cPortafolioItinerario"
+          (click)="descargarArchivo(itinerarioInterno.length ? itinerarioInterno[0]['ruta'] : null)"
+          [disabled]="!itinerarioInterno || itinerarioInterno.length === 0"
           pButton
           icon="pi pi-eye"
           class="p-button-info"
@@ -277,17 +266,15 @@
         <input
           type="text"
           pInputText
-          placeholder="Reglamento Interno"
+          [placeholder]="reglamentoInterno ? reglamentoInterno[0].name : 'Reglamento Interno'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
         />
         <button
           type="button"
-          (click)="
-            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
-          "
-          [disabled]="!cPortafolioItinerario"
+          (click)="descargarArchivo(reglamentoInterno.length ? reglamentoInterno[0]['ruta'] : null)"
+          [disabled]="!reglamentoInterno"
           pButton
           icon="pi pi-eye"
           class="p-button-info"
@@ -305,11 +292,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            cPortafolioItinerario.length
-              ? cPortafolioItinerario[0]['name']
-              : 'Nombre del Itinerario'
-          "
+          [placeholder]="formato.length ? formato[0]['name'] : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -321,14 +304,13 @@
           severity="primary"
           class="p-button-primary btn-file-image"
         >
-          <i class="pi pi-upload"></i><input type="file" accept=".pdf " />
+          <i class="pi pi-upload"></i
+          ><input #actividad type="file" (change)="guardarActividades(actividad)" accept=".pdf" />
         </button>
         <button
           type="button"
-          (click)="
-            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
-          "
-          [disabled]="!cPortafolioItinerario"
+          (click)="descargarArchivo(formato.length ? formato[0]['ruta'] : null)"
+          [disabled]="!formato"
           pButton
           icon="pi pi-eye"
           class="p-button-info"
@@ -346,11 +328,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            cPortafolioItinerario.length
-              ? cPortafolioItinerario[0]['name']
-              : 'Nombre del Itinerario'
-          "
+          [placeholder]="formato.length ? formato[1]['name'] : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -362,14 +340,13 @@
           severity="primary"
           class="p-button-primary btn-file-image"
         >
-          <i class="pi pi-upload"></i><input type="file" accept=".pdf " />
+          <i class="pi pi-upload"></i
+          ><input type="file" #cuaderno (change)="guardarCuaderno(cuaderno)" accept=".pdf" />
         </button>
         <button
           type="button"
-          (click)="
-            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
-          "
-          [disabled]="!cPortafolioItinerario"
+          (click)="descargarArchivo(formato.length ? formato[1]['ruta'] : null)"
+          [disabled]="!formato"
           pButton
           icon="pi pi-eye"
           class="p-button-info"
@@ -387,11 +364,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            cPortafolioItinerario.length
-              ? cPortafolioItinerario[0]['name']
-              : 'Nombre del Itinerario'
-          "
+          [placeholder]="formato.length ? formato[2]['name'] : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -403,14 +376,18 @@
           severity="primary"
           class="p-button-primary btn-file-image"
         >
-          <i class="pi pi-upload"></i><input type="file" accept=".pdf " />
+          <i class="pi pi-upload"></i>
+          <input
+            #instrumentos
+            type="file"
+            (change)="guardarInstrumentos(instrumentos)"
+            accept=".pdf"
+          />
         </button>
         <button
           type="button"
-          (click)="
-            descargarArchivo(cPortafolioItinerario.length ? cPortafolioItinerario[0]['ruta'] : null)
-          "
-          [disabled]="!cPortafolioItinerario"
+          (click)="descargarArchivo(formato.length ? formato[2]['ruta'] : null)"
+          [disabled]="!formato"
           pButton
           icon="pi pi-eye"
           class="p-button-info"

@@ -11,7 +11,7 @@ export class ReporteProgresoService {
 
   constructor() {}
 
-  generarReportePdf(iYAcadId: number) {
+  generarReportePdfEstudiante(iYAcadId: number) {
     return this.http.get(
       `${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso/${iYAcadId.toString()}/pdf`,
       {
@@ -20,7 +20,31 @@ export class ReporteProgresoService {
     );
   }
 
-  obtenerReporte(iYAcadId: number) {
+  generarReportePdfDirector(cPersDocumento, iYAcadId: number) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/directores/reportes-academicos/progreso/${iYAcadId.toString()}/estudiante/${cPersDocumento}/pdf`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
+  generarReportePdfApoderado(iMatrId: string) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/apoderados/reportes-academicos/progreso/${iMatrId}/pdf`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
+  obtenerReporteDirector(cPersDocumento, iYAcadId: number) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/directores/reportes-academicos/progreso/${iYAcadId.toString()}/estudiante/${cPersDocumento}`
+    );
+  }
+
+  obtenerReporteEstudiante(iYAcadId: number) {
     return this.http.get(
       `${this.urlBackendApi}/acad/estudiantes/reportes-academicos/progreso/${iYAcadId.toString()}`
     );
@@ -29,6 +53,12 @@ export class ReporteProgresoService {
   existeMatriculaPorAnio(iYAcadId: number) {
     return this.http.get(
       `${this.urlBackendApi}/acad/estudiantes/matriculas/anio-academico/${iYAcadId.toString()}/existe`
+    );
+  }
+
+  buscarEstudiantePorDocumentoSede(cPersDocumento, iYAcadId) {
+    return this.http.get(
+      `${this.urlBackendApi}/acad/directores/estudiantes/${cPersDocumento}/anio/${iYAcadId.toString()}`
     );
   }
 }

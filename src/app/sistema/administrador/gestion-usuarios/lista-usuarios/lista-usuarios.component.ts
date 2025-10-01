@@ -68,9 +68,6 @@ export class ListaUsuariosComponent {
       {
         label: 'Gestión de usuarios',
       },
-      {
-        label: 'Usuarios',
-      },
     ];
     this.breadCrumbHome = {
       icon: 'pi pi-home',

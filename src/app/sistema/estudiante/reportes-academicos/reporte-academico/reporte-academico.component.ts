@@ -195,7 +195,8 @@ export class ReporteAcademicoComponent implements OnInit {
                   grid: { color: '#ebedef' },
                 },
                 y: {
-                  min: 1,
+                  beginAtZero: true,
+                  min: 0,
                   max: 4,
                   ticks: {
                     stepSize: 1,

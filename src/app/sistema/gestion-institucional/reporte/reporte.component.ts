@@ -214,7 +214,6 @@ export class ReporteComponent {
         .subscribe({
           next: (response: any) => {
             //this.courses = response.data;
-
             if (response.data) {
               this.persona = true;
               this.identidad = [
@@ -224,6 +223,13 @@ export class ReporteComponent {
                   materno: response.data.cPersMaterno,
                 },
               ];
+            } else {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Sin datos',
+                detail:
+                  'No hay datos para el documento ingresado o el estudiante no pertenece a su I.E.',
+              });
             }
           },
           error: err => {

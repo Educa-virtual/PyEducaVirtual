@@ -734,6 +734,11 @@ const administracion = [
             routerLink: ['/gestion-institucional/reporte'],
           },
           {
+            label: 'Reporte de Asistencia',
+            icon: 'pi pi-chart-bar',
+            routerLink: ['reporte-asistencia-auxiliar'],
+          },
+          {
             label: 'Estadisticas y ranking de mérito',
             icon: 'pi pi-chart-scatter',
             routerLink: ['/gestion-institucional/estadistica'],

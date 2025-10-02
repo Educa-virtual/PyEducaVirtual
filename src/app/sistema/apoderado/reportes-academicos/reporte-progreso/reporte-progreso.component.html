@@ -1,0 +1,54 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Reporte académico de progreso</h3>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="body">
+    <div class="grid p-fluid mt-4">
+      <div class="field col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary">Estudiante:</p-inputGroupAddon>
+          <p-dropdown
+            [options]="dataEstudiantes"
+            optionLabel="cNombreCompleto"
+            optionValue="iEstudianteId"
+            [appendTo]="'body'"
+            [style]="{ flex: '1', width: '100%' }"
+            placeholder="Seleccione..."
+            [(ngModel)]="estudianteSeleccionado"
+            (onChange)="obtenerMatriculasEstudiante()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="field col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary">Matrícula:</p-inputGroupAddon>
+          <p-dropdown
+            [options]="dataMatriculas"
+            optionLabel="cMatriculaMostrar"
+            optionValue="iMatrId"
+            [appendTo]="'body'"
+            [style]="{ flex: '1', width: '100%' }"
+            placeholder="Seleccione..."
+            [(ngModel)]="matriculaSeleccionada"
+            (onChange)="obtenerReporteAcademicoEstudiante()"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+    <div class="block mt-3">
+      @if (courses.length > 0) {
+        <app-tabla-reporte-progreso
+          [courses]="courses"
+          [iYAcadId]="matriculaSeleccionada?.iYAcadId"
+          [iMatrId]="matriculaSeleccionada"
+          [vista]="'apoderado'"
+        ></app-tabla-reporte-progreso>
+      }
+    </div>
+  </ng-template>
+</p-panel>
+<p-toast></p-toast>

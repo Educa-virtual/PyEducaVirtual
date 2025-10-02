@@ -88,7 +88,7 @@
                 <div [style.text-align]="col.text">
                   <p-tag
                     [severity]="row[col.field] ? 'success' : 'danger'"
-                    [value]="row[col.field] ? 'Habilitado' : 'Deshabilitado'"
+                    [value]="row[col.field] ? 'Aperturado' : 'Cerrado'"
                   >
                   </p-tag>
                 </div>
@@ -96,10 +96,11 @@
               @if (col.type === 'action') {
                 <div [style.text-align]="col.text">
                   <p-button
-                    icon="pi pi-undo"
+                    [icon]="row['bHabilitado'] ? 'pi pi-lock-open' : 'pi pi-lock'"
+                    [pTooltip]="row['bHabilitado'] ? 'Cerrar periodo' : 'Aperturar periodo'"
                     [rounded]="true"
                     [text]="true"
-                    severity="danger"
+                    [severity]="row['bHabilitado'] ? 'primary' : 'danger'"
                     (onClick)="cambiarEstado(row)"
                   />
                 </div>

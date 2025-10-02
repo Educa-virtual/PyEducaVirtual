@@ -47,14 +47,14 @@
       </div>
       <div class="col-12 xl:col-2 lg:col-6 md:col-4" *ngIf="tipo.id === 1 || tipo.id === 3">
         <p-inputGroup>
-          <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+          <p-inputGroupAddon>Sección</p-inputGroupAddon>
           <p-dropdown
             [options]="seccion"
             [(ngModel)]="datos.iSeccionId"
             (click)="inhabilitarBoton = false"
             optionLabel="cSeccionNombre"
             optionValue="iSeccionId"
-            placeholder="Seleccionar Seccion"
+            placeholder="Seleccionar Sección"
           />
         </p-inputGroup>
       </div>
@@ -231,7 +231,7 @@
           <input pInputText class="mr-1" [(ngModel)]="estudiante.grado" readonly />
         </p-inputGroup>
         <p-inputGroup class="mb-3">
-          <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+          <p-inputGroupAddon>Sección</p-inputGroupAddon>
           <input pInputText class="mr-1" [(ngModel)]="estudiante.seccion" readonly />
         </p-inputGroup>
       </div>

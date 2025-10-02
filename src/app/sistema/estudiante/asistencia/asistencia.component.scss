@@ -66,19 +66,6 @@
   margin-top: 6px;
 }
 
-/* estados */
-.status-a {
-  background: linear-gradient(90deg, #e6ffed, #f7fff7);
-  border: 1px solid #c6f0d0;
-}
-.status-t {
-  background: linear-gradient(90deg, #fff8e6, #fffdf7);
-  border: 1px solid #f0dfa8;
-}
-.status-n {
-  background: linear-gradient(90deg, #ffecec, #fffafa);
-  border: 1px solid #f0b8b8;
-}
 .status-empty {
   background: #ffffff;
   opacity: 0.9;
@@ -120,4 +107,227 @@
 .loading {
   text-align: center;
   padding: 12px;
+}
+
+.container {
+  display: grid !important;
+  gap: 1rem;
+
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+}
+
+::ng-deep .p-panel .p-panel-header {
+  background: var(--bg-header-modal) !important;
+  color: white !important;
+}
+
+::ng-deep .text-primary {
+  color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+  gap: 0px !important;
+}
+
+/*
+    * * Modifica los siguientes elementos:
+    * * checkbox
+    * * vendana modal
+*/
+:host ::ng-deep {
+  .p-toolbar {
+    background-color: var(--primary-700);
+  }
+  .p-menuitem-content {
+    &:hover {
+      background-color: var(--primary-400);
+    }
+  }
+
+  .pink-checkbox.p-checkbox {
+    .p-checkbox-box.p-highlight {
+      background: var(--pink-600);
+      border-color: var(--pink-600);
+    }
+  }
+  .cyan-checkbox.p-checkbox {
+    .p-checkbox-box.p-highlight {
+      background: var(--cyan-600);
+      border-color: var(--cyan-600);
+    }
+  }
+  .green-checkbox.p-checkbox {
+    .p-checkbox-box.p-highlight {
+      background: var(--green-600);
+      border-color: var(--green-600);
+    }
+  }
+  .boton-primary.p-button {
+    background-color: var(--primary-600);
+    border: 0px;
+  }
+  .bt-primary button {
+    background-color: var(--primary-600);
+    border: 0px;
+  }
+  // estilo de para botones en grupo
+  .boton-green .p-button {
+    background-color: var(--green-600);
+    border: 0px;
+  }
+  // estilo de para botones simples
+  .bt-green button {
+    background-color: var(--green-600);
+    border: 0px;
+  }
+  .boton-yellow.p-button {
+    background-color: var(--yellow-600);
+    border: 0px;
+  }
+  .bt-yellow button {
+    background-color: var(--yellow-600);
+    border: 0px;
+  }
+  .boton-red.p-button {
+    background-color: var(--red-600);
+    border: 0px;
+  }
+  .bt-red button {
+    background-color: var(--red-600);
+    border: 0px;
+  }
+  .boton-orange.p-button {
+    background-color: var(--orange-600);
+    border: 0px;
+  }
+  .bt-orange button {
+    background-color: var(--orange-600);
+    border: 0px;
+  }
+  .boton-cyan.p-button {
+    background-color: var(--cyan-600);
+    border: 0px;
+  }
+  .bt-cyan button {
+    background-color: var(--cyan-600);
+    border: 0px;
+  }
+  .agregar.p-button {
+    width: 100%;
+    height: 20px;
+    font-size: 10px;
+    text-align: center;
+  }
+  .boton-width.p-button {
+    width: 100%;
+  }
+  .asistenciaModal .p-dialog {
+    .p-dialog-header {
+      background-color: var(--primary-700);
+      color: white;
+    }
+  }
+}
+
+.grupo {
+  height: 30px;
+}
+.primary-boton {
+  background-color: var(--primary-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.green-boton {
+  background-color: var(--green-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.yellow-boton {
+  background-color: var(--yellow-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.orange-boton {
+  background-color: var(--orange-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.red-boton {
+  background-color: var(--red-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.cyan-boton {
+  background-color: var(--cyan-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.primary-50-boton {
+  background-color: var(--primary-50);
+  color: var(--primary-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.green-50-boton {
+  background-color: var(--green-50);
+  color: var(--green-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.yellow-50-boton {
+  background-color: var(--yellow-50);
+  color: var(--yellow-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.orange-50-boton {
+  background-color: var(--orange-50);
+  color: var(--orange-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.red-50-boton {
+  background-color: var(--red-50);
+  color: var(--red-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.cyan-50-boton {
+  background-color: var(--cyan-50);
+  color: var(--cyan-400);
+  font-weight: 700;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.weekend-day {
+  background-color: red !important;
 }

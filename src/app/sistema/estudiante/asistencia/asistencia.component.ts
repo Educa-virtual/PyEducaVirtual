@@ -2,23 +2,27 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AttendanceService, AttendanceRecord } from '../asistencia/services/asistencia.service';
 //import { finalize } from 'rxjs/operators';
 import { PrimengModule } from '@/app/primeng.module';
+import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
+import { MenuItem } from 'primeng/api';
 
 type DayCell = {
   date: Date | null;
   dayNumber: number | null;
   iso: string | null; // YYYY-MM-DD or null
-  status: 'A' | 'N' | 'T' | '';
+  status: string | null; //'A' | 'N' | 'T' | '';
 };
 
 @Component({
   selector: 'app-attendance-calendar',
   templateUrl: './asistencia.component.html',
   standalone: true,
-  imports: [PrimengModule],
+  imports: [PrimengModule, AulaBancoPreguntasModule],
   styleUrls: ['./asistencia.component.scss'],
 })
 export class AsistenciaComponent implements OnInit {
   @Input() studentId!: number;
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
 
   months = [
     { label: 'Enero', value: 1 },
@@ -35,18 +39,69 @@ export class AsistenciaComponent implements OnInit {
     { label: 'Diciembre', value: 12 },
   ];
 
+  leyendaModal = [
+    {
+      significado: 'Asistio',
+      iTipoAsiId: '1',
+      simbolo: 'X',
+      contar: 0,
+      divColor: 'green-50-boton',
+      bgColor: 'green-boton',
+    },
+    {
+      significado: 'Inasistencia',
+      iTipoAsiId: '3',
+      simbolo: 'I',
+      contar: 0,
+      divColor: 'red-50-boton',
+      bgColor: 'red-boton',
+    },
+    {
+      significado: 'Inasistencia Justificada',
+      iTipoAsiId: '4',
+      simbolo: 'J',
+      contar: 0,
+      divColor: 'primary-50-boton',
+      bgColor: 'primary-boton',
+    },
+    {
+      significado: 'Tardanza',
+      iTipoAsiId: '2',
+      simbolo: 'T',
+      contar: 0,
+      divColor: 'orange-50-boton',
+      bgColor: 'orange-boton',
+    },
+    {
+      significado: 'Tardanza Justificada',
+      iTipoAsiId: '9',
+      simbolo: 'P',
+      contar: 0,
+      divColor: 'yellow-50-boton',
+      bgColor: 'yellow-boton',
+    },
+    {
+      significado: 'Sin Registro',
+      iTipoAsiId: '7',
+      simbolo: '-',
+      contar: 0,
+      divColor: 'cyan-50-boton',
+      bgColor: 'cyan-boton',
+    },
+  ];
+
   // semana empezando LUNES
   weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
   selectedMonth!: number; // 1..12
-  selectedYear!: number;
+  selectedYear: number = 2025;
 
   weeks: DayCell[][] = []; // grid semanas x 7
   loading = false;
   error: string | null = null;
 
   // Si true -> si falta registro para un día, lo tratamos como 'N'
-  treatMissingAsAbsent = true;
+  //treatMissingAsAbsent = false;
 
   constructor(private svc: AttendanceService) {}
 
@@ -54,6 +109,8 @@ export class AsistenciaComponent implements OnInit {
     const today = new Date();
     this.selectedMonth = today.getMonth() + 1;
     this.selectedYear = today.getFullYear();
+    this.breadCrumbItems = [{ label: 'Asistencia' }];
+    this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
     this.load();
   }
 
@@ -82,10 +139,10 @@ export class AsistenciaComponent implements OnInit {
     this.load();
   }
 
-  onYearChange(val: any) {
+  /*onYearChange(val: any) {
     this.selectedYear = +val;
     this.load();
-  }
+  }*/
 
   private formatISO(d: Date) {
     const y = d.getFullYear();
@@ -100,11 +157,13 @@ export class AsistenciaComponent implements OnInit {
       return;
     }*/
     this.studentId = 5;
-    this.loading = true;
+    this.loading = false;
     this.error = null;
     const records = [
-      { fecha: '2025-09-04', asistio: 'A' },
-      { fecha: '2025-09-05', asistio: 'A' },
+      { fecha: '2025-10-01', asistio: 'X' },
+      { fecha: '2025-10-02', asistio: 'X' },
+      { fecha: '2025-10-03', asistio: 'I' },
+      { fecha: '2025-10-04', asistio: '-' },
     ];
     this.buildCalendar(records);
     // map meses según servicio: enviamos month 1..12
@@ -152,15 +211,7 @@ export class AsistenciaComponent implements OnInit {
           const d = new Date(year, monthIndex, dayCounter);
           const iso = this.formatISO(d);
           const statusFromBackend = map.get(iso);
-          let status: 'A' | 'N' | 'T' | '' = '';
-          if (statusFromBackend === 'A') status = 'A';
-          else if (statusFromBackend === 'T') status = 'T';
-          else if (statusFromBackend === 'N') status = 'N';
-          else {
-            // no registro
-            status = this.treatMissingAsAbsent ? 'N' : '';
-          }
-          week.push({ date: d, dayNumber: dayCounter, iso, status });
+          week.push({ date: d, dayNumber: dayCounter, iso: iso, status: statusFromBackend });
           dayCounter++;
         }
       }
@@ -169,18 +220,9 @@ export class AsistenciaComponent implements OnInit {
 
     this.weeks = weeks;
   }
-
-  // util: color CSS class por estado
+  // util: color CSS class por estado usando leyendaModal
   statusClass(s: string) {
-    switch (s) {
-      case 'A':
-        return 'status-a';
-      case 'T':
-        return 'status-t';
-      case 'N':
-        return 'status-n';
-      default:
-        return 'status-empty';
-    }
+    const leyenda = this.leyendaModal.find(l => l.simbolo === s);
+    return leyenda ? leyenda.divColor : 'status-empty';
   }
 }

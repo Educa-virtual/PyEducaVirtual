@@ -1,17 +1,21 @@
-<div class="attendance-calendar">
-  <div class="controls">
-    <button pButton type="button" icon="pi pi-chevron-left" (click)="prevMonth()">Ant</button>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<app-container-page [title]="'Asistencia del estudiante'" [actions]="[]">
+  <div class="attendance-calendar">
+    <div class="controls">
+      <p-button icon="pi pi-chevron-left" [loading]="loading" (onClick)="prevMonth()" />
 
-    <p-dropdown
-      [options]="months"
-      optionLabel="label"
-      optionValue="value"
-      [(ngModel)]="selectedMonth"
-      (onChange)="onMonthChange($event.value)"
-      placeholder="Mes"
-    ></p-dropdown>
+      <!--<button pButton type="button" icon="pi pi-chevron-left" (click)="prevMonth()">Ant</button>-->
 
-    <input
+      <p-dropdown
+        [options]="months"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="selectedMonth"
+        (onChange)="onMonthChange($event.value)"
+        placeholder="Mes"
+      ></p-dropdown>
+
+      <!--<input
       pInputText
       type="number"
       min="1900"
@@ -19,44 +23,55 @@
       [(ngModel)]="selectedYear"
       (change)="onYearChange(selectedYear)"
       style="width: 90px"
-    />
+    />-->
+      <p-button icon="pi pi-chevron-right" [loading]="loading" (onClick)="nextMonth()" />
 
-    <button pButton type="button" icon="pi pi-chevron-right" (click)="nextMonth()">Sig</button>
+      <!--<button pButton type="button" icon="pi pi-chevron-right" (click)="nextMonth()">Sig</button>-->
 
-    <div class="spacer"></div>
+      <div class="spacer"></div>
 
-    <button
-      pButton
-      label="Refrescar"
-      icon="pi pi-refresh"
-      (click)="load()"
-      [disabled]="loading"
-    ></button>
-  </div>
-
-  <div *ngIf="error" class="error">{{ error }}</div>
-
-  <div class="calendar-grid" *ngIf="!loading">
-    <div class="weekdays">
-      <div *ngFor="let wd of weekDays" class="weekday">{{ wd }}</div>
+      <button
+        pButton
+        label="Refrescar"
+        icon="pi pi-refresh"
+        (click)="load()"
+        [disabled]="loading"
+      ></button>
     </div>
 
-    <div class="weeks">
-      <div class="week" *ngFor="let week of weeks">
-        <div class="daycell" *ngFor="let cell of week" [ngClass]="statusClass(cell.status)">
-          <div class="day-number" *ngIf="cell.dayNumber">{{ cell.dayNumber }}</div>
-          <div class="mark" *ngIf="cell.status">{{ cell.status }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div class="calendar-grid" *ngIf="!loading">
+      <div class="weekdays">
+        <div *ngFor="let wd of weekDays" class="weekday">{{ wd }}</div>
+      </div>
+
+      <div class="weeks">
+        <div class="week" *ngFor="let week of weeks">
+          <div class="daycell" *ngFor="let cell of week" [ngClass]="statusClass(cell.status)">
+            <div class="day-number" *ngIf="cell.dayNumber">{{ cell.dayNumber }}</div>
+            <div class="mark" *ngIf="cell.status">{{ cell.status }}</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="loading" class="loading">Cargando...</div>
+    <div *ngIf="loading" class="loading">Cargando...</div>
 
-  <div class="legend">
-    <span><span class="legend-box status-a"></span> A — Asistió</span>
-    <span><span class="legend-box status-t"></span> T — Tarde</span>
-    <span><span class="legend-box status-n"></span> N — No asistió</span>
-    <span><span class="legend-box status-empty"></span> — Sin registro</span>
+    <div
+      class="leyenda-summary flex block flex-wrap column-gap-3 row-gap-3 p-2"
+      *ngIf="leyendaModal && leyendaModal.length"
+    >
+      <div *ngFor="let lista of leyendaModal" class="flex mr-1">
+        <p-inputGroup class="grupo">
+          <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+            {{ lista.simbolo }}
+          </button>
+          <div [ngClass]="lista.divColor">
+            {{ lista.significado }}
+          </div>
+        </p-inputGroup>
+      </div>
+    </div>
   </div>
-</div>
+</app-container-page>

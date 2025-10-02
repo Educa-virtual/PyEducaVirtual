@@ -1,11 +1,8 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 <app-container-page [title]="'Asistencia del estudiante'" [actions]="[]">
   <div class="attendance-calendar">
-    <div class="controls">
+    <div class="controls flex justify-content-center align-items-center gap-2">
       <p-button icon="pi pi-chevron-left" [loading]="loading" (onClick)="prevMonth()" />
-
-      <!--<button pButton type="button" icon="pi pi-chevron-left" (click)="prevMonth()">Ant</button>-->
-
       <p-dropdown
         [options]="months"
         optionLabel="label"
@@ -14,22 +11,8 @@
         (onChange)="onMonthChange($event.value)"
         placeholder="Mes"
       ></p-dropdown>
-
-      <!--<input
-      pInputText
-      type="number"
-      min="1900"
-      max="2100"
-      [(ngModel)]="selectedYear"
-      (change)="onYearChange(selectedYear)"
-      style="width: 90px"
-    />-->
       <p-button icon="pi pi-chevron-right" [loading]="loading" (onClick)="nextMonth()" />
-
-      <!--<button pButton type="button" icon="pi pi-chevron-right" (click)="nextMonth()">Sig</button>-->
-
-      <div class="spacer"></div>
-
+      <!--<div class="spacer"></div>-->
       <button
         pButton
         label="Refrescar"
@@ -38,8 +21,6 @@
         [disabled]="loading"
       ></button>
     </div>
-
-    <div *ngIf="error" class="error">{{ error }}</div>
 
     <div class="calendar-grid" *ngIf="!loading">
       <div class="weekdays">
@@ -56,7 +37,7 @@
       </div>
     </div>
 
-    <div *ngIf="loading" class="loading">Cargando...</div>
+    <!--<div *ngIf="loading" class="loading">Cargando...</div>-->
 
     <div
       class="leyenda-summary flex block flex-wrap column-gap-3 row-gap-3 p-2"
@@ -75,3 +56,4 @@
     </div>
   </div>
 </app-container-page>
+<p-toast />

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AttendanceService, AttendanceRecord } from '../asistencia/services/asistencia.service';
+import { AsistenciaService } from '../asistencia/services/asistencia.service';
 //import { finalize } from 'rxjs/operators';
 import { PrimengModule } from '@/app/primeng.module';
 import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 type DayCell = {
   date: Date | null;
@@ -24,6 +25,16 @@ export class AsistenciaComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
+  // semana empezando LUNES
+  weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+  selectedMonth: number; // 1..12
+  selectedYear: number;
+
+  weeks: DayCell[][] = []; // grid semanas x 7
+  loading = false;
+  //error: string | null = null;
+
   months = [
     { label: 'Enero', value: 1 },
     { label: 'Febrero', value: 2 },
@@ -41,7 +52,7 @@ export class AsistenciaComponent implements OnInit {
 
   leyendaModal = [
     {
-      significado: 'Asistio',
+      significado: 'Asistió',
       iTipoAsiId: '1',
       simbolo: 'X',
       contar: 0,
@@ -57,7 +68,7 @@ export class AsistenciaComponent implements OnInit {
       bgColor: 'red-boton',
     },
     {
-      significado: 'Inasistencia Justificada',
+      significado: 'Inasistencia justificada',
       iTipoAsiId: '4',
       simbolo: 'J',
       contar: 0,
@@ -73,7 +84,7 @@ export class AsistenciaComponent implements OnInit {
       bgColor: 'orange-boton',
     },
     {
-      significado: 'Tardanza Justificada',
+      significado: 'Tardanza justificada',
       iTipoAsiId: '9',
       simbolo: 'P',
       contar: 0,
@@ -90,25 +101,19 @@ export class AsistenciaComponent implements OnInit {
     },
   ];
 
-  // semana empezando LUNES
-  weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-
-  selectedMonth!: number; // 1..12
-  selectedYear: number = 2025;
-
-  weeks: DayCell[][] = []; // grid semanas x 7
-  loading = false;
-  error: string | null = null;
-
   // Si true -> si falta registro para un día, lo tratamos como 'N'
   //treatMissingAsAbsent = false;
 
-  constructor(private svc: AttendanceService) {}
+  constructor(
+    private asistenciaService: AsistenciaService,
+    private store: LocalStoreService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     const today = new Date();
     this.selectedMonth = today.getMonth() + 1;
-    this.selectedYear = today.getFullYear();
+    this.selectedYear = this.selectedYear = this.store.getItem('dremoYear');
     this.breadCrumbItems = [{ label: 'Asistencia' }];
     this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
     this.load();
@@ -156,16 +161,34 @@ export class AsistenciaComponent implements OnInit {
       this.error = 'Falta studentId en el componente';
       return;
     }*/
-    this.studentId = 5;
-    this.loading = false;
-    this.error = null;
-    const records = [
+    //this.studentId = 5;
+    this.loading = true;
+    this.asistenciaService
+      .obtenerAsistenciaGeneralEstudiante(this.selectedYear, this.selectedMonth)
+      .subscribe({
+        next: (response: any) => {
+          this.buildCalendar(response.data);
+          this.loading = false;
+        },
+        error: err => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error.message,
+          });
+          this.loading = false;
+          //console.log("Es "+this.loading )
+        },
+      });
+
+    //this.error = null;
+    /*const records = [
       { fecha: '2025-10-01', asistio: 'X' },
       { fecha: '2025-10-02', asistio: 'X' },
       { fecha: '2025-10-03', asistio: 'I' },
       { fecha: '2025-10-04', asistio: '-' },
     ];
-    this.buildCalendar(records);
+    this.buildCalendar(records);*/
     // map meses según servicio: enviamos month 1..12
     /*this.svc.getAttendanceForMonth(this.studentId, this.selectedMonth, this.selectedYear)
       .pipe(finalize(() => this.loading = false))
@@ -175,12 +198,13 @@ export class AsistenciaComponent implements OnInit {
       });*/
   }
 
-  private buildCalendar(records: AttendanceRecord[]) {
+  private buildCalendar(records: any[]) {
+    //AttendanceRecord
     // Map records por fecha ISO
     const map = new Map<string, string>();
     for (const r of records) {
       // Normalizar fecha por si viene con timezones (suponemos exacto YYYY-MM-DD)
-      map.set(r.fecha, (r.asistio || '').toString().toUpperCase());
+      map.set(r.dtAsistencia, (r.cTipoAsiLetra || '').toString().toUpperCase());
     }
 
     const year = this.selectedYear;

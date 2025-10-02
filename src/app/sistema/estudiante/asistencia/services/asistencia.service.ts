@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -23,5 +23,21 @@ export class AttendanceService {
     // Ejemplo de endpoint: GET /api/attendance/123?month=9&year=2025
     const url = `${this.baseUrl}/${studentId}?month=${month}&year=${year}`;
     return this.http.get<AttendanceRecord[]>(url);
+  }
+}*/
+import { Injectable } from '@angular/core';
+import { environment } from '@/environments/environment';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AsistenciaService {
+  private urlBackendApi = environment.backendApi;
+
+  constructor(private http: HttpClient) {}
+
+  obtenerAsistenciaGeneralEstudiante(anio, mes) {
+    return this.http.get(`${this.urlBackendApi}/asi/asistencia/general/estudiante/${anio}/${mes}`);
   }
 }

@@ -58,6 +58,7 @@ export class CursosComponent implements OnDestroy, OnInit {
     this.cursos = this.data;
     dv.value = this.data;
     if (text.length > 1) {
+      // cCursoNombre
       dv.filter(text);
       this.cursos = dv.filteredValue;
     }

@@ -1,0 +1,123 @@
+.attendance-calendar {
+  max-width: 760px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.controls .spacer {
+  flex: 1;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 600;
+  padding: 6px 0;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.daycell {
+  min-height: 72px;
+  border-radius: 8px;
+  padding: 6px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.day-number {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mark {
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: right;
+  margin-top: 6px;
+}
+
+/* estados */
+.status-a {
+  background: linear-gradient(90deg, #e6ffed, #f7fff7);
+  border: 1px solid #c6f0d0;
+}
+.status-t {
+  background: linear-gradient(90deg, #fff8e6, #fffdf7);
+  border: 1px solid #f0dfa8;
+}
+.status-n {
+  background: linear-gradient(90deg, #ffecec, #fffafa);
+  border: 1px solid #f0b8b8;
+}
+.status-empty {
+  background: #ffffff;
+  opacity: 0.9;
+}
+
+/* leyenda */
+.legend {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.legend-box {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.legend-box.status-a {
+  background: #c6f0d0;
+}
+.legend-box.status-t {
+  background: #f0dfa8;
+}
+.legend-box.status-n {
+  background: #f0b8b8;
+}
+.legend-box.status-empty {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+.error {
+  color: #a94442;
+  margin-bottom: 8px;
+}
+.loading {
+  text-align: center;
+  padding: 12px;
+}

@@ -6,6 +6,7 @@ import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso
 import { ReporteAcademicoComponent } from './reportes-academicos/reporte-academico/reporte-academico.component';
 import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/resultados-ere.component';
 import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
+import { AsistenciaComponent } from './asistencia/asistencia.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,16 @@ const routes: Routes = [
     data: {
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'calendario',
+      icon: 'pi pi-share-alt',
+    },
+  },
+  {
+    path: 'asistencia',
+    component: AsistenciaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'asistencia',
       icon: 'pi pi-share-alt',
     },
   },

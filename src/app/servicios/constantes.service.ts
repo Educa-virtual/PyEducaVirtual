@@ -267,12 +267,11 @@ const estudiante = [
         icon: 'pi pi-calendar',
         routerLink: ['/estudiante/calendario'],
       },
-      /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
-                        {
-                            label: 'Buzón de sugerencias',
-                            icon: 'pi pi-fw pi-envelope',
-                            routerLink: ['/estudiante/buzon-sugerencias'],
-                        },*/
+      {
+        label: 'Asistencia',
+        icon: 'pi pi-clock',
+        routerLink: ['/estudiante/asistencia'],
+      },
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',

@@ -47,14 +47,14 @@
       </div>
       <div class="col-12 xl:col-2 lg:col-6 md:col-4" *ngIf="tipo.id === 1 || tipo.id === 3">
         <p-inputGroup>
-          <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+          <p-inputGroupAddon>Sección</p-inputGroupAddon>
           <p-dropdown
             [options]="seccion"
             [(ngModel)]="datos.iSeccionId"
             (click)="inhabilitarBoton = false"
             optionLabel="cSeccionNombre"
             optionValue="iSeccionId"
-            placeholder="Seleccionar Seccion"
+            placeholder="Seleccionar Sección"
           />
         </p-inputGroup>
       </div>
@@ -104,6 +104,7 @@
           (click)="buscarReporteEstudiante()"
         />
       </div>
+
       <div class="col-12 xl:col-2 lg:col-6 md:col-4" *ngIf="tipo.id === 3">
         <p-inputGroup>
           <p-inputGroupAddon>Tipo</p-inputGroupAddon>
@@ -141,7 +142,10 @@
         />
       </div>
       <!-- tablas -->
-      <div class="col-12 text-center p-2" *ngIf="tipo.id === 1 || tipo.id === 2">
+      <div
+        class="col-12 xl:col-10 lg:col-10 md:col-10 text-center p-2"
+        *ngIf="tipo.id === 1 || tipo.id === 2"
+      >
         <span class="font-bold">Leyenda</span> :
         <p-tag
           [styleClass]="leyenda.bgColor"
@@ -149,6 +153,20 @@
           *ngFor="let leyenda of tipoAsistencia"
         />
       </div>
+      <div
+        class="col-12 xl:col-2 lg:col-2 md:col-2 text-right p-2"
+        *ngIf="tipo.id === 1 || tipo.id === 2"
+      >
+        <p-button
+          class="expandir"
+          severity="success"
+          icon="pi pi-file-excel"
+          label="Exportar"
+          (click)="exportarExcel()"
+          [disabled]="alumnos.length === 0"
+        />
+      </div>
+
       <div class="col-12" *ngIf="tipo.id === 1 || tipo.id === 2">
         <p-table
           [tableStyle]="{ 'min-width': '125rem' }"
@@ -231,7 +249,7 @@
           <input pInputText class="mr-1" [(ngModel)]="estudiante.grado" readonly />
         </p-inputGroup>
         <p-inputGroup class="mb-3">
-          <p-inputGroupAddon>Seccion</p-inputGroupAddon>
+          <p-inputGroupAddon>Sección</p-inputGroupAddon>
           <input pInputText class="mr-1" [(ngModel)]="estudiante.seccion" readonly />
         </p-inputGroup>
       </div>

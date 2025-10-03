@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core'; //inject,
 //import { Router } from '@angular/router'
 import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-sugerencia.component';
 import { BuzonSugerenciasEstudianteService } from '../services/buzon-sugerencias-estudiante.service';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.component';
 //import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
@@ -27,6 +27,8 @@ import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.compone
   styleUrl: './lista-sugerencias.component.scss',
 })
 export class ListaSugerenciasComponent implements OnInit {
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
   prioridades: any[];
   formularioNuevoHeader: string;
   mostrarFormularioNuevo: boolean = false;
@@ -53,7 +55,7 @@ export class ListaSugerenciasComponent implements OnInit {
       type: 'date',
       width: '3rem',
       field: 'dtFechaCreacion',
-      header: 'Fecha',
+      header: 'Fecha sugerencia',
       text_header: 'center',
       text: 'center',
     },
@@ -75,6 +77,22 @@ export class ListaSugerenciasComponent implements OnInit {
         Baja: 'success',
         Media: 'warning',
       },
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '3rem',
+      field: 'cDiasTranscurridos',
+      header: 'Días transcurridos',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '3rem',
+      field: 'dtFechaRespuesta',
+      header: 'Fecha respuesta',
       text_header: 'center',
       text: 'center',
     },
@@ -112,6 +130,15 @@ export class ListaSugerenciasComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerListaSugerencias();
+    this.breadCrumbItems = [
+      {
+        label: 'Buzón de sugerencias',
+      },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
   }
 
   listenSugerenciaRegistrada(event: boolean) {
@@ -144,8 +171,8 @@ export class ListaSugerenciasComponent implements OnInit {
   }
 
   /*resetearInputs() {
-          this.form.reset()
-      }*/
+            this.form.reset()
+        }*/
 
   obtenerListaSugerencias() {
     this.buzonSugerenciasEstudianteService.obtenerListaSugerencias().subscribe({
@@ -227,8 +254,8 @@ export class ListaSugerenciasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
       /*isVisible: (row) => {
-                      return row.iEstado === 1 && 2 == this.perfil.iCredId
-                  },*/
+                            return row.iEstado === 1 && 2 == this.perfil.iCredId
+                        },*/
     },
   ];
 }

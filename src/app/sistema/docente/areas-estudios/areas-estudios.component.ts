@@ -400,10 +400,13 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         this.reglamentoInterno = JSON.parse(datos.reglamento) || null;
         this.itinerarioInterno = JSON.parse(datos.itinerario) || null;
         this.formato = JSON.parse(datos.portafolio) || null;
-        console.log('revicion', this.formato);
       },
       error: err => {
-        console.log(err);
+        this.MessageService.add({
+          severity: 'error',
+          summary: 'Error al Obtener Portafolios',
+          detail: err,
+        });
       },
     });
   }
@@ -483,8 +486,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     try {
       const datos = await this.subirPortafolio(event, 1);
       const direccion = datos['data'];
-      this.formato[0] = { tipo: '1', name: event.files[0].name, ruta: direccion };
+      this.formato = this.formato ? this.formato : [];
 
+      this.formato[0] = { tipo: '1', name: event.files[0].name, ruta: direccion };
       const params = {
         petition: 'post',
         group: 'doc',

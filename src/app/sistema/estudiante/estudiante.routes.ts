@@ -24,7 +24,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'calendario',
+    path: 'calendario-institucional',
     component: CalendarioComponent,
     canActivate: [RoleGuard],
     data: {

@@ -118,6 +118,7 @@ export class ReporteAsistenciasComponent implements OnInit {
 
   opcion: any = [
     { id: 1, nombre: 'reporte por grado y Sección' },
+    { id: 1, nombre: 'reporte por grado y Sección' },
     { id: 2, nombre: 'reporte por alumno' },
     { id: 3, nombre: 'reporte gráfico Grado y Sección' },
     { id: 4, nombre: 'reporte gráfico por alumno' },

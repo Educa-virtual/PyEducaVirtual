@@ -16,7 +16,7 @@ import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-d
   styleUrl: './lista-sugerencias.component.scss',
 })
 export class ListaSugerenciasComponent implements OnInit {
-  title: string = 'Buzón de sugerencias - Director';
+  title: string = 'Buzón de sugerencias administrativas - Director';
   prioridades: any[];
   mostrarFormularioVer: boolean = false;
   mostrarFormularioResponder: boolean = false;
@@ -71,6 +71,14 @@ export class ListaSugerenciasComponent implements OnInit {
         Baja: 'success',
         Media: 'warning',
       },
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '3rem',
+      field: 'cDiasTranscurridos',
+      header: 'Días transcurridos',
       text_header: 'center',
       text: 'center',
     },

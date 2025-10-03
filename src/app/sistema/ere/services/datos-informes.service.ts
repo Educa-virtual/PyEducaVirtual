@@ -324,4 +324,39 @@ export class DatosInformesService {
   importarOffLine(data: any) {
     return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data);
   }
+
+  guardarHojaDesarrolloEstudiante(
+    formData: any,
+    iEvaluacionId: string,
+    iCursosNivelGradId: string,
+    iEstudianteId: number
+  ) {
+    return this.http.post(
+      `${baseUrl}/ere/resultados/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/estudiantes/${iEstudianteId}/hoja-desarrollo`,
+      formData
+    );
+  }
+
+  descargarHojaDesarrolloEstudiante(
+    iEvaluacionId: string,
+    iCursosNivelGradId: string,
+    iEstudianteId: number
+  ) {
+    return this.http.get(
+      `${baseUrl}/ere/resultados/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/estudiantes/${iEstudianteId}/hoja-desarrollo`,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
+  eliminarHojaDesarrolloEstudiante(
+    iEvaluacionId: string,
+    iCursosNivelGradId: string,
+    iEstudianteId: number
+  ) {
+    return this.http.delete(
+      `${baseUrl}/ere/resultados/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/estudiantes/${iEstudianteId}/hoja-desarrollo`
+    );
+  }
 }

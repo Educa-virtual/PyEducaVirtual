@@ -118,7 +118,6 @@ export class ReporteAsistenciasComponent implements OnInit {
 
   opcion: any = [
     { id: 1, nombre: 'reporte por grado y Sección' },
-    { id: 1, nombre: 'reporte por grado y Sección' },
     { id: 2, nombre: 'reporte por alumno' },
     { id: 3, nombre: 'reporte gráfico Grado y Sección' },
     { id: 4, nombre: 'reporte gráfico por alumno' },
@@ -675,9 +674,9 @@ export class ReporteAsistenciasComponent implements OnInit {
       { wch: 20 }, // Documento
       ...Array(this.alumnos[0].asistencia.length).fill({ wch: 8 }), // ancho para días
     ];
-
+    const limite = this.alumnos[0].asistencia.length + 2;
     worksheet1['!merges'] = [
-      { s: { r: 0, c: 0 }, e: { r: 0, c: 30 } }, // Título "REPORTE..." ocupa A1:F1
+      { s: { r: 0, c: 0 }, e: { r: 0, c: limite } }, // Título "REPORTE..." ocupa A1:F1
       { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
       { s: { r: 2, c: 0 }, e: { r: 2, c: 3 } },
       { s: { r: 3, c: 0 }, e: { r: 3, c: 3 } },

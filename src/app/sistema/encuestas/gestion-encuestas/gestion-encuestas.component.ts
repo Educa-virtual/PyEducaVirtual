@@ -8,6 +8,7 @@ import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { SlicePipe } from '@angular/common';
+import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 //import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
@@ -39,6 +40,9 @@ export class GestionEncuestasComponent implements OnInit {
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
 
   USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADOR;
+
+  CATEGORIA_SATISFACCION: number = this.encuestasService.CATEGORIA_SATISFACCION;
+  CATEGORIA_AUTOEVALUACION: number = this.encuestasService.CATEGORIA_AUTOEVALUACION;
 
   constructor(
     private messageService: MessageService,
@@ -83,6 +87,50 @@ export class GestionEncuestasComponent implements OnInit {
 
   agregarEncuesta() {
     this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta`]);
+  }
+
+  generarEncuestaPlantilla(encuesta_reemplazada: any | null = null) {
+    if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
+      this.encuestasService
+        .crearEncuestaSatisfaccion({
+          iCateId: this.iCateId,
+          iYAcadId: this.iYAcadId,
+          iEncuId: encuesta_reemplazada?.iEncuId,
+        })
+        .subscribe({
+          next: () => {
+            this.listarEncuestas();
+          },
+          error: error => {
+            console.error('Error obteniendo lista de encuestas:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          },
+        });
+    } else if (Number(this.iCateId) === this.CATEGORIA_AUTOEVALUACION) {
+      this.encuestasService
+        .crearEncuestaAutoevaluacion({
+          iCateId: this.iCateId,
+          iYAcadId: this.iYAcadId,
+          iEncuId: encuesta_reemplazada?.iEncuId,
+        })
+        .subscribe({
+          next: () => {
+            this.listarEncuestas();
+          },
+          error: error => {
+            console.error('Error obteniendo lista de encuestas:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          },
+        });
+    }
   }
 
   verCategoria() {
@@ -162,7 +210,7 @@ export class GestionEncuestasComponent implements OnInit {
             summary: 'Éxito',
             detail: 'Encuesta eliminada',
           });
-          this.encuestas = this.encuestas.filter(encuesta => encuesta.iEncuId !== item.iEncuId);
+          this.listarEncuestas();
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);
@@ -261,6 +309,9 @@ export class GestionEncuestasComponent implements OnInit {
           `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/resumen`,
         ]);
         break;
+      case 'reemplazar':
+        this.generarEncuestaPlantilla(item);
+        break;
       default:
         console.warn('Acción no reconocida:', accion);
     }
@@ -329,12 +380,24 @@ export class GestionEncuestasComponent implements OnInit {
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) == this.ESTADO_APROBADA && Number(rowData.puede_ver_resumen) === 1,
     },
+    {
+      labelTooltip: 'Reemplazar',
+      icon: 'pi pi-sync',
+      accion: 'reemplazar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: (rowData: any) =>
+        Number(this.categoria.bEsFija) === 1 &&
+        Number(this.perfil.iPerfilId) === DIRECTOR_IE &&
+        !rowData.iSedeId &&
+        new Date() < new Date(rowData.dEncuInicio),
+    },
   ];
 
   columns: IColumn[] = [
     {
       type: 'item',
-      width: '1rem',
+      width: '5%',
       field: 'item',
       header: '#',
       text_header: 'center',
@@ -342,7 +405,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '8rem',
+      width: '30%',
       field: 'cEncuNombre',
       header: 'Título de encuesta',
       text_header: 'center',
@@ -350,7 +413,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '2rem',
+      width: '15%',
       field: 'cTiemDurNombre',
       header: 'Tiempo',
       text_header: 'center',
@@ -358,7 +421,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'date',
-      width: '3rem',
+      width: '15%',
       field: 'dEncuInicio',
       header: 'Desde',
       text_header: 'center',
@@ -366,15 +429,27 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'date',
-      width: '3rem',
+      width: '15%',
       field: 'dEncuFin',
       header: 'Hasta',
       text_header: 'center',
       text: 'center',
     },
     {
+      field: 'cEstadoNombre',
+      type: 'tag',
+      width: '10%',
+      header: 'Estado',
+      text_header: 'center',
+      text: 'center',
+      styles: {
+        BORRADOR: 'danger',
+        APROBADA: 'success',
+      },
+    },
+    {
       type: 'actions',
-      width: '3rem',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',

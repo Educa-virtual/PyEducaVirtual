@@ -31,6 +31,9 @@ export class EncuestasService implements OnDestroy {
   public readonly TIPO_PREG_SIMPLE = 3;
   public readonly TIPO_PREG_MULTIPLE = 4;
 
+  public readonly CATEGORIA_SATISFACCION = 1;
+  public readonly CATEGORIA_AUTOEVALUACION = 2;
+
   parametros: any;
 
   permisos: Array<object>;
@@ -169,6 +172,22 @@ export class EncuestasService implements OnDestroy {
 
   verResumen(data: any) {
     return this.http.post(`${baseUrl}/enc/verResumen`, data);
+  }
+
+  listarEncuestasSatisfaccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarEncuestasSatisfaccion`, data);
+  }
+
+  crearEncuestaSatisfaccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/crearEncuestaSatisfaccion`, data);
+  }
+
+  listarEncuestasAutoevaluacion(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarEncuestasAutoevaluacion`, data);
+  }
+
+  crearEncuestaAutoevaluacion(data: any) {
+    return this.http.post(`${baseUrl}/enc/crearEncuestaAutoevaluacion`, data);
   }
 
   /**

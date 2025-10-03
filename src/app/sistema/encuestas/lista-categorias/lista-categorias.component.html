@@ -35,7 +35,9 @@
                 />
               </div>
               <div class="p-3 mb-auto">
-                <h3 class="text-xl">
+                <h3 class="text-xl p-0 m-0">
+                  <i *ngIf="+categoria?.bEsFija" class="pi pi-fw pi-lock"></i>
+                  <i *ngIf="+categoria?.bEsEnlace" class="pi pi-fw pi-link"></i>
                   {{ categoria?.cCateNombre | uppercase }}
                 </h3>
               </div>

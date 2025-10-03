@@ -205,14 +205,14 @@ export class CategoriasEncuestaComponent implements OnInit {
         label: 'Editar Categoría',
         icon: 'pi pi-pencil',
         command: () => this.editarCategoria(categoria?.iCateId),
-        visible: Boolean(+categoria?.puede_crear) && this.puede_crear,
+        visible: !+categoria?.bEsFija && this.puede_crear,
       },
       {
         label: 'Borrar Categoría',
         icon: 'pi pi-trash',
         command: () => this.borrarCategoria(categoria?.iCateId),
         visible: Boolean(+categoria?.puede_crear) && this.puede_crear,
-        disabled: !categoria?.puede_crear || categoria?.iTotalEncuestas > 0,
+        disabled: !+categoria?.bEsFija || categoria?.iTotalEncuestas > 0,
       },
     ];
   }

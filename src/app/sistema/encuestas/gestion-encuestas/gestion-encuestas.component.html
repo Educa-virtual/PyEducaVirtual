@@ -9,14 +9,20 @@
   </ng-template>
 
   <ng-template pTemplate="icons" class="flex justify-content-center">
-    <button
-      pButton
-      pRipple
+    <p-button
+      *ngIf="categoria && !+categoria?.bEsFija"
       label="Nueva"
       icon="pi pi-plus"
-      class="p-button-success"
+      severity="success"
       (click)="agregarEncuesta()"
-    ></button>
+    />
+    <p-button
+      *ngIf="categoria && +categoria?.bEsFija && encuestas.length === 0"
+      label="Generar"
+      icon="pi pi-sync"
+      severity="success"
+      (click)="generarEncuestaPlantilla()"
+    />
   </ng-template>
 
   <div class="grid">

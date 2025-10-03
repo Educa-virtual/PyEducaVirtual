@@ -633,7 +633,7 @@ export class ReporteAsistenciasComponent implements OnInit {
     const titulo = this.opcion.find((m: any) => m.id === this.tipo.id)?.nombre || '';
     const mes = this.meses.find((m: any) => m.numero === this.tipo.numero)?.nombre || '';
     const grado =
-      this.grado.find((m: any) => m.iGradoId === this.datos.iGradoId)?.cSeccionNombre || '';
+      this.grado.find((m: any) => m.iGradoId === this.datos.iGradoId)?.cGradoNombre || '';
     const seccion =
       this.seccion.find((m: any) => m.iSeccionId === this.datos.iSeccionId)?.cSeccionNombre || '';
 

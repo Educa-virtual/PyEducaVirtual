@@ -4,6 +4,9 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-reporte-asistencias',
   standalone: true,
@@ -614,4 +617,60 @@ export class ReporteAsistenciasComponent implements OnInit {
         return true;
       });
   }
+
+  exportarExcel() {
+    const titulo = this.opcion.find((m: any) => m.id === this.tipo.id)?.nombre || '';
+    const mes = this.meses.find((m: any) => m.numero === this.tipo.numero)?.nombre || '';
+    const grado =
+      this.grado.find((m: any) => m.iGradoId === this.datos.iGradoId)?.cSeccionNombre || '';
+    const seccion =
+      this.seccion.find((m: any) => m.iSeccionId === this.datos.iSeccionId)?.cSeccionNombre || '';
+
+    const encabezado = [
+      ['REPORTE DE ASISTENCIA ( ' + titulo + ')'],
+      [`Mes: ${mes}`, `Grado: ${grado}`, `Sección: ${seccion}`],
+      [`Fecha: ${new Date().toLocaleDateString()}`],
+      [''],
+      ['Leyenda:'],
+      [this.tipoAsistencia.map((l: any) => `${l.cTipoAsiNombre} (${l.cTipoAsiLetra})`).join(' | ')],
+      [''],
+    ];
+    // Transformar los datos en un formato plano para Excel
+    const alumnos = this.alumnos;
+    const dataExport = alumnos.map(alumno => {
+      const fila: any = {
+        Nombre: alumno.completo,
+        Documento: alumno.cPersDocumento,
+      };
+
+      alumno.asistencia.forEach((a: any, index: number) => {
+        fila[`Día ${index + 1}`] = a.cTipoAsiLetra; // ej: P, F, T, -
+      });
+
+      return fila;
+    });
+    // 2️⃣ Crear worksheet vacío
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([]);
+    //  1️⃣Agregar cabecera y leyenda
+    XLSX.utils.sheet_add_aoa(worksheet, encabezado, { origin: 'A1' });
+    worksheet['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 10 } }, // Título "REPORTE..." ocupa A1:F1
+      { s: { r: 5, c: 0 }, e: { r: 5, c: 10 } }, // Leyenda ocupa A6:F6
+    ];
+
+    // 3️⃣ Insertar los datos desde la fila 7 en adelante
+    XLSX.utils.sheet_add_json(worksheet, dataExport, { origin: 'A8', skipHeader: false });
+    // Crear hoja
+    //const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataExport);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { Asistencia: worksheet },
+      SheetNames: ['Asistencia'],
+    };
+
+    // Generar buffer y guardar archivo
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const file: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(file, `reporte_asistencia_${new Date().toISOString().split('T')[0]}.xlsx`);
+  }
+  //apersonamiento de los proceso
 }

@@ -7,10 +7,12 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 type DayCell = {
-  date: Date | null;
-  dayNumber: number | null;
-  iso: string | null; // YYYY-MM-DD or null
-  status: string | null; //'A' | 'N' | 'T' | '';
+  fecha: Date | null;
+  numeroDia: number | null;
+  fechaFormat: string | null;
+  cTipoAsiLetra: string | null;
+  cTipoAsiNombre: string | null;
+  cursos: [] | null;
 };
 
 @Component({
@@ -24,7 +26,8 @@ export class AsistenciaComponent implements OnInit {
   @Input() studentId!: number;
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
-
+  showDialog = false;
+  selectedCell: DayCell | null = null;
   // semana empezando LUNES
   weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -129,6 +132,12 @@ export class AsistenciaComponent implements OnInit {
     this.load();
   }
 
+  mostrarDetalles(cell: DayCell) {
+    if (!cell || !cell.numeroDia) return; // Ignora celdas vacías
+    this.selectedCell = cell;
+    this.showDialog = true;
+  }
+
   nextMonth() {
     if (this.selectedMonth === 12) {
       this.selectedMonth = 1;
@@ -145,9 +154,9 @@ export class AsistenciaComponent implements OnInit {
   }
 
   /*onYearChange(val: any) {
-    this.selectedYear = +val;
-    this.load();
-  }*/
+      this.selectedYear = +val;
+      this.load();
+    }*/
 
   private formatISO(d: Date) {
     const y = d.getFullYear();
@@ -158,9 +167,9 @@ export class AsistenciaComponent implements OnInit {
 
   load() {
     /*if (!this.studentId) {
-      this.error = 'Falta studentId en el componente';
-      return;
-    }*/
+          this.error = 'Falta studentId en el componente';
+          return;
+        }*/
     //this.studentId = 5;
     this.loading = true;
     this.asistenciaService
@@ -183,28 +192,31 @@ export class AsistenciaComponent implements OnInit {
 
     //this.error = null;
     /*const records = [
-      { fecha: '2025-10-01', asistio: 'X' },
-      { fecha: '2025-10-02', asistio: 'X' },
-      { fecha: '2025-10-03', asistio: 'I' },
-      { fecha: '2025-10-04', asistio: '-' },
-    ];
-    this.buildCalendar(records);*/
+          { fecha: '2025-10-01', asistio: 'X' },
+          { fecha: '2025-10-02', asistio: 'X' },
+          { fecha: '2025-10-03', asistio: 'I' },
+          { fecha: '2025-10-04', asistio: '-' },
+        ];
+        this.buildCalendar(records);*/
     // map meses según servicio: enviamos month 1..12
     /*this.svc.getAttendanceForMonth(this.studentId, this.selectedMonth, this.selectedYear)
-      .pipe(finalize(() => this.loading = false))
-      .subscribe({
-        next: (records) => this.buildCalendar(records),
-        error: (err) => this.error = (err?.message || 'Error cargando asistencia')
-      });*/
+          .pipe(finalize(() => this.loading = false))
+          .subscribe({
+            next: (records) => this.buildCalendar(records),
+            error: (err) => this.error = (err?.message || 'Error cargando asistencia')
+          });*/
   }
 
   private buildCalendar(records: any[]) {
-    //AttendanceRecord
-    // Map records por fecha ISO
-    const map = new Map<string, string>();
+    // Map records por fecha ISO a un objeto con más propiedades
+    const map = new Map<string, { cTipoAsiLetra: string; cTipoAsiNombre: string; cursos: [] }>();
     for (const r of records) {
       // Normalizar fecha por si viene con timezones (suponemos exacto YYYY-MM-DD)
-      map.set(r.dtAsistencia, (r.cTipoAsiLetra || '').toString().toUpperCase());
+      map.set(r.dtAsistencia, {
+        cTipoAsiLetra: (r.cTipoAsiLetra || '').toString().toUpperCase(),
+        cTipoAsiNombre: (r.cTipoAsiNombre || '').toString(),
+        cursos: r.cursos,
+      });
     }
 
     const year = this.selectedYear;
@@ -214,12 +226,9 @@ export class AsistenciaComponent implements OnInit {
 
     const daysInMonth = lastOfMonth.getDate();
 
-    // Determinar desplazamiento para que la semana empiece LUNES.
-    // getDay(): 0=Dom,1=Lu,...6=Sa
     const startDay = firstOfMonth.getDay(); // 0..6
     const offset = (startDay + 6) % 7; // 0 => Monday, ..., 6 => Sunday
 
-    // Construir celdas
     const totalCells = offset + daysInMonth;
     const totalWeeks = Math.ceil(totalCells / 7);
     const weeks: DayCell[][] = [];
@@ -230,12 +239,26 @@ export class AsistenciaComponent implements OnInit {
       for (let dow = 0; dow < 7; dow++) {
         const cellIndex = w * 7 + dow;
         if (cellIndex < offset || dayCounter > daysInMonth) {
-          week.push({ date: null, dayNumber: null, iso: null, status: '' });
+          week.push({
+            fecha: null,
+            numeroDia: null,
+            fechaFormat: null,
+            cTipoAsiLetra: '',
+            cTipoAsiNombre: '',
+            cursos: [],
+          });
         } else {
           const d = new Date(year, monthIndex, dayCounter);
           const iso = this.formatISO(d);
           const statusFromBackend = map.get(iso);
-          week.push({ date: d, dayNumber: dayCounter, iso: iso, status: statusFromBackend });
+          week.push({
+            fecha: d,
+            numeroDia: dayCounter,
+            fechaFormat: iso,
+            cTipoAsiLetra: statusFromBackend?.cTipoAsiLetra || '',
+            cTipoAsiNombre: statusFromBackend?.cTipoAsiNombre || '',
+            cursos: statusFromBackend?.cursos,
+          });
           dayCounter++;
         }
       }

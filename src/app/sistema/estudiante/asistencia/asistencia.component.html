@@ -29,9 +29,18 @@
 
       <div class="weeks">
         <div class="week" *ngFor="let week of weeks">
-          <div class="daycell" *ngFor="let cell of week" [ngClass]="statusClass(cell.status)">
-            <div class="day-number" *ngIf="cell.dayNumber">{{ cell.dayNumber }}</div>
-            <div class="mark" *ngIf="cell.status">{{ cell.status }}</div>
+          <div
+            class="daycell"
+            *ngFor="let cell of week"
+            tabindex="0"
+            role="button"
+            [ngClass]="statusClass(cell.cTipoAsiLetra)"
+            (click)="mostrarDetalles(cell)"
+            (keydown.enter)="mostrarDetalles(cell)"
+            style="cursor: pointer"
+          >
+            <div class="day-number" *ngIf="cell.numeroDia">{{ cell.numeroDia }}</div>
+            <div class="mark" *ngIf="cell.cTipoAsiLetra">{{ cell.cTipoAsiLetra }}</div>
           </div>
         </div>
       </div>
@@ -56,4 +65,41 @@
     </div>
   </div>
 </app-container-page>
+
+<p-dialog
+  [header]="
+    'Detalle de asistencia - ' +
+    (selectedCell?.fecha ? (selectedCell.fecha | date: 'dd/MM/y') : '-')
+  "
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '50rem' }"
+>
+  <div *ngIf="selectedCell">
+    <br />
+    <div class="mb-5">
+      <strong>Estado:</strong>
+      <span [ngClass]="statusClass(selectedCell.cTipoAsiLetra)">{{
+        selectedCell.cTipoAsiNombre || '-'
+      }}</span>
+    </div>
+
+    <p-table [value]="selectedCell.cursos">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 25%">Curso</th>
+          <th>Docente</th>
+          <th style="width: 25%">Estado</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-curso>
+        <tr>
+          <td>{{ curso.cCursoNombre }}</td>
+          <td>{{ curso.cPersPaterno }} {{ curso.cPersMaterno }} {{ curso.cPersNombre }}</td>
+          <td [ngClass]="statusClass(curso.cTipoAsiLetra)">{{ curso.cTipoAsiNombre }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-dialog>
 <p-toast />

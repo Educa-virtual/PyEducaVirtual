@@ -57,6 +57,7 @@
                       [model]="categoria?.btnItems"
                       badge="100"
                       (onClick)="listarEncuestas(categoria?.iCateId)"
+                      [menuStyle]="{ 'z-index': '1000' }"
                     >
                       <ng-template pTemplate="content">
                         {{ +categoria?.iCantSinResponder === 0 ? 'Acceder' : 'Responder' }}

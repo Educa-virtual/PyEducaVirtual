@@ -136,7 +136,6 @@ const routes: Routes = [
     component: RespuestasEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      es_encuestador: false,
       expectedRole: encuestadores,
       breadcrumb: 'Ver Respuestas',
     },
@@ -146,7 +145,6 @@ const routes: Routes = [
     component: ResumenEncuestaComponent,
     canActivate: [RoleGuard],
     data: {
-      es_encuestador: false,
       expectedRole: encuestadores,
       breadcrumb: 'Ver Resumen',
     },

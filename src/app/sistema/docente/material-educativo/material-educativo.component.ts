@@ -151,7 +151,7 @@ export class MaterialEducativoComponent implements OnInit {
       data: {
         opcion: 'CONSULTARxiDocenteIdxidDocCursoId',
         iDocenteId: this._ConstantesService.iDocenteId,
-        iCursosNivelGradId: this.iCursosNivelGradId,
+        idDocCursoId: this.idDocCursoId,
       },
     };
 
@@ -170,7 +170,8 @@ export class MaterialEducativoComponent implements OnInit {
   }
   GuardarActualizarMaterialEducativoDocentes(item) {
     item.iDocenteId = this._ConstantesService.iDocenteId;
-    item.valorBusqueda = this.idDocCursoId;
+    item.idDocCursoId = this.idDocCursoId;
+
     const params = {
       petition: 'post',
       group: 'docente',

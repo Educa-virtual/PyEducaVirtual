@@ -42,11 +42,11 @@ const docente = [
         icon: 'pi pi-fw pi-bell',
         routerLink: ['/docente/comunicados'],
       },
-      {
-        label: 'Portafolio',
-        icon: 'pi pi-fw pi-folder',
-        routerLink: ['/docente/portafolio'],
-      },
+      // {
+      //   label: 'Portafolio',
+      //   icon: 'pi pi-fw pi-folder',
+      //   routerLink: ['/docente/portafolio'],
+      // },
       {
         label: 'Mis Áreas Curriculares',
         icon: 'pi pi-fw pi-book',
@@ -268,16 +268,10 @@ const estudiante = [
         routerLink: ['/estudiante/horario'],
       },
       {
-        label: 'Calendario',
+        label: 'Calendario institucional',
         icon: 'pi pi-calendar',
-        routerLink: ['/estudiante/calendario'],
+        routerLink: ['/estudiante/calendario-institucional'],
       },
-      /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
-                        {
-                            label: 'Buzón de sugerencias',
-                            icon: 'pi pi-fw pi-envelope',
-                            routerLink: ['/estudiante/buzon-sugerencias'],
-                        },*/
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
@@ -371,7 +365,7 @@ const administrador = [
               routerLink: ['/administrador/backup-bd'],
             },*/
 
-      {
+      /*{
         label: 'Gestión de usuarios',
         icon: 'pi pi-fw pi-user',
         items: [
@@ -386,6 +380,11 @@ const administrador = [
             routerLink: ['/administrador/gestion-usuarios/solicitudes-registro'],
           },
         ],
+      },*/
+      /*{
+        label: 'Gestión de usuarios',
+        icon: 'pi pi-fw pi-book',
+        routerLink: ['/administrador/gestion-usuarios'],
       },
       {
         label: 'Informes y Estadísticas',
@@ -397,6 +396,11 @@ const administrador = [
             routerLink: ['/administrador/logro-alcanzado'],
           },
         ],
+      },*/
+      {
+        label: 'Gestión de usuarios',
+        icon: 'pi pi-fw pi-book',
+        routerLink: ['/administrador/gestion-usuarios'],
       },
 
       // {
@@ -720,7 +724,7 @@ const administracion = [
         ],
       },
       {
-        label: 'Generación de Reportes y estadísticas',
+        label: 'Generación de reportes y estadísticas',
         icon: 'pi pi-chart-bar',
         items: [
           {
@@ -729,9 +733,14 @@ const administracion = [
             routerLink: ['/gestion-institucional/dashboard-indicadores'],
           },
           {
-            label: 'Reportes',
+            label: 'Reportes académicos',
             icon: 'pi pi-book',
-            routerLink: ['/gestion-institucional/reporte'],
+            routerLink: ['/gestion-institucional/reportes-academicos'],
+          },
+          {
+            label: 'Reporte de Asistencia',
+            icon: 'pi pi-chart-bar',
+            routerLink: ['reporte-asistencia-auxiliar'],
           },
           {
             label: 'Estadisticas y ranking de mérito',
@@ -940,6 +949,27 @@ const apoderado = [
             icon: 'pi pi-fw pi-list-check',
             routerLink: ['/bienestar/gestionar-encuestas'],
           },
+        ],
+      },
+      {
+        label: 'Reportes académicos',
+        icon: 'pi pi-chart-bar',
+        items: [
+          {
+            label: 'Progreso',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/apoderado/reportes-academicos/progreso'],
+          },
+          /*{
+            label: 'Académico',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/estudiante/reportes-academicos/academico'],
+          },
+          {
+            label: 'Resultados ERE',
+            icon: 'pi pi-fw pi-ticket',
+            routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
+          },*/
         ],
       },
       {

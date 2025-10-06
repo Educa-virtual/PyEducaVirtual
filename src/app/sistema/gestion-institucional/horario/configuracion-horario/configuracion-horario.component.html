@@ -40,7 +40,7 @@
         [disabled]="!iGradoId || !iSeccionId"
         (click)="obtenerCursosxiGradoIdxiSeccionId()"
       >
-        <i class="pi pi-search"></i>&nbsp;Buscar
+        <i class="pi pi-search"></i>&nbsp;Ver horario
       </button>
       <p-divider></p-divider>
     </div>
@@ -53,11 +53,11 @@
         [disabled]="!iGradoId"
         (click)="configurarHorario()"
       >
-        <i class="pi pi-calendar"></i>&nbsp;Configurar
+        <i class="pi pi-calendar"></i>&nbsp;Configurar bloque de horas
       </button>
     </div>
     <div class="col-12 md:col-2">
-      <button
+      <!-- <button
         pButton
         pRipple
         type="button"
@@ -66,7 +66,7 @@
         (click)="configurarHorario()"
       >
         <i class="pi pi-check"></i>&nbsp;Procesar
-      </button>
+      </button> -->
     </div>
   </div>
   <div class="col-12">
@@ -122,7 +122,7 @@
             />
           </p-inputGroup>
         </div>
-        <div class="col-12 md:col-4">
+        <div class="col-12 md:col-4" *ngIf="!vbloques">
           <p-inputGroup>
             <p-inputGroupAddon>Horario</p-inputGroupAddon>
             <p-dropdown
@@ -141,7 +141,7 @@
             />
           </p-inputGroup>
         </div>
-        <div class="col-12 md:col-2" *ngIf="!vbloques">
+        <div class="col-12 md:col-2" flex justify-content-center *ngIf="!vbloques">
           <button
             pButton
             pRipple
@@ -150,24 +150,25 @@
             [disabled]="formDistribucion.invalid"
             (click)="guardarHorario()"
             [disabled]="!iGradoId || !iSeccionId"
+            title="Actualizar horario"
           >
-            <i class="pi pi-save"></i>&nbsp;Actualizar
+            <i class="pi pi-save"></i>&nbsp;Asignar horario
           </button>
         </div>
-        <div class="col-12 md:col-1" *ngIf="vbloques">
+        <div class="col-12 md:col-3 flex justify-content-center" *ngIf="vbloques">
           <button
             pButton
             pRipple
             type="button"
             class="p-button-warning"
             (click)="actualizarHoras()"
-            title="Asignar horas"
+            title="Asignar horas a los bloques"
             [disabled]="!iGradoId || !iSeccionId"
           >
-            <i class="pi pi-clock"></i>&nbsp;Horas
+            <i class="pi pi-clock"></i>&nbsp;Asignar horas
           </button>
         </div>
-        <div class="col-12 md:col-1" *ngIf="vbloques">
+        <div class="col-12 md:col-3" flex justify-content-center *ngIf="vbloques">
           <button
             pButton
             pRipple
@@ -177,7 +178,7 @@
             title="Procesar calendario"
             [disabled]="!iGradoId || !iSeccionId"
           >
-            <i class="pi pi-calendar"></i>&nbsp;Fechas
+            <i class="pi pi-calendar"></i>&nbsp;Publicar configuración
           </button>
         </div>
       </div>

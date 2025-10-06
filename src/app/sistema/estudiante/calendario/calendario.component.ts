@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToolbarPrimengComponent } from '../../../shared/toolbar-primeng/toolbar-primeng.component';
 import { FullCalendarioComponent } from '../../../shared/full-calendario/full-calendario.component'; // * traduce el Modulo de calendario a español
 
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { CalendarioService } from './services/calendario.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 
@@ -15,6 +15,8 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
   styleUrl: './calendario.component.scss',
 })
 export class CalendarioComponent implements OnInit {
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
   textoAnioAcademico: string = '';
   curricula = [];
   festividades = [];
@@ -29,6 +31,15 @@ export class CalendarioComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+    this.breadCrumbItems = [
+      {
+        label: 'Calendario institucional',
+      },
+    ];
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.obtenerDiasFestivos();
     this.obtenerCalendarioAcademico();

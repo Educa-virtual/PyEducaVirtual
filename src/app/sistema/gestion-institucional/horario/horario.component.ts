@@ -85,14 +85,14 @@ export class HorarioComponent implements OnInit {
           this.messageService.add({
             severity: 'danger',
             summary: 'Mensaje del Sistema',
-            detail: 'Error al cargar los datos del horario: ' + error.message,
+            detail: 'Error. al cargar los datos del horario: ' + error.error.message,
           });
         },
         complete: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Mensaje del Sistema',
-            detail: 'Se cargar los registros del horario correctamente',
+            detail: 'Se cargaron los registros del horario correctamente',
           });
         },
       });

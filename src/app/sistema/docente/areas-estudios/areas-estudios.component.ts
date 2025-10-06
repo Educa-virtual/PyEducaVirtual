@@ -42,8 +42,12 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     this.iYAcadId = this._constantesService.iYAcadId;
     this.iPersId = this._constantesService.iPersId;
     this.iIieeId = this._constantesService.iIieeId;
+    this.cIieeCodigoModular = this._constantesService.codModular;
+    this.years = this.store.getItem('dremoYear');
   }
 
+  years: any;
+  cIieeCodigoModular: any;
   iIieeId: any;
   documentos: any = [];
   opcionCurso = [];
@@ -57,12 +61,16 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   archivos: any = {};
   iYAcadId: any;
   iPersId: any;
-  cPortafolioItinerario = [];
   reglamento = [];
   visiblePortafolio: boolean = false;
   iPerfilId: number;
+  reglamentoInterno: any;
+  itinerarioInterno: any;
+  portafolioInterno: any;
+  formato: any = [];
   public DOCENTE = DOCENTE;
   public ESTUDIANTE = ESTUDIANTE;
+  portafolio: any;
   ngOnInit() {
     this.iPerfilId = this._constantesService.iPerfilId;
     this.items = [
@@ -102,8 +110,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         },
       },
     ];
-    this.obtenerPortafolios();
-    // this.obtenerReglamento();
   }
   ngOnChanges(changes) {
     if (changes.data?.currentValue) {
@@ -192,6 +198,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       case 'portafolio':
         if (this.selectedData['iSilaboId']) {
           this.visiblePortafolio = true;
+          this.obtenerPortafolios();
         } else {
           this.MessageService.add({
             severity: 'error',
@@ -373,28 +380,33 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   obtenerPortafolios() {
+    const iPortafolioId = this.selectedData['iPortafolioId'];
+    const iCuadernoId = this.selectedData['iCuadernoId'];
+
     const params = {
       petition: 'post',
       group: 'docente',
       prefix: 'portafolios',
       ruta: 'obtenerPortafolios',
       data: {
-        iDocenteId: this._constantesService.iDocenteId,
-        iYAcadId: this.iYAcadId,
-        iCredId: this._constantesService.iCredId,
+        iPortafolioId: iPortafolioId,
+        iCuadernoId: iCuadernoId,
         iIieeId: this._constantesService.iIieeId,
       },
-      params: { skipSuccessMessage: true },
     };
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
-        console.log(respuesta);
-        // const itinerario = respuesta.data[0].cPortafolioItinerario;
-        // this.cPortafolioItinerario = JSON.parse(itinerario) || [];
-        // this.reglamento = respuesta.data[0];
+        const datos = respuesta.data[0];
+        this.reglamentoInterno = JSON.parse(datos.reglamento) || null;
+        this.itinerarioInterno = JSON.parse(datos.itinerario) || null;
+        this.formato = JSON.parse(datos.portafolio) || null;
       },
       error: err => {
-        console.log(err);
+        this.MessageService.add({
+          severity: 'error',
+          summary: 'Error al Obtener Portafolios',
+          detail: err,
+        });
       },
     });
   }
@@ -429,74 +441,218 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       },
     });
   }
-  subirPortafolio(event: any, tipo: any) {
-    const file = event.files && event.files.length > 0 ? event.files[0] : null;
-    if (file) {
-      this.archivos.enlace = file;
-    } else {
-      this.archivos.enlace = null;
-    }
 
-    const enviar = new FormData();
-    enviar.append('tipoPortafolio', tipo);
-    enviar.append('iPersId', this.iPersId);
-    enviar.append('iYAcadId', this.iYAcadId);
-    enviar.append('archivo', this.archivos.enlace);
-    const params = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'docente',
-      ruta: 'guardar_portafolio_documento',
-      data: enviar,
-    };
+  subirPortafolio(event: any, tipo) {
+    return new Promise((resolve, reject) => {
+      const file = event.files && event.files.length > 0 ? event.files[0] : null;
+      if (file) {
+        this.archivos.enlace = file;
+      } else {
+        this.archivos.enlace = null;
+        return;
+      }
 
-    this._generalService.getRecibirDatos(params).subscribe({
-      next: respuesta => {
-        if (tipo == 'itinerario') {
-          const url = respuesta.data;
-          this.guardarItinerario(url);
-        }
-      },
-      error: err => {
-        console.log(err);
-      },
+      if (!this.iPersId || !this.iYAcadId || !this.cIieeCodigoModular || !this.years) {
+        return;
+      }
+
+      const enviar = new FormData();
+      enviar.append('tipoPortafolio', tipo);
+      enviar.append('iPersId', this.iPersId);
+      enviar.append('iYAcadId', this.iYAcadId);
+      enviar.append('archivo', this.archivos.enlace);
+      enviar.append('cIieeCodigoModular', this.cIieeCodigoModular);
+      enviar.append('years', this.years);
+      const params = {
+        petition: 'post',
+        group: 'acad',
+        prefix: 'docente',
+        ruta: 'guardar_portafolio_documento',
+        data: enviar,
+      };
+
+      this._generalService.getRecibirDatos(params).subscribe({
+        next: respuesta => {
+          resolve(respuesta);
+        },
+        error: error => {
+          reject(error);
+        },
+      });
     });
   }
 
-  guardarItinerario(ruta: any) {
-    this.cPortafolioItinerario = [];
-    const formato = {
-      name: this.archivos.enlace.name,
-      ruta: ruta,
-    };
-    this.cPortafolioItinerario.push(formato);
-    const params = {
-      petition: 'post',
-      group: 'docente',
-      prefix: 'portafolios',
-      ruta: 'guardarItinerario',
-      data: {
-        iDocenteId: this._constantesService.iDocenteId,
-        iYAcadId: this.iYAcadId,
-        cPortafolioItinerario: JSON.stringify(this.cPortafolioItinerario),
-      },
-    };
-    this._generalService.getRecibirDatos(params).subscribe({
-      next: () => {
-        this.MessageService.add({
-          severity: 'success',
-          summary: 'Exito de Registro',
-          detail: 'Se guardo el archivo Itinerario',
-        });
-      },
-      error: err => {
-        this.MessageService.add({
-          severity: 'error',
-          summary: 'Error de Registro',
-          detail: err,
-        });
-      },
-    });
+  async guardarActividades(event: any) {
+    try {
+      const datos = await this.subirPortafolio(event, 1);
+      const direccion = datos['data'];
+      this.formato = this.formato ? this.formato : [];
+
+      this.formato[0] = { tipo: '1', name: event.files[0].name, ruta: direccion };
+      const params = {
+        petition: 'post',
+        group: 'doc',
+        prefix: 'portafolio',
+        ruta: 'guardar_cuaderno',
+        data: {
+          cCuadernoUrl: JSON.stringify(this.formato),
+          iCuadernoId: this.selectedData['iCuadernoId'],
+          iSilaboId: this.selectedData['iSilaboId'],
+        },
+      };
+
+      this._generalService.getRecibirDatos(params).subscribe({
+        next: () => {
+          this.MessageService.add({
+            severity: 'success',
+            summary: 'Exito de Registro',
+            detail: 'Se guardo el archivo Actividades',
+          });
+        },
+        error: err => {
+          this.MessageService.add({
+            severity: 'error',
+            summary: 'Error de Registro',
+            detail: err,
+          });
+        },
+      });
+    } catch (err) {
+      this.MessageService.add({
+        severity: 'error',
+        summary: 'Error de Registro',
+        detail: err,
+      });
+    }
+  }
+  async guardarCuaderno(event: any) {
+    try {
+      const datos = await this.subirPortafolio(event, 1);
+      const direccion = datos['data'];
+      this.formato[1] = { tipo: '2', name: event.files[0].name, ruta: direccion };
+
+      const params = {
+        petition: 'post',
+        group: 'doc',
+        prefix: 'portafolio',
+        ruta: 'guardar_cuaderno',
+        data: {
+          cCuadernoUrl: JSON.stringify(this.formato),
+          iCuadernoId: this.selectedData['iCuadernoId'],
+          iSilaboId: this.selectedData['iSilaboId'],
+        },
+      };
+
+      this._generalService.getRecibirDatos(params).subscribe({
+        next: () => {
+          this.MessageService.add({
+            severity: 'success',
+            summary: 'Exito de Registro',
+            detail: 'Se guardo el archivo Cuaderno de Campo',
+          });
+        },
+        error: err => {
+          this.MessageService.add({
+            severity: 'error',
+            summary: 'Error de Registro',
+            detail: err,
+          });
+        },
+      });
+    } catch (err) {
+      this.MessageService.add({
+        severity: 'error',
+        summary: 'Error de Registro',
+        detail: err,
+      });
+    }
+  }
+  async guardarInstrumentos(event: any) {
+    try {
+      const datos = await this.subirPortafolio(event, 2);
+      const direccion = datos['data'];
+      this.formato[2] = { tipo: '3', name: event.files[0].name, ruta: direccion };
+
+      const params = {
+        petition: 'post',
+        group: 'doc',
+        prefix: 'portafolio',
+        ruta: 'guardar_cuaderno',
+        data: {
+          cCuadernoUrl: JSON.stringify(this.formato),
+          iCuadernoId: this.selectedData['iCuadernoId'],
+          iSilaboId: this.selectedData['iSilaboId'],
+        },
+      };
+
+      this._generalService.getRecibirDatos(params).subscribe({
+        next: () => {
+          this.MessageService.add({
+            severity: 'success',
+            summary: 'Exito de Registro',
+            detail: 'Se guardo el archivo Itinerario',
+          });
+        },
+        error: err => {
+          this.MessageService.add({
+            severity: 'error',
+            summary: 'Error de Registro',
+            detail: err,
+          });
+        },
+      });
+    } catch (err) {
+      this.MessageService.add({
+        severity: 'error',
+        summary: 'Error de Registro',
+        detail: err,
+      });
+    }
+  }
+
+  async guardarItinerario(event: any) {
+    try {
+      const datos = await this.subirPortafolio(event, 2);
+      const direccion = datos['data'];
+      this.itinerarioInterno = [{ name: event.files[0].name, ruta: direccion }];
+
+      const params = {
+        petition: 'post',
+        group: 'docente',
+        prefix: 'portafolios',
+        ruta: 'guardarItinerario',
+        data: {
+          iDocenteId: this._constantesService.iDocenteId,
+          iYAcadId: this.iYAcadId,
+          cPortafolioItinerario: JSON.stringify(this.itinerarioInterno),
+          iSedeId: this._constantesService.iSedeId,
+          iSilaboId: this.selectedData['iSilaboId'],
+        },
+      };
+
+      this._generalService.getRecibirDatos(params).subscribe({
+        next: () => {
+          this.MessageService.add({
+            severity: 'success',
+            summary: 'Exito de Registro',
+            detail: 'Se guardo el archivo Itinerario',
+          });
+        },
+        error: err => {
+          this.MessageService.add({
+            severity: 'error',
+            summary: 'Error de Registro',
+            detail: err,
+          });
+        },
+      });
+    } catch (err) {
+      this.MessageService.add({
+        severity: 'error',
+        summary: 'Error de Registro',
+        detail: err,
+      });
+    }
   }
   obtenerReglamento() {
     const params = {

@@ -16,6 +16,8 @@ import {
   IActionContainer,
 } from '@/app/shared/container-page/container-page.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { DatosEstudianteService } from '../services/datos-estudiante-service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-ies-personal',
@@ -43,6 +45,8 @@ export class IesPersonalComponent implements OnInit {
   lista: Array<object>;
   cargos: Array<object>;
   mensaje: string;
+  tipos_documentos: Array<object>;
+  sever: string = 'default';
 
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
 
@@ -51,7 +55,8 @@ export class IesPersonalComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     private query: GeneralService,
-    private store: LocalStoreService
+    private store: LocalStoreService,
+    private datosEstudianteService: DatosEstudianteService
     // private confirmationService: ConfirmationService,
   ) {
     const perfil = this.store.getItem('dremoPerfil');
@@ -65,12 +70,14 @@ export class IesPersonalComponent implements OnInit {
 
     this.getDocente();
     this.getCargos();
+    this.datosEstudiante();
 
     try {
       this.form = this.fb.group({
         iPersIeId: [0], // PK tabla acad.personal_ies
         iPersId: [{ value: 0, disabled: true }, Validators.required], // FK tabla grl.persona
-        dni: [null, Validators.required],
+        iTipoIdentId: [1, Validators.required], // tipo de documento 1:DNI
+        cPersDocumento: [null, Validators.required],
         iYAcadId: [this.iYAcadId, Validators.required], // FK tabla acad.year_academico
         iPersCargoId: [null, Validators.required], // FK tabla acad.personal_cargos
         iSedeId: [this.iSedeId, Validators.required], // FK tabla acad.sedes
@@ -141,37 +148,98 @@ export class IesPersonalComponent implements OnInit {
     }
   }
 
-  buscarDni() {
-    const dni = String(this.form.get('dni')?.value);
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          cPersDocumento: dni,
-        }),
-        _opcion: 'getPersona',
+  // buscarDni() {
+  //   const cPersDocumento = String(this.form.get('cPersDocumento')?.value);
+  //   this.query
+  //     .searchCalendario({
+  //       json: JSON.stringify({
+  //         cPersDocumento: cPersDocumento,
+  //       }),
+  //       _opcion: 'getPersona',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.persona = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Mensaje del Sistema',
+  //           detail: 'Error al obtener datos del docuemento: ' + error.message,
+  //         });
+  //       },
+  //       complete: () => {
+  //         if (this.persona.length > 0) {
+  //           this.mensaje = this.persona[0].NombreCompleto;
+  //           this.form.patchValue({
+  //             iPersId: this.persona[0].iPersId,
+  //           });
+  //         } else {
+  //           this.mensaje = cPersDocumento + ' No cuenta con registro comunicarse con el Administrador';
+  //         }
+  //       },
+  //     });
+  // }
+
+  validarPersona() {
+    this.mensaje = '';
+    const dni = this.form.get('cPersDocumento')?.value;
+    this.datosEstudianteService
+      .validarPersona({
+        iTipoIdentId: this.form.get('iTipoIdentId')?.value,
+        cPersDocumento: dni,
       })
       .subscribe({
         next: (data: any) => {
           this.persona = data.data;
-        },
-        error: error => {
+          console.log(this.persona, 'persona dni');
+          console.log(data, 'id persona dni');
+          //this.setFormApoderado(data.data);
+
           this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error al obtener datos del docuemento: ' + error.message,
+            severity: 'success',
+            summary: ':Mensaje del sistema',
+            detail: data.message,
           });
         },
+        error: (error: HttpErrorResponse) => {
+          // mensaje propio del backend
+          const backendMsg = error.error?.message;
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'mensaje del sistema',
+            detail: backendMsg || 'Ocurrió un error en la validación.',
+          });
+
+          this.sever = 'error';
+          this.mensaje = dni + ' No cuenta con registro comunicarse con el Administrador';
+        },
         complete: () => {
-          if (this.persona.length > 0) {
-            this.mensaje = this.persona[0].NombreCompleto;
-            this.form.patchValue({
-              iPersId: this.persona[0].iPersId,
-            });
+          const cPersPaterno = this.persona.cPersPaterno ?? '';
+          const cPersMaterno = this.persona.cPersMaterno ?? '';
+          const cPersNombre = this.persona.cPersNombre ?? '';
+          const nombre_completo = cPersPaterno + ' ' + cPersMaterno + ', ' + cPersNombre;
+
+          this.form.patchValue({
+            iPersId: this.persona.iPersId,
+          });
+
+          if (nombre_completo.length > 0) {
+            this.mensaje = nombre_completo;
+            this.sever = 'success';
           } else {
+            this.sever = 'error';
             this.mensaje = dni + ' No cuenta con registro comunicarse con el Administrador';
           }
         },
       });
+  }
+
+  datosEstudiante() {
+    this.datosEstudianteService.getTiposDocumentos().subscribe(data => {
+      this.tipos_documentos = data;
+    });
   }
 
   searchPersonal() {
@@ -182,25 +250,17 @@ export class IesPersonalComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          const item = data.data;
-
-          this.personal_ies = item.map(persona => ({
-            ...persona,
-            nombre_completo: (
-              persona.cPersDocumento +
-              ' ' +
-              persona.cPersPaterno +
-              ' ' +
-              persona.cPersMaterno +
-              ' ' +
-              persona.cPersNombre
-            ).trim(),
-          }));
-
-          console.log(this.personal_ies, 'personal ies');
+          this.personal_ies = data.data;
         },
-        error: error => {
-          console.error('Error procedimiento BD:', error);
+        error: (error: HttpErrorResponse) => {
+          // mensaje propio del backend
+          const backendMsg = error.error?.message;
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'mensaje del sistema',
+            detail: backendMsg || 'Ocurrió un error en la validación.',
+          });
         },
         complete: () => {
           console.log('Request completed');
@@ -341,16 +401,16 @@ export class IesPersonalComponent implements OnInit {
           this.docentes = item.map(persona => ({
             ...persona,
             nombre_completo: (
-              persona.cPersDocumento +
+              (persona.cPersDocumento ?? '') +
               ' ' +
-              persona.cPersPaterno +
+              (persona.cPersPaterno ?? '') +
               ' ' +
-              persona.cPersMaterno +
+              (persona.cPersMaterno ?? '') +
               ' ' +
-              persona.cPersNombre
+              (persona.cPersNombre ?? '')
             ).trim(),
           }));
-          console.log(this.docentes, 'docentes');
+
           //   console.log(this.seccionesAsignadas,' seccionesAsignadas')
         },
         error: error => {
@@ -415,9 +475,6 @@ export class IesPersonalComponent implements OnInit {
             detail: 'Error en ejecución',
           });
         },
-        complete: () => {
-          console.log('Request completed');
-        },
       });
   }
 
@@ -462,7 +519,7 @@ export class IesPersonalComponent implements OnInit {
   columns = [
     {
       type: 'item',
-      width: '5rem',
+      width: '1rem',
       field: 'item',
       header: '',
       text_header: 'left',
@@ -470,7 +527,7 @@ export class IesPersonalComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '3rem',
       field: 'cPersCargoNombre',
       header: 'Cargo',
       text_header: 'center',
@@ -478,7 +535,7 @@ export class IesPersonalComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '3rem',
       field: 'cPersDocumento',
       header: 'Documento',
       text_header: 'center',
@@ -502,7 +559,7 @@ export class IesPersonalComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '10rem',
       field: 'cPersNombre',
       header: 'Nombres',
       text_header: 'center',

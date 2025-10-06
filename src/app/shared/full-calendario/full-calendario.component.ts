@@ -1,11 +1,22 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+} from '@angular/core';
 import { CalendarOptions, EventApi, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import { formatDate } from '@fullcalendar/core';
+
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-full-calendario',
@@ -14,7 +25,8 @@ import { formatDate } from '@fullcalendar/core';
   templateUrl: './full-calendario.component.html',
   styleUrl: './full-calendario.component.scss',
 })
-export class FullCalendarioComponent implements OnChanges {
+export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit {
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
   @Output() filtrarFestividad = new EventEmitter();
   @Output() filtrarCalendario = new EventEmitter();
   @Output() filtrarActividad = new EventEmitter();
@@ -22,15 +34,37 @@ export class FullCalendarioComponent implements OnChanges {
   @Input() curricula;
   @Input() festividades;
   @Input() actividades;
-  @Input() events;
+  @Input() events: any = [];
 
+  mesSeleccionado: any;
+  capturar = [];
   activarIndice: number | number[] = []; //activa las pestañas de p-according
-  OnInit() {
+  ngOnInit() {
     window.addEventListener('resize', this.verificarDimension.bind(this));
+  }
+  ngAfterViewInit() {
+    const calendarApi = this.calendarComponent.getApi();
+    const currentDate = calendarApi.getDate();
+    this.mesSeleccionado = currentDate.getMonth();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
       this.calendarOptions.events = changes['events'].currentValue;
+      //this.filtrarMes(this.capturar);
+      ///this.calendarOptions.events = changes['events'].currentValue;
+    }
+  }
+
+  filtrarMes(eventos: any) {
+    //const datos = eventos.filter(index => index.mes == this.mesSeleccionado);
+    this.calendarOptions.events = eventos[this.mesSeleccionado];
+  }
+
+  handleDatesSet(arg: any) {
+    const mes = new Date(arg.view.currentStart).getMonth();
+    this.mesSeleccionado = mes;
+    if (this.capturar) {
+      this.filtrarMes(this.capturar);
     }
   }
 
@@ -44,6 +78,7 @@ export class FullCalendarioComponent implements OnChanges {
     dayMaxEvents: true,
     displayEventTime: true,
     displayEventEnd: true,
+    //datesSet: this.handleDatesSet.bind(this),
     //navLinks: true,
     height: 600,
     dayCellDidMount: data => {
@@ -87,14 +122,6 @@ export class FullCalendarioComponent implements OnChanges {
       checkbox: id,
     };
     this.filtrarActividad.emit(data);
-  }
-
-  formatTime(event: any): string {
-    if (event.allDay) return '';
-    const fmt: any = { hour: '2-digit', minute: '2-digit', hour12: false };
-    const start = event.start ? formatDate(event.start, fmt) : '';
-    const end = event.end ? formatDate(event.end, fmt) : '';
-    return start && end ? `${start} - ${end}` : start || '';
   }
 
   showEventsDialog = false;
@@ -161,5 +188,8 @@ export class FullCalendarioComponent implements OnChanges {
       a.getMonth() === b.getMonth() &&
       a.getDate() === b.getDate()
     );
+  }
+  formatearHora(fecha: any) {
+    return fecha.getHours() == '00' ? '' : fecha.getHours() + ':' + fecha.getMinutes();
   }
 }

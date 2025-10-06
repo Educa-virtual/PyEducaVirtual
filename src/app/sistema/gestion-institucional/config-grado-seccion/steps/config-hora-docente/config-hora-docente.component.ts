@@ -346,13 +346,13 @@ export class ConfigHoraDocenteComponent implements OnInit {
           this.docentes = item.map(persona => ({
             ...persona,
             nombre_completo: (
-              persona.cPersDocumento +
+              (persona.cPersDocumento ?? '') +
               ' ' +
-              persona.cPersPaterno +
+              (persona.cPersPaterno ?? '') +
               ' ' +
-              persona.cPersMaterno +
+              (persona.cPersMaterno ?? '') +
               ' ' +
-              persona.cPersNombre
+              (persona.cPersNombre ?? '')
             ).trim(),
           }));
         },

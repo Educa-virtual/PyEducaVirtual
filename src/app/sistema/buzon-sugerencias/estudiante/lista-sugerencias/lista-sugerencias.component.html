@@ -1,7 +1,8 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Buzón de sugerencias</h3>
+      <h3 class="m-0 text-uppercase text-primary">Buzón de sugerencias administrativas</h3>
     </div>
   </ng-template>
   <ng-template pTemplate="icons" class="flex flex-column flex-1">
@@ -20,7 +21,10 @@
       </button>
     </div>
   </ng-template>
-
+  <p>
+    Ingresa tu sugerencia para que el director de la I.E. la pueda recibir (ejemplo: cambio de
+    carpetas, señalización en pasillos, etc.)
+  </p>
   <app-table-primeng
     [columnas]="columns"
     [searchPlaceholder]="'Buscar por asunto...'"

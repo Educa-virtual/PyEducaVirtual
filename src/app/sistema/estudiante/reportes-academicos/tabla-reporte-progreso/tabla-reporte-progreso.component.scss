@@ -1,0 +1,76 @@
+.curso-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.curso-table {
+  width: 100%;
+  font-family: var(--font-family, Arial, sans-serif);
+
+  border-collapse: separate; /* Necesario para bordes redondeados */
+  border-spacing: 0;
+  border: 1px solid #d1d5db; /* gris claro */
+  border-radius: 8px; /* esquinas redondeadas */
+  overflow: hidden; /* asegura que las esquinas se vean redondeadas */
+}
+
+.curso-table thead th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: #e8e4ec;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.curso-table tbody td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #d1d5db;
+  vertical-align: middle;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.curso-table th,
+.curso-table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+/* Bordes horizontales solo en filas */
+.curso-table tr {
+  border-bottom: 1px solid #d1d5db; /* gris un poco más claro */
+}
+
+.curso-table tr:last-child {
+  border-bottom: none; /* quita el borde de la última fila */
+}
+
+/* Pequeña animación (transición en la apertura) */
+.expanded-row {
+  animation: fadeIn 180ms ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ol {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+tr.fondo-gris td {
+  background-color: #fafafa;
+}
+
+td.contenedor-accordion {
+  padding: 0 !important;
+}

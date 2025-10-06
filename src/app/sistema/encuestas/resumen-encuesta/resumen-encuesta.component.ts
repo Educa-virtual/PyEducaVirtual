@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { StepsModule } from 'primeng/steps';
 import { ButtonModule } from 'primeng/button';
 import { PrimengModule } from '@/app/primeng.module';
@@ -29,7 +36,7 @@ import { MultiChartComponent } from '../../bienestar/shared/multi-chart/multi-ch
   styleUrl: './resumen-encuesta.component.scss',
   providers: [SlicePipe],
 })
-export class ResumenEncuestaComponent {
+export class ResumenEncuestaComponent implements OnInit, AfterViewInit {
   @ViewChild('filtros') filtros: OverlayPanel;
   @ViewChild('overlayAnchor') overlayAnchorRef: ElementRef;
 
@@ -150,7 +157,10 @@ export class ResumenEncuestaComponent {
         this.ies = this.encuestasService.getInstitucionesEducativas(data?.instituciones_educativas);
         this.distritos = this.encuestasService.getDistritos(data?.distritos);
         this.areas = this.encuestasService.getAreas(data?.areas);
-        this.participantes = this.encuestasService.getParticipantes(data?.participantes);
+        this.participantes = this.encuestasService.getParticipantes(
+          data?.participantes,
+          Number(this.perfil.iPerfilId)
+        );
         this.sexos = this.encuestasService.getSexos();
         this.encuestasService.getNivelesGrados(data?.nivel_grados);
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { EncuestasService } from '../services/encuestas.services';
-import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { DIRECTOR_IE, ESPECIALISTA_UGEL, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -40,6 +40,7 @@ export class EncuestaComponent implements OnInit {
   iYAcadId: number;
 
   es_director: boolean = false;
+  es_especialista_ugel: boolean = false;
   puede_editar: boolean = true;
   encuesta_registrada: boolean = false;
 
@@ -79,7 +80,8 @@ export class EncuestaComponent implements OnInit {
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(this.perfil.iPerfilId);
+    this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
+    this.es_especialista_ugel = [ESPECIALISTA_UGEL].includes(Number(this.perfil.iPerfilId));
     this.route.paramMap.subscribe((params: any) => {
       this.iCateId = params.params.iCateId || null;
       this.iEncuId = params.params.iEncuId || null;
@@ -151,7 +153,10 @@ export class EncuestaComponent implements OnInit {
         this.nivel_tipos = this.encuestasService.getNivelesTipos(data?.nivel_tipos);
         this.ies = this.encuestasService.getInstitucionesEducativas(data?.instituciones_educativas);
         this.distritos = this.encuestasService.getDistritos(data?.distritos);
-        this.participantes = this.encuestasService.getParticipantes(data?.participantes);
+        this.participantes = this.encuestasService.getParticipantes(
+          data?.participantes,
+          Number(this.perfil.iPerfilId)
+        );
         this.areas = this.encuestasService.getAreas(data?.areas);
         this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
         this.permisos = this.encuestasService.getPermisos(data?.permisos);
@@ -168,6 +173,10 @@ export class EncuestaComponent implements OnInit {
           const ugel = this.ugeles[0]['value'];
           this.formPoblacion.get('iUgelId')?.setValue(ugel);
           this.filterInstitucionesEducativas();
+        }
+        if (this.ies && this.ies.length === 1) {
+          const ie = this.ies[0]['value'];
+          this.formPoblacion.get('iIieeId')?.setValue(ie);
         }
       });
 

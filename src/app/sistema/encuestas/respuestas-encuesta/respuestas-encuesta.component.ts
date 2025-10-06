@@ -131,7 +131,10 @@ export class RespuestasEncuestaComponent implements OnInit {
           this.distritos = this.encuestasService.getDistritos(data?.distritos);
           this.sexos = this.encuestasService.getSexos();
           this.encuestasService.getNivelesGrados(data?.nivel_grados);
-          this.participantes = this.encuestasService.getParticipantes(data?.participantes);
+          this.participantes = this.encuestasService.getParticipantes(
+            data?.participantes,
+            Number(this.perfil.iPerfilId)
+          );
           this.areas = this.encuestasService.getAreas(data?.areas);
           if (this.nivel_tipos && this.nivel_tipos.length == 1) {
             const nivel_tipo = this.nivel_tipos[0]['value'];

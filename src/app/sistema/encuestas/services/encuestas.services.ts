@@ -3,6 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { map, of, Subject } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import {
+  ADMINISTRADOR_DREMO,
+  APODERADO,
+  DIRECTOR_IE,
+  DOCENTE,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+  ESTUDIANTE,
+} from '@/app/servicios/seg/perfiles';
 
 const baseUrl = environment.backendApi;
 
@@ -264,16 +273,41 @@ export class EncuestasService implements OnDestroy {
     return this.permisos;
   }
 
-  getParticipantes(data: any) {
+  getParticipantes(data: any, iPerfilId: number | null = null) {
     if (!this.participantes && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.participantes = items.map(participante => ({
         value: participante.iPerfilId,
         label: participante.cPerfilNombre,
+        disabled: iPerfilId
+          ? !this.getParticipantesJurisdiccion(participante.iPerfilId, iPerfilId)
+          : false,
       }));
       return this.participantes;
     }
     return this.participantes;
+  }
+
+  getParticipantesJurisdiccion(iPerfilIdParticipante: number, iPerfilIdUsuario: number) {
+    if (iPerfilIdUsuario === DIRECTOR_IE) {
+      return [DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdParticipante);
+    } else if (iPerfilIdUsuario === ESPECIALISTA_UGEL) {
+      return [DIRECTOR_IE, DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdParticipante);
+    } else if (iPerfilIdUsuario === ESPECIALISTA_DREMO) {
+      return [ESPECIALISTA_UGEL, DIRECTOR_IE, DOCENTE, ESTUDIANTE, APODERADO].includes(
+        iPerfilIdParticipante
+      );
+    } else if (iPerfilIdUsuario === ADMINISTRADOR_DREMO) {
+      return [
+        ESPECIALISTA_DREMO,
+        ESPECIALISTA_UGEL,
+        DIRECTOR_IE,
+        DOCENTE,
+        ESTUDIANTE,
+        APODERADO,
+      ].includes(iPerfilIdParticipante);
+    }
+    return false;
   }
 
   getAreas(data: any) {

@@ -186,7 +186,6 @@ export class CategoriasEncuestaComponent implements OnInit {
   }
 
   gestionarEncuestas(iCateId: any) {
-    console.log(iCateId, 'gestion categoria');
     if (iCateId == null) {
       /* Es enlace a encuestas de bienestar */
       this.router.navigate([`/bienestar/gestionar-encuestas`]);

@@ -11,26 +11,41 @@
   <ng-template pTemplate="icons" class="flex justify-content-center">
     <p-button
       *ngIf="categoria && !+categoria?.bEsFija"
-      label="Nueva"
-      icon="pi pi-plus"
       severity="success"
+      pTooltip="Nueva"
+      tooltipPosition="top"
       (click)="agregarEncuesta()"
-    />
+    >
+      <i class="pi pi-fw pi-plus"></i>
+      <span class="hidden md:inline ml-2">Nueva</span>
+    </p-button>
     <p-button
       *ngIf="categoria && +categoria?.bEsFija && encuestas.length === 0"
-      label="Generar"
-      icon="pi pi-sync"
       severity="success"
+      pTooltip="Generar"
+      tooltipPosition="top"
       (click)="generarEncuestaPlantilla()"
-    />
+    >
+      <i class="pi pi-fw pi-sync"></i>
+      <span class="hidden md:inline ml-2">Generar</span>
+    </p-button>
   </ng-template>
 
-  <div class="grid">
-    <div class="col-12">
+  <div class="grid p-fluid">
+    <div class="col">
       <p-inputGroup>
         <p-inputGroupAddon> Buscar </p-inputGroupAddon>
         <input #filtro type="text" pInputText (input)="filtrarTabla()" />
       </p-inputGroup>
+    </div>
+    <div class="col-auto align-content-center">
+      <p-button
+        severity="success"
+        pTooltip="Plantillas"
+        icon="pi pi-file-plus"
+        tooltipPosition="top"
+        (onClick)="abrirDialogPlantillas()"
+      />
     </div>
   </div>
 
@@ -44,5 +59,7 @@
   >
   </app-table-primeng>
 </p-panel>
+
+<app-lista-plantillas [(visible)]="visibleDialogPlantillas" [iCateId]="iCateId" />
 
 <p-toast></p-toast>

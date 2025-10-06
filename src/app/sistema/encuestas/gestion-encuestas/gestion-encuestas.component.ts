@@ -9,23 +9,27 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { SlicePipe } from '@angular/common';
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
-//import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
+import { ListaPlantillasComponent } from '../plantillas/lista-plantillas/lista-plantillas.component';
 
 @Component({
   selector: 'app-gestion-encuestas',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent],
+  imports: [PrimengModule, TablePrimengComponent, ListaPlantillasComponent],
   templateUrl: './gestion-encuestas.component.html',
   styleUrl: './gestion-encuestas.component.scss',
   providers: [SlicePipe],
 })
 export class GestionEncuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
+
   iCateId: number = null;
   categoria: any = null;
   selectedItem: any;
+
+  visibleDialogPlantillas: boolean = false;
   mostrarDialogoNuevaEncuesta: boolean = false;
   mostrarDialogoAccesosEncuesta: boolean = false;
+
   iYAcadId: number;
   perfil: any;
   cCateNombre: string;
@@ -248,6 +252,15 @@ export class GestionEncuestasComponent implements OnInit {
           });
         },
       });
+  }
+
+  abrirDialogPlantillas() {
+    this.visibleDialogPlantillas = true;
+  }
+
+  cerrarDialogPlantillas() {
+    this.iCateId = null;
+    this.visibleDialogPlantillas = false;
   }
 
   accionBtnItemTable({ accion, item }) {

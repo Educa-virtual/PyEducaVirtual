@@ -190,6 +190,26 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/crearEncuestaAutoevaluacion`, data);
   }
 
+  listarPlantillas(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarPlantillas`, data);
+  }
+
+  verPlantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/verPlantilla`, data);
+  }
+
+  guardarPlantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarPlantilla`, data);
+  }
+
+  actualizarPlantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarPlantilla`, data);
+  }
+
+  borrarPlantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarPlantilla`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */

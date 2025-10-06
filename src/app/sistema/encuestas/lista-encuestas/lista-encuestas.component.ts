@@ -7,7 +7,6 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { formatDate, SlicePipe } from '@angular/common';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-//import { GestionEncuestaConfiguracionComponent } from './gestion-encuesta-configuracion/gestion-encuesta-configuracion.component'
 
 @Component({
   selector: 'app-lista-encuestas',

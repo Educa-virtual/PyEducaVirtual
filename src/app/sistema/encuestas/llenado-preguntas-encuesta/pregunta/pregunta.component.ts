@@ -137,7 +137,7 @@ export class PreguntaComponent implements OnInit, OnChanges {
       this.iPregId = null;
       this.pregunta_registrada = false;
       this.clearForm();
-      if (this.formPregunta) {
+      if (this.formPregunta && !this.iPregId) {
         this.formPregunta.get('iSeccionId').patchValue(this.iSeccionId);
       }
     }
@@ -168,24 +168,27 @@ export class PreguntaComponent implements OnInit, OnChanges {
     this.formPregunta.get('iPregId').patchValue(this.iPregId);
     this.encuestasService.formatearFormControl(
       this.formPregunta,
-      'iSeccionId',
-      pregunta.iSeccionId,
-      'number'
-    );
-    this.encuestasService.formatearFormControl(
-      this.formPregunta,
       'iTipoPregId',
       pregunta.iTipoPregId,
       'number'
     );
+    this.encuestasService.formatearFormControl(
+      this.formPregunta,
+      'iSeccionId',
+      pregunta.iSeccionId,
+      'number'
+    );
+    console.log(this.secciones, 'secciones');
+    console.log(this.tipos_preguntas, 'secciones');
     if (pregunta.alternativas) {
       const alternativas = JSON.parse(pregunta.alternativas.replace(/^"(.*)"$/, '$1'));
       alternativas.forEach(alternativa => {
         this.agregarAlternativa(alternativa);
       });
     }
+    this.cd.detectChanges();
     this.pregunta_registrada = true;
-    this.formPregunta.markAsDirty();
+    this.encuestasService.formMarkAsDirty(this.formPregunta);
   }
 
   clearForm() {

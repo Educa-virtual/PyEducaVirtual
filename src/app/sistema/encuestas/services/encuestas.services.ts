@@ -354,7 +354,7 @@ export class EncuestasService implements OnDestroy {
   getSeccionesEncuesta(data: any) {
     if (data) {
       this.secciones = data.map(seccion => ({
-        value: seccion.iSeccionId,
+        value: Number(seccion.iSeccionId),
         label: seccion.iSeccionOrden + '. ' + seccion.cSeccionTitulo,
       }));
       return this.secciones;

@@ -18,7 +18,7 @@
           <p-inputGroupAddon>Sección *</p-inputGroupAddon>
           <p-dropdown
             [options]="secciones"
-            formControlName="iSeccionId"
+            formControlName="iPlanSeccionId"
             [filter]="false"
             [showClear]="false"
             appendTo="body"
@@ -32,7 +32,7 @@
         <p-inputGroup>
           <p-inputGroupAddon>Orden en Sección</p-inputGroupAddon>
           <p-inputNumber
-            formControlName="iPregOrden"
+            formControlName="iPlanPregOrden"
             [min]="1"
             [step]="1"
             placeholder="Indique"
@@ -80,7 +80,7 @@
           <textarea
             cdkTextareaAutosize
             #autosize="cdkTextareaAutosize"
-            formControlName="cPregContenido"
+            formControlName="cPlanPregContenido"
             pInputTextarea
             placeholder="Escriba"
             [rows]="3"
@@ -109,7 +109,7 @@
           <textarea
             cdkTextareaAutosize
             #autosize="cdkTextareaAutosize"
-            formControlName="cPregAdicional"
+            formControlName="cPlanPregAdicional"
             pInputTextarea
             placeholder="Escriba"
             [rows]="3"

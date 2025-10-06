@@ -67,7 +67,7 @@ export class PlantillaSeccionComponent implements OnInit, OnChanges {
   verSeccion() {
     this.encuestasService
       .verSeccion({
-        iSeccionId: this.iPlanSeccionId,
+        iPlanSeccionId: this.iPlanSeccionId,
       })
       .subscribe({
         next: (data: any) => {
@@ -96,7 +96,7 @@ export class PlantillaSeccionComponent implements OnInit, OnChanges {
     this.seccion_registrada = false;
     if (this.formSeccion) {
       this.formSeccion.reset();
-      this.formSeccion.get('iEncuId').patchValue(this.iPlanId);
+      this.formSeccion.get('iPlanId').patchValue(this.iPlanId);
     }
   }
 

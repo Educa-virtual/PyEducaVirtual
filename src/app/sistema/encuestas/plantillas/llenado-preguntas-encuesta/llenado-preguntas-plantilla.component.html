@@ -44,7 +44,7 @@
   <br />
 
   <p-accordion styleClass="w-full" [multiple]="true">
-    @for (seccion of secciones; track seccion.iSeccionId) {
+    @for (seccion of secciones; track seccion.iPlanSeccionId) {
       <p-accordionTab iconPos="start" [selected]="true">
         <ng-template pTemplate="header">
           <span class="flex align-items-center justify-content-start w-full">

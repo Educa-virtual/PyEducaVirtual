@@ -172,7 +172,7 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
       return;
     }
     this.confirmationModalService.openConfirm({
-      header: `¿Está seguro de eliminar la sección seleccionada #${seccion?.iSeccionOrden}?`,
+      header: `¿Está seguro de eliminar la sección seleccionada #${seccion?.iPlanSeccionOrden}?`,
       accept: () => {
         this.encuestasService
           .borrarPlantillaSeccion({

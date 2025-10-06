@@ -1,0 +1,112 @@
+<div class="grid">
+  <div class="col-12">
+    <app-toolbar-primeng [title]="'📁 Repositorio de Archivos'" [butons]="[]">
+    </app-toolbar-primeng>
+  </div>
+</div>
+<div class="card">
+  <div class="grid">
+    <div class="col-12 flex gap-3 p-3 align-items-center">
+      <input type="file" #fileInput (change)="subirArchivo($event)" hidden />
+      <p-button
+        label="Subir Archivo"
+        icon="pi pi-plus"
+        (onClick)="resetearInput(fileInput); fileInput.click()"
+      ></p-button>
+      <p-button
+        label="Carpeta"
+        icon="pi pi-plus"
+        severity="danger"
+        (onClick)="selectedRow.set(null); showModal.set(true)"
+      ></p-button>
+      <div class="bg-bluegray-50 p-3 border-round text-left flex-1">
+        <ng-container *ngFor="let carpeta of rutaCarpetas(); let last = last">
+          <a
+            href="javascript:void(0)"
+            (click)="!last && irACarpeta(carpeta.id)"
+            [class.text-blue-600]="!last"
+            [class.font-bold]="last"
+            class="cursor-pointer hover:underline"
+            style="text-decoration: none"
+          >
+            📁 {{ carpeta.nombre }}
+          </a>
+          <span *ngIf="!last"> / </span>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-12 text-red-500">
+      🚨Recuerda: Solo se permitirá cargar archivos no mayores a 5 MB.
+      <p-divider></p-divider>
+    </div>
+    <div class="col-12">
+      <p-table
+        [value]="repositorio()"
+        dataKey="id"
+        responsiveLayout="stack"
+        [breakpoint]="'768px'"
+        class="rounded-table hoverTable"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columnas()" [pSortableColumn]="col.sortable ? col.field : null">
+              <div [style.text-align]="col.text_header">
+                {{ col.header }}
+                @if (col.sortable && col.field) {
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                }
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="cols">
+          <tr>
+            <td *ngFor="let col of columnas()">
+              <span class="p-column-title">{{ col.header }}</span>
+              @if (col.type === 'item') {
+                <div [style.text-align]="col.text">
+                  <span>{{ rowIndex + 1 }}</span>
+                </div>
+              }
+              @if (col.type === 'text') {
+                <div [style.text-align]="col.text">
+                  {{ row[col.field] || '-' }}
+                </div>
+              }
+              @if (col.type === 'date') {
+                <div [style.text-align]="col.text">
+                  {{ row[col.field] ? (row[col.field] | date: 'dd/MM/yyyy') : '-' }}
+                </div>
+              }
+              @if (col.type === 'actions') {
+                <div [style.text-align]="col.text">
+                  <button class="p-link button-menu" (click)="abrirMenu($event, row, menu)">
+                    <i class="pi pi-ellipsis-v"></i>
+                  </button>
+                </div>
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-menu
+  #menu
+  [model]="items"
+  [popup]="true"
+  styleClass="w-15rem custom-popup-menu"
+  appendTo="body"
+/>
+
+<app-form-carpeta
+  [showModal]="showModal()"
+  [data]="selectedRow()"
+  [iCarpetaPadreId]="rutaCarpetas()[rutaCarpetas().length - 1].id"
+  (closeModal)="showModal.set(false)"
+  (recargarLista)="obtenerCarpetas(rutaCarpetas()[rutaCarpetas().length - 1].id)"
+></app-form-carpeta>
+<p-toast></p-toast>

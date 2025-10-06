@@ -6,6 +6,7 @@ import { SolicitudInscripcionComponent } from './solicitud-Inscripcion/solicitud
 import { AulaCardCapacitacionesComponent } from './aula-virtual-capacitaciones/aulaCard-capacitaciones/aulaCard-capacitaciones.component';
 import { ResultadosCursosComponent } from './resultados-cursos/resultados-cursos.component';
 import { CapacitacionesComponent } from './capacitaciones/capacitaciones.component';
+import { MiRepositorioComponent } from './mi-repositorio/mi-repositorio.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,15 @@ const routes: Routes = [
           expectedRole: [INSTRUCTOR, PARTICIPANTE],
           breadcrumb: 'curso-capacitaciones',
           icon: 'pi pi-user',
+        },
+      },
+      {
+        path: 'mi-repositorio',
+        component: MiRepositorioComponent,
+        data: {
+          expectedRole: [INSTRUCTOR],
+          breadcrumb: 'Mi repositorio',
+          icon: 'pi pi-folder-open',
         },
       },
     ],

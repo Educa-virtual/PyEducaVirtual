@@ -142,7 +142,7 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
 
   salir() {
     this.router.navigate([
-      `/encuestas/categorias/${this.iCateId}/gestion-planillas/${this.iPlanId}`,
+      `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${this.iPlanId}`,
     ]);
   }
 

@@ -8,7 +8,7 @@
     </div>
   </ng-template>
   <ng-template
-    *ngIf="plantilla_registrada && this.iPlanId"
+    *ngIf="plantilla_registrada || iPlanId"
     pTemplate="icons"
     class="flex justify-content-center"
   >
@@ -176,6 +176,14 @@
         let-nextCallback="nextCallback"
         let-index="index"
       >
+        <p-messages severity="info">
+          <ng-template pTemplate>
+            <p>
+              Cuando un usuario utilice esta plantilla se excluirán las poblaciones objetivo que
+              estén fuera de su jurisdicción.
+            </p>
+          </ng-template>
+        </p-messages>
         <form [formGroup]="formPoblacion">
           <p-fieldset
             legend="Seleccione y presione Agregar"

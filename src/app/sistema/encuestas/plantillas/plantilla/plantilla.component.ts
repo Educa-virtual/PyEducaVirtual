@@ -90,7 +90,6 @@ export class PlantillaComponent implements OnInit {
       this.iCateId = params.params.iCateId || null;
       this.iPlanId = params.params.iPlanId || null;
     });
-    console.log(this.es_director, 'es director');
     this.setBreadCrumbs();
   }
 
@@ -344,12 +343,6 @@ export class PlantillaComponent implements OnInit {
     this.formPlantilla.patchValue(data);
     this.encuestasService.formatearFormControl(
       this.formPlantilla,
-      'iTiemDurId',
-      data.iTiemDurId,
-      'number'
-    );
-    this.encuestasService.formatearFormControl(
-      this.formPlantilla,
       'iCateId',
       data.iCateId,
       'number'
@@ -362,24 +355,42 @@ export class PlantillaComponent implements OnInit {
     );
     this.encuestasService.formatearFormControl(
       this.formPlantilla,
-      'dPlanInicio',
-      data.dPlanInicio,
-      'date'
+      'bCompartirMismaIe',
+      data.bCompartirMismaIe,
+      'boolean'
     );
     this.encuestasService.formatearFormControl(
       this.formPlantilla,
-      'dPlanFin',
-      data.dPlanFin,
-      'date'
+      'bCompartirDirectores',
+      data.bCompartirDirectores,
+      'boolean'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formPlantilla,
+      'bCompartirEspUgel',
+      data.bCompartirEspUgel,
+      'boolean'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formPlantilla,
+      'bCompartirEspDremo',
+      data.bCompartirEspDremo,
+      'boolean'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formPlantilla,
+      'bCompartirMismaUgel',
+      data.bCompartirMismaUgel,
+      'boolean'
     );
 
-    const poblacion = JSON.parse(data.poblacion);
+    const poblacion = JSON.parse(data.json_poblacion);
     if (poblacion && poblacion.length) {
       for (let i = 0; i < poblacion.length; i++) {
         this.agregarPoblacion(poblacion[i]);
       }
     }
-    const accesos = JSON.parse(data.accesos);
+    const accesos = JSON.parse(data.json_accesos);
     if (accesos && accesos.length) {
       for (let i = 0; i < accesos.length; i++) {
         this.agregarAcceso(accesos[i]);
@@ -630,7 +641,7 @@ export class PlantillaComponent implements OnInit {
     poblacion = poblacion.filter((item: any) => item != null);
     this.formPoblacion.get('poblacion')?.setValue(poblacion.join(', '));
     this.formPlantilla.get('poblacion')?.setValue(poblacion);
-    this.formPoblacion.get('iPobId')?.setValue(item.iPobId ?? new Date().getTime());
+    this.formPoblacion.get('iPlanPobId')?.setValue(item.iPlanPobId ?? new Date().getTime());
   }
 
   actualizarAccesos(item: any) {
@@ -638,23 +649,25 @@ export class PlantillaComponent implements OnInit {
     const permiso: any = this.permisos.find((permiso: any) => permiso.value == item.iPermId);
     this.formAccesos.get('cPerfilNombre')?.setValue(perfil ? perfil.label : '');
     this.formAccesos.get('cPermNombre')?.setValue(permiso ? permiso.label : '');
-    this.formAccesos.get('iAcceId')?.setValue(item.iAcceId ?? new Date().getTime());
+    this.formAccesos.get('iPlanAcceId')?.setValue(item.iPlanAcceId ?? new Date().getTime());
   }
 
   salir() {
-    this.router.navigate(['/plantillas/categorias/']);
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
   }
 
   accionBtnItemTablePoblacion({ accion, item }) {
     if (accion == 'eliminar') {
-      this.poblacion = this.poblacion.filter((poblacion: any) => item.iPobId != poblacion.iPobId);
+      this.poblacion = this.poblacion.filter(
+        (poblacion: any) => item.iPlanPobId != poblacion.iPlanPobId
+      );
       this.formPlantilla.get('poblacion')?.setValue(this.poblacion);
     }
   }
 
   accionBtnItemTableAccesos({ accion, item }) {
     if (accion == 'eliminar') {
-      this.accesos = this.accesos.filter((acceso: any) => item.iAcceId != acceso.iAcceId);
+      this.accesos = this.accesos.filter((acceso: any) => item.iPlanAcceId != acceso.iPlanAcceId);
       this.formPlantilla.get('accesos')?.setValue(this.accesos);
     }
   }

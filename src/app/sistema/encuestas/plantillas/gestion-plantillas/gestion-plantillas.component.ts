@@ -336,7 +336,7 @@ export class GestionPlantillasComponent implements OnInit {
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
     {
-      labelTooltip: 'Generar encuesta',
+      labelTooltip: 'Hacer encuesta',
       icon: 'pi pi-plus',
       accion: 'generar',
       type: 'item',

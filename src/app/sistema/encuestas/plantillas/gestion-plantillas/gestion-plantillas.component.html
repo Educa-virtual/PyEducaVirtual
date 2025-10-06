@@ -1,0 +1,43 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Gestionar plantillas de categoría</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <p-button
+      *ngIf="categoria && !+categoria?.bEsFija"
+      severity="success"
+      pTooltip="Nueva"
+      tooltipPosition="top"
+      (click)="agregarPlantilla()"
+    >
+      <i class="pi pi-fw pi-plus"></i>
+      <span class="hidden md:inline ml-2">Nueva</span>
+    </p-button>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro pInputText type="text" (input)="filtrarPlantillas()" />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <app-table-primeng
+        [columnas]="columns_plantillas"
+        [(selectedRowData)]="selectedItem"
+        [showCaption]="false"
+        [data]="plantillas_filtradas"
+        [showPaginator]="true"
+        [showSortIcon]="true"
+        [actions]="actions_plantillas"
+        (accionBtnItem)="accionBtnItemTable($event)"
+      />
+    </div>
+  </div>
+</p-panel>

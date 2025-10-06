@@ -18,6 +18,8 @@ import { VerEncuestaComponent } from './ver-encuesta/ver-encuesta.component';
 import { GestionEncuestasComponent } from './gestion-encuestas/gestion-encuestas.component';
 import { RespuestasEncuestaComponent } from './respuestas-encuesta/respuestas-encuesta.component';
 import { ResumenEncuestaComponent } from './resumen-encuesta/resumen-encuesta.component';
+import { PlantillaComponent } from './plantillas/plantilla/plantilla.component';
+import { GestionPlantillasComponent } from './plantillas/gestion-plantillas/gestion-plantillas.component';
 
 const encuestadores = [
   ADMINISTRADOR_DREMO,
@@ -147,6 +149,33 @@ const routes: Routes = [
     data: {
       expectedRole: encuestadores,
       breadcrumb: 'Ver Resumen',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/gestion-plantillas',
+    component: GestionPlantillasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/gestion-plantillas/:iPlanId',
+    component: PlantillaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/nueva-plantilla',
+    component: PlantillaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Nueva encuesta',
     },
   },
 ];

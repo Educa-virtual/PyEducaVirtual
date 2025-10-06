@@ -44,7 +44,7 @@
         pTooltip="Plantillas"
         icon="pi pi-file-plus"
         tooltipPosition="top"
-        (onClick)="abrirDialogPlantillas()"
+        (onClick)="listarPlantillas()"
       />
     </div>
   </div>
@@ -59,7 +59,5 @@
   >
   </app-table-primeng>
 </p-panel>
-
-<app-lista-plantillas [(visible)]="visibleDialogPlantillas" [iCateId]="iCateId" />
 
 <p-toast></p-toast>

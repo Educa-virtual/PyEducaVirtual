@@ -219,6 +219,50 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/borrarPlantilla`, data);
   }
 
+  actualizarPlantillaEstado(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarPlantillaEstado`, data);
+  }
+
+  listarPlantillaSecciones(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarPlantillaSecciones`, data);
+  }
+
+  verPlantillaSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/verPlantillaSeccion`, data);
+  }
+
+  guardarPlantillaSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarPlantillaSeccion`, data);
+  }
+
+  actualizarPlantillaSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarPlantillaSeccion`, data);
+  }
+
+  borrarPlantillaSeccion(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarPlantillaSeccion`, data);
+  }
+
+  verPlantillaPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/verPlantillaPregunta`, data);
+  }
+
+  guardarPlantillaPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarPlantillaPregunta`, data);
+  }
+
+  actualizarPlantillaPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarPlantillaPregunta`, data);
+  }
+
+  borrarPlantillaPregunta(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarPlantillaPregunta`, data);
+  }
+
+  generarEncuestaDesdePLantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/generarEncuestaDesdePLantilla`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */

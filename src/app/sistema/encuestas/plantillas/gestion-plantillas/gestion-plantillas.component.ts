@@ -9,6 +9,7 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { SlicePipe } from '@angular/common';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 
 @Component({
   selector: 'app-gestion-plantillas',
@@ -33,7 +34,6 @@ export class GestionPlantillasComponent implements OnInit {
   iYAcadId: number;
 
   selectedItem: any;
-  iPlanIdSeccionado: number;
   plantillas: any[] = [];
   plantillas_filtradas: any[] = [];
 
@@ -55,13 +55,17 @@ export class GestionPlantillasComponent implements OnInit {
   participantes: Array<object>;
   permisos: Array<object>;
 
+  ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
+  ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
+
   constructor(
     private route: ActivatedRoute,
     private encuestasService: EncuestasService,
     private messageService: MessageService,
     private store: LocalStoreService,
     private router: Router,
-    private slicePipe: SlicePipe
+    private slicePipe: SlicePipe,
+    private confirmService: ConfirmationModalService
   ) {
     this.route.params.subscribe(params => {
       this.iCateId = params['iCateId'];
@@ -158,16 +162,50 @@ export class GestionPlantillasComponent implements OnInit {
       });
   }
 
-  verPlantilla(iPlanId) {
-    this.iPlanIdSeccionado = iPlanId;
+  agregarPlantilla() {
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-plantilla`]);
+  }
+
+  salir() {
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
+  }
+
+  generarEncuestaDesdePlantilla(iPlanId: any) {
     this.encuestasService
-      .verPlantilla({
+      .generarEncuestaDesdePLantilla({
         iPlanId: iPlanId,
-        iYAcadId: this.iYAcadId,
       })
       .subscribe({
         next: (data: any) => {
-          this.plantilla = data.data;
+          const iEncuId = data.data.iEncuId;
+          this.router.navigate([
+            `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${iEncuId}`,
+          ]);
+        },
+        error: error => {
+          console.error('Error obteniendo lista de encuestas:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  eliminarPlantilla(item: any) {
+    this.encuestasService
+      .borrarPlantilla({
+        iPlanId: item.iPlanId,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Plantilla eliminada',
+          });
+          this.listarPlantillas();
         },
         error: error => {
           console.error('Error obteniendo lista de plantillas:', error);
@@ -180,34 +218,130 @@ export class GestionPlantillasComponent implements OnInit {
       });
   }
 
-  agregarPlantilla() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-plantilla`]);
-  }
-
-  salir() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
-  }
-
-  generarEncuestaDesdePlantilla() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/encuesta-de-plantilla`]);
+  actualizarPlantillaEstado(item: any, iEstado: number) {
+    this.encuestasService
+      .actualizarPlantillaEstado({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iPlanId: item.iPlanId,
+        iEstado: iEstado,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Actualización exitosa',
+            detail: 'Se actualizó el estado de la plantilla',
+          });
+          this.listarPlantillas();
+        },
+        error: error => {
+          console.error('Error actualizando estado de plantilla:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {
-      case 'ver':
-        this.verPlantilla(item.iPlanId);
+      case 'editar':
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}`,
+        ]);
         break;
+      case 'ver':
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}`,
+        ]);
+        break;
+      case 'preguntas':
+        this.router.navigate([
+          `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}/preguntas`,
+        ]);
+        break;
+      case 'eliminar':
+        this.confirmService.openConfirm({
+          header: '¿Está seguro de eliminar la plantilla seleccionada?',
+          accept: () => {
+            this.eliminarPlantilla(item);
+          },
+          reject: () => {},
+        });
+        break;
+      case 'aprobar':
+        this.confirmService.openConfirm({
+          message: '¿Está seguro de aprobar la plantilla seleccionada?',
+          header: 'Confirmación',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.actualizarPlantillaEstado(item, this.ESTADO_APROBADA);
+          },
+          reject: () => {},
+        });
+        break;
+      case 'generar':
+        this.generarEncuestaDesdePlantilla(item?.iPlanId);
+        break;
+      default:
+        console.warn('Acción no reconocida:', accion);
     }
   }
 
   actions_plantillas: IActionTable[] = [
     {
-      labelTooltip: 'Ver detalle',
+      labelTooltip: 'Editar',
+      icon: 'pi pi-file-edit',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
+    },
+    {
+      labelTooltip: 'Ver',
       icon: 'pi pi-eye',
       accion: 'ver',
       type: 'item',
+      class: 'p-button-rounded p-button-secondary p-button-text',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) !== this.ESTADO_BORRADOR || Number(rowData.puede_editar) !== 1,
+    },
+    {
+      labelTooltip: 'Ver Preguntas',
+      icon: 'pi pi-question',
+      accion: 'preguntas',
+      type: 'item',
+      class: 'p-button-rounded p-button-warning p-button-text',
+    },
+    {
+      labelTooltip: 'Aprobar',
+      icon: 'pi pi-check',
+      accion: 'aprobar',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
+    },
+    {
+      labelTooltip: 'Generar encuesta',
+      icon: 'pi pi-plus',
+      accion: 'generar',
+      type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: (rowData: any) => Number(rowData.iEstado) === this.ESTADO_APROBADA,
     },
   ];
 
@@ -222,7 +356,7 @@ export class GestionPlantillasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '40%',
+      width: '30%',
       field: 'cPlanNombre',
       header: 'Plantilla',
       text_header: 'left',
@@ -230,25 +364,37 @@ export class GestionPlantillasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '30%',
+      width: '20%',
       field: 'cCreador',
-      header: 'Creador',
+      header: 'Creada por',
       text_header: 'left',
       text: 'left',
     },
     {
       type: 'date',
-      width: '20%',
+      width: '15%',
       field: 'dtUltimaModificacion',
       header: 'Modificado en',
       text_header: 'left',
       text: 'left',
     },
     {
+      field: 'cEstadoNombre',
+      type: 'tag',
+      width: '15%',
+      header: 'Estado',
+      text_header: 'center',
+      text: 'center',
+      styles: {
+        BORRADOR: 'danger',
+        APROBADA: 'success',
+      },
+    },
+    {
       type: 'actions',
-      width: '5%',
+      width: '15%',
       field: '',
-      header: 'Ver',
+      header: 'Acciones',
       text_header: 'right',
       text: 'right',
     },

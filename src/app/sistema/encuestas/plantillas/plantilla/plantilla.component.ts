@@ -415,24 +415,6 @@ export class PlantillaComponent implements OnInit {
       return;
     }
 
-    if (this.formPlantilla.get('accesos').value.length == 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe especificar al menos un acceso',
-      });
-      return;
-    }
-
-    if (this.formPlantilla.get('poblacion').value.length == 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe especificar al menos una población objetivo',
-      });
-      return;
-    }
-
     this.encuestasService.formControlJsonStringify(
       this.formPlantilla,
       'jsonPoblacion',
@@ -478,24 +460,6 @@ export class PlantillaComponent implements OnInit {
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe llenar todos los campos de la primera sección: Información General',
-      });
-      return;
-    }
-
-    if (this.formPlantilla.get('poblacion').value.length == 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe especificar al menos una población objetivo',
-      });
-      return;
-    }
-
-    if (this.formPlantilla.get('accesos').value.length == 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe especificar al menos un acceso',
       });
       return;
     }

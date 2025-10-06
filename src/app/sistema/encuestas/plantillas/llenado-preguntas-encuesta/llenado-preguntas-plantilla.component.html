@@ -1,0 +1,195 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Preguntas de plantlla</div>
+      <div class="flex text-sm">{{ plantilla?.cEncuNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        size="small"
+        severity="secondary"
+        pTooltip="Volver a plantilla"
+        tooltipPosition="top"
+        (click)="salir()"
+      >
+        <i class="pi pi-arrow-left"></i>
+        <span class="ml-2 hidden md:inline">Volver a plantilla</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <div class="flex justify-content-between flex-wrap gap-2">
+    <p-button
+      *ngIf="!plantilla_bloqueada"
+      severity="primary"
+      pTooltip="Agregar sección"
+      tooltipPosition="top"
+      (click)="abrirDialogoSeccion()"
+    >
+      <i class="pi pi-plus mr-2"></i>
+      <span class="font-bold hidden md:inline">Agregar sección</span>
+      <span class="font-bold inline md:hidden">Sección</span>
+    </p-button>
+    <div class="card p-1">
+      <span class="font-semibold hidden md:inline">Total de </span>
+      <span class="font-semibold">Preguntas: </span>
+      <p-badge [value]="totalPreguntas" severity="primary" badgeSize="large" />
+    </div>
+  </div>
+
+  <br />
+
+  <p-accordion styleClass="w-full" [multiple]="true">
+    @for (seccion of secciones; track seccion.iSeccionId) {
+      <p-accordionTab iconPos="start" [selected]="true">
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center justify-content-start w-full">
+            <div class="flex flex-column">
+              <div class="flex text-xl">
+                SECCION # {{ seccion?.iPlanSeccionOrden }}: {{ seccion?.cPlanSeccionTitulo }}
+              </div>
+              <div class="flex text-sm">{{ seccion?.cPlanSeccionSubtitulo }}</div>
+            </div>
+            <div
+              *ngIf="!plantilla_bloqueada"
+              class="flex gap-1 ml-auto"
+              tabindex="0"
+              (click)="$event.stopPropagation()"
+              (keydown.enter)="$event.stopPropagation()"
+            >
+              <p-button
+                size="small"
+                severity="warning"
+                pTooltip="Editar sección"
+                tooltipPosition="top"
+                (onClick)="editarSeccion(seccion?.iPlanSeccionId)"
+              >
+                <i class="pi pi-pencil"></i>
+                <span class="ml-2 font-bold hidden md:inline">Editar</span>
+              </p-button>
+              <p-button
+                size="small"
+                severity="danger"
+                pTooltip="Eliminar sección"
+                tooltipPosition="top"
+                (onClick)="eliminarSeccion(seccion)"
+              >
+                <i class="pi pi-trash"></i>
+                <span class="ml-2 font-bold hidden md:inline">Eliminar</span>
+              </p-button>
+            </div>
+          </span>
+        </ng-template>
+
+        <p-messages severity="info" class="my-0" *ngIf="seccion?.cPlanSeccionDescripcion">
+          <ng-template pTemplate>
+            {{ seccion?.cPlanSeccionDescripcion }}
+          </ng-template>
+        </p-messages>
+
+        @for (pregunta of seccion.preguntas; track pregunta.iPlanPregId) {
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>
+              <a
+                *ngIf="pregunta?.cPlanPregAdicional"
+                role="button"
+                class="p-button p-button-secondary mr-2"
+                (click)="panel.toggle($event)"
+                (keypress)="panel.toggle($event)"
+                tabindex="0"
+                pTooltip="Información Adicional"
+                tooltipPosition="top"
+              >
+                <i class="pi pi-question-circle"></i>
+              </a>
+              <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+                <div class="flex w-15rem">
+                  {{ pregunta?.cPlanPregAdicional }}
+                </div>
+              </p-overlayPanel>
+              <span>{{ seccion.iPlanSeccionOrden + '.' + pregunta?.iPlanPregOrden + '. ' }}</span>
+              <span>{{ pregunta?.cPlanPregContenido }}</span>
+              <p-button
+                size="small"
+                severity="info"
+                disabled="true"
+                [pTooltip]="pregunta.cTipoPregNombre"
+                tooltipPosition="top"
+              >
+                <i [class]="'pi ' + pregunta.cTipoPregIcono"></i>
+                <span class="hidden md:inline ml-2">{{ pregunta.cTipoPregNombre }}</span>
+              </p-button>
+            </p-inputGroupAddon>
+            <div class="text-panel">
+              <div class="flex justify-content-start flex-wrap gap-2 m-2">
+                @for (alternativa of pregunta.alternativas; track alternativa.iPlanAlternativaId) {
+                  <p-chip [label]="alternativa.cPlanAlternativaContenido" />
+                }
+              </div>
+              <div class="flex justify-content-start" *ngIf="!plantilla_bloqueada">
+                <p-button
+                  severity="success"
+                  icon="pi pi-pen-to-square"
+                  label="Editar"
+                  size="small"
+                  class="m-2"
+                  pTooltip="Editar pregunta"
+                  tooltipPosition="top"
+                  (onClick)="editarPregunta(pregunta?.iPlanPregId)"
+                />
+                <p-button
+                  severity="danger"
+                  icon="pi pi-trash"
+                  label="Eliminar"
+                  size="small"
+                  class="m-2"
+                  pTooltip="Eliminar pregunta"
+                  tooltipPosition="top"
+                  (onClick)="eliminarPregunta(pregunta?.iPlanPregId)"
+                />
+              </div>
+            </div>
+          </p-inputGroup>
+          <br />
+        }
+
+        <br />
+
+        <div class="flex justify-content-end flex-wrap gap-2" *ngIf="!plantilla_bloqueada">
+          <p-button
+            severity="primary"
+            size="small"
+            pTooltip="Agregar pregunta"
+            tooltipPosition="top"
+            (onClick)="agregarPregunta(seccion)"
+          >
+            <i class="pi pi-plus mr-2"></i>
+            <span class="font-bold hidden md:inline">Agregar pregunta</span>
+            <span class="font-bold inline md:hidden">Pregunta</span>
+          </p-button>
+        </div>
+      </p-accordionTab>
+
+      <br />
+    }
+  </p-accordion>
+
+  <app-plantilla-seccion
+    [(visible)]="mostrarDialogoSeccion"
+    [iPlanSeccionId]="iPlanSeccionId"
+    (seccionModificada)="listarSecciones()"
+  />
+
+  <app-plantilla-pregunta
+    [(visible)]="mostrarDialogoPregunta"
+    [iPlanSeccionId]="iPlanSeccionId"
+    [iPlanPregId]="iPlanPregId"
+    (preguntaModificada)="listarSecciones()"
+  />
+</p-panel>
+
+<p-toast></p-toast>

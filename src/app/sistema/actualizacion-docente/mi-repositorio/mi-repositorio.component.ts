@@ -180,7 +180,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
 
   eliminarCarpeta(): void {
     this._ConfirmationModalService.openConfirm({
-      header: '¿Esta seguro de eliminar la carpeta: ' + this.selectedRow().cNombre + ' ?',
+      header: '¿Está seguro de eliminar la carpeta: ' + this.selectedRow().cNombre + ' ?',
       accept: () => {
         const params = {
           iCarpetaId: this.rutaCarpetas()[this.rutaCarpetas().length - 1].id, //this.selectedRow().iId,
@@ -207,7 +207,6 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
           });
       },
       reject: () => {
-        // Mensaje de cancelación (opcional)
         this.mostrarMensajeToast({
           severity: 'error',
           summary: 'Cancelado',

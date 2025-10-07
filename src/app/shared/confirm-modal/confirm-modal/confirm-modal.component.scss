@@ -1,15 +1,86 @@
-:host {
-    display: block;
+.confirm-modal-container {
+  max-width: 420px;
+  width: 90vw;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  animation: fadeInScale 0.25s ease;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem;
+  }
 }
 
-:host ::ng-deep .custom-confirm-modal {
-    .p-dialog-content {
-        padding-top: 2rem;
-        display: flex;
-        gap: 1rem;
-        flex-direction: column;
-    }
-    .p-dialog-footer {
-        padding-top: 2rem;
-    }
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.confirm-modal-icon {
+  font-size: 3.5rem;
+  color: #f59e0b;
+}
+
+.confirm-modal-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.confirm-modal-message {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.confirm-accept-btn {
+  background-color: #dc2626 !important;
+  border: none;
+  color: white;
+  font-weight: 500;
+}
+
+.confirm-accept-btn:hover {
+  background-color: #b91c1c !important;
+}
+
+.confirm-reject-btn {
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.confirm-reject-btn:hover {
+  background-color: #f3f4f6;
+}
+
+/* Adaptación móvil */
+@media (max-width: 480px) {
+  .confirm-modal-container {
+    padding: 1.5rem;
+  }
+
+  .confirm-modal-icon {
+    font-size: 3rem;
+  }
+
+  .confirm-modal-header {
+    font-size: 1.1rem;
+  }
+
+  .confirm-modal-message {
+    font-size: 0.95rem;
+  }
+
+  .confirm-accept-btn,
+  .confirm-reject-btn {
+    flex: 1;
+  }
 }

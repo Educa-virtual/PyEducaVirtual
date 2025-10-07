@@ -111,7 +111,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
           label: 'Eliminar',
           icon: 'pi pi-trash',
           command: () => {
-            this.eliminarCarpeta();
+            this.eliminarCarpeta(row);
           },
         },
       ];
@@ -178,12 +178,12 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
     });
   }
 
-  eliminarCarpeta(): void {
+  eliminarCarpeta(row): void {
     this._ConfirmationModalService.openConfirm({
-      header: '¿Está seguro de eliminar la carpeta: ' + this.selectedRow().cNombre + ' ?',
+      header: '¿Está seguro de eliminar la carpeta: ' + row.cNombre + ' ?',
       accept: () => {
         const params = {
-          iCarpetaId: this.rutaCarpetas()[this.rutaCarpetas().length - 1].id, //this.selectedRow().iId,
+          iCarpetaId: row.iId,
           iCredId: this._ConstantesService.iCredId,
         };
 
@@ -198,7 +198,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
                   summary: 'Eliminado',
                   detail: resp.message,
                 });
-                this.obtenerCarpetas(this.selectedRow().iId);
+                this.obtenerCarpetas(this.rutaCarpetas()[this.rutaCarpetas().length - 1].id);
               }
             },
             error: error => {

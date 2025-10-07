@@ -2,11 +2,21 @@
   max-width: 760px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
+  padding: 0 0.5rem;
 }
 
 .controls {
   gap: 0.5rem;
   margin-bottom: 0.75rem;
+}
+
+.navigation-controls {
+  flex: 1;
+  min-width: 200px;
+}
+
+.refresh-button {
+  flex-shrink: 0;
 }
 
 .controls .spacer {
@@ -50,6 +60,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 }
 
 .day-number {
@@ -97,6 +113,16 @@
 .legend-box.status-empty {
   background: #ffffff;
   border: 1px solid #ddd;
+}
+
+.legend-item {
+  min-width: fit-content;
+}
+
+.legend-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .error {
   color: #a94442;
@@ -316,4 +342,170 @@
 }
 .weekend-day {
   background-color: red !important;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .attendance-calendar {
+    padding: 0 0.25rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    .navigation-controls {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .refresh-button {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+
+  .month-dropdown {
+    min-width: 120px;
+  }
+
+  .daycell {
+    min-height: 50px;
+    padding: 4px;
+
+    .day-number {
+      font-size: 0.8rem;
+    }
+
+    .mark {
+      font-size: 1rem;
+      margin-top: 2px;
+    }
+  }
+
+  .weekday {
+    padding: 4px 0;
+    font-size: 0.85rem;
+  }
+
+  .legend-item {
+    margin-bottom: 0.25rem;
+
+    .legend-text {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+    }
+  }
+
+  .leyenda-summary {
+    column-gap: 1rem !important;
+    row-gap: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .attendance-calendar {
+    padding: 0 0.125rem;
+  }
+
+  .controls {
+    .navigation-controls {
+      .p-button {
+        padding: 0.25rem 0.5rem;
+      }
+    }
+  }
+
+  .month-dropdown {
+    min-width: 100px;
+
+    ::ng-deep .p-dropdown {
+      font-size: 0.9rem;
+    }
+  }
+
+  .daycell {
+    min-height: 45px;
+    padding: 2px;
+
+    .day-number {
+      font-size: 0.75rem;
+    }
+
+    .mark {
+      font-size: 0.9rem;
+      margin-top: 1px;
+    }
+
+    &:hover {
+      transform: none; // Disable hover effects on very small screens
+    }
+  }
+
+  .weekday {
+    padding: 3px 0;
+    font-size: 0.75rem;
+  }
+
+  .weeks {
+    gap: 4px;
+  }
+
+  .week {
+    gap: 4px;
+  }
+
+  .weekdays {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .legend-item {
+    .grupo {
+      height: 25px;
+    }
+
+    .legend-text {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+    }
+  }
+}
+
+/* Modal responsive styles */
+@media (max-width: 768px) {
+  ::ng-deep .p-dialog {
+    margin: 0.5rem !important;
+    width: calc(100vw - 1rem) !important;
+    max-width: none !important;
+
+    .p-dialog-content {
+      padding: 1rem 0.75rem !important;
+    }
+
+    .p-dialog-header {
+      padding: 0.75rem !important;
+
+      .p-dialog-title {
+        font-size: 0.9rem !important;
+      }
+    }
+  }
+
+  ::ng-deep .p-datatable {
+    .p-datatable-wrapper {
+      overflow-x: auto;
+    }
+
+    .p-datatable-table {
+      min-width: 400px;
+    }
+
+    th,
+    td {
+      padding: 0.5rem 0.25rem !important;
+      font-size: 0.85rem !important;
+    }
+  }
 }

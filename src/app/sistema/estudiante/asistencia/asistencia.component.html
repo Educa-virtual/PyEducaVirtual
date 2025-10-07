@@ -1,24 +1,38 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 <app-container-page [title]="'Asistencia del estudiante'" [actions]="[]">
   <div class="attendance-calendar">
-    <div class="controls flex justify-content-center align-items-center gap-2">
-      <p-button icon="pi pi-chevron-left" [loading]="loading" (onClick)="prevMonth()" />
-      <p-dropdown
-        [options]="months"
-        optionLabel="label"
-        optionValue="value"
-        [(ngModel)]="selectedMonth"
-        (onChange)="onMonthChange($event.value)"
-        placeholder="Mes"
-      ></p-dropdown>
-      <p-button icon="pi pi-chevron-right" [loading]="loading" (onClick)="nextMonth()" />
-      <!--<div class="spacer"></div>-->
+    <div class="controls flex flex-wrap justify-content-center align-items-center gap-2">
+      <div class="navigation-controls flex align-items-center gap-2">
+        <p-button
+          icon="pi pi-chevron-left"
+          [loading]="loading"
+          (onClick)="prevMonth()"
+          size="small"
+        />
+        <p-dropdown
+          [options]="months"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="selectedMonth"
+          (onChange)="onMonthChange($event.value)"
+          placeholder="Mes"
+          class="month-dropdown"
+        ></p-dropdown>
+        <p-button
+          icon="pi pi-chevron-right"
+          [loading]="loading"
+          (onClick)="nextMonth()"
+          size="small"
+        />
+      </div>
       <button
         pButton
         label="Refrescar"
         icon="pi pi-refresh"
         (click)="load()"
         [disabled]="loading"
+        size="small"
+        class="refresh-button"
       ></button>
     </div>
 
@@ -49,15 +63,15 @@
     <!--<div *ngIf="loading" class="loading">Cargando...</div>-->
 
     <div
-      class="leyenda-summary flex block flex-wrap column-gap-3 row-gap-3 p-2"
+      class="leyenda-summary flex flex-wrap justify-content-center align-items-center column-gap-2 row-gap-2 p-2"
       *ngIf="leyendaModal && leyendaModal.length"
     >
-      <div *ngFor="let lista of leyendaModal" class="flex mr-1">
+      <div *ngFor="let lista of leyendaModal" class="flex legend-item">
         <p-inputGroup class="grupo">
           <button type="button" size="small" pButton [ngClass]="lista.bgColor">
             {{ lista.simbolo }}
           </button>
-          <div [ngClass]="lista.divColor">
+          <div [ngClass]="lista.divColor" class="legend-text">
             {{ lista.significado }}
           </div>
         </p-inputGroup>
@@ -73,30 +87,37 @@
   "
   [(visible)]="showDialog"
   [modal]="true"
-  [style]="{ width: '50rem' }"
+  [responsive]="true"
+  [style]="{ width: '90vw', maxWidth: '50rem' }"
+  [breakpoints]="{ '768px': '95vw' }"
 >
   <div *ngIf="selectedCell">
     <br />
     <div class="mb-5">
-      <strong>Estado:</strong>
+      <strong>Estado de asistencia a la I.E.:</strong>
       <span [ngClass]="statusClass(selectedCell.cTipoAsiLetra)">{{
         selectedCell.cTipoAsiNombre || '-'
       }}</span>
     </div>
-
+    <p>Detalle de asistencia a las áreas curriculares:</p>
     <p-table [value]="selectedCell.cursos">
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 25%">Curso</th>
+          <th style="width: 25%">Área</th>
           <th>Docente</th>
           <th style="width: 25%">Estado</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-curso>
+      <ng-template pTemplate="body" let-curso let-rowIndex="rowIndex">
         <tr>
           <td>{{ curso.cCursoNombre }}</td>
           <td>{{ curso.cPersPaterno }} {{ curso.cPersMaterno }} {{ curso.cPersNombre }}</td>
           <td [ngClass]="statusClass(curso.cTipoAsiLetra)">{{ curso.cTipoAsiNombre }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" class="text-center">Sin registro de asistencia</td>
         </tr>
       </ng-template>
     </p-table>

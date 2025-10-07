@@ -81,16 +81,6 @@ export class GestionPlantillasComponent implements OnInit {
         bCopiarAccesos: [true],
         bCopiarPreguntas: [true],
       });
-
-      this.encuestasService
-        .crearEncuesta({
-          iCredEntPerfId: this.perfil.iCredEntPerfId,
-          iYAcadId: this.iYAcadId,
-          iCateId: this.iCateId,
-        })
-        .subscribe((data: any) => {
-          this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
-        });
     } catch (error) {
       console.error('Error creando formulario:', error);
     }
@@ -190,7 +180,22 @@ export class GestionPlantillasComponent implements OnInit {
     this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
   }
 
+  getParametros() {
+    this.encuestasService
+      .crearEncuesta({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iCateId: this.iCateId,
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe((data: any) => {
+        this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
+      });
+  }
+
   abrirDialogGenerarEncuesta(plantilla: any) {
+    if (plantilla) {
+      this.getParametros();
+    }
     this.visibleDialog = true;
     this.formEncuestaPlantilla.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuestaPlantilla.get('iCateId')?.setValue(this.iCateId);

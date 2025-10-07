@@ -111,8 +111,8 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
           this.setBreadCrumbs();
           this.listarSecciones();
           this.plantilla_bloqueada =
-            Number(this.plantilla?.iEstado) === this.ESTADO_APROBADA &&
-            Number(this.plantilla?.puede_editar) === 1;
+            Number(this.plantilla?.iEstado) === this.ESTADO_APROBADA ||
+            Number(this.plantilla?.puede_editar) === 0;
         },
         error: error => {
           if (!this.plantilla) {

@@ -104,7 +104,9 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
           this.encuesta = data.data;
           this.setBreadCrumbs();
           this.listarSecciones();
-          this.encuesta_bloqueada = Number(this.encuesta?.iEstado) === this.ESTADO_APROBADA;
+          this.encuesta_bloqueada =
+            Number(this.encuesta?.iEstado) === this.ESTADO_APROBADA ||
+            Number(this.encuesta?.puede_editar) === 0;
         },
         error: error => {
           console.error('Error obteniendo encuesta:', error);

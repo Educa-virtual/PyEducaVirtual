@@ -259,8 +259,8 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/borrarPlantillaPregunta`, data);
   }
 
-  generarEncuestaDesdePLantilla(data: any) {
-    return this.http.post(`${baseUrl}/enc/generarEncuestaDesdePLantilla`, data);
+  guardarEncuestaDesdePlantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarEncuestaDesdePlantilla`, data);
   }
 
   /**
@@ -434,6 +434,17 @@ export class EncuestasService implements OnDestroy {
       this.secciones = data.map(seccion => ({
         value: Number(seccion.iSeccionId),
         label: seccion.iSeccionOrden + '. ' + seccion.cSeccionTitulo,
+      }));
+      return this.secciones;
+    }
+    return this.secciones;
+  }
+
+  getSeccionesPlantilla(data: any) {
+    if (data) {
+      this.secciones = data.map(seccion => ({
+        value: Number(seccion.iPlanSeccionId),
+        label: seccion.iPlanSeccionOrden + '. ' + seccion.cPlanSeccionTitulo,
       }));
       return this.secciones;
     }

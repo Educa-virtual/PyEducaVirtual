@@ -58,15 +58,15 @@ export class PlantillaSeccionComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.iPlanSeccionId && changes['visible']?.currentValue === true) {
-      this.verSeccion();
+      this.verPlantillaSeccion();
     } else {
       this.clearForm();
     }
   }
 
-  verSeccion() {
+  verPlantillaSeccion() {
     this.encuestasService
-      .verSeccion({
+      .verPlantillaSeccion({
         iPlanSeccionId: this.iPlanSeccionId,
       })
       .subscribe({
@@ -86,7 +86,7 @@ export class PlantillaSeccionComponent implements OnInit, OnChanges {
 
   setFormSeccion(seccion: any) {
     this.formSeccion.patchValue(seccion);
-    this.formSeccion.get('iPlanEncuId').patchValue(this.iPlanId);
+    this.formSeccion.get('iPlanId').patchValue(this.iPlanId);
     this.seccion_registrada = true;
     this.formSeccion.markAsDirty();
   }

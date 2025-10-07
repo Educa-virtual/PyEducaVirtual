@@ -138,14 +138,19 @@ export class PlantillaPreguntaComponent implements OnInit, OnChanges {
       this.pregunta_registrada = false;
       this.clearForm();
       if (this.formPregunta && !this.iPlanPregId) {
-        this.formPregunta.get('iPlanSeccionId').patchValue(this.iPlanSeccionId);
+        this.encuestasService.formatearFormControl(
+          this.formPregunta,
+          'iPlanSeccionId',
+          this.iPlanSeccionId,
+          'number'
+        );
       }
     }
   }
 
   verPregunta() {
     this.encuestasService
-      .verPregunta({
+      .verPlantillaPregunta({
         iPlanPregId: this.iPlanPregId,
       })
       .subscribe({

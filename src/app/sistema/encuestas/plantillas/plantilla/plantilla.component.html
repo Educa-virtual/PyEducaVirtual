@@ -7,12 +7,8 @@
       <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
     </div>
   </ng-template>
-  <ng-template
-    *ngIf="plantilla_registrada || iPlanId"
-    pTemplate="icons"
-    class="flex justify-content-center"
-  >
-    <div class="flex flex-wrap gap-2 justify-content-end">
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="plantilla_registrada && iPlanId">
       <p-button
         label="Ver preguntas"
         icon="pi pi-list-check"

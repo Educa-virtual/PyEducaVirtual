@@ -5,7 +5,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { PlantillaSeccionComponent } from './plantilla-seccion/plantilla-seccion.component';
 import { EncuestasService } from '../../services/encuestas.services';
 import { SlicePipe } from '@angular/common';
@@ -55,7 +55,7 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(this.perfil?.iPerfilId);
+    this.es_director = [DIRECTOR_IE].includes(this.perfil?.iPerfilId);
     this.route.paramMap.subscribe((params: any) => {
       this.iCateId = params.params.iCateId || null;
       this.iPlanId = params.params.iPlanId || null;
@@ -105,11 +105,19 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.plantilla = data.data;
+          if (!this.plantilla) {
+            this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
+          }
           this.setBreadCrumbs();
           this.listarSecciones();
-          this.plantilla_bloqueada = Number(this.plantilla?.iEstado) === this.ESTADO_APROBADA;
+          this.plantilla_bloqueada =
+            Number(this.plantilla?.iEstado) === this.ESTADO_APROBADA &&
+            Number(this.plantilla?.puede_editar) === 1;
         },
         error: error => {
+          if (!this.plantilla) {
+            this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
+          }
           console.error('Error obteniendo plantilla:', error);
         },
       });
@@ -126,7 +134,7 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
           this.secciones.forEach((seccion: any) => {
             seccion.preguntas = seccion?.json_preguntas ? JSON.parse(seccion.json_preguntas) : [];
           });
-          this.encuestasService.getSeccionesEncuesta(this.secciones);
+          this.encuestasService.getSeccionesPlantilla(this.secciones);
           this.calcularTotalPreguntas();
         },
         error: error => {

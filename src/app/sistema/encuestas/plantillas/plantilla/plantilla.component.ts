@@ -254,7 +254,7 @@ export class PlantillaComponent implements OnInit {
       },
       {
         label: 'Categorias',
-        routerLink: `/plantillas/categorias`,
+        routerLink: `/encuestas/categorias`,
       },
       {
         label: this.categoria?.cCateNombre
@@ -263,7 +263,7 @@ export class PlantillaComponent implements OnInit {
       },
       {
         label: 'Gestionar plantillas',
-        routerLink: `/plantillas/categorias/${this.iCateId}/gestion-plantillas`,
+        routerLink: `/encuestas/categorias/${this.iCateId}/gestion-plantillas`,
       },
       {
         label: 'Nueva plantilla',
@@ -318,17 +318,12 @@ export class PlantillaComponent implements OnInit {
             this.setFormPlantilla(this.plantilla);
             this.inicializarColumnas();
           } else {
-            this.router.navigate(['/plantillas/categorias/']);
+            this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
           }
         },
         error: error => {
           console.error('Error obteniendo plantilla:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message,
-          });
-          this.router.navigate(['/plantillas/categorias/']);
+          this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
         },
       });
   }
@@ -404,11 +399,7 @@ export class PlantillaComponent implements OnInit {
 
   verPreguntas() {
     this.router.navigate([
-      '/plantillas/categorias/' +
-        this.iCateId +
-        '/gestion-plantillas/' +
-        this.iPlanId +
-        '/preguntas',
+      `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${this.iPlanId}/preguntas`,
     ]);
   }
 
@@ -439,16 +430,13 @@ export class PlantillaComponent implements OnInit {
       ''
     );
     this.encuestasService.guardarPlantilla(this.formPlantilla.value).subscribe({
-      next: (data: any) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        const iPlanId = data.data.iPlanId;
-        this.router.navigate([
-          `/plantillas/categorias/${this.iCateId}/gestion-plantillas/${iPlanId}/preguntas`,
-        ]);
+        this.verPreguntas();
       },
       error: error => {
         console.error('Error guardando plantilla:', error);
@@ -494,9 +482,7 @@ export class PlantillaComponent implements OnInit {
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        this.router.navigate([
-          `/plantillas/categorias/${this.iCateId}/gestion-plantillas/${this.iPlanId}/preguntas`,
-        ]);
+        this.verPreguntas();
       },
       error: error => {
         console.error('Error guardando plantilla:', error);

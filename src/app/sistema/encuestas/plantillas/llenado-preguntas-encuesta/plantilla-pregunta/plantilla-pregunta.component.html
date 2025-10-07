@@ -133,7 +133,7 @@
               <p-inputGroupAddon>Alternativa</p-inputGroupAddon>
               <input
                 pInputText
-                formControlName="cAlternativaContenido"
+                formControlName="cPlanAlternativaContenido"
                 placeholder="Indique"
                 type="text"
                 class="group-element"
@@ -171,11 +171,11 @@
                     <p-checkbox
                       name="checkbox"
                       [(ngModel)]="selectedAlternativas"
-                      [value]="alternativa.iAlternativaId"
+                      [value]="alternativa.iPlanAlternativaId"
                     />
                   }
-                  <label [for]="alternativa?.iAlternativaId" class="ml-2">{{
-                    alternativa?.cAlternativaContenido
+                  <label [for]="alternativa?.iPlanAlternativaId" class="ml-2">{{
+                    alternativa?.cPlanAlternativaContenido
                   }}</label>
                 </div>
                 <div class="col-fixed">
@@ -186,7 +186,7 @@
                     size="small"
                     pTooltip="Eliminar alternativa"
                     tooltipPosition="top"
-                    (click)="eliminarAlternativa(alternativa.iAlternativaId)"
+                    (click)="eliminarAlternativa(alternativa.iPlanAlternativaId)"
                   />
                 </div>
               </div>

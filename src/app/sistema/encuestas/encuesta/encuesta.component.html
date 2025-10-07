@@ -7,12 +7,8 @@
       <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
     </div>
   </ng-template>
-  <ng-template
-    *ngIf="encuesta_registrada && this.iEncuId"
-    pTemplate="icons"
-    class="flex justify-content-center"
-  >
-    <div class="flex flex-wrap gap-2 justify-content-end">
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="encuesta_registrada && iEncuId">
       <p-button
         label="Ver preguntas"
         icon="pi pi-list-check"
@@ -25,7 +21,6 @@
       />
     </div>
   </ng-template>
-
   <p-stepper class="mt-3" [(activeStep)]="active">
     <p-stepperPanel>
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">

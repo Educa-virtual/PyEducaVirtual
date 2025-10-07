@@ -194,12 +194,22 @@ export class CategoriasEncuestaComponent implements OnInit {
     }
   }
 
+  gestionarPlantillas(iCateId: any) {
+    this.router.navigate([`/encuestas/categorias/${iCateId}/gestion-plantillas`]);
+  }
+
   setBtnItems(categoria: any): MenuItem[] {
     return [
       {
         label: 'Gestionar encuestas',
         icon: 'pi pi-cog',
         command: () => this.gestionarEncuestas(categoria?.iCateId),
+      },
+      {
+        label: 'Gestionar plantillas',
+        icon: 'pi pi-file-plus',
+        command: () => this.gestionarPlantillas(categoria?.iCateId),
+        visible: !+categoria?.bEsEnlace,
       },
       {
         label: 'Editar Categoría',

@@ -10,6 +10,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { SlicePipe } from '@angular/common';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-plantillas',
@@ -27,6 +28,7 @@ export class GestionPlantillasComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
+  formEncuestaPlantilla: FormGroup;
   iCateId: number;
   categoria: any;
 
@@ -39,21 +41,9 @@ export class GestionPlantillasComponent implements OnInit {
 
   plantilla: any;
 
-  perfiles: Array<object>;
-  distritos: Array<object>;
-  nivel_tipos: Array<object>;
-  nivel_grados: Array<object>;
-  areas: Array<object>;
-  secciones: Array<object>;
-  zonas: Array<object>;
-  tipo_sectores: Array<object>;
-  ugeles: Array<object>;
-  instituciones_educativas: Array<object>;
-  sexos: Array<object>;
-  estados: Array<object>;
-  ies: Array<object>;
-  participantes: Array<object>;
-  permisos: Array<object>;
+  tiempos_duracion: Array<object>;
+
+  visibleDialog: boolean = false;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
@@ -65,7 +55,8 @@ export class GestionPlantillasComponent implements OnInit {
     private store: LocalStoreService,
     private router: Router,
     private slicePipe: SlicePipe,
-    private confirmService: ConfirmationModalService
+    private confirmService: ConfirmationModalService,
+    private fb: FormBuilder
   ) {
     this.route.params.subscribe(params => {
       this.iCateId = params['iCateId'];
@@ -75,6 +66,35 @@ export class GestionPlantillasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    try {
+      this.formEncuestaPlantilla = this.fb.group({
+        iYAcadId: [this.iYAcadId, Validators.required],
+        iCateId: [this.iCateId, Validators.required],
+        iPlanId: [null, Validators.required],
+        cPlanNombre: [{ value: '', disabled: true }],
+        cEncuNombre: [''],
+        cEncuSubtitulo: [''],
+        dEncuInicio: ['', Validators.required],
+        dEncuFin: ['', Validators.required],
+        iTiemDurId: [null, Validators.required],
+        bCopiarPoblacion: [true],
+        bCopiarAccesos: [true],
+        bCopiarPreguntas: [true],
+      });
+
+      this.encuestasService
+        .crearEncuesta({
+          iCredEntPerfId: this.perfil.iCredEntPerfId,
+          iYAcadId: this.iYAcadId,
+          iCateId: this.iCateId,
+        })
+        .subscribe((data: any) => {
+          this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
+        });
+    } catch (error) {
+      console.error('Error creando formulario:', error);
+    }
+
     if (this.iCateId) {
       this.verCategoria();
       this.listarPlantillas();
@@ -170,20 +190,61 @@ export class GestionPlantillasComponent implements OnInit {
     this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
   }
 
-  generarEncuestaDesdePlantilla(iPlanId: any) {
+  abrirDialogGenerarEncuesta(plantilla: any) {
+    this.visibleDialog = true;
+    this.formEncuestaPlantilla.get('iYAcadId')?.setValue(this.iYAcadId);
+    this.formEncuestaPlantilla.get('iCateId')?.setValue(this.iCateId);
+    this.formEncuestaPlantilla.get('iPlanId')?.setValue(plantilla?.iPlanId);
+    this.formEncuestaPlantilla.get('cPlanNombre')?.setValue(plantilla?.cPlanNombre);
+    this.formEncuestaPlantilla.get('dEncuInicio')?.setValue(new Date());
+    this.formEncuestaPlantilla.get('bCopiarPoblacion')?.setValue(true);
+    this.formEncuestaPlantilla.get('bCopiarAccesos')?.setValue(true);
+    this.formEncuestaPlantilla.get('bCopiarPreguntas')?.setValue(true);
+  }
+
+  cerrarDialogGenerarEncuesta() {
+    this.visibleDialog = false;
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.formEncuestaPlantilla.reset();
+  }
+
+  generarEncuesta() {
+    if (this.formEncuestaPlantilla.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe completar los campos requeridos',
+      });
+      return;
+    }
     this.encuestasService
-      .generarEncuestaDesdePLantilla({
-        iPlanId: iPlanId,
-      })
+      .guardarEncuestaDesdePlantilla(this.formEncuestaPlantilla.value)
       .subscribe({
         next: (data: any) => {
           const iEncuId = data.data.iEncuId;
-          this.router.navigate([
-            `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${iEncuId}`,
-          ]);
+          if (!iEncuId) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se ha podido generar la encuesta',
+            });
+            return;
+          } else {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Generación exitosa',
+              detail: 'Redirigiendo a la encuesta generada',
+            });
+            this.router.navigate([
+              `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${iEncuId}`,
+            ]);
+          }
         },
         error: error => {
-          console.error('Error obteniendo lista de encuestas:', error);
+          console.error('Error generando encuesta:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -284,7 +345,7 @@ export class GestionPlantillasComponent implements OnInit {
         });
         break;
       case 'generar':
-        this.generarEncuestaDesdePlantilla(item?.iPlanId);
+        this.abrirDialogGenerarEncuesta(item);
         break;
       default:
         console.warn('Acción no reconocida:', accion);

@@ -9,12 +9,12 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { SlicePipe } from '@angular/common';
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
-import { GestionPlantillasComponent } from '../plantillas/gestion-plantillas/gestion-plantillas.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-encuestas',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent, GestionPlantillasComponent],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './gestion-encuestas.component.html',
   styleUrl: './gestion-encuestas.component.scss',
   providers: [SlicePipe],
@@ -22,12 +22,16 @@ import { GestionPlantillasComponent } from '../plantillas/gestion-plantillas/ges
 export class GestionEncuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
 
+  visibleDialog: boolean = false;
   iCateId: number = null;
   categoria: any = null;
   selectedItem: any;
   iYAcadId: number;
   perfil: any;
   cCateNombre: string;
+
+  formEncuesta: FormGroup;
+  tiempos_duracion: Array<object>;
 
   encuestas: Array<any> = [];
   encuestas_filtradas: Array<any> = [];
@@ -50,7 +54,8 @@ export class GestionEncuestasComponent implements OnInit {
     private route: ActivatedRoute,
     private store: LocalStoreService,
     private router: Router,
-    private slicePipe: SlicePipe
+    private slicePipe: SlicePipe,
+    private fb: FormBuilder
   ) {
     this.route.params.subscribe(params => {
       this.iCateId = params['iCateId'];
@@ -61,6 +66,34 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   ngOnInit() {
+    try {
+      this.formEncuesta = this.fb.group({
+        iYAcadId: [this.iYAcadId, Validators.required],
+        iCateId: [this.iCateId, Validators.required],
+        iEncuId: [null],
+        cEncuOriginalNombre: [{ value: '', disabled: true }],
+        cEncuNombre: [''],
+        cEncuSubtitulo: [''],
+        dEncuInicio: ['', Validators.required],
+        dEncuFin: ['', Validators.required],
+        iTiemDurId: [null, Validators.required],
+        bCopiarPoblacion: [true],
+        bCopiarAccesos: [true],
+        bCopiarPreguntas: [true],
+      });
+
+      this.encuestasService
+        .crearEncuesta({
+          iCredEntPerfId: this.perfil.iCredEntPerfId,
+          iYAcadId: this.iYAcadId,
+          iCateId: this.iCateId,
+        })
+        .subscribe((data: any) => {
+          this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
+        });
+    } catch (error) {
+      console.error('Error al inicializar el formulario', error);
+    }
     if (this.iCateId) {
       this.verCategoria();
       this.listarEncuestas();
@@ -253,6 +286,58 @@ export class GestionEncuestasComponent implements OnInit {
     this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
   }
 
+  abrirDialogoDuplicarEncuesta(encuesta: any) {
+    this.visibleDialog = true;
+    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
+    this.formEncuesta.get('iCateId')?.setValue(this.iCateId);
+    this.formEncuesta.get('iEncuId')?.setValue(encuesta?.iEncuId);
+    this.formEncuesta.get('cEncuOriginalNombre')?.setValue(encuesta?.cEncuNombre);
+    this.formEncuesta.get('dEncuInicio')?.setValue(new Date());
+    this.formEncuesta.get('bCopiarPoblacion')?.setValue(true);
+    this.formEncuesta.get('bCopiarAccesos')?.setValue(true);
+    this.formEncuesta.get('bCopiarPreguntas')?.setValue(true);
+  }
+
+  cerrarDialogDuplicarEncuesta() {
+    this.visibleDialog = false;
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.formEncuesta.reset();
+  }
+
+  duplicarEncuesta() {
+    if (this.formEncuesta.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe completar los campos requeridos',
+      });
+      this.encuestasService.formMarkAsDirty(this.formEncuesta);
+      return;
+    }
+    this.encuestasService.guardarEncuestaDesdeDuplicado(this.formEncuesta.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos',
+        });
+        this.cerrarDialogDuplicarEncuesta();
+        this.listarEncuestas();
+      },
+      error: error => {
+        console.error('Error guardando encuesta:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {
@@ -314,6 +399,9 @@ export class GestionEncuestasComponent implements OnInit {
         break;
       case 'reemplazar':
         this.generarEncuestaPlantilla(item);
+        break;
+      case 'duplicar':
+        this.abrirDialogoDuplicarEncuesta(item);
         break;
       default:
         console.warn('Acción no reconocida:', accion);
@@ -394,6 +482,14 @@ export class GestionEncuestasComponent implements OnInit {
         Number(this.perfil.iPerfilId) === DIRECTOR_IE &&
         !rowData.iSedeId &&
         new Date() < new Date(rowData.dEncuInicio),
+    },
+    {
+      labelTooltip: 'Duplicar',
+      icon: 'pi pi-copy',
+      accion: 'duplicar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: () => Number(this.categoria.bEsFija) !== 1,
     },
   ];
 

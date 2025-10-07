@@ -66,7 +66,7 @@
           <tr>
             <td
               *ngFor="let col of columnas()"
-              (click)="col.field === 'cNombreLabel' ? this.entrarCarpeta(row) : null"
+              (click)="this.verificarTipo(row, col.field)"
               style="cursor: pointer"
             >
               <span class="p-column-title">{{ col.header }}</span>

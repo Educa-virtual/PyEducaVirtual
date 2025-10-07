@@ -390,4 +390,10 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
 
     this.obtenerCarpetas(id);
   }
+
+  verificarTipo(row, columna) {
+    if (row.cTipo === 'carpeta' && columna === 'cNombreLabel') {
+      this.entrarCarpeta(row);
+    }
+  }
 }

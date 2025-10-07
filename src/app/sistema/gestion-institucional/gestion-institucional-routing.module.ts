@@ -49,7 +49,7 @@ const routes: Routes = [
   { path: 'IesPersonal', component: IesPersonalComponent },
   { path: 'horario', component: HorarioComponent },
   { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
-  { path: 'reporte', component: ReporteComponent },
+  { path: 'reportes-academicos', component: ReporteComponent },
   { path: 'estadistica', component: EstadisticaComponent },
   { path: 'gestion-traslados', component: GestionTrasladosComponent },
   { path: 'gestion-vacantes', component: GestionVacantesComponent },

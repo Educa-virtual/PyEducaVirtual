@@ -292,9 +292,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            formato && formato.length > 0 ? formato[0]['name'] : 'Nombre del Itinerario'
-          "
+          [placeholder]="formato && formato[0] ? formato[0]['name'] : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -330,9 +328,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            formato && formato.length > 0 ? formato[1]['name'] : 'Nombre del Itinerario'
-          "
+          [placeholder]="formato && formato[1] ? formato[1]['name'] : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -368,9 +364,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="
-            formato && formato.length > 0 ? formato[2]['name'] : 'Nombre del Itinerario'
-          "
+          [placeholder]="formato && formato[2] ? formato[2]['name'] : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText

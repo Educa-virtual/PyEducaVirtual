@@ -263,16 +263,10 @@ const estudiante = [
         routerLink: ['/estudiante/horario'],
       },
       {
-        label: 'Calendario',
+        label: 'Calendario institucional',
         icon: 'pi pi-calendar',
-        routerLink: ['/estudiante/calendario'],
+        routerLink: ['/estudiante/calendario-institucional'],
       },
-      /*, TEMPORALMENTE DESACTIVADO POR PRIORIDAD DE ERE
-                        {
-                            label: 'Buzón de sugerencias',
-                            icon: 'pi pi-fw pi-envelope',
-                            routerLink: ['/estudiante/buzon-sugerencias'],
-                        },*/
       {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
@@ -720,7 +714,7 @@ const administracion = [
         ],
       },
       {
-        label: 'Generación de Reportes y estadísticas',
+        label: 'Generación de reportes y estadísticas',
         icon: 'pi pi-chart-bar',
         items: [
           {
@@ -729,9 +723,9 @@ const administracion = [
             routerLink: ['/gestion-institucional/dashboard-indicadores'],
           },
           {
-            label: 'Reportes',
+            label: 'Reportes académicos',
             icon: 'pi pi-book',
-            routerLink: ['/gestion-institucional/reporte'],
+            routerLink: ['/gestion-institucional/reportes-academicos'],
           },
           {
             label: 'Reporte de Asistencia',
@@ -940,6 +934,27 @@ const apoderado = [
             icon: 'pi pi-fw pi-list-check',
             routerLink: ['/bienestar/gestionar-encuestas'],
           },
+        ],
+      },
+      {
+        label: 'Reportes académicos',
+        icon: 'pi pi-chart-bar',
+        items: [
+          {
+            label: 'Progreso',
+            icon: 'pi pi-fw pi-list-check',
+            routerLink: ['/apoderado/reportes-academicos/progreso'],
+          },
+          /*{
+            label: 'Académico',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/estudiante/reportes-academicos/academico'],
+          },
+          {
+            label: 'Resultados ERE',
+            icon: 'pi pi-fw pi-ticket',
+            routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
+          },*/
         ],
       },
       // {

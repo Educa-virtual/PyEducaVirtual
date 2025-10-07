@@ -1,0 +1,38 @@
+.backColor {
+  background-color: #e0e8f6;
+  padding: 2px;
+  border-radius: 5px;
+}
+
+.pulse {
+  animation: pulse-black 1s infinite;
+}
+@keyframes pulse-black {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+::ng-deep .p-panel .p-panel-header {
+  background: var(--bg-header-modal) !important;
+  color: white !important;
+}
+
+::ng-deep .text-primary {
+  color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+  gap: 0px !important;
+}

@@ -19,6 +19,7 @@ import { IsIconTypePipe } from '../pipes/is-icon-type.pipe';
 import { Table } from 'primeng/table';
 import { SearchWordsComponent } from './search-words/search-words.component';
 import { environment } from '@/environments/environment';
+import { SharedModule } from 'primeng/api';
 
 type TColumnType =
   | 'actions'
@@ -77,6 +78,7 @@ export interface IActionTable {
   type: string;
   class: string;
   isVisible?: (row) => boolean;
+  subActions?: IActionTable[];
 }
 
 @Component({
@@ -91,6 +93,7 @@ export interface IActionTable {
     IconComponent,
     IsIconTypePipe,
     SearchWordsComponent,
+    SharedModule,
   ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {

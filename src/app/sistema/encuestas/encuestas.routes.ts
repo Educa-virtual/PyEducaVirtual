@@ -21,6 +21,8 @@ import { ResumenEncuestaComponent } from './resumen-encuesta/resumen-encuesta.co
 import { PlantillaComponent } from './plantillas/plantilla/plantilla.component';
 import { GestionPlantillasComponent } from './plantillas/gestion-plantillas/gestion-plantillas.component';
 import { LlenadoPreguntasPlantillaComponent } from './plantillas/llenado-preguntas-encuesta/llenado-preguntas-plantilla.component';
+import { PlantillaFijaComponent } from './plantillas/plantilla-fija/plantilla-fija.component';
+import { EncuestaFijaComponent } from './encuesta-fija/encuesta-fija.component';
 
 const encuestadores = [
   ADMINISTRADOR_DREMO,
@@ -74,6 +76,24 @@ const routes: Routes = [
     data: {
       expectedRole: encuestadores,
       breadcrumb: 'Nueva encuesta',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/nueva-encuesta-fija',
+    component: EncuestaFijaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Nueva encuesta fija',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/gestion-encuestas/:iEncuId/fija',
+    component: EncuestaFijaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Encuesta fija',
     },
   },
   {
@@ -158,7 +178,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       expectedRole: encuestadores,
-      breadcrumb: 'Encuesta',
+      breadcrumb: 'Gestionar plantillas',
     },
   },
   {
@@ -167,7 +187,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       expectedRole: encuestadores,
-      breadcrumb: 'Encuesta',
+      breadcrumb: 'Plantilla',
     },
   },
   {
@@ -176,7 +196,16 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       expectedRole: encuestadores,
-      breadcrumb: 'Nueva encuesta',
+      breadcrumb: 'Nueva plantilla',
+    },
+  },
+  {
+    path: 'categorias/:iCateId/nueva-plantilla-fija',
+    component: PlantillaFijaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Nueva plantilla fija',
     },
   },
   {

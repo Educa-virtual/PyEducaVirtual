@@ -1,0 +1,148 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Nueva encuesta fija</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="encuesta_registrada && iEncuId">
+      <p-button
+        label="Ver preguntas"
+        icon="pi pi-list-check"
+        iconPos="left"
+        size="small"
+        severity="warning"
+        pTooltip="Ver preguntas"
+        tooltipPosition="top"
+        (click)="verPreguntas()"
+      />
+    </div>
+  </ng-template>
+
+  <form [formGroup]="formEncuesta">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título * </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese título"
+            formControlName="cEncuNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese subtítulo"
+            formControlName="cEncuSubtitulo"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+          <p-calendar
+            inputStyleClass="group-element"
+            view="date"
+            formControlName="dEncuInicio"
+            dateFormat="dd/mm/yy"
+            placeholder="Fecha de inicio"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Cierre</p-inputGroupAddon>
+          <p-calendar
+            inputStyleClass="group-element"
+            view="date"
+            formControlName="dEncuFin"
+            dateFormat="dd/mm/yy"
+            placeholder="Fecha de cierre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iTiemDurId.toggle($event)"
+              (keypress)="iTiemDurId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <span>Tiempo edición</span>
+          </p-inputGroupAddon>
+          <p-dropdown
+            styleClass="group-element"
+            [options]="tiempos_duracion"
+            placeholder="Seleccione tiempo"
+            formControlName="iTiemDurId"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+          <p-overlayPanel #iTiemDurId showCloseIcon="true" appendTo="body">
+            <div class="flex w-15rem">
+              El tiempo que el encuestado tendrá para editar sus respuestas una vez que las haya
+              registrado por primera vez.
+            </div>
+          </p-overlayPanel>
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Consideraciones generales:</p-inputGroupAddon>
+          <textarea
+            formControlName="cEncuDescripcion"
+            inputStyleClass="group-element"
+            rows="4"
+            style="resize: none"
+            pInputTextarea
+            class="group-element"
+            appendTo="body"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+  <div class="flex pt-4 justify-content-between">
+    <p-button label="Salir" severity="secondary" icon="pi pi-arrow-left" (onClick)="salir()" />
+    <p-button
+      *ngIf="puede_editar && !encuesta_registrada"
+      label="Guardar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="right"
+      (onClick)="guardarEncuesta()"
+    />
+    <p-button
+      *ngIf="puede_editar && encuesta_registrada"
+      label="Actualizar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="right"
+      (onClick)="actualizarEncuesta()"
+    />
+  </div>
+</p-panel>
+
+<p-toast></p-toast>

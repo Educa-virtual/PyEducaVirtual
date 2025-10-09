@@ -118,7 +118,11 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   agregarEncuesta() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta`]);
+    if (this.categoria.bEsFija) {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta-fija`]);
+    } else {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta`]);
+    }
   }
 
   generarEncuestaPlantilla(encuesta_reemplazada: any | null = null) {
@@ -342,14 +346,16 @@ export class GestionEncuestasComponent implements OnInit {
     this.selectedItem = item;
     switch (accion) {
       case 'editar':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
-        ]);
-        break;
       case 'ver':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
-        ]);
+        if (this.categoria.bEsFija) {
+          this.router.navigate([
+            `/encuestas/fija/${this.iCateId}/gestion-encuestas/${item.iEncuId}/fija`,
+          ]);
+        } else {
+          this.router.navigate([
+            `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
+          ]);
+        }
         break;
       case 'preguntas':
         this.router.navigate([

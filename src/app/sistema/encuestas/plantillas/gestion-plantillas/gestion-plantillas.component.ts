@@ -173,11 +173,19 @@ export class GestionPlantillasComponent implements OnInit {
   }
 
   agregarPlantilla() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-plantilla`]);
+    if (this.categoria.bEsFija) {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-plantilla-fija`]);
+    } else {
+      this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-plantilla`]);
+    }
   }
 
   salir() {
     this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
+  }
+
+  listarEncuestas() {
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-encuestas`]);
   }
 
   getParametros() {

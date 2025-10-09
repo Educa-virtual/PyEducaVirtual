@@ -22,11 +22,11 @@
     <p-button
       *ngIf="categoria && +categoria?.bEsFija && encuestas.length === 0"
       severity="success"
-      pTooltip="Generar"
+      pTooltip="Generar desde mi última Plantilla"
       tooltipPosition="top"
       (click)="generarEncuestaPlantilla()"
     >
-      <i class="pi pi-fw pi-sync"></i>
+      <i class="pi pi-fw pi-file-plus"></i>
       <span class="hidden md:inline ml-2">Generar</span>
     </p-button>
   </ng-template>

@@ -21,10 +21,23 @@
 
   <div class="grid">
     <div class="col-12">
-      <p-inputGroup>
-        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
-        <input #filtro pInputText type="text" (input)="filtrarPlantillas()" />
-      </p-inputGroup>
+      <div class="grid p-fluid">
+        <div class="col">
+          <p-inputGroup>
+            <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+            <input #filtro type="text" pInputText (input)="filtrarPlantillas()" />
+          </p-inputGroup>
+        </div>
+        <div class="col-auto align-content-center">
+          <p-button
+            severity="primary"
+            pTooltip="Encuestas"
+            icon="pi pi-file"
+            tooltipPosition="top"
+            (onClick)="listarEncuestas()"
+          />
+        </div>
+      </div>
     </div>
     <div class="col-12">
       <app-table-primeng

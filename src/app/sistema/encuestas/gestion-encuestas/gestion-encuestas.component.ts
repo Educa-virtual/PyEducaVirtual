@@ -47,6 +47,8 @@ export class GestionEncuestasComponent implements OnInit {
   CATEGORIA_SATISFACCION: number = this.encuestasService.CATEGORIA_SATISFACCION;
   CATEGORIA_AUTOEVALUACION: number = this.encuestasService.CATEGORIA_AUTOEVALUACION;
 
+  puede_generar_fija: boolean = false;
+
   constructor(
     private messageService: MessageService,
     private encuestasService: EncuestasService,
@@ -179,6 +181,9 @@ export class GestionEncuestasComponent implements OnInit {
         next: (data: any) => {
           this.categoria = data.data;
           this.setBreadCrumbs();
+          this.puede_generar_fija =
+            Number(this.categoria?.bEsFija) === 1 &&
+            Number(this.categoria?.iTotalEncuestasFijasSede) === 0;
         },
         error: error => {
           console.error('Error obteniendo datos:', error);
@@ -349,7 +354,7 @@ export class GestionEncuestasComponent implements OnInit {
       case 'ver':
         if (this.categoria.bEsFija) {
           this.router.navigate([
-            `/encuestas/fija/${this.iCateId}/gestion-encuestas/${item.iEncuId}/fija`,
+            `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/fija`,
           ]);
         } else {
           this.router.navigate([
@@ -420,7 +425,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-file-edit',
       accion: 'editar',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
+      class: 'p-menuitem-link text-green-500',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
@@ -429,7 +434,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-eye',
       accion: 'ver',
       type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
+      class: 'p-menuitem-link text-gray-500',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) !== this.ESTADO_BORRADOR || Number(rowData.puede_editar) !== 1,
     },
@@ -438,14 +443,14 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-question',
       accion: 'preguntas',
       type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
+      class: 'p-menuitem-link text-yellow-500',
     },
     {
       labelTooltip: 'Aprobar',
       icon: 'pi pi-check',
       accion: 'aprobar',
       type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      class: 'p-menuitem-link text-primary',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
@@ -454,7 +459,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-trash',
       accion: 'eliminar',
       type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
+      class: 'p-menuitem-link text-red-500',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
@@ -463,7 +468,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-users',
       accion: 'respuestas',
       type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      class: 'p-menuitem-link text-primary',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_APROBADA &&
         Number(rowData.puede_ver_respuestas) === 1,
@@ -473,7 +478,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-chart-pie',
       accion: 'resumen',
       type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      class: 'p-menuitem-link p-button-primary',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) == this.ESTADO_APROBADA && Number(rowData.puede_ver_resumen) === 1,
     },
@@ -482,7 +487,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-sync',
       accion: 'reemplazar',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
+      class: 'p-menuitem-link text-green-500',
       isVisible: (rowData: any) =>
         Number(this.categoria.bEsFija) === 1 &&
         Number(this.perfil.iPerfilId) === DIRECTOR_IE &&
@@ -494,7 +499,7 @@ export class GestionEncuestasComponent implements OnInit {
       icon: 'pi pi-copy',
       accion: 'duplicar',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
+      class: 'p-menuitem-link text-green-500',
       isVisible: () => Number(this.categoria.bEsFija) !== 1,
     },
   ];
@@ -553,7 +558,7 @@ export class GestionEncuestasComponent implements OnInit {
       },
     },
     {
-      type: 'actions',
+      type: 'dropdown-actions',
       width: '10%',
       field: 'actions',
       header: 'Acciones',

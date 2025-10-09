@@ -48,6 +48,9 @@ export class GestionPlantillasComponent implements OnInit {
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
 
+  CATEGORIA_SATISFACCION: number = this.encuestasService.CATEGORIA_SATISFACCION;
+  CATEGORIA_AUTOEVALUACION: number = this.encuestasService.CATEGORIA_AUTOEVALUACION;
+
   constructor(
     private route: ActivatedRoute,
     private encuestasService: EncuestasService,
@@ -319,6 +322,52 @@ export class GestionPlantillasComponent implements OnInit {
       });
   }
 
+  generarEncuestaPlantilla(encuesta_reemplazada: any | null = null, plantilla: any) {
+    if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
+      this.encuestasService
+        .crearEncuestaSatisfaccion({
+          iCateId: this.iCateId,
+          iYAcadId: this.iYAcadId,
+          iPlanId: plantilla?.iPlanId,
+          iEncuId: encuesta_reemplazada?.iEncuId,
+        })
+        .subscribe({
+          next: () => {
+            this.listarEncuestas();
+          },
+          error: error => {
+            console.error('Error obteniendo lista de encuestas:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          },
+        });
+    } else if (Number(this.iCateId) === this.CATEGORIA_AUTOEVALUACION) {
+      this.encuestasService
+        .crearEncuestaAutoevaluacion({
+          iCateId: this.iCateId,
+          iYAcadId: this.iYAcadId,
+          iPlanId: plantilla?.iPlanId,
+          iEncuId: encuesta_reemplazada?.iEncuId,
+        })
+        .subscribe({
+          next: () => {
+            this.listarEncuestas();
+          },
+          error: error => {
+            console.error('Error obteniendo lista de encuestas:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          },
+        });
+    }
+  }
+
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {
@@ -358,7 +407,11 @@ export class GestionPlantillasComponent implements OnInit {
         });
         break;
       case 'generar':
-        this.abrirDialogGenerarEncuesta(item);
+        if (Number(this.categoria?.bEsFija) === 1) {
+          this.generarEncuestaPlantilla(null, item);
+        } else {
+          this.abrirDialogGenerarEncuesta(item);
+        }
         break;
       default:
         console.warn('Acción no reconocida:', accion);
@@ -371,7 +424,7 @@ export class GestionPlantillasComponent implements OnInit {
       icon: 'pi pi-file-edit',
       accion: 'editar',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
+      class: 'p-menuitem-link text-green-500',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
@@ -380,7 +433,7 @@ export class GestionPlantillasComponent implements OnInit {
       icon: 'pi pi-eye',
       accion: 'ver',
       type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
+      class: 'p-menuitem-link text-gray-500',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) !== this.ESTADO_BORRADOR || Number(rowData.puede_editar) !== 1,
     },
@@ -389,14 +442,14 @@ export class GestionPlantillasComponent implements OnInit {
       icon: 'pi pi-question',
       accion: 'preguntas',
       type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
+      class: 'p-menuitem-link text-yellow-500',
     },
     {
       labelTooltip: 'Aprobar',
       icon: 'pi pi-check',
       accion: 'aprobar',
       type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      class: 'p-menuitem-link text-primary',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
@@ -405,7 +458,7 @@ export class GestionPlantillasComponent implements OnInit {
       icon: 'pi pi-trash',
       accion: 'eliminar',
       type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
+      class: 'p-menuitem-link text-red-500',
       isVisible: (rowData: any) =>
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
@@ -414,8 +467,12 @@ export class GestionPlantillasComponent implements OnInit {
       icon: 'pi pi-plus',
       accion: 'generar',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-      isVisible: (rowData: any) => Number(rowData.iEstado) === this.ESTADO_APROBADA,
+      class: 'p-menuitem-link text-primary',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) === this.ESTADO_APROBADA &&
+        (Number(this.categoria?.bEsFija) === 0 ||
+          (Number(this.categoria?.bEsFija) === 1 &&
+            Number(this.categoria?.iTotalEncuestasFijasSede) === 0)),
     },
   ];
 
@@ -465,7 +522,7 @@ export class GestionPlantillasComponent implements OnInit {
       },
     },
     {
-      type: 'actions',
+      type: 'dropdown-actions',
       width: '15%',
       field: '',
       header: 'Acciones',

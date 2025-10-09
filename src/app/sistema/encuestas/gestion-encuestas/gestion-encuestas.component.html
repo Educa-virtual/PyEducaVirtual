@@ -20,7 +20,7 @@
       <span class="hidden md:inline ml-2">Nueva</span>
     </p-button>
     <p-button
-      *ngIf="categoria && +categoria?.bEsFija && encuestas.length === 0"
+      *ngIf="puede_generar_fija"
       severity="success"
       pTooltip="Generar desde mi última Plantilla"
       tooltipPosition="top"
@@ -34,8 +34,15 @@
   <div class="grid p-fluid">
     <div class="col">
       <p-inputGroup>
-        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
-        <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+        <p-inputGroupAddon for="buscar"> Buscar </p-inputGroupAddon>
+        <input
+          #filtro
+          type="text"
+          pInputText
+          (input)="filtrarTabla()"
+          aria-label="Buscar"
+          name="buscar"
+        />
       </p-inputGroup>
     </div>
     <div class="col-auto align-content-center">
@@ -44,6 +51,7 @@
         pTooltip="Plantillas"
         icon="pi pi-file-plus"
         tooltipPosition="top"
+        aria-label="Plantillas"
         (onClick)="listarPlantillas()"
       />
     </div>

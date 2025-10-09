@@ -1,0 +1,112 @@
+<form [formGroup]="formDesercion">
+  <div class="grid p-fluid mt-2">
+    <div class="field col-12 md:col-6" *ngIf="this.estudiante.length === 0">
+      <span class="p-float-label">
+        <input
+          pInputText
+          id="cPersDocumento"
+          formControlName="cPersDocumento"
+          aria-describedby="cPersDocumento-help"
+        />
+        <label for="cPersDocumento">Documento</label>
+      </span>
+    </div>
+    <div class="field col-12 md:col-6" *ngIf="this.estudiante.length === 0">
+      <p-button
+        label="Validar"
+        (onClick)="validarDocumento()"
+        icon="pi pi-search"
+        styleClass="p-button-primary"
+      />
+    </div>
+
+    <div class="col-12" *ngIf="this.estudiante.length > 0">
+      <span class="text-lg text-primary font-bold">
+        <p align="center">{{ this.estudiante }}</p>
+      </span>
+      <span class="text-center text-primary">
+        <p align="center">{{ this.seccion }}</p>
+      </span>
+
+      <input pInputText type="text" formControlName="iMatrId" class="p-inputtext-sm" />
+    </div>
+
+    <div class="field col-12 md:col-12">
+      <p></p>
+      <span class="p-float-label">
+        <p-dropdown
+          formControlName="iTipoDesercionId"
+          styleClass="w-full"
+          placeholder="Seleccione tipo deserción"
+          optionValue="iTipoDesercionId"
+          [options]="tipo_deserciones"
+          optionLabel="cDescripcion"
+          appendTo="body"
+        />
+        <label for="iTipoDesercionId">Tipo de Deserción </label>
+      </span>
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <span class="p-float-label">
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="w-full"
+          styleClass="w-full"
+          formControlName="dInicioDesercion"
+          [iconDisplay]="'input'"
+          [showIcon]="true"
+          inputId="dInicioDesercion"
+          aria-describedby="dInicioDesercion-help"
+        />
+        <label for="dInicioDesercion">Fecha inicio</label>
+      </span>
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <span class="p-float-label">
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="w-full"
+          styleClass="w-full"
+          formControlName="dFinDesercion"
+          [iconDisplay]="'input'"
+          [showIcon]="true"
+          inputId="dFinDesercion"
+          aria-describedby="dFinDesercion-help"
+        />
+        <label for="dFinDesercion">Fecha fin</label>
+      </span>
+    </div>
+
+    <div class="field col-12 md:col-12">
+      <span class="p-float-label">
+        <input pInputText type="text" formControlName="cMotivoDesercion" class="p-inputtext-sm" />
+        <label for="cMotivoDesercion">Motivo</label>
+      </span>
+    </div>
+
+    <div class="field col-12 md:col-6 switch-field">
+      <span class="switch-label">Estado </span>
+      <p-inputSwitch formControlName="iEstado" class="pr-3"></p-inputSwitch>
+    </div>
+    <div class="field col-12 md:col-6">
+      <p-button
+        *ngIf="!bUpdate"
+        label="Guardar"
+        [disabled]="formDesercion.invalid"
+        (onClick)="procesar('registrar')"
+        styleClass="p-button-primary"
+      />
+      <p-button
+        *ngIf="bUpdate"
+        label="Actualizar"
+        [disabled]="formDesercion.invalid"
+        (onClick)="procesar('actualizar')"
+        styleClass="p-button-warning"
+      />
+    </div>
+  </div>
+</form>

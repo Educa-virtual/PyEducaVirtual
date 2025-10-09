@@ -32,6 +32,7 @@ import { YearsComponent } from './years/years.component';
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
 const routes: Routes = [
   { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
   { path: 'years-academicos', component: YearsComponent },
@@ -149,6 +150,7 @@ const routes: Routes = [
       icon: 'pi pi-book',
     },
   },
+  { path: 'gestion-deserciones', component: GestionDesercionComponent },
 ];
 
 @NgModule({

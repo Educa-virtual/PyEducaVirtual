@@ -1,0 +1,254 @@
+<app-container-page
+  [title]="'Registro de Deserciones para el año: ' + anio_actual"
+  [actions]="[]"
+  (accionBtnItem)="accionBtnItem($event)"
+>
+  <p-toast />
+
+  <div class="grid">
+    <div class="col-12">
+      <span class="text-lg text-primary font-bold">Filtro de nivel y secciones</span>
+    </div>
+    <div class="col-12 md:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Nivel Grado</p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iGradoId"
+          styleClass="w-full"
+          placeholder="Seleccione Grado"
+          [showClear]="true"
+          optionValue="iNivelGradoId"
+          [options]="grados"
+          (onChange)="changeGrado()"
+          optionLabel="cGradoNombre"
+          (onChange)="obtenerSecciones()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Sección</p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iSeccionId"
+          styleClass="w-full"
+          placeholder="Seleccione Sección"
+          optionValue="iSeccionId"
+          [options]="secciones"
+          optionLabel="cSeccionNombre"
+          [showClear]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-2 text-right">
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="p-button-primary"
+        [disabled]="!iGradoId"
+        (click)="getDesercion()"
+      >
+        <i class="pi pi-search"></i>&nbsp;Buscar
+      </button>
+    </div>
+    <div class="col-12 md:col-2 text-right">
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="p-button-success"
+        [disabled]="!iGradoId"
+        (click)="accionBtnItem({ accion: 'guardar', data: null })"
+      >
+        <i class="pi pi-plus"></i>&nbsp;Agregar
+      </button>
+    </div>
+    <div class="col-12 md:col-2 text-right">
+      <!-- <button pButton pRipple type="button" class="p-button-danger" [disabled]="matriculas_desercion.length === 0"
+        (click)="accionBtnItem({accion: 'imprimir', data: null})">
+        <i class="pi pi-print"></i>&nbsp;Imprimir
+      </button> -->
+    </div>
+
+    <div class="col-12 md:col-12">
+      <br />
+      <app-table-primeng
+        [columnas]="columns"
+        [data]="matriculas_desercion"
+        [scrollable]="true"
+        (accionBtnItem)="accionBtnItem($event)"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+        [showCaption]="false"
+      >
+      </app-table-primeng>
+    </div>
+  </div>
+</app-container-page>
+
+@if (update) {
+  <p-dialog
+    header="{{ headerS }}"
+    [(visible)]="showModal"
+    [style]="{ width: '90rem' }"
+    [modal]="true"
+    [resizable]="true"
+    [maximizable]="true"
+    [closable]="true"
+    [draggable]="true"
+    appendTo="body"
+  >
+    <p-splitter [panelSizes]="[30, 70]" [style]="{ height: '90%' }" styleClass="mb-5">
+      <!--Bloque para buscador-->
+      <ng-template pTemplate>
+        <p-fieldset legend="Registrar deserción" [toggleable]="true">
+          <app-form-desercion
+            (accionBtnItem)="accionBtnItem($event)"
+            [titulo]="headerS"
+            [matricula]="matricula"
+            [grado]="grado"
+            [matriculas_filtradas]="matriculas_filtradas"
+            [tipo_deserciones]="tipo_desercion"
+            [bValido]="update"
+            [desercion]="desercion"
+          />
+        </p-fieldset>
+      </ng-template>
+      <ng-template pTemplate>
+        <div [style]="{ width: '100%' }">
+          <div class="card">
+            <div class="field col-12">
+              <p-tabView [(activeIndex)]="activeIndex">
+                <p-tabPanel>
+                  <ng-template pTemplate="header">
+                    <div class="flex align-items-center">
+                      <p-avatar icon="pi pi-address-book" shape="circle" />
+                      <span class="font-bold white-space-nowrap m-0"> Historial de matrícula </span>
+                    </div>
+                  </ng-template>
+
+                  <div class="flex align-items-center">
+                    <p-avatar icon="pi pi-user" shape="circle" />
+                    <span class="font-bold white-space-nowrap m-0">
+                      Historial de deserciones - {{ matricula.estudiante }}
+                    </span>
+                  </div>
+                  <p-message
+                    severity="info"
+                    text="No cuenta con historial de deserciones."
+                    *ngIf="!deserciones || deserciones.length === 0"
+                  ></p-message>
+                  <br />
+                  <div *ngIf="deserciones && deserciones.length > 0">
+                    <app-historial-desercion
+                      [deserciones]="deserciones"
+                      (accionBtnItem)="accionBtnItem($event)"
+                    />
+                  </div>
+                </p-tabPanel>
+              </p-tabView>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-splitter>
+  </p-dialog>
+} @else {
+  <p-dialog
+    header="{{ headerS }}"
+    [(visible)]="showModal"
+    [style]="{ width: '90rem' }"
+    [modal]="true"
+    [resizable]="true"
+    [maximizable]="true"
+    [closable]="true"
+    [draggable]="true"
+    appendTo="body"
+  >
+    <p-splitter [panelSizes]="[30, 70]" [style]="{ height: '90%' }" styleClass="mb-5">
+      <!--Bloque para buscador-->
+      <ng-template pTemplate>
+        <p-fieldset legend="Registrar deserción" [toggleable]="true">
+          <app-form-desercion
+            (accionBtnItem)="accionBtnItem($event)"
+            [titulo]="headerS"
+            [matricula]="matricula"
+            [grado]="grado"
+            [matriculas_filtradas]="matriculas_filtradas"
+            [tipo_deserciones]="tipo_desercion"
+            [bValido]="update"
+            [desercion]="desercion"
+          />
+        </p-fieldset>
+      </ng-template>
+      <ng-template pTemplate>
+        <div [style]="{ width: '100%' }">
+          <div class="card">
+            <div class="field col-12">
+              <p-tabView [(activeIndex)]="activeIndex">
+                <p-tabPanel>
+                  <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                      <p-avatar icon="pi pi-users" shape="circle" />
+                      <span class="font-bold white-space-nowrap m-0"> Matriculas activas </span>
+                    </div>
+                  </ng-template>
+
+                  <app-table-primeng
+                    [columnas]="columns"
+                    [data]="matriculas_activas"
+                    [showCaption]="false"
+                    [showPaginator]="true"
+                    [showAdvancedFilter]="true"
+                    (accionBtnItem)="accionBtnItem($event)"
+                    [(selectedRowData)]="selectedItems"
+                    [actions]="actionsValidar"
+                  >
+                    <!-- <ng-container slot="caption-content"> </ng-container> -->
+                  </app-table-primeng>
+                </p-tabPanel>
+                <p-tabPanel>
+                  <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                      <p-avatar icon="pi pi-address-book" shape="circle" />
+                      <span class="font-bold white-space-nowrap m-0"> Historial de matrícula </span>
+                    </div>
+                  </ng-template>
+
+                  <div *ngIf="matricula.estudiante && matricula.estudiante.length > 0">
+                    <div class="flex align-items-center gap-2">
+                      <p-avatar icon="pi pi-user" shape="circle" />
+                      <span class="font-bold white-space-nowrap m-0">
+                        Historial de deserciones - {{ matricula.estudiante }}
+                      </span>
+                    </div>
+                    <br />
+                    <p-message
+                      severity="info"
+                      text="No cuenta con historial de deserciones."
+                      *ngIf="!deserciones || deserciones.length === 0"
+                    ></p-message>
+                  </div>
+                  <p-message
+                    severity="info"
+                    text="Seleccione una matrícula para ver su historial de deserciones."
+                    *ngIf="!matricula.estudiante || matricula.estudiante.length === 0"
+                  ></p-message>
+                  <br />
+                  <div *ngIf="deserciones && deserciones.length > 0">
+                    <app-historial-desercion
+                      [deserciones]="deserciones"
+                      (accionBtnItem)="accionBtnItem($event)"
+                    />
+                  </div>
+                </p-tabPanel>
+              </p-tabView>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-splitter>
+  </p-dialog>
+}

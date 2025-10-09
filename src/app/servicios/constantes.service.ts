@@ -658,6 +658,11 @@ const administracion = [
             icon: 'pi pi-file-import',
             routerLink: ['/gestion-institucional/gestion-vacantes'],
           },
+          {
+            label: 'Registro de deserciones',
+            icon: 'pi pi-file-import',
+            routerLink: ['/gestion-institucional/gestion-deserciones'],
+          },
         ],
       },
 

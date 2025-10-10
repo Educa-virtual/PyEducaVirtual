@@ -16,20 +16,18 @@ $gutter: 1rem; //for primeflex grid system
 @import '../node_modules/quill/dist/quill.core.css';
 @import '../node_modules/quill/dist/quill.snow.css';
 
-.p-datatable.p-datatable-hoverable-rows
-    .p-datatable-tbody
-    > tr:not(.p-highlight):hover {
-    background-color: var(--highlight-bg);
-    color: var(--text-color);
+.p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+  background-color: var(--highlight-bg);
+  color: var(--text-color);
 }
 
 nav.p-breadcrumb {
-    background: transparent;
-    border: none;
+  background: transparent;
+  border: none;
 }
 
 nav.p-breadcrumb ol li:last-child a span {
-    color: #3b82f6;
+  color: #3b82f6;
 }
 
 /**
@@ -37,5 +35,13 @@ nav.p-breadcrumb ol li:last-child a span {
  */
 .p-overlaypanel:after,
 .p-overlaypanel:before {
-    margin-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+p-inputGroupAddon {
+  background-color: var(--bg-header-modal) !important;
+  color: var(--primary-color-text) !important;
+  i {
+    color: var(--primary-color-text) !important;
+  }
 }

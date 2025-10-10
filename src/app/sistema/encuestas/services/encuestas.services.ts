@@ -267,6 +267,14 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/guardarEncuestaDesdeDuplicado`, data);
   }
 
+  guardarPlantillaDesdeEncuesta(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarPlantillaDesdeEncuesta`, data);
+  }
+
+  guardarPlantillaDesdeDuplicado(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarPlantillaDesdeDuplicado`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */

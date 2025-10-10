@@ -58,12 +58,12 @@
   header="Generar encuesta desde plantilla"
   [style]="{ width: '50vw' }"
   [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
-  [(visible)]="visibleDialog"
+  [(visible)]="visibleDialogEncuesta"
   modal="modal"
   [draggable]="false"
   [blockScroll]="true"
   [resizable]="false"
-  (onHide)="resetForm()"
+  (onHide)="resetFormEncuesta()"
 >
   <br />
   <form [formGroup]="formEncuestaPlantilla">
@@ -210,6 +210,108 @@
       icon="pi pi-save"
       iconPos="left"
       (onClick)="generarEncuesta()"
+    />
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Duplicar plantilla"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogDuplicar"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+  (onHide)="resetFormPlantilla()"
+>
+  <br />
+  <form [formGroup]="formPlantilla">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon> Plantilla </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            formControlName="cPlanOriginalNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese título o deje en blanco para usar la plantilla original"
+            formControlName="cPlanNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese subtítulo o deje en blanco para usar la plantilla original"
+            formControlName="cPlanSubtitulo"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch
+              formControlName="bCopiarPoblacion"
+              label="Copiar población"
+            ></p-inputSwitch>
+            <span>Copiar población</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch formControlName="bCopiarAccesos" label="Copiar accesos"></p-inputSwitch>
+            <span>Copiar accesos</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch
+              formControlName="bCopiarPreguntas"
+              label="Copiar preguntas"
+            ></p-inputSwitch>
+            <span>Copiar preguntas</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-between">
+    <p-button
+      label="Salir"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      (onClick)="cerrarDialogDuplicarPlantilla()"
+    />
+    <p-button
+      label="Generar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="left"
+      (onClick)="duplicarPlantilla()"
     />
   </div>
 </p-dialog>

@@ -29,6 +29,8 @@ export class GestionPlantillasComponent implements OnInit {
   breadCrumbHome: MenuItem;
 
   formEncuestaPlantilla: FormGroup;
+  formPlantilla: FormGroup;
+
   iCateId: number;
   categoria: any;
 
@@ -43,7 +45,8 @@ export class GestionPlantillasComponent implements OnInit {
 
   tiempos_duracion: Array<object>;
 
-  visibleDialog: boolean = false;
+  visibleDialogEncuesta: boolean = false;
+  visibleDialogDuplicar: boolean = false;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
@@ -80,6 +83,17 @@ export class GestionPlantillasComponent implements OnInit {
         dEncuInicio: ['', Validators.required],
         dEncuFin: ['', Validators.required],
         iTiemDurId: [null, Validators.required],
+        bCopiarPoblacion: [true],
+        bCopiarAccesos: [true],
+        bCopiarPreguntas: [true],
+      });
+
+      this.formPlantilla = this.fb.group({
+        iCateId: [this.iCateId, Validators.required],
+        iPlanId: [null, Validators.required],
+        cPlanOriginalNombre: [{ value: '', disabled: true }],
+        cPlanNombre: [''],
+        cPlanSubtitulo: [''],
         bCopiarPoblacion: [true],
         bCopiarAccesos: [true],
         bCopiarPreguntas: [true],
@@ -207,7 +221,7 @@ export class GestionPlantillasComponent implements OnInit {
     if (plantilla) {
       this.getParametros();
     }
-    this.visibleDialog = true;
+    this.visibleDialogEncuesta = true;
     this.formEncuestaPlantilla.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuestaPlantilla.get('iCateId')?.setValue(this.iCateId);
     this.formEncuestaPlantilla.get('iPlanId')?.setValue(plantilla?.iPlanId);
@@ -219,11 +233,11 @@ export class GestionPlantillasComponent implements OnInit {
   }
 
   cerrarDialogGenerarEncuesta() {
-    this.visibleDialog = false;
-    this.resetForm();
+    this.visibleDialogEncuesta = false;
+    this.resetFormEncuesta();
   }
 
-  resetForm() {
+  resetFormEncuesta() {
     this.formEncuestaPlantilla.reset();
   }
 
@@ -368,6 +382,56 @@ export class GestionPlantillasComponent implements OnInit {
     }
   }
 
+  abrirDialogDuplicarPlantilla(plantilla: any) {
+    this.visibleDialogDuplicar = true;
+    this.formPlantilla.get('iPlanId')?.setValue(plantilla?.iPlanId);
+    this.formPlantilla.get('cPlanOriginalNombre')?.setValue(plantilla?.cPlanNombre);
+    this.formPlantilla.get('cPlanSubtitulo')?.setValue(plantilla?.cPlanSubtitulo);
+    this.formPlantilla.get('dPlanInicio')?.setValue(new Date());
+    this.formPlantilla.get('bCopiarPoblacion')?.setValue(true);
+    this.formPlantilla.get('bCopiarAccesos')?.setValue(true);
+    this.formPlantilla.get('bCopiarPreguntas')?.setValue(true);
+  }
+
+  cerrarDialogDuplicarPlantilla() {
+    this.visibleDialogDuplicar = false;
+    this.resetFormPlantilla();
+  }
+
+  resetFormPlantilla() {
+    this.formPlantilla.reset();
+  }
+
+  duplicarPlantilla() {
+    if (this.formPlantilla.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe completar los campos requeridos',
+      });
+      return;
+    }
+    this.encuestasService.guardarPlantillaDesdeDuplicado(this.formPlantilla.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos',
+        });
+        this.cerrarDialogDuplicarPlantilla();
+        this.listarPlantillas();
+      },
+      error: error => {
+        console.error('Error guardando plantilla:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {
@@ -405,6 +469,9 @@ export class GestionPlantillasComponent implements OnInit {
           },
           reject: () => {},
         });
+        break;
+      case 'duplicar':
+        this.abrirDialogDuplicarPlantilla(item);
         break;
       case 'generar':
         if (Number(this.categoria?.bEsFija) === 1) {
@@ -463,8 +530,16 @@ export class GestionPlantillasComponent implements OnInit {
         Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
     },
     {
+      labelTooltip: 'Duplicar',
+      icon: 'pi pi-copy',
+      accion: 'duplicar',
+      type: 'item',
+      class: 'p-menuitem-link text-green-500',
+      isVisible: () => Number(this.categoria.bEsFija) !== 1,
+    },
+    {
       labelTooltip: 'Hacer encuesta',
-      icon: 'pi pi-plus',
+      icon: 'pi pi-arrow-right',
       accion: 'generar',
       type: 'item',
       class: 'p-menuitem-link text-primary',
@@ -487,7 +562,7 @@ export class GestionPlantillasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '30%',
+      width: '35%',
       field: 'cPlanNombre',
       header: 'Plantilla',
       text_header: 'left',
@@ -523,7 +598,7 @@ export class GestionPlantillasComponent implements OnInit {
     },
     {
       type: 'dropdown-actions',
-      width: '15%',
+      width: '10%',
       field: '',
       header: 'Acciones',
       text_header: 'right',

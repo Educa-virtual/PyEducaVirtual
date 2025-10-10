@@ -22,7 +22,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class GestionEncuestasComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
 
-  visibleDialog: boolean = false;
+  visibleDialogDuplicar: boolean = false;
+  visibleDialogPlantilla: boolean = false;
+
   iCateId: number = null;
   categoria: any = null;
   selectedItem: any;
@@ -31,6 +33,7 @@ export class GestionEncuestasComponent implements OnInit {
   cCateNombre: string;
 
   formEncuesta: FormGroup;
+  formPlantilla: FormGroup;
   tiempos_duracion: Array<object>;
 
   encuestas: Array<any> = [];
@@ -79,6 +82,17 @@ export class GestionEncuestasComponent implements OnInit {
         dEncuInicio: ['', Validators.required],
         dEncuFin: ['', Validators.required],
         iTiemDurId: [null, Validators.required],
+        bCopiarPoblacion: [true],
+        bCopiarAccesos: [true],
+        bCopiarPreguntas: [true],
+      });
+
+      this.formPlantilla = this.fb.group({
+        iCateId: [this.iCateId, Validators.required],
+        iEncuId: [null],
+        cEncuOriginalNombre: [{ value: '', disabled: true }],
+        cPlanNombre: [''],
+        cPlanSubtitulo: [''],
         bCopiarPoblacion: [true],
         bCopiarAccesos: [true],
         bCopiarPreguntas: [true],
@@ -296,7 +310,7 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   abrirDialogoDuplicarEncuesta(encuesta: any) {
-    this.visibleDialog = true;
+    this.visibleDialogDuplicar = true;
     this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formEncuesta.get('iCateId')?.setValue(this.iCateId);
     this.formEncuesta.get('iEncuId')?.setValue(encuesta?.iEncuId);
@@ -308,11 +322,11 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   cerrarDialogDuplicarEncuesta() {
-    this.visibleDialog = false;
-    this.resetForm();
+    this.visibleDialogDuplicar = false;
+    this.resetFormEncuesta();
   }
 
-  resetForm() {
+  resetFormEncuesta() {
     this.formEncuesta.reset();
   }
 
@@ -338,6 +352,62 @@ export class GestionEncuestasComponent implements OnInit {
       },
       error: error => {
         console.error('Error guardando encuesta:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  resetFormPlantilla() {
+    this.formPlantilla.reset();
+  }
+
+  abrirDialogoCrearPlantilla(encuesta: any) {
+    this.visibleDialogPlantilla = true;
+    console.log(encuesta, 'encuesta');
+    this.formPlantilla.get('iCateId')?.setValue(this.iCateId);
+    this.formPlantilla.get('iEncuId')?.setValue(encuesta?.iEncuId);
+    this.formPlantilla.get('cEncuOriginalNombre')?.setValue(encuesta?.cEncuNombre);
+    this.formPlantilla.get('bCopiarPoblacion')?.setValue(true);
+    this.formPlantilla.get('bCopiarAccesos')?.setValue(true);
+    this.formPlantilla.get('bCopiarPreguntas')?.setValue(true);
+  }
+
+  cerrarDialogCrearPlantilla() {
+    this.visibleDialogPlantilla = false;
+    this.resetFormPlantilla();
+  }
+
+  crearPlantilla() {
+    if (this.formPlantilla.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe completar los campos requeridos',
+      });
+      this.encuestasService.formMarkAsDirty(this.formPlantilla);
+      return;
+    }
+    this.encuestasService.guardarPlantillaDesdeEncuesta(this.formPlantilla.value).subscribe({
+      next: (data: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos, redirigiendo a la plantilla generada...',
+        });
+        this.cerrarDialogCrearPlantilla();
+        const iPlanId = data.data.iPlanId;
+        setTimeout(() => {
+          this.router.navigate([
+            `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${iPlanId}`,
+          ]);
+        }, 1000);
+      },
+      error: error => {
+        console.error('Error guardando plantilla:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -413,6 +483,9 @@ export class GestionEncuestasComponent implements OnInit {
         break;
       case 'duplicar':
         this.abrirDialogoDuplicarEncuesta(item);
+        break;
+      case 'plantilla':
+        this.abrirDialogoCrearPlantilla(item);
         break;
       default:
         console.warn('Acción no reconocida:', accion);
@@ -501,6 +574,13 @@ export class GestionEncuestasComponent implements OnInit {
       type: 'item',
       class: 'p-menuitem-link text-green-500',
       isVisible: () => Number(this.categoria.bEsFija) !== 1,
+    },
+    {
+      labelTooltip: 'Hacer plantilla',
+      icon: 'pi pi-arrow-up',
+      accion: 'plantilla',
+      type: 'item',
+      class: 'p-menuitem-link text-primary',
     },
   ];
 

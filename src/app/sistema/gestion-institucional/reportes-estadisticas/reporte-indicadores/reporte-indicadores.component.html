@@ -1,0 +1,131 @@
+<app-toolbar-primeng title="Reporte de Indicadores"> </app-toolbar-primeng>
+<div class="card">
+  <div class="grid">
+    @if (isAdminDremo()) {
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Institución Educativa: </p-inputGroupAddon>
+          <p-dropdown
+            [options]="instituciones()"
+            optionLabel="cNombre"
+            optionValue="iIieeId"
+            styleClass="w-full"
+            [filter]="true"
+            filterBy="cIieeNombre"
+            [showClear]="true"
+            placeholder="Seleccionar una Institución Educativa"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+    }
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Grado</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Grado"
+          optionValue="iGradoId"
+          [showClear]="true"
+          [options]="[]"
+          optionLabel="cGradoNombre"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Sección</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Sección"
+          [showClear]="true"
+          optionValue="iSeccionId"
+          [options]="[]"
+          optionLabel="cSeccionNombre"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-2">
+      <p-inputGroup>
+        <p-inputGroupAddon>Desde</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Desde"
+          [showClear]="true"
+          [options]="aniosDesde()"
+          optionLabel="label"
+          optionValue="value"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-2">
+      <p-inputGroup>
+        <p-inputGroupAddon>Hasta</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Hasta"
+          [showClear]="true"
+          [options]="aniosHasta()"
+          optionLabel="label"
+          optionValue="value"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-2">
+      <p-button
+        pRipple
+        severity="success"
+        label="Exportar"
+        icon="pi pi-fw pi-print"
+        [disabled]="true"
+      />
+    </div>
+    <app-tabs-primeng
+      class="col-12"
+      [activeIndex]="selectTab()"
+      [tabs]="tabs()"
+      [getIndex]="false"
+      (updateTab)="updateTab($event)"
+    >
+    </app-tabs-primeng>
+    @if (data().length) {
+      @for (reporte of reportes(); track reporte.key) {
+        @if (tabSeleccionado() === 'resumen-indicadores' || tabSeleccionado() === reporte.key) {
+          <div class="col-12">
+            <div class="grid relative my-3">
+              <samp class="tag" [style.backgroundColor]="reporte.color">
+                {{ reporte.titulo }}
+              </samp>
+
+              <div class="col-12 lg:col-5 mt-4">
+                <p-chart
+                  type="pie"
+                  [data]="chartData()"
+                  [options]="chartOptions()"
+                  [plugins]="piePlugin"
+                  height="300px"
+                />
+              </div>
+
+              <div class="col-12 lg:col-7">
+                <app-table-primeng
+                  [columnas]="columnasTabla()"
+                  [showCaption]="false"
+                  [data]="data()"
+                  [showPaginator]="false"
+                  [showSortIcon]="true"
+                  [actions]="[]"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      }
+    } @else {
+      <div class="col-12">
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
+      </div>
+    }
+  </div>
+</div>
+<p-toast></p-toast>

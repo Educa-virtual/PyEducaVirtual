@@ -166,6 +166,17 @@ export const administradorDremo = [
         ],
       },
       {
+        label: 'Reportes y estadísticas',
+        icon: 'pi pi-chart-bar',
+        items: [
+          {
+            label: 'Indicadores',
+            icon: 'pi pi-chart-line',
+            routerLink: ['/gestion-institucional/reporte-indicadores'],
+          },
+        ],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],

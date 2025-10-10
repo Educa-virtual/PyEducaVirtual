@@ -1,0 +1,11 @@
+<app-toolbar-primeng title="Tipos de público"></app-toolbar-primeng>
+<div class="grid">
+  <div class="col-12">
+    <app-table-primeng
+      [data]="data()"
+      [columnas]="columnasTabla()"
+      (accionBtnItem)="accionBnt($event)"
+      [actions]="accionesTabla()"
+    ></app-table-primeng>
+  </div>
+</div>

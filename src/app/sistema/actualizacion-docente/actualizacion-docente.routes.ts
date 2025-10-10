@@ -7,6 +7,8 @@ import { AulaCardCapacitacionesComponent } from './aula-virtual-capacitaciones/a
 import { ResultadosCursosComponent } from './resultados-cursos/resultados-cursos.component';
 import { CapacitacionesComponent } from './capacitaciones/capacitaciones.component';
 import { MiRepositorioComponent } from './mi-repositorio/mi-repositorio.component';
+import { AperturaCursoComponent } from './apertura-curso/apertura-curso.component';
+import { TiposPublicoComponent } from './mantenimiento/tipos-publico/tipos-publico.component';
 
 const routes: Routes = [
   {
@@ -18,7 +20,7 @@ const routes: Routes = [
     children: [
       {
         path: 'capacitaciones',
-        component: SolicitudInscripcionComponent,
+        component: AperturaCursoComponent,
         data: {
           expectedRole: [ADMINISTRADOR_DREMO],
           breadcrumb: 'Capacitaciones',
@@ -68,6 +70,24 @@ const routes: Routes = [
           expectedRole: [INSTRUCTOR],
           breadcrumb: 'Mi repositorio',
           icon: 'pi pi-folder-open',
+        },
+      },
+      {
+        path: 'solicitudes',
+        component: SolicitudInscripcionComponent,
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO],
+          breadcrumb: 'Solicitudes',
+          icon: 'pi pi-file-plus',
+        },
+      },
+      {
+        path: 'mantenimiento/tipos-publico',
+        component: TiposPublicoComponent,
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO],
+          breadcrumb: 'Tipos de público',
+          icon: 'pi pi-users',
         },
       },
     ],

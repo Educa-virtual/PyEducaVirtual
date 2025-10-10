@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   TablePrimengComponent,
   IColumn,
@@ -23,6 +23,7 @@ import { InstructoresService } from '@/app/servicios/cap/instructores.service';
 import { finalize } from 'rxjs';
 import { AsignarHorarioCapacitacionComponent } from '../asignar-horario-capacitacion/asignar-horario-capacitacion.component';
 import { DatePipe } from '@angular/common';
+import { TipoCapacitacionesService } from '@/app/servicios/cap/tipo-capacitaciones.service';
 
 interface Image {
   id: number;
@@ -45,7 +46,7 @@ interface Image {
   providers: [MessageService],
 })
 export class AperturaCursoComponent extends MostrarErrorComponent implements OnInit {
-  @Input() tipoCapacitacion: any[] = [];
+  tipoCapacitacion: any[] = [];
 
   portada = imagenesRecursos;
 
@@ -59,6 +60,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   private _TipoPublicosService = inject(TipoPublicosService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _InstructoresService = inject(InstructoresService);
+  private _TipoCapacitacionesService = inject(TipoCapacitacionesService);
 
   CAP_EXT = 'CAP-EXT';
   loadingGuardar: boolean = false;
@@ -117,6 +119,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     this.obtenerTipodePublico();
     this.obtenerCapacitaciones();
     this.obtenerInstructoresCurso();
+    this.obtenerTipoCapacitacion();
 
     //
     this.responsiveOptions = [
@@ -542,6 +545,17 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     this.showModalHorarios = false;
     this.formNuevaCapacitacion.patchValue({
       jsonHorario: JSON.stringify(this.dias),
+    });
+  }
+
+  obtenerTipoCapacitacion() {
+    this._TipoCapacitacionesService.obtenerTipoCapacitacion().subscribe(data => {
+      this.tipoCapacitacion = data;
+      this.tipoCapacitacion = [...this.tipoCapacitacion];
+      this.tipoCapacitacion.unshift({
+        iTipoCapId: 0,
+        cTipoCapNombre: 'Todos los tipos',
+      });
     });
   }
 }

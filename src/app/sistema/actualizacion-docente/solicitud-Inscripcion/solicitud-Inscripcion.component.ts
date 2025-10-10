@@ -1,17 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
-import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component';
+import { Component, inject, OnInit } from '@angular/core';
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component';
-import { AperturaCursoComponent } from '../apertura-curso/apertura-curso.component';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { PaginatorModule } from 'primeng/paginator';
 import { DetalleInscripcionComponent } from './detalle-inscripcion/detalle-inscripcion.component';
 import { DropdownChangeEvent } from 'primeng/dropdown';
-import { GeneralService } from '@/app/servicios/general.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TipoCapacitacionesService } from '@/app/servicios/cap/tipo-capacitaciones.service';
 import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 @Component({
   selector: 'app-solicitud-inscripcion',
   standalone: true,
@@ -20,47 +17,18 @@ import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.servic
   imports: [
     PrimengModule,
     ToolbarPrimengComponent,
-    TabsPrimengComponent,
     CardCapacitacionesComponent,
-    AperturaCursoComponent,
     PaginatorModule,
     DetalleInscripcionComponent,
   ],
 })
-export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
+export class SolicitudInscripcionComponent extends MostrarErrorComponent implements OnInit {
   private _ConstantesService = inject(ConstantesService);
-  private GeneralService = inject(GeneralService);
-  private _ActivatedRoute = inject(ActivatedRoute);
-  private _Router = inject(Router);
   private _TipoCapacitacionesService = inject(TipoCapacitacionesService);
   private _CapacitacionesService = inject(CapacitacionesService);
 
-  @ViewChild('gridContainer') gridContainer!: ElementRef;
-
-  activeIndex: number = 1;
-  cursoSeleccionado;
   detalleVisible = false;
   idSeleccionado!: string;
-  tabs = [
-    {
-      title: 'Apertura de Curso',
-      icon: 'pi pi-book',
-      tab: 'contenido',
-    },
-    {
-      title: 'Solicitud de Inscripción',
-      icon: 'pi pi-home',
-      tab: 'inicio',
-    },
-  ];
-
-  updateTab(tab): void {
-    this._Router.navigate([], {
-      queryParams: { tab: tab },
-      queryParamsHandling: 'merge',
-    });
-    this.activeIndex = tab;
-  }
 
   data: any[] = [];
   capacitacionFiltrado: any[] = [];
@@ -75,30 +43,8 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
     total: 2,
     rowsPerPage: [],
   };
-  onPageChange(event: any): void {
-    this.paginator.first = event.first;
-    this.paginator.rows = event.rows;
-    const start = event.first;
-    const end = event.first + event.rows;
-    this.data = this.capacitaciones?.slice(start, end);
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.gridContainer) {
-        this.calculateRows();
-        window.addEventListener('resize', () => this.calculateRows());
-      }
-    }, 0);
-  }
 
   ngOnInit() {
-    this._ActivatedRoute.queryParams.subscribe(params => {
-      if (params['tab'] !== undefined) {
-        this.activeIndex = Number(params['tab']);
-      }
-    });
-
     this.obtenerCapacitaciones();
     this.obtenerTipoCapacitacion();
   }
@@ -126,24 +72,6 @@ export class SolicitudInscripcionComponent implements OnInit, AfterViewInit {
         cTipoCapNombre: 'Todos los tipos',
       });
     });
-  }
-
-  calculateRows(): void {
-    const container = this.gridContainer.nativeElement as HTMLElement;
-    const containerWidth = container.clientWidth;
-    const containerHeight = window.innerHeight - container.getBoundingClientRect().top;
-
-    const cardWidth = 250 + 32; // ancho tarjeta + gap (ajusta según tu CSS)
-    const cardHeight = 300 + 32; // alto tarjeta + gap (ajusta también)
-
-    const columns = Math.floor(containerWidth / cardWidth);
-    const rows = Math.floor(containerHeight / cardHeight);
-
-    const itemsPerPage = columns * rows || 1; // al menos 1
-
-    this.paginator.rows = itemsPerPage;
-    this.paginator.rowsPerPage = [itemsPerPage];
-    this.onPageChange({ first: 0, rows: itemsPerPage });
   }
 
   onVerDetalle(id: any) {

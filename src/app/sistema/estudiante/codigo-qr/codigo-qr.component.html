@@ -1,0 +1,39 @@
+<div class="grid justify-content-center">
+  <p-toolbar class="col-3">
+    <div class="block">
+      <h4 class="text-primary text-white font-bold block">CODIGO QR</h4>
+    </div>
+  </p-toolbar>
+</div>
+<div class="grid justify-content-center">
+  <div class="col-3">
+    <div class="card">
+      <div class="qrcodeImage align-items-center justify-content-center">
+        <qrcode
+          [qrdata]="codigo"
+          [allowEmptyString]="true"
+          [ariaLabel]="'QR codigo de Asistencia'"
+          [cssClass]="'center'"
+          [colorDark]="'#000000ff'"
+          [colorLight]="'#ffffffff'"
+          [elementType]="'canvas'"
+          [errorCorrectionLevel]="'M'"
+          [imageSrc]="'../../../../assets/images/logo-proyecto.svg'"
+          [imageHeight]="60"
+          [margin]="4"
+          [scale]="1"
+          [title]="'Codigo de Asistencia'"
+          [width]="300"
+        ></qrcode>
+      </div>
+      <div>
+        <p-button
+          styleClass="w-full font-bold"
+          label="Descargar"
+          icon="pi pi-download"
+          pRipple
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</div>

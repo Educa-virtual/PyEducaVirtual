@@ -244,7 +244,6 @@ export class AsistenciaComponent implements OnInit {
     });
 
     this.events.filter(index => {
-      console.log('revisando 3', index);
       this.captura = index.title.split(' : ');
 
       if (this.captura.length > 1) {
@@ -734,7 +733,6 @@ export class AsistenciaComponent implements OnInit {
         link.click();
       },
       error: error => {
-        console.error('Error obteniendo encuesta:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

@@ -6,6 +6,7 @@ import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso
 import { ReporteAcademicoComponent } from './reportes-academicos/reporte-academico/reporte-academico.component';
 import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/resultados-ere.component';
 import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
+import { CodigoQrComponent } from './codigo-qr/codigo-qr.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,16 @@ const routes: Routes = [
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'Resultados ERE',
       icon: 'pi pi-chart-bar',
+    },
+  },
+  {
+    path: 'codigo-qr',
+    component: CodigoQrComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Codigo QR',
+      icon: 'pi pi-qrcode',
     },
   },
 ];

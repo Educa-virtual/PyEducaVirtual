@@ -1,0 +1,16 @@
+.qrcodeImage {
+  display: flex;
+  flex: 1;
+}
+
+.center {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+:host ::ng-deep {
+  .p-toolbar {
+    background-color: var(--primary-700);
+  }
+}

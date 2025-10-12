@@ -169,7 +169,11 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             '/' +
             this.selectedData['cCursoNombre'].replace(/[\^*@!"#$%&/()=?¡!¿':\\]/gi, '') +
             '/' +
-            this.selectedData['iCursosNivelGradId']
+            this.selectedData['iCursosNivelGradId'] +
+            '/' +
+            this.selectedData['cGradoAbreviacion'] +
+            '/' +
+            this.selectedData['cSeccionNombre']
         );
         break;
       case 'resultados':
@@ -318,8 +322,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   ngOnDestroy() {
     this.unsubscribe$.next(true);
   }
-
-  seleccionar(event: any, fileUpload: any) {
+  seleccionar(event: any) {
     const file = event.files && event.files.length > 0 ? event.files[0] : null;
     if (file) {
       this.archivos.enlace = file;
@@ -345,6 +348,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
         const resultado = respuesta.data;
+        console.log('resolver #1', resultado);
         if (resultado.estado > 0) {
           const index = this.data.findIndex(
             item =>
@@ -358,7 +362,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.data[index].cProgramacion = resultado.estado;
 
           this.documentos = formato;
-          fileUpload.clear();
+          event.clear();
 
           this.MessageService.add({
             severity: 'success',

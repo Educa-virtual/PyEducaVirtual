@@ -320,6 +320,11 @@ const estudiante = [
         url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
         target: '_blank',
       },
+      {
+        label: 'Codigo QR',
+        icon: 'pi pi-qrcode',
+        routerLink: ['/estudiante/codigo-qr'],
+      },
     ],
   },
 ];

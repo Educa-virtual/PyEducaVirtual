@@ -247,6 +247,7 @@ export class AsistenciasComponent implements OnInit {
     if (this.buscar) {
       this.buscar = false;
       const extraer = qr.split('|');
+
       if (extraer.length > 0) {
         this.visible = true;
         this.datos.cEstCodigo = extraer[1];
@@ -268,11 +269,9 @@ export class AsistenciasComponent implements OnInit {
 
         this.servicioGeneral.getRecibirDatos(enlace).subscribe({
           next: data => {
-            this.codigo = data.data[0];
-            if (!this.codigo) {
+            this.codigo = data.data[0] ? data.data[0] : [];
+            if (this.codigo.length == 0) {
               this.mensajeError('Mensaje del sistema', 'No se encontro el registro');
-              this.visible = false;
-              this.buscar = true;
               return;
             }
             this.codigo.dtAsistencia = this.marcador;

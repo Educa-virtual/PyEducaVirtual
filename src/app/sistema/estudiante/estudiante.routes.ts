@@ -6,6 +6,7 @@ import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso
 import { ReporteAcademicoComponent } from './reportes-academicos/reporte-academico/reporte-academico.component';
 import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/resultados-ere.component';
 import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
+import { MesaPartesGoreComponent } from './mesa-partes-gore/mesa-partes-gore.component';
 
 const routes: Routes = [
   {
@@ -60,6 +61,16 @@ const routes: Routes = [
     data: {
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'Resultados ERE',
+      icon: 'pi pi-chart-bar',
+    },
+  },
+  {
+    path: 'mesa-partes-gore',
+    component: MesaPartesGoreComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Mesa de Partes GORE',
       icon: 'pi pi-chart-bar',
     },
   },

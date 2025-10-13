@@ -1,10 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AsistenciaService } from '../asistencia/services/asistencia.service';
-//import { finalize } from 'rxjs/operators';
 import { PrimengModule } from '@/app/primeng.module';
-import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
-import { MenuItem, MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { AsistenciaService } from './services/asistencia.service';
+import { MessageService } from 'primeng/api';
 
 type DayCell = {
   fecha: Date | null;
@@ -16,16 +14,14 @@ type DayCell = {
 };
 
 @Component({
-  selector: 'app-attendance-calendar',
+  selector: 'app-asistencia',
   templateUrl: './asistencia.component.html',
   standalone: true,
-  imports: [PrimengModule, AulaBancoPreguntasModule],
+  imports: [PrimengModule],
   styleUrls: ['./asistencia.component.scss'],
 })
 export class AsistenciaComponent implements OnInit {
-  @Input() studentId!: number;
-  breadCrumbItems: MenuItem[];
-  breadCrumbHome: MenuItem;
+  @Input() tipo!: string; // 'estudiante' o 'apoderado'
   showDialog = false;
   selectedCell: DayCell | null = null;
   // semana empezando LUNES
@@ -104,9 +100,6 @@ export class AsistenciaComponent implements OnInit {
     },
   ];
 
-  // Si true -> si falta registro para un día, lo tratamos como 'N'
-  //treatMissingAsAbsent = false;
-
   constructor(
     private asistenciaService: AsistenciaService,
     private store: LocalStoreService,
@@ -117,8 +110,7 @@ export class AsistenciaComponent implements OnInit {
     const today = new Date();
     this.selectedMonth = today.getMonth() + 1;
     this.selectedYear = this.selectedYear = this.store.getItem('dremoYear');
-    this.breadCrumbItems = [{ label: 'Asistencia' }];
-    this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
+
     this.load();
   }
 
@@ -153,11 +145,6 @@ export class AsistenciaComponent implements OnInit {
     this.load();
   }
 
-  /*onYearChange(val: any) {
-      this.selectedYear = +val;
-      this.load();
-    }*/
-
   private formatISO(d: Date) {
     const y = d.getFullYear();
     const m = (d.getMonth() + 1).toString().padStart(2, '0');
@@ -166,11 +153,6 @@ export class AsistenciaComponent implements OnInit {
   }
 
   load() {
-    /*if (!this.studentId) {
-          this.error = 'Falta studentId en el componente';
-          return;
-        }*/
-    //this.studentId = 5;
     this.loading = true;
     this.asistenciaService
       .obtenerAsistenciaGeneralEstudiante(this.selectedYear, this.selectedMonth)
@@ -186,25 +168,8 @@ export class AsistenciaComponent implements OnInit {
             detail: err.error.message,
           });
           this.loading = false;
-          //console.log("Es "+this.loading )
         },
       });
-
-    //this.error = null;
-    /*const records = [
-          { fecha: '2025-10-01', asistio: 'X' },
-          { fecha: '2025-10-02', asistio: 'X' },
-          { fecha: '2025-10-03', asistio: 'I' },
-          { fecha: '2025-10-04', asistio: '-' },
-        ];
-        this.buildCalendar(records);*/
-    // map meses según servicio: enviamos month 1..12
-    /*this.svc.getAttendanceForMonth(this.studentId, this.selectedMonth, this.selectedYear)
-          .pipe(finalize(() => this.loading = false))
-          .subscribe({
-            next: (records) => this.buildCalendar(records),
-            error: (err) => this.error = (err?.message || 'Error cargando asistencia')
-          });*/
   }
 
   private buildCalendar(records: any[]) {

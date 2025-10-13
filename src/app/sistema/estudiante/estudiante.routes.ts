@@ -6,8 +6,9 @@ import { ReporteProgresoComponent } from './reportes-academicos/reporte-progreso
 import { ReporteAcademicoComponent } from './reportes-academicos/reporte-academico/reporte-academico.component';
 import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/resultados-ere.component';
 import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
-import { AsistenciaComponent } from './asistencia/asistencia.component';
+
 import { MesaPartesGoreComponent } from './mesa-partes-gore/mesa-partes-gore.component';
+import { AsistenciaEstudianteComponent } from './asistencia-estudiante/asistencia-estudiante.component';
 
 const routes: Routes = [
   {
@@ -37,7 +38,7 @@ const routes: Routes = [
   },
   {
     path: 'asistencia',
-    component: AsistenciaComponent,
+    component: AsistenciaEstudianteComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ESTUDIANTE],

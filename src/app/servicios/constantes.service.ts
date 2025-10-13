@@ -268,6 +268,11 @@ const estudiante = [
         routerLink: ['/estudiante/calendario-institucional'],
       },
       {
+        label: 'Asistencia',
+        icon: 'pi pi-clock',
+        routerLink: ['/estudiante/asistencia'],
+      },
+      {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [

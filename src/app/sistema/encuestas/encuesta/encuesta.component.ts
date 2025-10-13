@@ -570,7 +570,7 @@ export class EncuestaComponent implements OnInit {
         Number(item.iNivelTipoId) === Number(this.formPoblacion.value.iNivelTipoId) &&
         Number(item.iPerfilId) === Number(this.formPoblacion.value.iPerfilId) &&
         Number(item.iCursoId) === Number(this.formPoblacion.value.iCursoId) &&
-        Number(item.iTipoSectorId) === this.formPoblacion.value.iTipoSectorId &&
+        Number(item.iTipoSectorId) === Number(this.formPoblacion.value.iTipoSectorId) &&
         Number(item.iZonaId) === Number(this.formPoblacion.value.iZonaId) &&
         Number(item.iUgelId) === Number(this.formPoblacion.value.iUgelId) &&
         Number(item.iDsttId) === Number(this.formPoblacion.value.iDsttId) &&

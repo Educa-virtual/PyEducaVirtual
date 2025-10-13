@@ -535,7 +535,6 @@ export class GestionPlantillasComponent implements OnInit {
       accion: 'duplicar',
       type: 'item',
       class: 'p-menuitem-link text-green-500',
-      isVisible: () => Number(this.categoria.bEsFija) !== 1,
     },
     {
       labelTooltip: 'Hacer encuesta',

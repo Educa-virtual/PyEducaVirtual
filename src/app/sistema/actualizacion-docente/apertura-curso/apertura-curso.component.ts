@@ -456,8 +456,13 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   }
   // método para obtener el tipo de publico
   obtenerTipodePublico() {
-    this._TipoPublicosService.obtenerTipoPublico().subscribe(data => {
-      this.publicoObjetivo = data;
+    this._TipoPublicosService.obtenerTipoPublicos().subscribe({
+      next: resp => {
+        this.publicoObjetivo = resp.data;
+      },
+      error: error => {
+        this.mostrarErrores(error);
+      },
     });
   }
 

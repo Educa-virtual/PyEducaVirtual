@@ -9,6 +9,8 @@ import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.com
 import { ActivatedRoute, Router } from '@angular/router';
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { FormBuilder, Validators } from '@angular/forms';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-reporte-indicadores',
@@ -28,6 +30,8 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   private _ConstantesService = inject(ConstantesService);
   private _Router = inject(Router);
   private _ActivatedRoute = inject(ActivatedRoute);
+  private _FormBuilder = inject(FormBuilder);
+  private _LocalStoreService = inject(LocalStoreService);
 
   isAdminDremo = signal<boolean>(this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO);
   instituciones = signal<any[]>([]);
@@ -45,31 +49,37 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       title: 'Resumen',
       icon: 'pi pi-home',
       tab: 'resumen-indicadores',
+      opcion: '',
     },
     {
       title: 'Matrículados',
       icon: 'pi pi-list',
       tab: 'resumen-matriculados',
+      opcion: 'indicadorMatriculas',
     },
     {
       title: 'Deserciones',
       icon: 'pi pi-user-minus',
       tab: 'resumen-deserciones',
+      opcion: 'indicadorDeserciones',
     },
     {
       title: 'Asistencia',
       icon: 'pi pi-calendar',
       tab: 'resumen-asistencia',
+      opcion: '',
     },
     {
       title: 'Desempeño',
       icon: 'pi pi-chart-line',
       tab: 'resumen-desempenio',
+      opcion: 'indicadorDesempeno',
     },
     {
       title: 'Bajo Rendimiento',
       icon: 'pi pi-exclamation-triangle',
       tab: 'resumen-bajo-rendimiento',
+      opcion: '',
     },
   ]);
 
@@ -101,6 +111,12 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
     },
   ]);
 
+  perfil = this._LocalStoreService.getItem('dremoPerfil');
+  formIndicadores = this._FormBuilder.nonNullable.group({
+    iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
+    iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
+  });
+
   ngOnInit(): void {
     const anioActual = new Date().getFullYear();
     const listaAnios = Array.from({ length: anioActual - 2020 + 1 }, (_, i) => {
@@ -125,7 +141,186 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       }
     });
 
-    this.loadIndicadoresDemo();
+    this.obtenerResultadosxIndicador();
+  }
+
+  obtenerOpcion() {
+    const tab = this.tabs().find(t => t.tab === this.tabSeleccionado());
+    return tab ? tab.opcion : '';
+  }
+  obtenerResultadosxIndicador() {
+    const opcion = this.obtenerOpcion();
+    if (opcion) {
+      this._GeneralService
+        .searchCalendario({
+          json: JSON.stringify(this.formIndicadores.value),
+          _opcion: opcion,
+        })
+        .subscribe({
+          next: (data: any) => {
+            this.obtenerColumnasTabla();
+            this.data.set(data?.data || []);
+            this.generarGraficoDinamico();
+          },
+          error: error => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Mensaje',
+              detail: 'Error. No se proceso petición ' + error,
+            });
+          },
+          complete: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Mensaje',
+              detail: 'Proceso exitoso',
+            });
+          },
+        });
+    }
+  }
+
+  obtenerColumnasTabla() {
+    switch (this.obtenerOpcion()) {
+      case 'indicadorMatriculas':
+      case 'indicadorDeserciones':
+        if (this.isAdminDremo()) {
+          this.columnasTabla.set([
+            {
+              type: 'item',
+              width: '0.5rem',
+              field: 'index',
+              header: 'Nro',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '10rem',
+              field: 'cIieeCodigoNombre',
+              header: 'Institución Educativa',
+              text_header: 'left',
+              text: 'left',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Abandono',
+              header: 'Abandono',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Definitivo',
+              header: 'Definitivo',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'En proceso',
+              header: 'En proceso',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Porcentaje',
+              header: 'Porcentaje',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Total',
+              header: 'Total',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Traslado',
+              header: 'Traslado',
+              text_header: 'center',
+              text: 'center',
+            },
+          ]);
+        } else {
+          this.columnasTabla.set([
+            {
+              type: 'item',
+              width: '0.5rem',
+              field: 'index',
+              header: 'Nro',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'cGradoAbrevNombre',
+              header: 'Grado',
+              text_header: 'left',
+              text: 'left',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Abandono',
+              header: 'Abandono',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Definitivo',
+              header: 'Definitivo',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'En proceso',
+              header: 'En proceso',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Porcentaje',
+              header: 'Porcentaje',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Total',
+              header: 'Total',
+              text_header: 'center',
+              text: 'center',
+            },
+            {
+              type: 'text',
+              width: '3rem',
+              field: 'Traslado',
+              header: 'Traslado',
+              text_header: 'center',
+              text: 'center',
+            },
+          ]);
+        }
+        break;
+    }
   }
 
   updateTab(event): void {
@@ -136,6 +331,9 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       queryParams: { tab: this.tabSeleccionado() },
       queryParamsHandling: 'merge',
     });
+    this.data.set([]);
+    this.columnasTabla.set([]);
+    this.obtenerResultadosxIndicador();
   }
 
   getIntitucionEducativa() {
@@ -165,69 +363,50 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       });
   }
 
-  loadIndicadoresDemo() {
-    const indicadores = [
-      { descripcion: 'Aprobados', cantidad: 120 },
-      { descripcion: 'Desaprobados', cantidad: 45 },
-      { descripcion: 'Retirados', cantidad: 10 },
-      { descripcion: 'Sin calificar', cantidad: 25 },
+  generarGraficoDinamico() {
+    const data = this.data();
+    if (!data || data.length === 0) return;
+
+    const keys = Object.keys(data[0]).filter(
+      key => key !== 'cIieeCodigoNombre' && key !== 'cGradoAbrevNombre'
+    );
+
+    const sumas = keys.map(k => {
+      const total = data.reduce((acc, obj) => acc + Number(obj[k] || 0), 0);
+      return total;
+    });
+
+    const colores = [
+      '#42A5F5',
+      '#66BB6A',
+      '#FFA726',
+      '#AB47BC',
+      '#FF7043',
+      '#26C6DA',
+      '#7E57C2',
+      '#EC407A',
     ];
 
-    this.data.set(indicadores);
-
     this.chartData.set({
-      labels: indicadores.map(i => i.descripcion),
+      labels: keys,
       datasets: [
         {
-          data: indicadores.map(i => i.cantidad),
-          backgroundColor: ['#4caf50', '#f44336', '#ff9800', '#9e9e9e'],
-          hoverBackgroundColor: ['#66bb6a', '#e57373', '#ffb74d', '#bdbdbd'],
+          data: sumas,
+          backgroundColor: colores.slice(0, keys.length),
+          hoverBackgroundColor: colores.slice(0, keys.length),
         },
       ],
     });
 
+    // 5️⃣ Opciones
     this.chartOptions.set({
       plugins: {
         legend: {
           position: 'bottom',
-          labels: {
-            color: '#495057',
-          },
+          labels: { color: '#495057' },
         },
       },
     });
-
-    this.columnasTabla.set([
-      {
-        type: 'text',
-        width: '5rem',
-        field: 'descripcion',
-        header: 'Descripción',
-        text_header: 'left',
-        text: 'left',
-      },
-      {
-        type: 'text',
-        width: '2rem',
-        field: 'cantidad',
-        header: 'Cantidad',
-        text_header: 'center',
-        text: 'center',
-      },
-      {
-        type: 'text',
-        width: '2rem',
-        field: 'porcentaje',
-        header: 'Porcentaje',
-        text_header: 'center',
-        text: 'center',
-        bodyTemplate: (rowData: any) => {
-          const total = indicadores.reduce((sum, i) => sum + i.cantidad, 0);
-          const porcentaje = ((rowData.cantidad / total) * 100).toFixed(1);
-          return `${porcentaje}%`;
-        },
-      },
-    ]);
   }
 
   piePlugin = [

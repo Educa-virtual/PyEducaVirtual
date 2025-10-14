@@ -1,6 +1,6 @@
 <app-toolbar-primeng title="Reporte de Indicadores"> </app-toolbar-primeng>
 <div class="card">
-  <div class="grid">
+  <form class="grid">
     @if (isAdminDremo()) {
       <div class="col-12">
         <p-inputGroup>
@@ -97,7 +97,7 @@
                 {{ reporte.titulo }}
               </samp>
 
-              <div class="col-12 lg:col-5 mt-4">
+              <div class="col-12 lg:col-4 mt-4">
                 <p-chart
                   type="pie"
                   [data]="chartData()"
@@ -107,12 +107,12 @@
                 />
               </div>
 
-              <div class="col-12 lg:col-7">
+              <div class="col-12 lg:col-8">
                 <app-table-primeng
                   [columnas]="columnasTabla()"
                   [showCaption]="false"
                   [data]="data()"
-                  [showPaginator]="false"
+                  [showPaginator]="true"
                   [showSortIcon]="true"
                   [actions]="[]"
                 />
@@ -126,6 +126,6 @@
         <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
       </div>
     }
-  </div>
+  </form>
 </div>
 <p-toast></p-toast>

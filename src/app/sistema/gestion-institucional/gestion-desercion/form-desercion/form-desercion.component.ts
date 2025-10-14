@@ -57,7 +57,6 @@ export class FormDesercionComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes, 'cambios en form desercion');
     this.matricula = {};
     this.desercion = {};
     // if(this.desercion.length>0){this.bValido = true}else{this.bValido = false}
@@ -167,9 +166,13 @@ export class FormDesercionComponent implements OnChanges {
 
   validarDocumento(): void {
     let documento;
+    const nombre = this.matricula._cPersNomape?.trim() || this.matricula.estudiante?.trim() || '';
+
     if (this.desercion.iDesercionId > 0) {
       this.seccion = `(Grado: ${this.grado} | Sección: ${this.matricula.cSeccionNombre})`;
-      this.estudiante = `${this.matricula.cPersDocumento} : ${this.matricula.estudiante}`;
+
+      this.estudiante = `${this.matricula.cPersDocumento} :${nombre}`;
+
       this.formDesercion.get('iMatrId')?.setValue(this.matricula.iMatrId);
       this.formDesercion.get('iDesercionId')?.setValue(this.matricula.iDesercionId);
       this.bUpdate = true;
@@ -177,7 +180,8 @@ export class FormDesercionComponent implements OnChanges {
     }
     if (this.matricula.cPersDocumento.length > 0) {
       this.bValido = true;
-      this.estudiante = `${this.matricula.cPersDocumento} :${this.matricula.estudiante}`;
+      this.estudiante = `${this.matricula.cPersDocumento} :${nombre}`;
+
       this.seccion = `(Grado: ${this.grado} | Sección: ${this.matricula.cSeccionNombre})`;
       this.formDesercion.get('iMatrId')?.setValue(this.matricula.iMatrId);
       this.bUpdate = false;

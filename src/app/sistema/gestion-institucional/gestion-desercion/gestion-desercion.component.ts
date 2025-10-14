@@ -198,7 +198,7 @@ export class GestionDesercionComponent implements OnInit {
         this.headerS = 'Formulario para agregar nueva deserciones (' + this.grado + ')';
         this.showModal = true;
         this.desercion = {};
-        this.deserciones = [];
+        // this.deserciones = [];
         this.selectTab(0);
         this.getDesercion();
 
@@ -212,7 +212,7 @@ export class GestionDesercionComponent implements OnInit {
         this.matricula = item;
         this.deserciones = [];
         this.selectTab(1);
-        // this.getDesercionesByMatricula(item.iMatrId);
+        this.getDesercionesByMatriculaActivas(item.iMatrId);
         break;
 
       case 'actualizar':
@@ -231,7 +231,7 @@ export class GestionDesercionComponent implements OnInit {
 
       case 'historial':
         this.matricula = {};
-        this.deserciones = [];
+        // this.deserciones = [];
 
         this.update = true;
         this.headerS = 'Formulario de historial de deserción.';
@@ -390,6 +390,12 @@ export class GestionDesercionComponent implements OnInit {
     this.deserciones = JSON.parse(registro[0].deserciones ?? []);
   }
 
+  getDesercionesByMatriculaActivas(iMatrId: number) {
+    const registro = this.matriculas_activas.filter(
+      (desercion: any) => desercion.iMatrId === iMatrId
+    );
+    this.deserciones = JSON.parse(registro[0].deserciones ?? []);
+  }
   // Cambiar de pestaña desde otro componente o botón
   selectTab(index: number) {
     this.activeIndex = index;

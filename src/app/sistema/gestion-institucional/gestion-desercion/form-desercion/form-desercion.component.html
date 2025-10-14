@@ -1,6 +1,6 @@
 <form [formGroup]="formDesercion">
   <div class="grid p-fluid mt-2">
-    <div class="field col-12 md:col-6" *ngIf="this.estudiante.length === 0">
+    <!-- <div class="field col-12 md:col-6" *ngIf="this.estudiante.length === 0">
       <span class="p-float-label">
         <input
           pInputText
@@ -18,7 +18,7 @@
         icon="pi pi-search"
         styleClass="p-button-primary"
       />
-    </div>
+    </div> -->
 
     <div class="col-12" *ngIf="this.estudiante.length > 0">
       <span class="text-lg text-primary font-bold">
@@ -28,7 +28,7 @@
         <p align="center">{{ this.seccion }}</p>
       </span>
 
-      <input pInputText type="text" formControlName="iMatrId" class="p-inputtext-sm" />
+      <!-- <input pInputText type="hidden" formControlName="iMatrId" class="p-inputtext-sm" /> -->
     </div>
 
     <div class="field col-12 md:col-12">

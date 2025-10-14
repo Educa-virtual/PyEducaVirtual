@@ -9,6 +9,9 @@ import { PrimengModule } from '@/app/primeng.module';
 import { GeneralService } from '@/app/servicios/general.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { environment } from '@/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-informacion',
@@ -25,22 +28,42 @@ export class InformacionComponent implements OnInit {
   iIieeId: number;
   registro: any;
   logo: any;
+  anioEscolar: string;
+
+  //Para importar imagen
+  typesFiles = {
+    file: true,
+    url: false,
+    youtube: false,
+    repository: false,
+    image: false,
+  };
+  filesUrl = [];
+  ruta_imagen: string;
 
   private _confirmService = inject(ConfirmationModalService);
+  private backendApi = environment.backendApi;
+  private http = inject(HttpClient);
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
     public query: GeneralService,
     private store: LocalStoreService
-  ) {}
+  ) {
+    this.anioEscolar = this.store.getItem('dremoYear');
+  }
 
   ngOnInit(): void {
     // throw new Error('Method not implemented.')
     this.perfil = this.store.getItem('dremoPerfil');
-    console.log(this.perfil);
+
     //const iNivelTipoId = this.perfil.iNivelTipoId
     this.logo = this.perfil.cIieeLogo || 'assets/images/logo-proyecto.svg'; // cambia la imagen si esta vacio
     this.iIieeId = this.perfil.iIieeId;
+    const codigoModular = this.perfil.cIieeCodigoModular;
+    const cYAcadNombre = this.anioEscolar;
+
+    this.ruta_imagen = String(cYAcadNombre + '/' + codigoModular + '/reglamento');
 
     try {
       this.form = this.fb.group({
@@ -48,12 +71,13 @@ export class InformacionComponent implements OnInit {
         cIieeRUC: [{ value: this.perfil.cIieeRUC || '', disabled: true }],
         cIieeRslCreacion: [''],
         cIieeDireccion: [''],
+        cIieeUrlReglamentoInterno: [''],
+        reglamentoInterno: [''],
       });
     } catch (error) {
       //this.router.navigate(['/gestion-institucional/configGradoSeccion'])
     }
 
-    console.log(this.perfil);
     this.getInstitucion();
   }
 
@@ -93,6 +117,16 @@ export class InformacionComponent implements OnInit {
           this.form.controls['cIieeRUC'].setValue(this.registro[0].cIieeRUC);
           this.form.controls['cIieeRslCreacion'].setValue(this.registro[0].cIieeRslCreacion);
           this.form.controls['cIieeDireccion'].setValue(this.registro[0].cIieeDireccion);
+          this.form.controls['cIieeUrlReglamentoInterno'].setValue(
+            this.registro[0].cIieeUrlReglamentoInterno
+          ),
+            (this.filesUrl = []);
+          if ((this.registro[0].cIieeUrlReglamentoInterno ?? '').length > 0) {
+            this.filesUrl.push({
+              name: 'Reglamento interno cargado',
+              ruta: this.registro[0].cIieeUrlReglamentoInterno,
+            });
+          }
         },
       });
   }
@@ -107,6 +141,7 @@ export class InformacionComponent implements OnInit {
             json: JSON.stringify({
               cIieeRslCreacion: this.form.value.cIieeRslCreacion,
               cIieeDireccion: this.form.value.cIieeDireccion,
+              cIieeUrlReglamentoInterno: this.form.value.cIieeUrlReglamentoInterno,
             }),
             campo: 'iIieeId',
             condicion: this.iIieeId,
@@ -158,5 +193,55 @@ export class InformacionComponent implements OnInit {
         });
       },
     });
+  }
+
+  async onUploadChange(evt: any, tipo: any) {
+    const file = evt.target.files[0];
+    if (file) {
+      const dataFile = await this.objectToFormData({
+        file: file,
+        nameFile: this.ruta_imagen, //ruta de imagen
+      });
+      this.http
+        .post(`${this.backendApi}/general/subir-archivo?` + 'skipSuccessMessage=true', dataFile)
+        .pipe(
+          map((event: any) => {
+            if (event.validated) {
+              switch (tipo) {
+                case 'reglamento':
+                  this.filesUrl = [];
+                  this.filesUrl.push({
+                    name: file.name,
+                    ruta: event.data,
+                  });
+                  this.form.get('cIieeUrlReglamentoInterno')?.setValue(this.filesUrl[0].ruta);
+                  //this.guardarItinerario();
+                  break;
+              }
+            }
+          }),
+          catchError((error: any) => {
+            return throwError(error.error.message);
+          })
+        )
+        .toPromise();
+    }
+  }
+
+  objectToFormData(obj: any) {
+    const formData = new FormData();
+    Object.keys(obj).forEach(key => {
+      if (obj[key] !== '') {
+        formData.append(key, obj[key]);
+      }
+    });
+
+    return formData;
+  }
+
+  openLink(item) {
+    if (!item) return;
+    const ruta = environment.backend + '/' + item;
+    window.open(ruta, '_blank');
   }
 }

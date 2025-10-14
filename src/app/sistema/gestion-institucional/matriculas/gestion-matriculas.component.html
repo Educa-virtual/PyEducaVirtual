@@ -109,3 +109,70 @@
     </app-matricula-apoderado>
   </p-dialog>
 </p-panel>
+
+<p-dialog
+  header="{{ caption }}"
+  [(visible)]="visible_desercion"
+  [style]="{ width: '90rem' }"
+  [modal]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  [closable]="true"
+  [draggable]="true"
+  appendTo="body"
+>
+  <p-splitter [panelSizes]="[30, 70]" [style]="{ height: '90%' }" styleClass="mb-5">
+    <!--Bloque para buscador-->
+    <ng-template pTemplate>
+      <p-fieldset legend="Registrar deserción" [toggleable]="true">
+        <app-form-desercion
+          (accionBtnItem)="accionBtnItemTable($event)"
+          [titulo]="caption"
+          [matricula]="matricula"
+          [grado]="grado"
+          [matriculas_filtradas]="matriculas"
+          [tipo_deserciones]="tipo_desercion"
+          [bValido]="update"
+          [desercion]="desercion"
+        />
+      </p-fieldset>
+    </ng-template>
+    <ng-template pTemplate>
+      <div [style]="{ width: '100%' }">
+        <div class="card">
+          <div class="field col-12">
+            <p-tabView [(activeIndex)]="activeIndex">
+              <p-tabPanel>
+                <ng-template pTemplate="header">
+                  <div class="flex align-items-center">
+                    <p-avatar icon="pi pi-address-book" shape="circle" />
+                    <span class="font-bold white-space-nowrap m-0"> Historial de matrícula </span>
+                  </div>
+                </ng-template>
+
+                <div class="flex align-items-center">
+                  <p-avatar icon="pi pi-user" shape="circle" />
+                  <span class="font-bold white-space-nowrap m-0">
+                    Historial de deserciones - {{ matricula._cPersNomape }}
+                  </span>
+                </div>
+                <p-message
+                  severity="info"
+                  text="No cuenta con historial de deserciones."
+                  *ngIf="!deserciones || deserciones.length === 0"
+                ></p-message>
+                <br />
+                <div *ngIf="deserciones && deserciones.length > 0">
+                  <app-historial-desercion
+                    [deserciones]="deserciones"
+                    (accionBtnItem)="accionBtnItemTable($event)"
+                  />
+                </div>
+              </p-tabPanel>
+            </p-tabView>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-splitter>
+</p-dialog>

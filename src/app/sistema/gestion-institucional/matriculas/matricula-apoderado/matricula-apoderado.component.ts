@@ -464,7 +464,7 @@ export class MatriculaApoderadoComponent implements OnChanges {
 
     {
       labelTooltip: 'Deshabilitar apoderado',
-      icon: 'pi pi-trash',
+      icon: 'pi pi-ban',
       accion: 'Deshabilitar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',

@@ -285,7 +285,7 @@
             }
             @if (col.type === 'date') {
               <div [style.text-align]="col.text">
-                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+                {{ rowData[col.field] | date: 'dd/MM/yyyy' }}
               </div>
             }
             @if (col.type === 'time') {
@@ -369,7 +369,7 @@
             }
             @if (col.type === 'dropdown-actions') {
               <div [style.text-align]="col.text">
-                <p-toast />
+                <!-- <p-toast /> -->
                 <p-menu #menu [popup]="true" appendTo="body" class="z-0">
                   <ng-template pTemplate="start">
                     <div class="p-menu-list" class="z-0">

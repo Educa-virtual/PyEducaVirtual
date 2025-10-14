@@ -1,0 +1,511 @@
+.attendance-calendar {
+  max-width: 760px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  padding: 0 0.5rem;
+}
+
+.controls {
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.navigation-controls {
+  flex: 1;
+  min-width: 200px;
+}
+
+.refresh-button {
+  flex-shrink: 0;
+}
+
+.controls .spacer {
+  flex: 1;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 600;
+  padding: 6px 0;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.daycell {
+  min-height: 72px;
+  border-radius: 8px;
+  padding: 6px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.day-number {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mark {
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: right;
+  margin-top: 6px;
+}
+
+.status-empty {
+  background: #ffffff;
+  opacity: 0.9;
+}
+
+/* leyenda */
+.legend {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.legend-box {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.legend-box.status-a {
+  background: #c6f0d0;
+}
+.legend-box.status-t {
+  background: #f0dfa8;
+}
+.legend-box.status-n {
+  background: #f0b8b8;
+}
+.legend-box.status-empty {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.legend-item {
+  min-width: fit-content;
+}
+
+.legend-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.error {
+  color: #a94442;
+  margin-bottom: 8px;
+}
+.loading {
+  text-align: center;
+  padding: 12px;
+}
+
+.container {
+  display: grid !important;
+  gap: 1rem;
+
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+}
+
+::ng-deep .p-panel .p-panel-header {
+  background: var(--bg-header-modal) !important;
+  color: white !important;
+}
+
+::ng-deep .text-primary {
+  color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+  gap: 0px !important;
+}
+
+/*
+    * * Modifica los siguientes elementos:
+    * * checkbox
+    * * vendana modal
+*/
+:host ::ng-deep {
+  .p-toolbar {
+    background-color: var(--primary-700);
+  }
+  .p-menuitem-content {
+    &:hover {
+      background-color: var(--primary-400);
+    }
+  }
+
+  .pink-checkbox.p-checkbox {
+    .p-checkbox-box.p-highlight {
+      background: var(--pink-600);
+      border-color: var(--pink-600);
+    }
+  }
+  .cyan-checkbox.p-checkbox {
+    .p-checkbox-box.p-highlight {
+      background: var(--cyan-600);
+      border-color: var(--cyan-600);
+    }
+  }
+  .green-checkbox.p-checkbox {
+    .p-checkbox-box.p-highlight {
+      background: var(--green-600);
+      border-color: var(--green-600);
+    }
+  }
+  .boton-primary.p-button {
+    background-color: var(--primary-600);
+    border: 0px;
+  }
+  .bt-primary button {
+    background-color: var(--primary-600);
+    border: 0px;
+  }
+  // estilo de para botones en grupo
+  .boton-green .p-button {
+    background-color: var(--green-600);
+    border: 0px;
+  }
+  // estilo de para botones simples
+  .bt-green button {
+    background-color: var(--green-600);
+    border: 0px;
+  }
+  .boton-yellow.p-button {
+    background-color: var(--yellow-600);
+    border: 0px;
+  }
+  .bt-yellow button {
+    background-color: var(--yellow-600);
+    border: 0px;
+  }
+  .boton-red.p-button {
+    background-color: var(--red-600);
+    border: 0px;
+  }
+  .bt-red button {
+    background-color: var(--red-600);
+    border: 0px;
+  }
+  .boton-orange.p-button {
+    background-color: var(--orange-600);
+    border: 0px;
+  }
+  .bt-orange button {
+    background-color: var(--orange-600);
+    border: 0px;
+  }
+  .boton-cyan.p-button {
+    background-color: var(--cyan-600);
+    border: 0px;
+  }
+  .bt-cyan button {
+    background-color: var(--cyan-600);
+    border: 0px;
+  }
+  .agregar.p-button {
+    width: 100%;
+    height: 20px;
+    font-size: 10px;
+    text-align: center;
+  }
+  .boton-width.p-button {
+    width: 100%;
+  }
+  .asistenciaModal .p-dialog {
+    .p-dialog-header {
+      background-color: var(--primary-700);
+      color: white;
+    }
+  }
+}
+
+.grupo {
+  height: 30px;
+}
+.primary-boton {
+  background-color: var(--primary-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.green-boton {
+  background-color: var(--green-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.yellow-boton {
+  background-color: var(--yellow-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.orange-boton {
+  background-color: var(--orange-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.red-boton {
+  background-color: var(--red-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.cyan-boton {
+  background-color: var(--cyan-600);
+  color: white;
+  font-weight: 900;
+  border: 0px;
+}
+.primary-50-boton {
+  background-color: var(--primary-50);
+  color: var(--primary-400);
+  font-weight: 700;
+  padding: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.green-50-boton {
+  background-color: var(--green-50);
+  color: var(--green-400);
+  font-weight: 700;
+  padding: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.yellow-50-boton {
+  background-color: var(--yellow-50);
+  color: var(--yellow-400);
+  font-weight: 700;
+  padding: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.orange-50-boton {
+  background-color: var(--orange-50);
+  color: var(--orange-400);
+  font-weight: 700;
+  padding: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.red-50-boton {
+  background-color: var(--red-50);
+  color: var(--red-400);
+  font-weight: 700;
+  padding: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.cyan-50-boton {
+  background-color: var(--cyan-50);
+  color: var(--cyan-400);
+  font-weight: 700;
+  padding: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.weekend-day {
+  background-color: red !important;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .attendance-calendar {
+    padding: 0 0.25rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    .navigation-controls {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .refresh-button {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+
+  .month-dropdown {
+    min-width: 120px;
+  }
+
+  .daycell {
+    min-height: 50px;
+    padding: 4px;
+
+    .day-number {
+      font-size: 0.8rem;
+    }
+
+    .mark {
+      font-size: 1rem;
+      margin-top: 2px;
+    }
+  }
+
+  .weekday {
+    padding: 4px 0;
+    font-size: 0.85rem;
+  }
+
+  .legend-item {
+    margin-bottom: 0.25rem;
+
+    .legend-text {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+    }
+  }
+
+  .leyenda-summary {
+    column-gap: 1rem !important;
+    row-gap: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .attendance-calendar {
+    padding: 0 0.125rem;
+  }
+
+  .controls {
+    .navigation-controls {
+      .p-button {
+        padding: 0.25rem 0.5rem;
+      }
+    }
+  }
+
+  .month-dropdown {
+    min-width: 100px;
+
+    ::ng-deep .p-dropdown {
+      font-size: 0.9rem;
+    }
+  }
+
+  .daycell {
+    min-height: 45px;
+    padding: 2px;
+
+    .day-number {
+      font-size: 0.75rem;
+    }
+
+    .mark {
+      font-size: 0.9rem;
+      margin-top: 1px;
+    }
+
+    &:hover {
+      transform: none; // Disable hover effects on very small screens
+    }
+  }
+
+  .weekday {
+    padding: 3px 0;
+    font-size: 0.75rem;
+  }
+
+  .weeks {
+    gap: 4px;
+  }
+
+  .week {
+    gap: 4px;
+  }
+
+  .weekdays {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .legend-item {
+    .grupo {
+      height: 25px;
+    }
+
+    .legend-text {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+    }
+  }
+}
+
+/* Modal responsive styles */
+@media (max-width: 768px) {
+  ::ng-deep .p-dialog {
+    margin: 0.5rem !important;
+    width: calc(100vw - 1rem) !important;
+    max-width: none !important;
+
+    .p-dialog-content {
+      padding: 1rem 0.75rem !important;
+    }
+
+    .p-dialog-header {
+      padding: 0.75rem !important;
+
+      .p-dialog-title {
+        font-size: 0.9rem !important;
+      }
+    }
+  }
+
+  ::ng-deep .p-datatable {
+    .p-datatable-wrapper {
+      overflow-x: auto;
+    }
+
+    .p-datatable-table {
+      min-width: 400px;
+    }
+
+    th,
+    td {
+      padding: 0.5rem 0.25rem !important;
+      font-size: 0.85rem !important;
+    }
+  }
+}

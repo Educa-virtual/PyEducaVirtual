@@ -23,12 +23,19 @@
       <div class="col-6">
         <p-inputGroup>
           <p-inputGroupAddon> Fecha </p-inputGroupAddon>
-          <input formControlName="dtInicio" pInputText type="date" />
+          <p-calendar
+            appendTo="body"
+            inputId="calendar-24h"
+            formControlName="dtInicio"
+            [showTime]="true"
+            hourFormat="24"
+          />
+          <!-- <input formControlName="dtInicio" pInputText /> -->
         </p-inputGroup>
       </div>
-      <div class="col-3">
+      <div class="col-6">
         <p-inputGroup>
-          <p-inputGroupAddon> Horas </p-inputGroupAddon>
+          <p-inputGroupAddon>Cantidad de Horas </p-inputGroupAddon>
           <input formControlName="nDetCargaNoLectHoras" pInputText type="number" />
         </p-inputGroup>
       </div>

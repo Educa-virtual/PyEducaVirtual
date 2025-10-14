@@ -556,8 +556,8 @@ export class ReporteAsistenciasComponent implements OnInit {
                 iTipoAsiId: 7,
                 cTipoAsiLetra: '-',
                 dtAsistencia: '',
-                textColor: 'text-white',
-                bgColor: 'surface-500',
+                textColor: '',
+                bgColor: '',
               };
               list.asistencia.push(nuevo);
             }

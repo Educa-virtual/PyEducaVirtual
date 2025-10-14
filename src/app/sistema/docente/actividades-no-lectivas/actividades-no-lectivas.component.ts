@@ -137,7 +137,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
       text: 'center',
     },
     {
-      type: 'date',
+      type: 'date-time',
       width: '2rem',
       field: 'dtInicio',
       header: 'Fecha de Registro',
@@ -338,10 +338,24 @@ export class ActividadesNoLectivasComponent implements OnInit {
     };
     this.getInformation(params, params.ruta + '-' + params.prefix);
   }
+  formatearFecha(fecha: Date) {
+    const obtenerFecha =
+      fecha.getFullYear() +
+      '-' +
+      (fecha.getMonth() + 1).toString().padStart(2, '0') +
+      '-' +
+      fecha.getDate().toString().padStart(2, '0');
+    const obtenerHora =
+      fecha.getHours().toString().padStart(2, '0') +
+      ':' +
+      fecha.getMinutes().toString().padStart(2, '0') +
+      ':00';
+    return obtenerFecha + 'T' + obtenerHora;
+  }
   GuardarActualizarDetalleCargaNoLectivas(item) {
     if (Number(item['nDetCargaNoLectHoras']) > 0) {
       const iYearId = this._LocalStoreService.getItem('dremoYear');
-      item.dtInicio = item.dtInicio ? new Date(item.dtInicio).toISOString() : null;
+      item.dtInicio = item.dtInicio ? this.formatearFecha(item.dtInicio) : null;
       (item.iDocenteId = this.iDocenteId ? this.iDocenteId : this._ConstantesService.iDocenteId),
         (item.valorBusqueda = iYearId);
       const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update';

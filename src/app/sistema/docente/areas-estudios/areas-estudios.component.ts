@@ -135,11 +135,10 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         this.archivos.iYAcadId = this.iYAcadId;
         this.archivos.iSilaboId = this.selectedData['iSilaboId'];
         this.archivos.iPersId = this.iPersId;
-        const formato =
-          typeof this.selectedData['cProgramacion'] === 'string'
-            ? JSON.parse(this.selectedData['cProgramacion'])
-            : this.selectedData['cProgramacion'];
-        this.documentos = formato;
+        const formato = this.selectedData['cProgramacion']
+          ? JSON.parse(this.selectedData['cProgramacion'])
+          : [];
+        this.documentos = formato[0];
         break;
       case 'sesion-aprendizaje':
         this.router.navigateByUrl('docente/sesion-aprendizaje');
@@ -401,9 +400,10 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
         const datos = respuesta.data[0];
-        this.reglamentoInterno = JSON.parse(datos.reglamento) || null;
-        this.itinerarioInterno = JSON.parse(datos.itinerario) || null;
-        this.formato = JSON.parse(datos.portafolio) || null;
+        const itinerarios = datos.itinerario ? JSON.parse(datos.itinerario) : [];
+        this.itinerarioInterno = itinerarios[0];
+        this.formato = datos.portafolio ? JSON.parse(datos.portafolio) : [];
+        this.reglamentoInterno = datos.reglamento ? JSON.parse(datos.reglamento) : null;
       },
       error: err => {
         this.MessageService.add({
@@ -416,6 +416,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   descargarArchivo(archivo: any) {
+    console.log('ver #1', archivo);
     const params = {
       petition: 'post',
       group: 'acad',
@@ -506,7 +507,15 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       };
 
       this._generalService.getRecibirDatos(params).subscribe({
-        next: () => {
+        next: response => {
+          this.data.forEach(lista => {
+            if (lista.idDocCursoId == this.selectedData['idDocCursoId']) {
+              lista.iCuadernoId = lista.iCuadernoId
+                ? lista.iCuadernoId
+                : response.data[0].resultado;
+            }
+          });
+
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito de Registro',
@@ -548,7 +557,15 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       };
 
       this._generalService.getRecibirDatos(params).subscribe({
-        next: () => {
+        next: response => {
+          this.data.forEach(lista => {
+            if (lista.idDocCursoId == this.selectedData['idDocCursoId']) {
+              lista.iCuadernoId = lista.iCuadernoId
+                ? lista.iCuadernoId
+                : response.data[0].resultado;
+            }
+          });
+
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito de Registro',
@@ -590,7 +607,15 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       };
 
       this._generalService.getRecibirDatos(params).subscribe({
-        next: () => {
+        next: response => {
+          this.data.forEach(lista => {
+            if (lista.idDocCursoId == this.selectedData['idDocCursoId']) {
+              lista.iCuadernoId = lista.iCuadernoId
+                ? lista.iCuadernoId
+                : response.data[0].resultado;
+            }
+          });
+
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito de Registro',
@@ -618,7 +643,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     try {
       const datos = await this.subirPortafolio(event, 2);
       const direccion = datos['data'];
-      this.itinerarioInterno = [{ name: event.files[0].name, ruta: direccion }];
+      const itinerario = [{ name: event.files[0].name, ruta: direccion }];
 
       const params = {
         petition: 'post',
@@ -628,14 +653,24 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         data: {
           iDocenteId: this._constantesService.iDocenteId,
           iYAcadId: this.iYAcadId,
-          cPortafolioItinerario: JSON.stringify(this.itinerarioInterno),
+          cPortafolioItinerario: JSON.stringify(itinerario),
           iSedeId: this._constantesService.iSedeId,
           iSilaboId: this.selectedData['iSilaboId'],
+          iPortafolioId: this.selectedData['iPortafolioId'],
         },
       };
 
       this._generalService.getRecibirDatos(params).subscribe({
-        next: () => {
+        next: response => {
+          this.data.forEach(lista => {
+            if (lista.idDocCursoId == this.selectedData['idDocCursoId']) {
+              lista.iPortafolioId = lista.iPortafolioId
+                ? lista.iPortafolioId
+                : response.data[0].resultado;
+            }
+          });
+
+          this.itinerarioInterno = itinerario[0];
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito de Registro',

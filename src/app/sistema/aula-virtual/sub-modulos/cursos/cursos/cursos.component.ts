@@ -54,6 +54,8 @@ export class CursosComponent implements OnDestroy, OnInit {
   }
 
   public onFilter(dv: DataView, event: Event) {
+    // console.log("revisando ",dv)
+    // console.log("revisando 2 ",event)
     const text = (event.target as HTMLInputElement).value;
     this.cursos = this.data;
     dv.value = this.data;

@@ -168,7 +168,7 @@
 
 <p-dialog [modal]="true" [(visible)]="visibleProgramacion" [style]="{ width: '50rem' }">
   <ng-template pTemplate="header">
-    <span class="font-bold text-xl text-white">Programación Curricular</span>
+    <span class="font-bold text-xl text-white">PROGRAMACIÓN CURRICULAR</span>
   </ng-template>
   <div class="grid mt-3">
     <div class="col-12 flex">
@@ -180,7 +180,7 @@
         chooseIcon="pi pi-upload"
         name="demo[]"
         accept=".pdf"
-        maxFileSize="1000000"
+        maxFileSize="20000000"
       />
       <p-button
         class="flex mr-1"
@@ -205,7 +205,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="documentos.nombre ? documentos.nombre : 'Programación Curricular'"
+          [placeholder]="documentos.nombre ? documentos.nombre : 'PROGRAMACIÓN CURRICULAR'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -237,7 +237,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="itinerarioInterno ? itinerarioInterno[0].name : 'Nombre del Itinerario'"
+          [placeholder]="itinerarioInterno ? itinerarioInterno.name : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -254,7 +254,7 @@
         </button>
         <button
           type="button"
-          (click)="descargarArchivo(itinerarioInterno.length ? itinerarioInterno[0]['ruta'] : null)"
+          (click)="descargarArchivo(itinerarioInterno.ruta)"
           [disabled]="!itinerarioInterno || itinerarioInterno.length === 0"
           pButton
           icon="pi pi-eye"
@@ -280,7 +280,7 @@
         />
         <button
           type="button"
-          (click)="descargarArchivo(reglamentoInterno.length ? reglamentoInterno[0]['ruta'] : null)"
+          (click)="descargarArchivo(reglamentoInterno ? reglamentoInterno[0]['ruta'] : null)"
           [disabled]="!reglamentoInterno"
           pButton
           icon="pi pi-eye"

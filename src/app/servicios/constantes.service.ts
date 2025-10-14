@@ -725,7 +725,7 @@ const administracion = [
           {
             label: 'Indicadores',
             icon: 'pi pi-chart-line',
-            routerLink: ['/gestion-institucional/dashboard-indicadores'],
+            routerLink: ['/gestion-institucional/reporte-indicadores'],
           },
           {
             label: 'Reportes académicos',

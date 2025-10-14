@@ -351,9 +351,6 @@ export const columnasAdminIndicadorBajoRendimiento = [
   columnaDetalle,
   columnaPorcentaje,
   columnaCantidad,
-  columnaExcelente,
-  columnaBueno,
-  columnaRegular,
   columnaDeficiente,
 ];
 
@@ -362,9 +359,6 @@ export const columnasDirectorIndicadorBajoRendimiento = [
   columnaDetalle,
   columnaPorcentaje,
   columnaCantidad,
-  columnaExcelente,
-  columnaBueno,
-  columnaRegular,
   columnaDeficiente,
 ];
 

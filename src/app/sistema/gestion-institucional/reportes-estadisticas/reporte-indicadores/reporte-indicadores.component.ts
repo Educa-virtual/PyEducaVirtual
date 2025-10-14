@@ -429,7 +429,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         campos = ['Excelente', 'Bueno', 'Regular'];
         break;
       case indicadorBajoRendimiento:
-        campos = ['Excelente', 'Bueno', 'Regular', 'Deficiente'];
+        campos = ['Deficiente'];
         break;
     }
 

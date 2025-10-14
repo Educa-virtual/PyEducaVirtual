@@ -14,6 +14,12 @@ export class AsistenciaService {
     return this.http.get(`${this.urlBackendApi}/asi/asistencia/general/${anio}/${mes}/estudiante`);
   }
 
+  obtenerAsistenciaGeneralEstudianteApoderado(anio, mes, iMatrId) {
+    return this.http.get(
+      `${this.urlBackendApi}/asi/asistencia/general/${anio}/${mes}/apoderado/estudiante/${iMatrId}`
+    );
+  }
+
   obtenerAsistenciaControlEstudiante(fecha) {
     return this.http.get(`${this.urlBackendApi}/asi/asistencia/control/${fecha}/estudiante`);
   }

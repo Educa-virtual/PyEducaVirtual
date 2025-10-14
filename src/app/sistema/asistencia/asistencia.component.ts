@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { AsistenciaService } from './services/asistencia.service';
@@ -20,8 +20,8 @@ type DayCell = {
   imports: [PrimengModule],
   styleUrls: ['./asistencia.component.scss'],
 })
-export class AsistenciaComponent implements OnInit {
-  @Input() tipo!: string; // 'estudiante' o 'apoderado'
+export class AsistenciaComponent implements OnChanges, OnInit {
+  @Input() iMatrId: string = null;
   showDialog = false;
   selectedCell: DayCell | null = null;
   // semana empezando LUNES
@@ -104,13 +104,20 @@ export class AsistenciaComponent implements OnInit {
     private asistenciaService: AsistenciaService,
     private store: LocalStoreService,
     private messageService: MessageService
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     const today = new Date();
     this.selectedMonth = today.getMonth() + 1;
     this.selectedYear = this.selectedYear = this.store.getItem('dremoYear');
+  }
 
+  ngOnChanges(changes) {
+    if (changes.iMatrId?.currentValue) {
+      this.iMatrId = changes.iMatrId.currentValue;
+      this.load();
+    }
+  }
+
+  ngOnInit(): void {
     this.load();
   }
 
@@ -154,22 +161,45 @@ export class AsistenciaComponent implements OnInit {
 
   load() {
     this.loading = true;
-    this.asistenciaService
-      .obtenerAsistenciaGeneralEstudiante(this.selectedYear, this.selectedMonth)
-      .subscribe({
-        next: (response: any) => {
-          this.buildCalendar(response.data);
-          this.loading = false;
-        },
-        error: err => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error.message,
-          });
-          this.loading = false;
-        },
-      });
+    if (this.iMatrId !== null) {
+      this.asistenciaService
+        .obtenerAsistenciaGeneralEstudianteApoderado(
+          this.selectedYear,
+          this.selectedMonth,
+          this.iMatrId
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.buildCalendar(response.data);
+            this.loading = false;
+          },
+          error: err => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error.message,
+            });
+            this.loading = false;
+          },
+        });
+    } else {
+      this.asistenciaService
+        .obtenerAsistenciaGeneralEstudiante(this.selectedYear, this.selectedMonth)
+        .subscribe({
+          next: (response: any) => {
+            this.buildCalendar(response.data);
+            this.loading = false;
+          },
+          error: err => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error.message,
+            });
+            this.loading = false;
+          },
+        });
+    }
   }
 
   private buildCalendar(records: any[]) {

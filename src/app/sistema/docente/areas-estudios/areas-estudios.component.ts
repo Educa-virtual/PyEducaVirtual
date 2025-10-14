@@ -334,6 +334,8 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     enviar.append('iYAcadId', this.archivos.iYAcadId);
     enviar.append('iPersId', this.archivos.iPersId);
     enviar.append('archivo', this.archivos.enlace);
+    enviar.append('cIieeCodigoModular', this.cIieeCodigoModular);
+    enviar.append('years', this.years);
     enviar.append('portafolio', 'programacion-curricular');
 
     const params = {
@@ -347,7 +349,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     this._generalService.getRecibirDatos(params).subscribe({
       next: respuesta => {
         const resultado = respuesta.data;
-        console.log('resolver #1', resultado);
         if (resultado.estado > 0) {
           const index = this.data.findIndex(
             item =>
@@ -360,9 +361,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.data[index].iSilaboId = resultado.estado;
           this.data[index].cProgramacion = resultado.estado;
 
-          this.documentos = formato;
-          event.clear();
-
+          this.documentos = formato[0];
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito en el Registro',
@@ -378,6 +377,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
       },
       error: error => {
         console.log(error);
+      },
+      complete: () => {
+        event.clear();
       },
     });
   }
@@ -403,7 +405,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         const itinerarios = datos.itinerario ? JSON.parse(datos.itinerario) : [];
         this.itinerarioInterno = itinerarios[0];
         this.formato = datos.portafolio ? JSON.parse(datos.portafolio) : [];
-        this.reglamentoInterno = datos.reglamento ? JSON.parse(datos.reglamento) : null;
+        this.reglamentoInterno = datos.reglamento ? datos.reglamento : null;
       },
       error: err => {
         this.MessageService.add({

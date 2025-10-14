@@ -205,7 +205,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="documentos.nombre ? documentos.nombre : 'PROGRAMACIÓN CURRICULAR'"
+          [placeholder]="documentos ? documentos.nombre : 'PROGRAMACIÓN CURRICULAR'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -273,7 +273,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="reglamentoInterno ? reglamentoInterno[0].name : 'Reglamento Interno'"
+          placeholder="Reglamento Interno"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText

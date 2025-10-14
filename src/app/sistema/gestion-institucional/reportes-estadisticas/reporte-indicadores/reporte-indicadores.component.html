@@ -1,8 +1,8 @@
 <app-toolbar-primeng title="Reporte de Indicadores"> </app-toolbar-primeng>
 <div class="card">
-  <form class="grid">
+  <form [formGroup]="formIndicadores" class="grid">
     @if (isAdminDremo()) {
-      <div class="col-12">
+      <div class="col-12 lg:col-8">
         <p-inputGroup>
           <p-inputGroupAddon>Institución Educativa: </p-inputGroupAddon>
           <p-dropdown
@@ -14,6 +14,22 @@
             filterBy="cIieeNombre"
             [showClear]="true"
             placeholder="Seleccionar una Institución Educativa"
+            (onChange)="obtenerSedesIe()"
+            formControlName="iIieeId"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sede:</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            [options]="sedes()"
+            formControlName="iSedeId"
+            placeholder="Seleccione opción"
+            styleClass="w-full"
+            (onChange)="obtenerGradoSeccion()"
           >
           </p-dropdown>
         </p-inputGroup>
@@ -25,10 +41,12 @@
         <p-dropdown
           styleClass="w-full"
           placeholder="Grado"
-          optionValue="iGradoId"
+          optionValue="iNivelGradoId"
           [showClear]="true"
-          [options]="[]"
+          [options]="grados()"
           optionLabel="cGradoNombre"
+          formControlName="iNivelGradoId"
+          (onChange)="obtenerSecciones()"
         />
       </p-inputGroup>
     </div>
@@ -40,38 +58,20 @@
           placeholder="Sección"
           [showClear]="true"
           optionValue="iSeccionId"
-          [options]="[]"
+          [options]="secciones()"
           optionLabel="cSeccionNombre"
+          formControlName="iSeccionId"
         />
       </p-inputGroup>
     </div>
-    <div class="col-12 lg:col-2">
-      <p-inputGroup>
-        <p-inputGroupAddon>Desde</p-inputGroupAddon>
-        <p-dropdown
-          styleClass="w-full"
-          placeholder="Desde"
-          [showClear]="true"
-          [options]="aniosDesde()"
-          optionLabel="label"
-          optionValue="value"
-        />
-      </p-inputGroup>
-    </div>
-    <div class="col-12 lg:col-2">
-      <p-inputGroup>
-        <p-inputGroupAddon>Hasta</p-inputGroupAddon>
-        <p-dropdown
-          styleClass="w-full"
-          placeholder="Hasta"
-          [showClear]="true"
-          [options]="aniosHasta()"
-          optionLabel="label"
-          optionValue="value"
-        />
-      </p-inputGroup>
-    </div>
-    <div class="col-12 lg:col-2">
+    <div class="col-12 lg:col-6 flex justify-content-end gap-2">
+      <p-button
+        pRipple
+        severity="primary"
+        label="Buscar"
+        icon="pi pi-search"
+        (onClick)="obtenerResultadosxIndicador()"
+      />
       <p-button
         pRipple
         severity="success"
@@ -90,24 +90,33 @@
     </app-tabs-primeng>
     @if (data().length) {
       @for (reporte of reportes(); track reporte.key) {
-        @if (tabSeleccionado() === 'resumen-indicadores' || tabSeleccionado() === reporte.key) {
+        @if (tabSeleccionado() === reporte.key) {
           <div class="col-12">
             <div class="grid relative my-3">
               <samp class="tag" [style.backgroundColor]="reporte.color">
                 {{ reporte.titulo }}
               </samp>
+              @if (showGrafica()) {
+                <div class="col-12 lg:col-6 mt-4">
+                  <p-chart
+                    type="pie"
+                    [data]="chartDataPie()"
+                    [options]="chartOptionsPie()"
+                    [plugins]="piePlugin"
+                    height="300px"
+                  />
+                </div>
+                <div class="col-12 lg:col-6 mt-4">
+                  <p-chart
+                    type="bar"
+                    [data]="chartDataBar()"
+                    [options]="chartOptionsBar()"
+                    height="300px"
+                  />
+                </div>
+              }
 
-              <div class="col-12 lg:col-4 mt-4">
-                <p-chart
-                  type="pie"
-                  [data]="chartData()"
-                  [options]="chartOptions()"
-                  [plugins]="piePlugin"
-                  height="300px"
-                />
-              </div>
-
-              <div class="col-12 lg:col-8">
+              <div class="col-12 mt-4">
                 <app-table-primeng
                   [columnas]="columnasTabla()"
                   [showCaption]="false"

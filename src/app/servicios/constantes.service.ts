@@ -704,10 +704,10 @@ const administracion = [
         icon: 'pi pi-folder',
         items: [
           {
-            label: 'Gestionar matriculas',
+            label: 'Gestionar matrículas',
             icon: 'pi pi-fw pi-file-edit',
             badge: '',
-            routerLink: ['/gestion-institucional/gestion-matriculas'],
+            routerLink: ['/gestion-institucional/gestionar-matriculas'],
           },
           // {
           //   label: 'Matrícula Individual',

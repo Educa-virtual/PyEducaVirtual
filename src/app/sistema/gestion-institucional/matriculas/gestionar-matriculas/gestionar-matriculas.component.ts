@@ -11,19 +11,19 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { DatosMatriculaService } from '../services/datos-matricula.service';
+import { DatosMatriculaService } from '../../services/datos-matricula.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
-import { CompartirMatriculaService } from '../services/compartir-matricula.service';
-import { CompartirEstudianteService } from '../services/compartir-estudiante.service';
-import { MatriculaApoderadoComponent } from './matricula-apoderado/matricula-apoderado.component';
+import { CompartirMatriculaService } from '../../services/compartir-matricula.service';
+import { CompartirEstudianteService } from '../../services/compartir-estudiante.service';
+import { MatriculaApoderadoComponent } from '../matricula-apoderado/matricula-apoderado.component';
 
 @Component({
-  selector: 'app-gestion-matriculas',
+  selector: 'app-gestionar-matriculas',
   standalone: true,
   imports: [PrimengModule, InputNumberModule, TablePrimengComponent, MatriculaApoderadoComponent],
-  templateUrl: './gestion-matriculas.component.html',
-  styleUrl: './gestion-matriculas.component.scss',
+  templateUrl: './gestionar-matriculas.component.html',
+  styleUrl: './gestionar-matriculas.component.scss',
 })
 export class GestionMatriculasComponent implements OnInit {
   form: FormGroup;

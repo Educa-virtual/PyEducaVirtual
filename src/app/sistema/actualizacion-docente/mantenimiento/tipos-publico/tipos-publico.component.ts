@@ -74,8 +74,10 @@ export class TiposPublicoComponent extends MostrarErrorComponent implements OnIn
     {
       label: 'Nuevo tipo de público',
       icon: 'pi pi-plus',
-      class: 'p-button-primary',
-      action: () => this.showModal.set(true),
+      class: 'p-button-success',
+      action: () => {
+        this.dataItem.set(null), this.showModal.set(true);
+      },
     },
   ]);
 

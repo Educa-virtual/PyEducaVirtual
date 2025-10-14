@@ -258,8 +258,14 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         next: (data: any) => {
           const instituciones = (data.data ?? []).map((institucion: any) => ({
             ...institucion,
-            cNombre: `${institucion.cIieeCodigoModular} - ${institucion.cIieeNombre}`,
+            cNombre:
+              institucion.cIieeCodigoModular +
+              ' - ' +
+              institucion.cIieeNombre +
+              ' - ' +
+              (Number(institucion.iNivelTipoId) === 3 ? 'PRIMARIA' : 'SECUNDARIA'),
           }));
+
           this.instituciones.set(instituciones);
         },
         error: error => {

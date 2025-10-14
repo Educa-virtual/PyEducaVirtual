@@ -1,0 +1,23 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-panel styleClass="container-page">
+  <ng-template pTemplate="header" class="encabezado">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">Mesa de Partes GORE</h3>
+    </div>
+  </ng-template>
+
+  <div>
+    <p>
+      Disponible para estudiantes mayores de 18 años y apoderados. Para acceder a la Mesa de Partes
+      del Gobierno Regional de Moquegua, haga clic en el siguiente enlace:
+    </p>
+    <br />
+    <a
+      href="http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php"
+      target="_blank"
+      class="p-button p-component"
+      style="color: white !important"
+      ><span class="pi pi-external-link" style="margin-right: 5px"></span> Ir a Mesa de Partes GORE
+    </a>
+  </div>
+</p-panel>

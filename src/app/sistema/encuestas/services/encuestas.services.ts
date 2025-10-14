@@ -64,6 +64,7 @@ export class EncuestasService implements OnDestroy {
   tiempos_duracion: Array<object>;
   participantes: Array<object>;
   tipos_preguntas: Array<object>;
+  fuentes: Array<object>;
 
   /**
    * CONEXIONES A LA API
@@ -539,6 +540,20 @@ export class EncuestasService implements OnDestroy {
       return this.instituciones_educativas;
     }
     return this.instituciones_educativas;
+  }
+
+  getFuentes(data: any) {
+    if (!this.fuentes && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.fuentes = items.map(fuente => ({
+        value: fuente.iFuenteId,
+        label: fuente.cFuenteNombre,
+        cFuenteCSS: fuente.cFuenteCSS,
+        cFuenteURL: fuente.cFuenteURL,
+      }));
+      return this.fuentes;
+    }
+    return this.fuentes;
   }
 
   filterInstitucionesEducativas(

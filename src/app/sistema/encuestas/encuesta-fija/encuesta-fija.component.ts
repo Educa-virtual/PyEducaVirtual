@@ -64,6 +64,7 @@ export class EncuestaFijaComponent implements OnInit {
   tipos_graficos: Array<object>;
   tiempos_duracion: Array<object>;
   participantes: Array<object>;
+  fuentes: Array<object>;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
@@ -102,6 +103,7 @@ export class EncuestaFijaComponent implements OnInit {
         iTiemDurId: ['', Validators.required],
         iCateId: [this.iCateId, Validators.required],
         iYAcadId: [this.store.getItem('dremoiYAcadId')],
+        iFuenteId: [null],
         poblacion: [null],
         accesos: [null],
         jsonPoblacion: [null],
@@ -121,6 +123,7 @@ export class EncuestaFijaComponent implements OnInit {
       })
       .subscribe((data: any) => {
         this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
+        this.fuentes = this.encuestasService.getFuentes(data?.fuentes);
       });
 
     if (this.iEncuId) {
@@ -240,6 +243,12 @@ export class EncuestaFijaComponent implements OnInit {
       'dEncuFin',
       data.dEncuFin,
       'date'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'iFuenteId',
+      data.iFuenteId,
+      'number'
     );
 
     this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);

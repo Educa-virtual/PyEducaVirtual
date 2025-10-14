@@ -1,1 +1,49 @@
 @import './../lista-categorias/lista-categorias.component.scss';
+
+.arial-sansserif {
+  *:not(i) {
+    font-family:
+      Arial,
+      Helvetica,
+      Liberation Sans,
+      Nimbus Sans,
+      sans-serif;
+  }
+}
+
+.times-serif {
+  *:not(i) {
+    font-family:
+      Times New Roman,
+      Times,
+      Liberation Serif,
+      serif;
+  }
+}
+
+.courier-mono {
+  *:not(i) {
+    font-family:
+      Courier New,
+      Courier,
+      Liberation Mono,
+      monospace;
+  }
+}
+
+.roboto-family {
+  *:not(i) {
+    font-family:
+      Segoe UI,
+      Roboto,
+      Ubuntu,
+      Cantarell,
+      sans-serif;
+  }
+}
+
+.comic-cursive {
+  *:not(i) {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  }
+}

@@ -134,7 +134,7 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   agregarEncuesta() {
-    if (this.categoria.bEsFija) {
+    if (Number(this.categoria.bEsFija) === 1) {
       this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta-fija`]);
     } else {
       this.router.navigate([`/encuestas/categorias/${this.iCateId}/nueva-encuesta`]);
@@ -422,7 +422,7 @@ export class GestionEncuestasComponent implements OnInit {
     switch (accion) {
       case 'editar':
       case 'ver':
-        if (this.categoria.bEsFija) {
+        if (Number(this.categoria.bEsFija) === 1) {
           this.router.navigate([
             `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/fija`,
           ]);

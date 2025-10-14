@@ -1,6 +1,6 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 
-<p-panel>
+<p-panel [class]="encuesta?.cFuenteClase">
   <ng-template pTemplate="header">
     <span class="text-2xl text-uppercase">
       <div class="flex flex-column">
@@ -23,7 +23,7 @@
                 <li class="flex py-3">
                   <i class="pi pi-inbox text-xl mr-3"></i>
                   <span class="flex flex-column">
-                    <span class="font-bold mb-1">Categoría</span>
+                    <span class="font-bold mb-1">Encuesta</span>
                     <span class="m-0 text-secondary">{{ encuesta?.cCateNombre }}</span>
                   </span>
                 </li>
@@ -32,15 +32,6 @@
                   <span class="flex flex-column">
                     <span class="font-bold mb-1">Subtítulo</span>
                     <span class="m-0 text-secondary">{{ encuesta?.cEncuSubtitulo }}</span>
-                  </span>
-                </li>
-                <li class="flex py-3">
-                  <i class="pi pi-clock text-xl mr-3"></i>
-                  <span class="flex flex-column">
-                    <span class="font-bold mb-1">Tiempo para editar respuestas</span>
-                    <span class="m-0 text-secondary text-justify"
-                      >{{ encuesta?.cTiemDurNombre }} {{ formatearTiempoRestante(encuesta) }}</span
-                    >
                   </span>
                 </li>
                 <li class="flex py-3" *ngIf="encuesta?.cEncuDescripcion">
@@ -59,6 +50,27 @@
                     <span class="m-0 text-secondary">{{ encuesta?.cCreador }}</span>
                   </span>
                 </li>
+              </ul>
+            </ng-template>
+          </p-messages>
+          <p-messages severity="error" class="my-0">
+            <ng-template pTemplate>
+              <ul class="list-none p-0 m-0">
+                <li class="flex py-3">
+                  <i class="pi pi-clock text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Tiempo para editar respuestas</span>
+                    <span class="m-0 text-secondary text-justify"
+                      >{{ encuesta?.cTiemDurNombre }} {{ formatearTiempoRestante(encuesta) }}</span
+                    >
+                  </span>
+                </li>
+              </ul>
+            </ng-template>
+          </p-messages>
+          <p-messages severity="success" class="my-0">
+            <ng-template pTemplate>
+              <ul class="list-none p-0 m-0">
                 <li class="flex py-3">
                   <i class="pi pi-lock text-xl mr-3"></i>
                   <span class="flex flex-column">

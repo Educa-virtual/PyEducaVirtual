@@ -78,7 +78,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12">
+      <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>
             <a
@@ -104,6 +104,44 @@
             <div class="flex w-15rem">
               El tiempo que el encuestado tendrá para editar sus respuestas una vez que las haya
               registrado por primera vez.
+            </div>
+          </p-overlayPanel>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iTiemDurId.toggle($event)"
+              (keypress)="iTiemDurId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <span>Tipo de fuente</span>
+          </p-inputGroupAddon>
+          <p-dropdown
+            styleClass="group-element"
+            [options]="fuentes"
+            showClear="true"
+            placeholder="Seleccione una fuente"
+            formControlName="iFuenteId"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          >
+            <ng-template let-item pTemplate="item">
+              <span [style.font-family]="item.cFuenteNombre">{{ item.cFuenteNombre }}</span>
+            </ng-template>
+          </p-dropdown>
+          <p-overlayPanel #iFuenteId showCloseIcon="true" appendTo="body">
+            <div class="flex w-15rem">
+              La fuente de texto que seleccione se mostrará en los encabezados, los datos
+              adicionales, las preguntas y alternativas cuando el participante responda la encuesta.
+              Tenga en cuenta que la fuente mostrará dependerá de la disponibilidad en el
+              dispositivo del participante. Si no selecciona ninguna fuente se usará la fuente
+              predeterminada por la plataforma.
             </div>
           </p-overlayPanel>
         </p-inputGroup>

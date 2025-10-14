@@ -64,6 +64,7 @@ export class EncuestaComponent implements OnInit {
   tipos_graficos: Array<object>;
   tiempos_duracion: Array<object>;
   participantes: Array<object>;
+  fuentes: Array<object>;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
@@ -102,6 +103,7 @@ export class EncuestaComponent implements OnInit {
         iTiemDurId: ['', Validators.required],
         iCateId: [this.iCateId, Validators.required],
         iYAcadId: [this.store.getItem('dremoiYAcadId')],
+        iFuenteId: [null],
         poblacion: [null],
         accesos: [null],
         jsonPoblacion: [null],
@@ -160,6 +162,7 @@ export class EncuestaComponent implements OnInit {
         this.areas = this.encuestasService.getAreas(data?.areas);
         this.tiempos_duracion = this.encuestasService.getTiemposDuracion(data?.tiempos_duracion);
         this.permisos = this.encuestasService.getPermisos(data?.permisos);
+        this.fuentes = this.encuestasService.getFuentes(data?.fuentes);
         this.sexos = this.encuestasService.getSexos();
         this.estados = this.encuestasService.getEstados();
         this.encuestasService.getNivelesGrados(data?.nivel_grados);
@@ -402,6 +405,12 @@ export class EncuestaComponent implements OnInit {
       'dEncuFin',
       data.dEncuFin,
       'date'
+    );
+    this.encuestasService.formatearFormControl(
+      this.formEncuesta,
+      'iFuenteId',
+      data.iFuenteId,
+      'number'
     );
 
     const poblacion = JSON.parse(data.poblacion);

@@ -142,6 +142,7 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   generarEncuestaPlantilla(encuesta_reemplazada: any | null = null) {
+    this.messageService.clear();
     if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
       this.encuestasService
         .crearEncuestaSatisfaccion({
@@ -220,7 +221,7 @@ export class GestionEncuestasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.encuestas = data.data;
-          this.encuestas_filtradas = this.encuestas;
+          this.filtrarTabla();
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);

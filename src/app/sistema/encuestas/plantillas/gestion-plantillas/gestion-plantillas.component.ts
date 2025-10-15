@@ -176,7 +176,7 @@ export class GestionPlantillasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.plantillas = data.data;
-          this.plantillas_filtradas = this.plantillas;
+          this.filtrarPlantillas();
         },
         error: error => {
           console.error('Error obteniendo lista de plantillas:', error);

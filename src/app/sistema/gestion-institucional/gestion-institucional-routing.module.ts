@@ -378,7 +378,14 @@ const routes: Routes = [
       icon: 'pi pi-folder-open',
     },
   },
-  { path: 'gestion-deserciones', component: GestionDesercionComponent },
+  {
+    path: 'gestion-deserciones',
+    component: GestionDesercionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
 ];
 
 @NgModule({

@@ -193,7 +193,6 @@ export class GestionMatriculasComponent implements OnInit {
     }
 
     if (accion === 'agregar_desercion') {
-      alert('Agregar desercion');
       this.caption = 'Agregar deserción de : ' + item?._cPersNomape;
       this.c_accion = 'agregar';
       this.matricula = item;

@@ -98,10 +98,17 @@
   <p-dialog
     [header]="caption"
     [(visible)]="bApoderado"
-    [style]="{ width: '89rem', height: soloLectura ? '35rem' : '80rem' }"
+    [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+    [style]="{
+      width: '89rem',
+      maxWidth: '95vw',
+      height: soloLectura ? '35rem' : '80vh',
+      maxHeight: '95vh',
+    }"
     [modal]="true"
     [closable]="true"
-    [contentStyle]="{ overflow: 'auto' }"
+    [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+    [styleClass]="'dialog-responsive'"
     (onHide)="bApoderado = false"
     [resizable]="true"
     [maximizable]="true"

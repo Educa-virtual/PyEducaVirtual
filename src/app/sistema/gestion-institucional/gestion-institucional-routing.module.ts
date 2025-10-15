@@ -32,6 +32,8 @@ import { YearsComponent } from './years/years.component';
 import { DIRECTOR_IE, ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-indicadores/reporte-indicadores.component';
+
 import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
 const routes: Routes = [
   {
@@ -363,6 +365,17 @@ const routes: Routes = [
       expectedRole: [DIRECTOR_IE],
       breadcrumb: 'calendario-escolar',
       icon: 'pi pi-book',
+    },
+  },
+
+  {
+    path: 'reporte-indicadores',
+    component: ReporteIndicadoresComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE],
+      breadcrumb: 'Reporte de indicadores',
+      icon: 'pi pi-folder-open',
     },
   },
   { path: 'gestion-deserciones', component: GestionDesercionComponent },

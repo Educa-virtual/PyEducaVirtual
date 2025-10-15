@@ -1,6 +1,6 @@
 <app-toolbar-primeng title="Mis capacitaciones"></app-toolbar-primeng>
 <div class="grid">
-  <div class="col-12 mb-5 cursos">
+  <div class="col-12">
     <ng-container *ngIf="data && data.length > 0">
       @for (capacitacion of data; track capacitacion) {
         <app-card-capacitaciones
@@ -12,14 +12,6 @@
       }
     </ng-container>
   </div>
-  <!-- <p-paginator
-    *ngIf="data && data.length > rows"
-    [rows]="rows"
-    [totalRecords]="data.length"
-    [first]="first"
-    (onPage)="onPageChange($event)"
-    class="col-12 mt-5"
-  ></p-paginator> -->
 </div>
 
 <ng-template *ngIf="data.length === 0">

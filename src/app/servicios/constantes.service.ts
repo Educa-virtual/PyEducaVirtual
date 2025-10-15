@@ -72,110 +72,110 @@ const docente = [
         ],
       },
       /* {
-              label: 'Informes',
-              icon: 'pi pi-fw pi-objects-column',
-              routerLink: ['/docente/informes'],
-              routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
-              items: [
-                inicio,
-                {
-                  label: 'Comunicados',
-                  icon: 'pi pi-fw pi-bell',
-                  routerLink: ['/docente/comunicados'],
-                },
-                {
-                  label: 'Portafolio',
-                  icon: 'pi pi-fw pi-folder',
-                  routerLink: ['/docente/portafolio'],
-                },
-                {
-                  label: 'Mis Áreas Curriculares',
-                  icon: 'pi pi-fw pi-book',
-                  routerLink: ['/aula-virtual/areas-curriculares'],
-                },
-                {
-                  label: 'Actividades No Lectivas',
-                  icon: 'pi pi-fw pi-list-check',
-                  routerLink: ['/docente/actividades-no-lectivas'],
-                },
-                {
-                  label: 'Informes',
-                  icon: 'pi pi-fw pi-objects-column',
-                  routerLink: ['/docente/informes'],
-                  routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
-                  items: [
-                    {
-                      label: 'Logros Alcanzados',
-                      icon: 'pi pi-fw pi-share-alt',
-                      routerLink: ['/docente/informes'],
-                    },
-                    // {
-                    //     label: 'Reporte Asitencias',
-                    //     icon: 'pi pi-fw pi-share-alt',
-                    //     routerLink: [''],
-                    // },
-                  ],
-                },
-                {
-                  label: 'Aula virtual',
-                  icon: 'pi pi-id-card',
-                  // routerLink: ['/aula-virtual/capacitate-docente'],
-                  items: [
-                    {
-                      label: 'Capacitate',
-                      icon: 'pi pi-book',
-                      routerLink: ['/aula-virtual/capacitate-docente'],
-                    },
-                    {
-                      label: 'Mis Áreas Curriculares',
-                      icon: 'pi pi-book',
-                      routerLink: ['/aula-virtual/'],
-                    },
-                  ],
-                },
-                {
-                  label: 'Enlaces de ayuda',
-                  icon: 'pi pi-fw pi-share-alt',
-                  routerLink: ['ayuda'],
-                },
-                {
-                  label: 'Calendario',
-                  icon: 'pi pi-fw pi-calendar-clock',
-                  routerLink: ['/docente/calendario'],
-                },
-                {
-                  label: 'Banco de Preguntas',
-                  icon: 'pi pi-fw pi-folder',
-                  routerLink: ['/aula-virtual/banco-preguntas'],
-                },
-                // {
-                //     label: 'Comunicados',
-                //     icon: 'pi pi-fw pi-folder',
-                //     routerLink: ['/comunicados/principal'],
-                // },
-                {
-                  label: 'Bienestar Social',
-                  icon: 'pi pi-check-square',
-                  items: [
-                    {
-                      label: 'Recordatorios de cumpleaños',
-                      icon: 'pi pi-fw pi-bell',
-                    },
-                  ],
-                },
-                {
-                  label: 'Logros Alcanzados',
-                  icon: 'pi pi-fw pi-share-alt',
-                  routerLink: ['/docente/informes'],
-                },
-                // {
-                //     label: 'Reporte Asitencias',
-                //     icon: 'pi pi-fw pi-share-alt',
-                //     routerLink: [''],
-                // },
-              ],
-            },
-            */
+                    label: 'Informes',
+                    icon: 'pi pi-fw pi-objects-column',
+                    routerLink: ['/docente/informes'],
+                    routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
+                    items: [
+                      inicio,
+                      {
+                        label: 'Comunicados',
+                        icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/docente/comunicados'],
+                      },
+                      {
+                        label: 'Portafolio',
+                        icon: 'pi pi-fw pi-folder',
+                        routerLink: ['/docente/portafolio'],
+                      },
+                      {
+                        label: 'Mis Áreas Curriculares',
+                        icon: 'pi pi-fw pi-book',
+                        routerLink: ['/aula-virtual/areas-curriculares'],
+                      },
+                      {
+                        label: 'Actividades No Lectivas',
+                        icon: 'pi pi-fw pi-list-check',
+                        routerLink: ['/docente/actividades-no-lectivas'],
+                      },
+                      {
+                        label: 'Informes',
+                        icon: 'pi pi-fw pi-objects-column',
+                        routerLink: ['/docente/informes'],
+                        routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
+                        items: [
+                          {
+                            label: 'Logros Alcanzados',
+                            icon: 'pi pi-fw pi-share-alt',
+                            routerLink: ['/docente/informes'],
+                          },
+                          // {
+                          //     label: 'Reporte Asitencias',
+                          //     icon: 'pi pi-fw pi-share-alt',
+                          //     routerLink: [''],
+                          // },
+                        ],
+                      },
+                      {
+                        label: 'Aula virtual',
+                        icon: 'pi pi-id-card',
+                        // routerLink: ['/aula-virtual/capacitate-docente'],
+                        items: [
+                          {
+                            label: 'Capacitate',
+                            icon: 'pi pi-book',
+                            routerLink: ['/aula-virtual/capacitate-docente'],
+                          },
+                          {
+                            label: 'Mis Áreas Curriculares',
+                            icon: 'pi pi-book',
+                            routerLink: ['/aula-virtual/'],
+                          },
+                        ],
+                      },
+                      {
+                        label: 'Enlaces de ayuda',
+                        icon: 'pi pi-fw pi-share-alt',
+                        routerLink: ['ayuda'],
+                      },
+                      {
+                        label: 'Calendario',
+                        icon: 'pi pi-fw pi-calendar-clock',
+                        routerLink: ['/docente/calendario'],
+                      },
+                      {
+                        label: 'Banco de Preguntas',
+                        icon: 'pi pi-fw pi-folder',
+                        routerLink: ['/aula-virtual/banco-preguntas'],
+                      },
+                      // {
+                      //     label: 'Comunicados',
+                      //     icon: 'pi pi-fw pi-folder',
+                      //     routerLink: ['/comunicados/principal'],
+                      // },
+                      {
+                        label: 'Bienestar Social',
+                        icon: 'pi pi-check-square',
+                        items: [
+                          {
+                            label: 'Recordatorios de cumpleaños',
+                            icon: 'pi pi-fw pi-bell',
+                          },
+                        ],
+                      },
+                      {
+                        label: 'Logros Alcanzados',
+                        icon: 'pi pi-fw pi-share-alt',
+                        routerLink: ['/docente/informes'],
+                      },
+                      // {
+                      //     label: 'Reporte Asitencias',
+                      //     icon: 'pi pi-fw pi-share-alt',
+                      //     routerLink: [''],
+                      // },
+                    ],
+                  },
+                  */
       {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
@@ -322,9 +322,14 @@ const estudiante = [
       {
         label: 'Mesa de Partes GORE',
         icon: 'pi pi-external-link',
-        url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
-        target: '_blank',
+        routerLink: ['/estudiante/mesa-partes-gore'],
       },
+      /*{
+              label: 'Mesa de Partes GORE',
+              icon: 'pi pi-external-link',
+              url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
+              target: '_blank',
+            },*/
     ],
   },
 ];
@@ -340,58 +345,58 @@ const administrador = [
         routerLink: ['/administrador/auditoria'],
       },
       /*{
-                                  label: 'Componentes',
-                                  icon: 'pi pi-fw pi-folder',
-                                  routerLink: ['/administrador/componentes'],
-                              },*/
+                                        label: 'Componentes',
+                                        icon: 'pi pi-fw pi-folder',
+                                        routerLink: ['/administrador/componentes'],
+                                    },*/
       // {
       //   label: 'Registro de fechas especiales',
       //   icon: 'pi pi-calendar',
       //   routerLink: ['/gestion-institucional/fechas'],
       // },
       /*{
-              label: 'Backup de BD',
-              icon: 'pi pi-fw pi-database',
-              routerLink: ['/administrador/backup-bd'],
-            },
-            {
-              label: 'Backup de BD',
-              icon: 'pi pi-fw pi-database',
-              routerLink: ['/administrador/backup-bd'],
-            },*/
+                    label: 'Backup de BD',
+                    icon: 'pi pi-fw pi-database',
+                    routerLink: ['/administrador/backup-bd'],
+                  },
+                  {
+                    label: 'Backup de BD',
+                    icon: 'pi pi-fw pi-database',
+                    routerLink: ['/administrador/backup-bd'],
+                  },*/
 
       /*{
-        label: 'Gestión de usuarios',
-        icon: 'pi pi-fw pi-user',
-        items: [
-          {
-            label: 'Usuarios',
-            icon: 'pi pi-user',
-            routerLink: ['/administrador/gestion-usuarios/usuarios'],
-          },
-          {
-            label: 'Solicitudes de registro',
-            icon: 'pi pi-envelope',
-            routerLink: ['/administrador/gestion-usuarios/solicitudes-registro'],
-          },
-        ],
-      },*/
+              label: 'Gestión de usuarios',
+              icon: 'pi pi-fw pi-user',
+              items: [
+                {
+                  label: 'Usuarios',
+                  icon: 'pi pi-user',
+                  routerLink: ['/administrador/gestion-usuarios/usuarios'],
+                },
+                {
+                  label: 'Solicitudes de registro',
+                  icon: 'pi pi-envelope',
+                  routerLink: ['/administrador/gestion-usuarios/solicitudes-registro'],
+                },
+              ],
+            },*/
       /*{
-        label: 'Gestión de usuarios',
-        icon: 'pi pi-fw pi-book',
-        routerLink: ['/administrador/gestion-usuarios'],
-      },
-      {
-        label: 'Informes y Estadísticas',
-        icon: 'pi pi-chart-line',
-        items: [
-          {
-            label: 'Logros Alcanzados',
-            icon: 'pi pi-trophy',
-            routerLink: ['/administrador/logro-alcanzado'],
-          },
-        ],
-      },*/
+              label: 'Gestión de usuarios',
+              icon: 'pi pi-fw pi-book',
+              routerLink: ['/administrador/gestion-usuarios'],
+            },
+            {
+              label: 'Informes y Estadísticas',
+              icon: 'pi pi-chart-line',
+              items: [
+                {
+                  label: 'Logros Alcanzados',
+                  icon: 'pi pi-trophy',
+                  routerLink: ['/administrador/logro-alcanzado'],
+                },
+              ],
+            },*/
       {
         label: 'Gestión de usuarios',
         icon: 'pi pi-fw pi-book',
@@ -672,33 +677,33 @@ const administracion = [
       },
 
       /* {
-                              label: 'Gestión de Matrículas',
-                              icon: 'pi pi-folder',
-                              items: [
-                                {
-                                  label: 'Gestionar matriculas',
-                                  icon: 'pi pi-fw pi-file-edit',
-                                  badge: '',
-                                  routerLink: ['/gestion-institucional/gestion-matriculas'],
-                                },
-                                {
-                                  label: 'Matrícula Individual',
-                                  icon: 'pi pi-fw pi-file-plus',
-                                  badge: '',
-                                  routerLink: ['/gestion-institucional/matricula-individual'],
-                                },
-                                {
-                                  label: 'Matrícula Masiva',
-                                  icon: 'pi pi-fw pi-file-import',
-                                  badge: '',
-                                  routerLink: ['/gestion-institucional/matricula-masiva'],
-                                },
+                                    label: 'Gestión de Matrículas',
+                                    icon: 'pi pi-folder',
+                                    items: [
+                                      {
+                                        label: 'Gestionar matriculas',
+                                        icon: 'pi pi-fw pi-file-edit',
+                                        badge: '',
+                                        routerLink: ['/gestion-institucional/gestion-matriculas'],
+                                      },
+                                      {
+                                        label: 'Matrícula Individual',
+                                        icon: 'pi pi-fw pi-file-plus',
+                                        badge: '',
+                                        routerLink: ['/gestion-institucional/matricula-individual'],
+                                      },
+                                      {
+                                        label: 'Matrícula Masiva',
+                                        icon: 'pi pi-fw pi-file-import',
+                                        badge: '',
+                                        routerLink: ['/gestion-institucional/matricula-masiva'],
+                                      },
 
 
 
-                              ],
-                            },
-                          */
+                                    ],
+                                  },
+                                */
       {
         label: 'Gestión de Matrículas',
         icon: 'pi pi-folder',
@@ -730,7 +735,7 @@ const administracion = [
           {
             label: 'Indicadores',
             icon: 'pi pi-chart-line',
-            routerLink: ['/gestion-institucional/dashboard-indicadores'],
+            routerLink: ['/gestion-institucional/reporte-indicadores'],
           },
           {
             label: 'Reportes académicos',
@@ -956,16 +961,21 @@ const apoderado = [
             routerLink: ['/apoderado/reportes-academicos/progreso'],
           },
           /*{
-            label: 'Académico',
-            icon: 'pi pi-fw pi-chart-bar',
-            routerLink: ['/estudiante/reportes-academicos/academico'],
-          },
-          {
-            label: 'Resultados ERE',
-            icon: 'pi pi-fw pi-ticket',
-            routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
-          },*/
+                      label: 'Académico',
+                      icon: 'pi pi-fw pi-chart-bar',
+                      routerLink: ['/estudiante/reportes-academicos/acadeamico'],
+                    },
+                    {
+                      label: 'Resultados ERE',
+                      icon: 'pi pi-fw pi-ticket',
+                      routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
+                    },*/
         ],
+      },
+      {
+        label: 'Asistencia',
+        icon: 'pi pi-clock',
+        routerLink: ['apoderado/asistencia'],
       },
       // {
       //   label: 'Notificaciones y anuncios',

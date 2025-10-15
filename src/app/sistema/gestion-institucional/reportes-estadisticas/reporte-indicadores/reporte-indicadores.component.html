@@ -2,11 +2,26 @@
 <div class="card">
   <form [formGroup]="formIndicadores" class="grid">
     @if (isAdminDremo()) {
-      <div class="col-12 lg:col-8">
+      <div class="col-12 lg:col-3">
         <p-inputGroup>
-          <p-inputGroupAddon>Institución Educativa: </p-inputGroupAddon>
+          <p-inputGroupAddon>Nivel</p-inputGroupAddon>
           <p-dropdown
-            [options]="instituciones()"
+            [options]="nivelTipos()"
+            [showClear]="true"
+            formControlName="iNivelTipoId"
+            placeholder="Seleccione un nivel"
+            styleClass="w-full"
+            appendTo="body"
+            (onChange)="obtenerInstituciones()"
+            (onClear)="obtenerInstituciones()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Institución Educativa</p-inputGroupAddon>
+          <p-dropdown
+            [options]="institucionesxiNivelTipoId()"
             optionLabel="cNombre"
             optionValue="iIieeId"
             styleClass="w-full"
@@ -15,21 +30,24 @@
             [showClear]="true"
             placeholder="Seleccionar una Institución Educativa"
             (onChange)="obtenerSedesIe()"
+            (onClear)="obtenerSedesIe()"
             formControlName="iIieeId"
           >
           </p-dropdown>
         </p-inputGroup>
       </div>
-      <div class="col-12 lg:col-4">
+      <div class="col-12 lg:col-3">
         <p-inputGroup>
-          <p-inputGroupAddon>Sede:</p-inputGroupAddon>
+          <p-inputGroupAddon>Sede</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             [options]="sedes()"
             formControlName="iSedeId"
+            [showClear]="true"
             placeholder="Seleccione opción"
             styleClass="w-full"
             (onChange)="obtenerGradoSeccion()"
+            (onClear)="obtenerGradoSeccion()"
           >
           </p-dropdown>
         </p-inputGroup>
@@ -47,6 +65,7 @@
           optionLabel="cGradoNombre"
           formControlName="iNivelGradoId"
           (onChange)="obtenerSecciones()"
+          (onClear)="obtenerSecciones()"
         />
       </p-inputGroup>
     </div>
@@ -61,6 +80,7 @@
           [options]="secciones()"
           optionLabel="cSeccionNombre"
           formControlName="iSeccionId"
+          (onClear)="formIndicadores.controls.iSeccionId.setValue(null)"
         />
       </p-inputGroup>
     </div>

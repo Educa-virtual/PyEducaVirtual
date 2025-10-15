@@ -3,33 +3,15 @@ export const indicadorDeserciones = 'indicadorDeserciones';
 export const indicadorFaltasTardanzas = 'indicadorFaltasTardanzas';
 export const indicadorDesempeno = 'indicadorDesempeno';
 export const indicadorBajoRendimiento = 'indicadorBajoRendimiento';
+export const indicadorVacantes = 'indicadorVacantes';
 
 export const reportes = [
-  {
-    key: 'resumen-matriculados',
-    titulo: 'REPORTE DE MATRICULADOS',
-    color: '#e30052',
-  },
-  {
-    key: 'resumen-deserciones',
-    titulo: 'REPORTE DE DESERCIONES',
-    color: '#e53935',
-  },
-  {
-    key: 'resumen-asistencia',
-    titulo: 'REPORTE DE ASISTENCIA',
-    color: '#1e88e5',
-  },
-  {
-    key: 'resumen-desempenio',
-    titulo: 'REPORTE DE DESEMPEÑO',
-    color: '#43a047',
-  },
-  {
-    key: 'resumen-bajo-rendimiento',
-    titulo: 'REPORTE DE BAJO RENDIMIENTO',
-    color: '#fbc02d',
-  },
+  { key: 'resumen-matriculados', titulo: 'REPORTE DE MATRICULADOS', color: '#e30052' },
+  { key: 'resumen-deserciones', titulo: 'REPORTE DE DESERCIONES', color: '#e53935' },
+  { key: 'resumen-asistencia', titulo: 'REPORTE DE ASISTENCIA', color: '#1e88e5' },
+  { key: 'resumen-desempenio', titulo: 'REPORTE DE DESEMPEÑO', color: '#43a047' },
+  { key: 'resumen-bajo-rendimiento', titulo: 'REPORTE DE BAJO RENDIMIENTO', color: '#fbc02d' },
+  { key: 'resumen-vacantes', titulo: 'REPORTE DE VACANTES', color: '#8e24aa' },
 ];
 
 export const columnaIndex = {
@@ -40,13 +22,31 @@ export const columnaIndex = {
   text_header: 'center',
   text: 'center',
 };
-export const columnaIE = {
+
+export const columnaDetalle = {
   type: 'text',
-  width: '10rem',
-  field: 'cIieeCodigoNombre',
-  header: 'Institución Educativa',
+  width: '3rem',
+  field: 'Detalle',
+  header: 'Detalle',
   text_header: 'left',
   text: 'left',
+};
+
+export const columnaPorcentaje = {
+  type: 'text',
+  width: '3rem',
+  field: 'Porcentaje',
+  header: 'Porcentaje',
+  text_header: 'center',
+  text: 'center',
+};
+export const columnaCantidad = {
+  type: 'text',
+  width: '3rem',
+  field: 'Cantidad',
+  header: 'Total',
+  text_header: 'center',
+  text: 'center',
 };
 
 export const columnaAbandono = {
@@ -73,22 +73,6 @@ export const columnaEnProceso = {
   text_header: 'center',
   text: 'center',
 };
-export const columnaPorcentaje = {
-  type: 'text',
-  width: '3rem',
-  field: 'Porcentaje',
-  header: 'Porcentaje',
-  text_header: 'center',
-  text: 'center',
-};
-export const columnaTotal = {
-  type: 'text',
-  width: '3rem',
-  field: 'Total',
-  header: 'Total',
-  text_header: 'center',
-  text: 'center',
-};
 export const columnaTraslado = {
   type: 'text',
   width: '3rem',
@@ -97,75 +81,30 @@ export const columnaTraslado = {
   text_header: 'center',
   text: 'center',
 };
-export const columnaGrado = {
-  type: 'text',
-  width: '3rem',
-  field: 'cGradoAbrevNombre',
-  header: 'Grado',
-  text_header: 'left',
-  text: 'left',
-};
 
-export const columnaDetalle = {
-  type: 'text',
-  width: '3rem',
-  field: 'Detalle',
-  header: 'Detalle',
-  text_header: 'left',
-  text: 'left',
-};
-
-export const columnaCantidad = {
-  type: 'text',
-  width: '3rem',
-  field: 'Cantidad',
-  header: 'Total',
-  text_header: 'left',
-  text: 'left',
-};
 export const columnaAsistencia = {
   type: 'text',
   width: '3rem',
   field: 'Asistencia',
   header: 'Asistencia',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
 export const columnaTardanza = {
   type: 'text',
   width: '3rem',
   field: 'Tardanza',
   header: 'Tardanza',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
 export const columnaInasistencia = {
   type: 'text',
   width: '3rem',
   field: 'Inasistencia',
   header: 'Inasistencia',
-  text_header: 'left',
-  text: 'left',
-};
-
-export const columnaTotalAsistencias = {
-  type: 'text',
-  width: '3rem',
-  field: 'TotalAsistencias',
-  header: 'Total Asistencias',
-  text_header: 'left',
-  text: 'left',
-};
-
-export const columnaTotalFaltasTardanzas = {
-  type: 'text',
-  width: '3rem',
-  field: 'TotalFaltasTardanzas',
-  header: 'Total Faltas Tardanzas',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
 
 export const columnaExcelente = {
@@ -173,62 +112,32 @@ export const columnaExcelente = {
   width: '3rem',
   field: 'Excelente',
   header: 'Excelente',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
 export const columnaBueno = {
   type: 'text',
   width: '3rem',
   field: 'Bueno',
   header: 'Bueno',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
 export const columnaRegular = {
   type: 'text',
   width: '3rem',
   field: 'Regular',
   header: 'Regular',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
-export const columnaTotalAprobados = {
-  type: 'text',
-  width: '3rem',
-  field: 'TotalAprobados',
-  header: 'Total Aprobados',
-  text_header: 'left',
-  text: 'left',
-};
-
-export const columnaTotalDesaprobados = {
-  type: 'text',
-  width: '3rem',
-  field: 'TotalDesaprobados',
-  header: 'Total Desaprobados',
-  text_header: 'left',
-  text: 'left',
-};
-
 export const columnaDeficiente = {
   type: 'text',
   width: '3rem',
   field: 'Deficiente',
   header: 'Deficiente',
-  text_header: 'left',
-  text: 'left',
-};
-
-export const columnaSeccion = {
-  type: 'text',
-  width: '3rem',
-  field: 'cSeccionNombre',
-  header: 'Sección',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
 
 export const columnaOtro = {
@@ -236,69 +145,57 @@ export const columnaOtro = {
   width: '3rem',
   field: 'Otro',
   header: 'Otro',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
 export const columnaDefinitiva = {
   type: 'text',
   width: '3rem',
   field: 'Definitiva',
   header: 'Definitiva',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
-
 export const columnaTemporal = {
   type: 'text',
   width: '3rem',
   field: 'Temporal',
   header: 'Temporal',
-  text_header: 'left',
-  text: 'left',
+  text_header: 'center',
+  text: 'center',
 };
 
-export const columnasAdminIndicadorMatriculas = [
+export const columnaNEE = {
+  type: 'text',
+  width: '3rem',
+  field: 'NEE',
+  header: 'NEE',
+  text_header: 'center',
+  text: 'center',
+};
+
+export const columnasIndicadorMatriculas = [
   columnaIndex,
-  columnaIE,
+  columnaDetalle,
   columnaPorcentaje,
-  columnaTotal,
-  columnaEnProceso,
-  columnaDefinitivo,
-  columnaTraslado,
-  columnaAbandono,
-];
-export const columnasDirectorIndicadorMatriculas = [
-  columnaIndex,
-  columnaGrado,
-  columnaPorcentaje,
-  columnaTotal,
+  columnaCantidad,
   columnaEnProceso,
   columnaDefinitivo,
   columnaTraslado,
   columnaAbandono,
 ];
 
-export const columnasAdminIndicadorDeserciones = [
+export const columnasIndicadorDeserciones = [
   columnaIndex,
-  columnaIE,
+  columnaDetalle,
   columnaPorcentaje,
-  columnaTotal,
-  columnaOtro,
-  columnaDefinitiva,
-  columnaTemporal,
-];
-export const columnasDirectorIndicadorDeserciones = [
-  columnaIndex,
-  columnaGrado,
-  columnaPorcentaje,
-  columnaTotal,
+  columnaCantidad,
   columnaOtro,
   columnaDefinitiva,
   columnaTemporal,
 ];
 
-export const columnasAdminIndicadorAsistencia = [
+export const columnasIndicadorAsistencia = [
   columnaIndex,
   columnaDetalle,
   columnaPorcentaje,
@@ -306,23 +203,9 @@ export const columnasAdminIndicadorAsistencia = [
   columnaAsistencia,
   columnaTardanza,
   columnaInasistencia,
-  // columnaTotalAsistencias,
-  // columnaTotalFaltasTardanzas,
 ];
 
-export const columnasDirectorIndicadorAsistencia = [
-  columnaIndex,
-  columnaDetalle,
-  columnaPorcentaje,
-  columnaCantidad,
-  columnaAsistencia,
-  columnaTardanza,
-  columnaInasistencia,
-  // columnaTotalAsistencias,
-  // columnaTotalFaltasTardanzas,
-];
-
-export const columnasAdminIndicadorDesempeno = [
+export const columnasIndicadorDesempeno = [
   columnaIndex,
   columnaDetalle,
   columnaPorcentaje,
@@ -330,55 +213,48 @@ export const columnasAdminIndicadorDesempeno = [
   columnaExcelente,
   columnaBueno,
   columnaRegular,
-  // columnaTotalAprobados,
-  // columnaTotalDesaprobados,
 ];
 
-export const columnasDirectorIndicadorDesempeno = [
+export const columnasIndicadorBajoRendimiento = [
   columnaIndex,
   columnaDetalle,
   columnaPorcentaje,
   columnaCantidad,
-  columnaExcelente,
-  columnaBueno,
+  columnaDeficiente,
+];
+
+export const columnasIndicadorVacantes = [
+  columnaIndex,
+  columnaDetalle,
+  columnaPorcentaje,
+  columnaCantidad,
+  columnaNEE,
   columnaRegular,
-  // columnaTotalAprobados,
-  // columnaTotalDesaprobados,
 ];
 
-export const columnasAdminIndicadorBajoRendimiento = [
-  columnaIndex,
-  columnaDetalle,
-  columnaPorcentaje,
-  columnaCantidad,
-  columnaDeficiente,
-];
+// ============================
+// 🔹 Aliases por rol (si se requiere)
+// ============================
+export const columnasAdminIndicadorMatriculas = columnasIndicadorMatriculas;
+export const columnasDirectorIndicadorMatriculas = columnasIndicadorMatriculas;
 
-export const columnasDirectorIndicadorBajoRendimiento = [
-  columnaIndex,
-  columnaDetalle,
-  columnaPorcentaje,
-  columnaCantidad,
-  columnaDeficiente,
-];
+export const columnasAdminIndicadorDeserciones = columnasIndicadorDeserciones;
+export const columnasDirectorIndicadorDeserciones = columnasIndicadorDeserciones;
 
-export const columnasIndicadorMatriculadosxiNivelGradoId = [
-  columnaIndex,
-  columnaSeccion,
-  columnaPorcentaje,
-  columnaTotal,
-  columnaEnProceso,
-  columnaDefinitivo,
-  columnaTraslado,
-  columnaAbandono,
-];
+export const columnasAdminIndicadorAsistencia = columnasIndicadorAsistencia;
+export const columnasDirectorIndicadorAsistencia = columnasIndicadorAsistencia;
 
-export const columnasIndicadorDesercionesxiNivelGradoId = [
-  columnaIndex,
-  columnaSeccion,
-  columnaPorcentaje,
-  columnaTotal,
-  columnaOtro,
-  columnaDefinitiva,
-  columnaTemporal,
-];
+export const columnasAdminIndicadorDesempeno = columnasIndicadorDesempeno;
+export const columnasDirectorIndicadorDesempeno = columnasIndicadorDesempeno;
+
+export const columnasAdminIndicadorBajoRendimiento = columnasIndicadorBajoRendimiento;
+export const columnasDirectorIndicadorBajoRendimiento = columnasIndicadorBajoRendimiento;
+
+export const columnasAdminIndicadorVacantes = columnasIndicadorVacantes;
+export const columnasDirectorIndicadorVacantes = columnasIndicadorVacantes;
+
+// ============================
+// 🔹 Versiones extendidas por nivel/grado
+// ============================
+export const columnasIndicadorMatriculadosxiNivelGradoId = columnasIndicadorMatriculas;
+export const columnasIndicadorDesercionesxiNivelGradoId = columnasIndicadorDeserciones;

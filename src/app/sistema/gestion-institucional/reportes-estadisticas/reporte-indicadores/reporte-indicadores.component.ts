@@ -13,25 +13,16 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { GestionUsuariosService } from '@/app/sistema/administrador/gestion-usuarios/services/gestion-usuarios.service';
 import {
-  columnasAdminIndicadorAsistencia,
-  columnasAdminIndicadorBajoRendimiento,
-  columnasAdminIndicadorDesempeno,
-  columnasAdminIndicadorDeserciones,
-  columnasAdminIndicadorMatriculas,
-  columnasDirectorIndicadorAsistencia,
-  columnasDirectorIndicadorBajoRendimiento,
-  columnasDirectorIndicadorDesempeno,
-  columnasDirectorIndicadorDeserciones,
-  columnasDirectorIndicadorMatriculas,
-  columnasIndicadorDesercionesxiNivelGradoId,
-  columnasIndicadorMatriculadosxiNivelGradoId,
   indicadorBajoRendimiento,
   indicadorDesempeno,
   indicadorDeserciones,
   indicadorFaltasTardanzas,
   indicadorMatriculas,
+  indicadorVacantes,
   reportes,
 } from './constantes-indicadores';
+import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.service';
+import { CAMPOS_INDICADOR, COLORES_BASE, MAPEO_COLUMNAS } from './indicadores-mapeos';
 
 @Component({
   selector: 'app-reporte-indicadores',
@@ -54,9 +45,12 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   private _FormBuilder = inject(FormBuilder);
   private _LocalStoreService = inject(LocalStoreService);
   private _GestionUsuariosService = inject(GestionUsuariosService);
+  private _DatosInformesService = inject(DatosInformesService);
 
   isAdminDremo = signal<boolean>(this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO);
+  nivelTipos = signal<any[]>([]);
   instituciones = signal<any[]>([]);
+  institucionesxiNivelTipoId = signal<any[]>([]);
   sedes = signal<any[]>([]);
   gradosSecciones = signal<any[]>([]);
   grados = signal<any[]>([]);
@@ -105,6 +99,12 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       tab: 'resumen-bajo-rendimiento',
       opcion: indicadorBajoRendimiento,
     },
+    {
+      title: 'Vacantes',
+      icon: 'pi pi-id-card',
+      tab: 'resumen-vacantes',
+      opcion: indicadorVacantes,
+    },
   ]);
 
   reportes = signal<any>(reportes);
@@ -114,6 +114,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   formIndicadores = this._FormBuilder.nonNullable.group({
     iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
     iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
+    iNivelTipoId: [null],
     iIieeId: [null],
     iSedeId: [null],
     iNivelGradoId: [null],
@@ -122,6 +123,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
 
   ngOnInit(): void {
     if (this.isAdminDremo()) {
+      this.getNivelTipos();
       this.getIntitucionEducativa();
     } else {
       this.formIndicadores.controls.iSedeId.setValue(this._ConstantesService.iSedeId);
@@ -137,7 +139,6 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         this.selectTab.set(index !== -1 ? index : 0);
       }
     });
-    this.obtenerResultadosxIndicador();
   }
 
   obtenerOpcion() {
@@ -156,6 +157,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       return;
     }
     if (opcion) {
+      this.data.set([]);
       this._GeneralService
         .searchCalendario({
           json: JSON.stringify(this.formIndicadores.value),
@@ -184,53 +186,18 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerColumnasTabla() {
-    switch (this.obtenerOpcion()) {
-      case indicadorMatriculas:
-        if (this.formIndicadores.value.iNivelGradoId) {
-          this.columnasTabla.set(columnasIndicadorMatriculadosxiNivelGradoId);
-        } else {
-          this.columnasTabla.set(
-            this.isAdminDremo()
-              ? this.formIndicadores.value.iSedeId
-                ? columnasDirectorIndicadorMatriculas
-                : columnasAdminIndicadorMatriculas
-              : columnasDirectorIndicadorMatriculas
-          );
-        }
-        break;
-      case indicadorDeserciones:
-        if (this.formIndicadores.value.iNivelGradoId) {
-          this.columnasTabla.set(columnasIndicadorDesercionesxiNivelGradoId);
-        } else {
-          this.columnasTabla.set(
-            this.isAdminDremo()
-              ? this.formIndicadores.value.iSedeId
-                ? columnasDirectorIndicadorDeserciones
-                : columnasAdminIndicadorDeserciones
-              : columnasDirectorIndicadorDeserciones
-          );
-        }
-        break;
-      case indicadorFaltasTardanzas:
-        this.columnasTabla.set(
-          this.isAdminDremo()
-            ? columnasAdminIndicadorAsistencia
-            : columnasDirectorIndicadorAsistencia
-        );
-        break;
-      case indicadorDesempeno:
-        this.columnasTabla.set(
-          this.isAdminDremo() ? columnasAdminIndicadorDesempeno : columnasDirectorIndicadorDesempeno
-        );
-        break;
-      case indicadorBajoRendimiento:
-        this.columnasTabla.set(
-          this.isAdminDremo()
-            ? columnasAdminIndicadorBajoRendimiento
-            : columnasDirectorIndicadorBajoRendimiento
-        );
-        break;
+    const opcion = this.obtenerOpcion();
+    const columnasConfig = MAPEO_COLUMNAS[opcion];
+    if (!columnasConfig) return;
+
+    if (this.formIndicadores.value.iNivelGradoId && columnasConfig.nivelGrado) {
+      this.columnasTabla.set(columnasConfig.nivelGrado);
+      return;
     }
+
+    const esAdmin = this.isAdminDremo();
+    const columnas = esAdmin ? columnasConfig.admin : columnasConfig.director;
+    this.columnasTabla.set(columnas);
   }
 
   updateTab(event): void {
@@ -246,6 +213,13 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
     this.obtenerResultadosxIndicador();
   }
 
+  getNivelTipos() {
+    this._DatosInformesService
+      .obtenerParametros(this.formIndicadores.value)
+      .subscribe((data: any) => {
+        this.nivelTipos.set(this._DatosInformesService.getNivelesTipos(data?.nivel_tipos));
+      });
+  }
   getIntitucionEducativa() {
     this._GeneralService
       .searchCalAcademico({
@@ -280,10 +254,11 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerSedesIe() {
-    if (!this.formIndicadores.value.iIieeId) return;
+    this.formIndicadores.controls.iSedeId.setValue(null);
     this.formIndicadores.controls.iNivelGradoId.setValue(null);
     this.formIndicadores.controls.iSeccionId.setValue(null);
-    this.sedes.set([]);
+
+    if (!this.formIndicadores.value.iIieeId) return;
     this.data.set([]);
     this._GestionUsuariosService
       .obtenerSedesInstitucionEducativa(this.formIndicadores.value.iIieeId)
@@ -306,10 +281,25 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       });
   }
 
-  obtenerGradoSeccion() {
-    if (!this.formIndicadores.value.iSedeId) return;
+  obtenerInstituciones() {
+    this.institucionesxiNivelTipoId.set([]);
+    this.formIndicadores.controls.iIieeId.setValue(null);
+    this.formIndicadores.controls.iSedeId.setValue(null);
     this.formIndicadores.controls.iNivelGradoId.setValue(null);
     this.formIndicadores.controls.iSeccionId.setValue(null);
+    if (!this.formIndicadores.value.iNivelTipoId) return;
+    this.institucionesxiNivelTipoId.set(
+      this.instituciones().filter(
+        item => Number(item.iNivelTipoId) === this.formIndicadores.value.iNivelTipoId
+      )
+    );
+  }
+
+  obtenerGradoSeccion() {
+    this.formIndicadores.controls.iNivelGradoId.setValue(null);
+    this.formIndicadores.controls.iSeccionId.setValue(null);
+
+    if (!this.formIndicadores.value.iSedeId) return;
     this.data.set([]);
     this._GeneralService
       .searchCalendario({
@@ -347,6 +337,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerSecciones() {
+    this.formIndicadores.controls.iSeccionId.setValue(null);
     if (!this.formIndicadores.value.iNivelGradoId) return;
     this.secciones.set(
       this.gradosSecciones().filter(
@@ -357,51 +348,26 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
 
   generarGraficoDinamicoPie() {
     const data = this.data();
-    if (!data || data.length === 0) return;
+    if (!data?.length) return;
 
-    let campoLabel = 'Detalle';
-    if (
-      this.obtenerOpcion() === indicadorMatriculas ||
-      this.obtenerOpcion() === indicadorDeserciones
-    ) {
-      campoLabel = data[0].cSeccionNombre ? 'cSeccionNombre' : 'cGradoAbrevNombre';
-    }
-
-    const labels = data.map(item => item[campoLabel]);
-    const valores = data.map(item => Number(String(item.Porcentaje).replace('%', '')));
-
-    const colores = [
-      '#42A5F5',
-      '#66BB6A',
-      '#FFA726',
-      '#AB47BC',
-      '#FF7043',
-      '#26C6DA',
-      '#7E57C2',
-      '#EC407A',
-    ];
+    const labels = data.map(d => d.Detalle);
+    const valores = data.map(d => Number(String(d.Porcentaje).replace('%', '')));
 
     this.chartDataPie.set({
       labels,
       datasets: [
         {
           data: valores,
-          backgroundColor: colores.slice(0, labels.length),
-          hoverBackgroundColor: colores.slice(0, labels.length),
+          backgroundColor: COLORES_BASE.slice(0, labels.length),
         },
       ],
     });
 
     this.chartOptionsPie.set({
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#495057' },
-        },
+        legend: { position: 'bottom', labels: { color: '#495057' } },
         tooltip: {
-          callbacks: {
-            label: (context: any) => `${context.label}: ${context.raw}%`,
-          },
+          callbacks: { label: (ctx: any) => `${ctx.label}: ${ctx.raw}%` },
         },
       },
     });
@@ -409,95 +375,32 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
 
   generarGraficoDinamicoBar() {
     const data = this.data();
-    if (!data || data.length === 0) return;
-
     const opcion = this.obtenerOpcion();
+    const campos = CAMPOS_INDICADOR[opcion] ?? [];
 
-    // 🔹 Definir los campos (series) según el tipo de indicador
-    let campos: string[] = [];
-    switch (opcion) {
-      case indicadorMatriculas:
-        campos = ['En proceso', 'Definitivo', 'Traslado', 'Abandono'];
-        break;
-      case indicadorDeserciones:
-        campos = ['Otro', 'Definitiva', 'Temporal'];
-        break;
-      case indicadorFaltasTardanzas:
-        campos = ['Asistencia', 'Tardanza', 'Inasistencia'];
-        break;
-      case indicadorDesempeno:
-        campos = ['Excelente', 'Bueno', 'Regular'];
-        break;
-      case indicadorBajoRendimiento:
-        campos = ['Deficiente'];
-        break;
-    }
+    if (!data?.length || !campos.length) return;
 
-    // 🔹 Determinar qué columna usar como label del eje X
-    let campoLabel = 'Detalle';
-    if (data[0]?.cSeccionNombre) campoLabel = 'cSeccionNombre';
-    else if (data[0]?.cGradoAbrevNombre) campoLabel = 'cGradoAbrevNombre';
-
-    const labels = data.map(item => item[campoLabel]);
-
-    // 🔹 Paleta de colores (una por dataset)
-    const colores = [
-      '#42A5F5',
-      '#66BB6A',
-      '#FFA726',
-      '#AB47BC',
-      '#FF7043',
-      '#26C6DA',
-      '#7E57C2',
-      '#EC407A',
-    ];
-
-    // 🔹 Crear datasets dinámicos (uno por campo)
+    const labels = data.map(d => d.Detalle);
     const datasets = campos.map((campo, i) => ({
       label: campo,
-      data: data.map(item => Number(item[campo]) || 0), // Tomamos el valor numérico
-      backgroundColor: colores[i % colores.length],
-      borderColor: '#333',
-      borderWidth: 1,
+      data: data.map(d => Number(d[campo]) || 0),
+      backgroundColor: COLORES_BASE[i % COLORES_BASE.length],
     }));
 
-    // 🔹 Asignar datos al gráfico
-    this.chartDataBar.set({
-      labels,
-      datasets,
-    });
+    this.chartDataBar.set({ labels, datasets });
 
-    // 🔹 Opciones del gráfico
     this.chartOptionsBar.set({
-      indexAxis: 'x', // barras verticales
+      indexAxis: 'x',
       responsive: true,
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            color: '#495057',
-          },
-        },
+        legend: { position: 'bottom', labels: { color: '#495057' } },
         tooltip: {
-          callbacks: {
-            label: (context: any) => `${context.dataset.label}: ${context.raw}`,
-          },
+          callbacks: { label: (ctx: any) => `${ctx.dataset.label}: ${ctx.raw}` },
         },
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: '#495057',
-          },
-          grid: {
-            color: '#ebedef',
-          },
-        },
-        x: {
-          ticks: { color: '#495057' },
-          grid: { color: '#ebedef' },
-        },
+        y: { beginAtZero: true, ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
+        x: { ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
       },
     });
   }

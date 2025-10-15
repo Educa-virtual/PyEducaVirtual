@@ -1,8 +1,4 @@
-<p-panel>
-  <ng-template pTemplate="header">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Gestionar matrículas</h3>
-    </div>
-  </ng-template>
-  <app-gestionar-matriculas></app-gestionar-matriculas>
-</p-panel>
+<app-gestionar-matriculas
+  [titulo]="'Gestionar matrículas'"
+  [soloLectura]="false"
+></app-gestionar-matriculas>

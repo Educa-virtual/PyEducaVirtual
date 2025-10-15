@@ -133,15 +133,26 @@ export const administradorDremo = [
             routerLink: ['/actualizacion-docente/capacitaciones'],
           },
           {
+            label: 'Solicitudes',
+            icon: 'pi pi-file-plus',
+            routerLink: ['/actualizacion-docente/solicitudes'],
+          },
+          {
             label: 'Instructores',
             icon: 'pi pi-user',
             routerLink: ['/actualizacion-docente/instructores'],
           },
-          // {
-          //   label: 'Resultados del curso',
-          //   icon: 'pi pi-user',
-          //   routerLink: ['/actualizacion-docente/resultados'],
-          // },
+          {
+            label: 'Mantenimiento',
+            icon: 'pi pi-fw pi-cog',
+            items: [
+              {
+                label: 'Tipos de público',
+                icon: 'pi pi-users',
+                routerLink: ['/actualizacion-docente/mantenimiento/tipos-publico'],
+              },
+            ],
+          },
         ],
       },
       {

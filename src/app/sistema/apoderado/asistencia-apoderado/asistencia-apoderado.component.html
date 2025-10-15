@@ -1,0 +1,39 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<app-container-page [title]="'Asistencia de estudiantes'" [actions]="[]">
+  <div class="grid p-fluid mt-4">
+    <div class="field col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Estudiante:</p-inputGroupAddon>
+        <p-dropdown
+          [options]="dataEstudiantes"
+          optionLabel="cNombreCompleto"
+          optionValue="iEstudianteId"
+          [appendTo]="'body'"
+          [style]="{ flex: '1', width: '100%' }"
+          placeholder="Seleccione..."
+          [(ngModel)]="estudianteSeleccionado"
+          (onChange)="obtenerMatriculasEstudiante()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="field col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon class="mi-addon-primary">Matrícula:</p-inputGroupAddon>
+        <p-dropdown
+          [options]="dataMatriculas"
+          optionLabel="cMatriculaMostrar"
+          optionValue="iMatrId"
+          [appendTo]="'body'"
+          [style]="{ flex: '1', width: '100%' }"
+          placeholder="Seleccione..."
+          [(ngModel)]="matriculaSeleccionada"
+        />
+      </p-inputGroup>
+    </div>
+  </div>
+  <div class="block mt-3">
+    @if (matriculaSeleccionada) {
+      <app-asistencia [iMatrId]="matriculaSeleccionada"></app-asistencia>
+    }
+  </div>
+</app-container-page>

@@ -131,8 +131,15 @@
             appendTo="body"
             [style]="{ flex: '1', width: '100%' }"
           >
+            <ng-template let-item pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2" [style.font-family]="item.cFuenteCSS">
+                <div>{{ item.label }}</div>
+              </div>
+            </ng-template>
             <ng-template let-item pTemplate="item">
-              <span [style.font-family]="item.cFuenteNombre">{{ item.cFuenteNombre }}</span>
+              <div class="flex align-items-center gap-2" [style.font-family]="item.cFuenteCSS">
+                <div>{{ item.label }}</div>
+              </div>
             </ng-template>
           </p-dropdown>
           <p-overlayPanel #iFuenteId showCloseIcon="true" appendTo="body">

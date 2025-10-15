@@ -141,6 +141,21 @@ export class GestionEncuestasComponent implements OnInit {
     }
   }
 
+  confirmarGenerarEncuestasMasivo() {
+    this.confirmService.openConfirm({
+      header:
+        'Se generarán las encuestas usando la última plantilla registrada por su usuario. La población objetivo y los permisos se asignarán por defecto según su jurisdicción.' +
+        (this.perfil.iPerfilId === DIRECTOR_IE
+          ? ' Esta acción reeemplazará todas las encuestas existentes que fueron registradas por el administrador DREMO y que aún no han sido respondidas por los estudiantes de su I.E.'
+          : '') +
+        ' ¿Está seguro(a) de generar las encuestas?',
+      accept: () => {
+        this.generarEncuestaPlantilla();
+      },
+      reject: () => {},
+    });
+  }
+
   generarEncuestaPlantilla(encuesta_reemplazada: any | null = null) {
     this.messageService.clear();
     if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
@@ -196,9 +211,7 @@ export class GestionEncuestasComponent implements OnInit {
         next: (data: any) => {
           this.categoria = data.data;
           this.setBreadCrumbs();
-          this.puede_generar_fija =
-            Number(this.categoria?.bEsFija) === 1 &&
-            Number(this.categoria?.iTotalEncuestasFijasSede) === 0;
+          this.puede_generar_fija = Number(this.categoria?.bEsFija) === 1;
         },
         error: error => {
           console.error('Error obteniendo datos:', error);

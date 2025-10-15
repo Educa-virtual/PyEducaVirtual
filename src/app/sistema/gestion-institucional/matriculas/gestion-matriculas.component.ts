@@ -189,7 +189,6 @@ export class GestionMatriculasComponent implements OnInit {
       this.update = true;
       this.caption = 'Actualizar deserción de : ' + this.matricula._cPersNomape;
       this.desercion = item;
-      console.log(item, 'item desercion');
     }
 
     if (accion === 'agregar_desercion') {
@@ -199,8 +198,8 @@ export class GestionMatriculasComponent implements OnInit {
       this.iEstudianteId = item?.iEstudianteId;
       this.visible_desercion = true;
       this.grado = item.cGradoNombre;
-      this.getDesercionesByMatricula(item);
-      // this.getDesercion(item.iMatrId);
+      //this.getDesercionesByMatricula(item);
+      this.getDesercion(item.iMatrId);
     }
 
     if (accion === 'editar_estudiante') {
@@ -355,7 +354,6 @@ export class GestionMatriculasComponent implements OnInit {
     if (this.secciones.length === 1) {
       this.form.get('iSeccionId')?.setValue(this.secciones[0]['id']);
     }
-    console.log(this.secciones, 'secciones');
   }
 
   getTiposMatriculas() {
@@ -465,7 +463,7 @@ export class GestionMatriculasComponent implements OnInit {
           this._MessageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error.' + error.error.message,
+            detail: 'Error: ' + error.error.message,
           });
         },
         complete: () => {
@@ -502,7 +500,7 @@ export class GestionMatriculasComponent implements OnInit {
           this._MessageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error.' + error.error.message,
+            detail: 'Error : ' + error.error.message,
           });
         },
         complete: () => {
@@ -513,6 +511,8 @@ export class GestionMatriculasComponent implements OnInit {
           });
           //this.showModal = false;
           this.getDesercion(item.iMatrId);
+          this.desercion = null;
+          this.update = false;
         },
       });
   }

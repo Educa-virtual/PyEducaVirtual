@@ -196,6 +196,7 @@ export class InformacionComponent implements OnInit {
   }
 
   async onUploadChange(evt: any, tipo: any) {
+    alert(this.ruta_imagen);
     const file = evt.target.files[0];
     if (file) {
       const dataFile = await this.objectToFormData({

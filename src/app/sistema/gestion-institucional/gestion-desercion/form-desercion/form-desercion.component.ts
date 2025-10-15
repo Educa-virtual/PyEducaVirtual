@@ -35,6 +35,7 @@ export class FormDesercionComponent implements OnChanges {
   estudiante: string = '';
   bUpdate: boolean = false;
   seccion: string = '';
+  fechaInvalida: boolean = false;
 
   private _confirmService = inject(ConfirmationModalService);
 
@@ -51,7 +52,7 @@ export class FormDesercionComponent implements OnChanges {
       iTipoDesercionId: [0, Validators.required],
       cMotivoDesercion: [null],
       dInicioDesercion: [null, Validators.required],
-      dFinDesercion: [null],
+      dFinDesercion: [null], // ← inicialmente deshabilitado
       iEstado: [0],
     });
   }
@@ -59,6 +60,7 @@ export class FormDesercionComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.matricula = {};
     this.desercion = {};
+
     // if(this.desercion.length>0){this.bValido = true}else{this.bValido = false}
     if (changes['matricula']?.currentValue) {
       this.matricula = changes['matricula'].currentValue;
@@ -89,6 +91,17 @@ export class FormDesercionComponent implements OnChanges {
     }
   }
 
+  limpiar() {
+    this.formDesercion.get('iDesercionId')?.reset();
+    this.formDesercion.get('cPersDocumento')?.reset();
+    this.formDesercion.get('dInicioDesercion')?.reset();
+    this.formDesercion.get('dFinDesercion')?.reset();
+    this.formDesercion.get('iTipoDesercionId')?.setValue(0);
+    this.formDesercion.get('cMotivoDesercion')?.reset();
+    this.formDesercion.get('iEstado')?.setValue(0);
+    this.bUpdate = false;
+  }
+
   cargarDatos(): void {
     const item = this.desercion ?? {};
 
@@ -115,6 +128,7 @@ export class FormDesercionComponent implements OnChanges {
 
   inicializar(): void {
     this.formDesercion.reset();
+    this.bUpdate = false;
     this.bValido = false;
     this.estudiante = '';
 
@@ -163,6 +177,44 @@ export class FormDesercionComponent implements OnChanges {
   //     this.estudiante = 'No se encontró estudiante con ese documento';
   //   }
   // }
+
+  validarFechas(): void {
+    const inicio = this.formDesercion.get('dInicioDesercion')?.value;
+    const fin = this.formDesercion.get('dFinDesercion')?.value;
+
+    if (inicio === null || inicio === undefined || inicio === '') {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Error',
+        detail: 'Debe ingresar una fecha valida.',
+      });
+      this.fechaInvalida = false;
+      return;
+    } else {
+      this.fechaInvalida = true;
+    }
+
+    if (fin != null && fin != undefined && fin != '') {
+      const fechaInicio = new Date(inicio);
+      const fechaFin = new Date(fin);
+
+      // Validar rango
+      if (fechaFin < fechaInicio) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+        });
+        this.formDesercion.get('dFinDesercion')?.setValue(null);
+      } else {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje de validación',
+          detail: 'La fecha de fin válida.',
+        });
+      }
+    }
+  }
 
   validarDocumento(): void {
     let documento;

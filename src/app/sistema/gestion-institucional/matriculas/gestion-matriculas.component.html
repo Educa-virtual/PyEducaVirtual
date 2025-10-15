@@ -1,3 +1,4 @@
+<p-toast />
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column gap-2">
@@ -121,7 +122,7 @@
   [draggable]="true"
   appendTo="body"
 >
-  <p-splitter [panelSizes]="[30, 70]" [style]="{ height: '90%' }" styleClass="mb-5">
+  <p-splitter [panelSizes]="[30, 70]" [style]="{ height: '90%' }" styleClass="flex-col md:flex-row">
     <!--Bloque para buscador-->
     <ng-template pTemplate>
       <p-fieldset legend="Registrar deserción" [toggleable]="true">

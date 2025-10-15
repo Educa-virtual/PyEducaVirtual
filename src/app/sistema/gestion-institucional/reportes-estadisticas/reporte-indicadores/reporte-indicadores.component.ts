@@ -254,6 +254,9 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerSedesIe() {
+    this.sedes.set([]);
+    this.grados.set([]);
+    this.secciones.set([]);
     this.formIndicadores.controls.iSedeId.setValue(null);
     this.formIndicadores.controls.iNivelGradoId.setValue(null);
     this.formIndicadores.controls.iSeccionId.setValue(null);
@@ -282,7 +285,11 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerInstituciones() {
+    this.sedes.set([]);
+    this.grados.set([]);
+    this.secciones.set([]);
     this.institucionesxiNivelTipoId.set([]);
+
     this.formIndicadores.controls.iIieeId.setValue(null);
     this.formIndicadores.controls.iSedeId.setValue(null);
     this.formIndicadores.controls.iNivelGradoId.setValue(null);
@@ -296,6 +303,8 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerGradoSeccion() {
+    this.grados.set([]);
+    this.secciones.set([]);
     this.formIndicadores.controls.iNivelGradoId.setValue(null);
     this.formIndicadores.controls.iSeccionId.setValue(null);
 
@@ -337,6 +346,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   }
 
   obtenerSecciones() {
+    this.secciones.set([]);
     this.formIndicadores.controls.iSeccionId.setValue(null);
     if (!this.formIndicadores.value.iNivelGradoId) return;
     this.secciones.set(

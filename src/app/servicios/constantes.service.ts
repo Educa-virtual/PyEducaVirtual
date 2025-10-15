@@ -177,6 +177,11 @@ const docente = [
                   },
                   */
       {
+        label: 'Estudiantes y apoderados',
+        icon: 'pi pi-user',
+        routerLink: ['estudiantes-apoderados'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
@@ -704,10 +709,10 @@ const administracion = [
         icon: 'pi pi-folder',
         items: [
           {
-            label: 'Gestionar matriculas',
+            label: 'Gestionar matrículas',
             icon: 'pi pi-fw pi-file-edit',
             badge: '',
-            routerLink: ['/gestion-institucional/gestion-matriculas'],
+            routerLink: ['/gestion-institucional/gestionar-matriculas'],
           },
           // {
           //   label: 'Matrícula Individual',
@@ -958,7 +963,7 @@ const apoderado = [
           /*{
                       label: 'Académico',
                       icon: 'pi pi-fw pi-chart-bar',
-                      routerLink: ['/estudiante/reportes-academicos/acadeamico'],
+                      routerLink: ['/estudiante/reportes-academicos/academico'],
                     },
                     {
                       label: 'Resultados ERE',
@@ -1012,6 +1017,11 @@ const auxiliar = [
           },
         ],
       },
+      {
+        label: 'Estudiantes y apoderados',
+        icon: 'pi pi-user',
+        routerLink: ['estudiantes-apoderados'],
+      },
     ],
   },
 ];
@@ -1052,6 +1062,11 @@ const asistente_social = [
         routerLink: ['/bienestar/informe-estadistico'],
       },
     ],
+  },
+  {
+    label: 'Estudiantes y apoderados',
+    icon: 'pi pi-user',
+    routerLink: ['estudiantes-apoderados'],
   },
 ];
 

@@ -8,9 +8,10 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { FormBuilder, Validators } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
+import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 
 @Component({
   selector: 'app-form-desercion',
@@ -19,8 +20,7 @@ import { PrimengModule } from '@/app/primeng.module';
   templateUrl: './form-desercion.component.html',
   styleUrl: './form-desercion.component.scss',
 })
-export class FormDesercionComponent implements OnChanges {
-  formDesercion: FormGroup;
+export class FormDesercionComponent extends MostrarErrorComponent implements OnChanges {
   @Input() matricula: any = {};
   @Input() matriculas_filtradas: any = []; //matriculas activas o matriculas de desercion
   @Input() titulo: string = 'Registrar deserciones en IE';
@@ -38,24 +38,19 @@ export class FormDesercionComponent implements OnChanges {
   fechaInvalida: boolean = false;
 
   private _confirmService = inject(ConfirmationModalService);
+  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
+  private fb = inject(FormBuilder);
 
-  constructor(
-    private fb: FormBuilder,
-    private messageService: MessageService
-
-    // private confirmationService: ConfirmationService,
-  ) {
-    this.formDesercion = this.fb.group({
-      iDesercionId: [null],
-      cPersDocumento: [null],
-      iMatrId: [null, Validators.required],
-      iTipoDesercionId: [0, Validators.required],
-      cMotivoDesercion: [null],
-      dInicioDesercion: [null, Validators.required],
-      dFinDesercion: [null], // ← inicialmente deshabilitado
-      iEstado: [0],
-    });
-  }
+  formDesercion = this.fb.group({
+    iDesercionId: [null],
+    cPersDocumento: [null],
+    iMatrId: [null, Validators.required],
+    iTipoDesercionId: ['0', Validators.required],
+    cMotivoDesercion: [null, Validators.required],
+    dInicioDesercion: this.fb.control<Date | null>(null, Validators.required),
+    dFinDesercion: this.fb.control<Date | null>(null, Validators.required),
+    iEstado: [false],
+  });
 
   ngOnChanges(changes: SimpleChanges): void {
     this.matricula = {};
@@ -92,13 +87,15 @@ export class FormDesercionComponent implements OnChanges {
   }
 
   limpiar() {
-    this.formDesercion.get('iDesercionId')?.reset();
-    this.formDesercion.get('cPersDocumento')?.reset();
-    this.formDesercion.get('dInicioDesercion')?.reset();
-    this.formDesercion.get('dFinDesercion')?.reset();
-    this.formDesercion.get('iTipoDesercionId')?.setValue(0);
-    this.formDesercion.get('cMotivoDesercion')?.reset();
-    this.formDesercion.get('iEstado')?.setValue(0);
+    this.formDesercion.patchValue({
+      iDesercionId: null,
+      cPersDocumento: null,
+      dInicioDesercion: null,
+      dFinDesercion: null,
+      iTipoDesercionId: '0',
+      cMotivoDesercion: null,
+    });
+
     this.bUpdate = false;
   }
 
@@ -141,6 +138,25 @@ export class FormDesercionComponent implements OnChanges {
   }
   //metos para abrir y cerrar modal
   procesar(accion: string) {
+    const nombresCampos: Record<string, string> = {
+      iTipoDesercionId: 'Tipo de deserción',
+      cMotivoDesercion: 'Motivo',
+      dInicioDesercion: 'Fecha de inicio',
+      dFinDesercion: 'Fecha de término',
+    };
+
+    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
+      this.formDesercion,
+      nombresCampos
+    );
+
+    if (!valid && message) {
+      this.mostrarMensajeToast(message);
+      return;
+    }
+
+    this.validarFechas();
+    if (this.fechaInvalida) return;
     this._confirmService.openConfirm({
       header: '¿Está seguro de guardar los cambios?',
       accept: () => {
@@ -179,40 +195,56 @@ export class FormDesercionComponent implements OnChanges {
   // }
 
   validarFechas(): void {
-    const inicio = this.formDesercion.get('dInicioDesercion')?.value;
-    const fin = this.formDesercion.get('dFinDesercion')?.value;
+    const inicio = this.formDesercion.get('dInicioDesercion')?.value as Date | string | null;
+    const fin = this.formDesercion.get('dFinDesercion')?.value as Date | string | null;
 
-    if (inicio === null || inicio === undefined || inicio === '') {
+    // Validar que haya fecha de inicio
+    if (!inicio) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Error',
-        detail: 'Debe ingresar una fecha valida.',
+        detail: 'Debe ingresar una fecha válida.',
       });
-      this.fechaInvalida = false;
+      this.fechaInvalida = true; // Se marca inválida
       return;
-    } else {
-      this.fechaInvalida = true;
     }
 
-    if (fin != null && fin != undefined && fin != '') {
-      const fechaInicio = new Date(inicio);
-      const fechaFin = new Date(fin);
+    // Si no hay fecha de fin, no hay más que validar
+    if (!fin) {
+      this.fechaInvalida = false;
+      return;
+    }
 
-      // Validar rango
-      if (fechaFin < fechaInicio) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'La fecha de fin no puede ser anterior a la fecha de inicio.',
-        });
-        this.formDesercion.get('dFinDesercion')?.setValue(null);
-      } else {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje de validación',
-          detail: 'La fecha de fin válida.',
-        });
-      }
+    // Convertir a Date si son string
+    const fechaInicio = inicio instanceof Date ? inicio : new Date(inicio);
+    const fechaFin = fin instanceof Date ? fin : new Date(fin);
+
+    if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Error',
+        detail: 'Fechas no válidas.',
+      });
+      this.fechaInvalida = true;
+      return;
+    }
+
+    // Validar rango correcto
+    if (fechaFin < fechaInicio) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+      });
+      this.formDesercion.get('dFinDesercion')?.setValue(null);
+      this.fechaInvalida = true;
+    } else {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Validación',
+        detail: 'La fecha de fin es válida.',
+      });
+      this.fechaInvalida = false;
     }
   }
 

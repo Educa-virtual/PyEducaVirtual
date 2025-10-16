@@ -84,7 +84,7 @@ export class GestionMatriculasComponent implements OnInit {
     private fb: FormBuilder
   ) {
     const perfil = this.store.getItem('dremoPerfil');
-    console.log(perfil, 'perfil dremo', this.store);
+
     this.iSedeId = perfil.iSedeId;
   }
 
@@ -237,7 +237,6 @@ export class GestionMatriculasComponent implements OnInit {
         next: (data: any) => {
           this.matriculas = data.data;
           this.matriculas_filtradas = this.matriculas;
-          console.log(this.matriculas, 'matriculas');
         },
         error: error => {
           console.error('Error al obtener matriculas:', error);
@@ -256,7 +255,6 @@ export class GestionMatriculasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          console.log(data.data);
           this.grados_secciones_turnos = data.data;
           this.filterGrados();
         },
@@ -310,7 +308,6 @@ export class GestionMatriculasComponent implements OnInit {
         return prev;
       }
     }, []);
-    console.log(this.nivel_grados, 'nivel grados');
   }
 
   filterTurnos(iNivelGradoId: any) {
@@ -371,7 +368,6 @@ export class GestionMatriculasComponent implements OnInit {
             id: tipo.iTipoMatrId,
             nombre: tipo.cTipoMatrNombre,
           }));
-          console.log(this.tipos_matriculas, 'tipos de matriculas');
         },
         error: error => {
           console.error('Error consultando tipos de matriculas:', error);
@@ -383,9 +379,9 @@ export class GestionMatriculasComponent implements OnInit {
   }
 
   //Maquetar tablas
-  handleActions(actions) {
-    console.log(actions);
-  }
+  // handleActions(actions) {
+  //   console.log(actions);
+  // }
 
   agregarMatricula() {
     this.router.navigate(['/gestion-institucional/matricula-individual']);

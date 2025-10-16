@@ -24,7 +24,7 @@
   <p-panel header="Aplicar Filtros" [toggleable]="true">
     <form [formGroup]="form">
       <div class="grid p-fluid m-0">
-        <div class="field col-12 md:col-3">
+        <div class="col-12 lg:col-4">
           <p-inputGroup>
             <p-inputGroupAddon>Nivel Grado</p-inputGroupAddon>
             <p-dropdown
@@ -40,15 +40,15 @@
           </p-inputGroup>
         </div>
 
-        <div class="field col-12 md:col-3">
-          <!-- <span class="p-float-label">
+        <!-- <div class="field col-12 md:col-3">
+          <span class="p-float-label">
                         <p-dropdown [options]="turnos" formControlName="iTurnoId" optionLabel="nombre" optionValue="id"
                             [filter]="true" [showClear]="true" [appendTo]="'body'"></p-dropdown>
                         <label for="iTurnoId">Turno</label>
-                    </span> -->
-        </div>
+                    </span> 
+        </div> -->
 
-        <div class="field col-12 md:col-3">
+        <div class="col-12 lg:col-4">
           <p-inputGroup>
             <p-inputGroupAddon>Sección</p-inputGroupAddon>
             <p-dropdown
@@ -64,13 +64,13 @@
           </p-inputGroup>
         </div>
 
-        <div class="field col-12 md:col-3">
-          <!-- <span class="p-float-label">
+        <!-- <div class="field col-12 md:col-3">
+          <span class="p-float-label">
                         <p-dropdown [options]="tipos_matriculas" formControlName="iTipoMatrId" optionLabel="nombre"
                             optionValue="id" [filter]="true" [showClear]="true" [appendTo]="'body'"></p-dropdown>
                         <label for="iTipoMatrId">Tipo</label>
-                    </span> -->
-        </div>
+                    </span>
+        </div> -->
       </div>
     </form>
   </p-panel>
@@ -121,8 +121,9 @@
   [closable]="true"
   [draggable]="true"
   appendTo="body"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
 >
-  <p-splitter [panelSizes]="[30, 70]" [style]="{ height: '90%' }" styleClass="flex-col md:flex-row">
+  <p-splitter [panelSizes]="[30, 60]" [style]="{ height: '90%' }" styleClass="flex-col md:flex-row">
     <!--Bloque para buscador-->
     <ng-template pTemplate>
       <p-fieldset legend="Registrar deserción" [toggleable]="true">
@@ -140,8 +141,8 @@
     </ng-template>
     <ng-template pTemplate>
       <div [style]="{ width: '100%' }">
-        <div class="card">
-          <div class="field col-12">
+        <div class="card grid">
+          <div class="col-12">
             <p-tabView [(activeIndex)]="activeIndex">
               <p-tabPanel>
                 <ng-template pTemplate="header">
@@ -153,7 +154,7 @@
 
                 <div class="flex align-items-center">
                   <p-avatar icon="pi pi-user" shape="circle" />
-                  <span class="font-bold white-space-nowrap m-0">
+                  <span class="font-bold text-center m-0">
                     Historial de deserciones - {{ matricula._cPersNomape }}
                   </span>
                 </div>

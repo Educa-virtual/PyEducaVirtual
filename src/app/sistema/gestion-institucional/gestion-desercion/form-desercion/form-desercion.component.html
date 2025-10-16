@@ -56,38 +56,33 @@
       </span>
     </div>
 
-    <div class="field col-12 md:col-6">
+    <div class="field col-12 lg:col-6">
       <span class="p-float-label">
         <p-calendar
           appendTo="body"
           [showOnFocus]="false"
-          inputStyleClass="w-full"
           styleClass="w-full"
           formControlName="dInicioDesercion"
           [iconDisplay]="'input'"
           [showIcon]="true"
           inputId="dInicioDesercion"
-          (onBlur)="validarFechas()"
           aria-describedby="dInicioDesercion-help"
         />
         <label for="dInicioDesercion">Fecha inicio</label>
       </span>
     </div>
 
-    <div class="field col-12 md:col-6">
+    <div class="field col-12 lg:col-6">
       <span class="p-float-label">
         <p-calendar
-          *ngIf="fechaInvalida"
           appendTo="body"
           [showOnFocus]="false"
-          inputStyleClass="w-full"
           styleClass="w-full"
           formControlName="dFinDesercion"
           [iconDisplay]="'input'"
           [showIcon]="true"
           inputId="dFinDesercion"
           aria-describedby="dFinDesercion-help"
-          (onBlur)="validarFechas()"
         />
         <label for="dFinDesercion">Fecha fin</label>
       </span>

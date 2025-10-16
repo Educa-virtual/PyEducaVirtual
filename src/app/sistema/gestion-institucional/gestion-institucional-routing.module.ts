@@ -24,14 +24,15 @@ import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-us
 
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
-import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component';
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component';
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
 import { YearsComponent } from './years/years.component';
-import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { ADMINISTRADOR_DREMO, DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { GestionarMatriculasDirectorComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas-director/gestionar-matriculas-director.component';
+import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-indicadores/reporte-indicadores.component';
 const routes: Routes = [
   { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
   { path: 'years-academicos', component: YearsComponent },
@@ -127,7 +128,7 @@ const routes: Routes = [
         c => c.ConfiguracionHorarioComponent
       ),
   },
-  { path: 'gestion-matriculas', component: GestionMatriculasComponent },
+  { path: 'gestionar-matriculas', component: GestionarMatriculasDirectorComponent },
   { path: 'matricula-individual', component: MatriculaIndividualComponent },
   { path: 'matricula-masiva', component: MatriculaMasivaComponent },
 
@@ -147,6 +148,17 @@ const routes: Routes = [
       expectedRole: [DIRECTOR_IE],
       breadcrumb: 'calendario-escolar',
       icon: 'pi pi-book',
+    },
+  },
+
+  {
+    path: 'reporte-indicadores',
+    component: ReporteIndicadoresComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE],
+      breadcrumb: 'Reporte de indicadores',
+      icon: 'pi pi-folder-open',
     },
   },
 ];

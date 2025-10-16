@@ -1,0 +1,160 @@
+<app-toolbar-primeng title="Reporte de Indicadores"> </app-toolbar-primeng>
+<div class="card">
+  <form [formGroup]="formIndicadores" class="grid">
+    @if (isAdminDremo()) {
+      <div class="col-12 lg:col-3">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+          <p-dropdown
+            [options]="nivelTipos()"
+            [showClear]="true"
+            formControlName="iNivelTipoId"
+            placeholder="Seleccione un nivel"
+            styleClass="w-full"
+            appendTo="body"
+            (onChange)="obtenerInstituciones()"
+            (onClear)="obtenerInstituciones()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Institución Educativa</p-inputGroupAddon>
+          <p-dropdown
+            [options]="institucionesxiNivelTipoId()"
+            optionLabel="cNombre"
+            optionValue="iIieeId"
+            styleClass="w-full"
+            [filter]="true"
+            filterBy="cIieeNombre"
+            [showClear]="true"
+            placeholder="Seleccionar una Institución Educativa"
+            (onChange)="obtenerSedesIe()"
+            (onClear)="obtenerSedesIe()"
+            formControlName="iIieeId"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-3">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sede</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            [options]="sedes()"
+            formControlName="iSedeId"
+            [showClear]="true"
+            placeholder="Seleccione opción"
+            styleClass="w-full"
+            (onChange)="obtenerGradoSeccion()"
+            (onClear)="obtenerGradoSeccion()"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+    }
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Grado</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Grado"
+          optionValue="iNivelGradoId"
+          [showClear]="true"
+          [options]="grados()"
+          optionLabel="cGradoNombre"
+          formControlName="iNivelGradoId"
+          (onChange)="obtenerSecciones()"
+          (onClear)="obtenerSecciones()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Sección</p-inputGroupAddon>
+        <p-dropdown
+          styleClass="w-full"
+          placeholder="Sección"
+          [showClear]="true"
+          optionValue="iSeccionId"
+          [options]="secciones()"
+          optionLabel="cSeccionNombre"
+          formControlName="iSeccionId"
+          (onClear)="formIndicadores.controls.iSeccionId.setValue(null)"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-6 flex justify-content-end gap-2">
+      <p-button
+        pRipple
+        severity="primary"
+        label="Buscar"
+        icon="pi pi-search"
+        (onClick)="obtenerResultadosxIndicador()"
+      />
+      <!-- <p-button
+        pRipple
+        severity="success"
+        label="Exportar"
+        icon="pi pi-fw pi-print"
+        [disabled]="true"
+      /> -->
+    </div>
+    <app-tabs-primeng
+      class="col-12"
+      [activeIndex]="selectTab()"
+      [tabs]="tabs()"
+      [getIndex]="false"
+      (updateTab)="updateTab($event)"
+    >
+    </app-tabs-primeng>
+    @if (data().length) {
+      @for (reporte of reportes(); track reporte.key) {
+        @if (tabSeleccionado() === reporte.key) {
+          <div class="col-12">
+            <div class="grid relative my-3">
+              <samp class="tag" [style.backgroundColor]="reporte.color">
+                {{ reporte.titulo }}
+              </samp>
+              @if (showGrafica()) {
+                <div class="col-12 lg:col-6 mt-4">
+                  <p-chart
+                    type="pie"
+                    [data]="chartDataPie()"
+                    [options]="chartOptionsPie()"
+                    [plugins]="piePlugin"
+                    height="300px"
+                  />
+                </div>
+                <div class="col-12 lg:col-6 mt-4">
+                  <p-chart
+                    type="bar"
+                    [data]="chartDataBar()"
+                    [options]="chartOptionsBar()"
+                    height="300px"
+                  />
+                </div>
+              }
+
+              <div class="col-12 mt-4">
+                <app-table-primeng
+                  [columnas]="columnasTabla()"
+                  [showCaption]="false"
+                  [data]="data()"
+                  [showPaginator]="true"
+                  [showSortIcon]="true"
+                  [actions]="[]"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      }
+    } @else {
+      <div class="col-12">
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
+      </div>
+    }
+  </form>
+</div>
+<p-toast></p-toast>

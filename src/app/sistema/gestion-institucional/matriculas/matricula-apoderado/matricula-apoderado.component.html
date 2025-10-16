@@ -1,7 +1,7 @@
 <p-tabView>
   <p-toast />
   <p-tabPanel header="Historial de apoderados">
-    <form [formGroup]="frmApoderado">
+    <form [formGroup]="frmApoderado" *ngIf="!soloLectura">
       <div class="grid p-fluid mt-3">
         <div class="field col-5">
           <span class="p-float-label">
@@ -83,33 +83,39 @@
         </div>
       </div>
     </form>
-    <p-panel>
-      <!-- <p-fieldset legend="Historial de apoderados" [toggleable]="true" [collapsed]="false"> -->
-      <div>
-        @if (apoderados.length > 0) {
-          <app-table-primeng
-            [columnas]="columns"
-            [data]="apoderados"
-            [showCaption]="false"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="true"
-            [(selectedRowData)]="selectedItems"
-            [actions]="actions"
-            [showAdvancedFilter]="true"
-          >
-          </app-table-primeng>
-        } @else {
-          <p-message
-            severity="info"
-            text="No se encontraron apoderados registrados."
-            styleClass="p-mr-2"
-          >
-          </p-message>
-        }
+
+    <!-- <p-fieldset legend="Historial de apoderados" [toggleable]="true" [collapsed]="false"> -->
+
+    @if (apoderados.length > 0) {
+      <div class="flex justify-content-end mb-2">
+        <button
+          pButton
+          pRipple
+          label="Exportar"
+          class="p-button-success"
+          (click)="exportarApoderados()"
+        ></button>
       </div>
-    </p-panel>
+      <app-table-primeng
+        [columnas]="columns"
+        [data]="apoderados"
+        [showCaption]="false"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+      >
+      </app-table-primeng>
+    } @else {
+      <p-message
+        severity="info"
+        text="No se encontraron apoderados registrados."
+        styleClass="p-mr-2"
+      >
+      </p-message>
+    }
   </p-tabPanel>
-  <p-tabPanel header="Registrar apoderado">
+  <p-tabPanel header="Registrar apoderado" *ngIf="!soloLectura">
     <form [formGroup]="form">
       <div class="grid p-fluid mt-3">
         <div class="field col-12 md:col-6">

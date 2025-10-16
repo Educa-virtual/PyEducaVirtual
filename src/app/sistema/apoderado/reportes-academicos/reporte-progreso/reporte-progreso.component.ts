@@ -1,8 +1,8 @@
+import { ApoderadoService } from './../../apoderado.service';
 import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TablaReporteProgresoComponent } from '@/app/sistema/estudiante/reportes-academicos/tabla-reporte-progreso/tabla-reporte-progreso.component';
-import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ReporteProgresoService } from './services/reporte-progreso.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class ReporteProgresoComponent implements OnInit {
   constructor(
     private reporteProgresoService: ReporteProgresoService,
     private messageService: MessageService,
-    private store: LocalStoreService
+    private apoderadoService: ApoderadoService
   ) {}
 
   ngOnInit() {
@@ -47,7 +47,7 @@ export class ReporteProgresoComponent implements OnInit {
   }
 
   obtenerEstudiantesApoderado() {
-    this.reporteProgresoService.obtenerEstudiantesApoderado().subscribe({
+    this.apoderadoService.obtenerEstudiantesApoderado().subscribe({
       next: (response: any) => {
         this.dataEstudiantes = response.data;
       },
@@ -60,9 +60,9 @@ export class ReporteProgresoComponent implements OnInit {
       },
     });
   }
-  //cGradoAbreviacion, cSeccionNombre, cNivelTipoNombre, cIieeNombre, iYearId
+
   obtenerMatriculasEstudiante() {
-    this.reporteProgresoService.obtenerMatriculasEstudiante(this.estudianteSeleccionado).subscribe({
+    this.apoderadoService.obtenerMatriculasEstudiante(this.estudianteSeleccionado).subscribe({
       next: (response: any) => {
         this.dataMatriculas = response.data.map((matricula: any) => ({
           ...matricula,

@@ -1,0 +1,20 @@
+<app-toolbar-primeng title="Tipos de público" [butons]="btnAccion()"></app-toolbar-primeng>
+<div class="grid">
+  <div class="col-12">
+    <app-table-primeng
+      [data]="data()"
+      [columnas]="columnasTabla()"
+      (accionBtnItem)="accionBnt($event)"
+      [actions]="accionesTabla()"
+    ></app-table-primeng>
+  </div>
+</div>
+
+<app-form-tipo-publico
+  [showModal]="showModal()"
+  [data]="dataItem()"
+  (closeModal)="showModal.set(false)"
+  (recargarLista)="obtenerTipoPublicos(true)"
+></app-form-tipo-publico>
+
+<p-toast></p-toast>

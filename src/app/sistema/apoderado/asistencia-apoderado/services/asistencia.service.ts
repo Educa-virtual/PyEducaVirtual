@@ -5,15 +5,13 @@ import { environment } from '@/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class ReporteProgresoService {
+export class AsistenciaService {
   private urlBackendApi = environment.backendApi;
   private http = inject(HttpClient);
 
   constructor() {}
 
-  obtenerReporteProgreso(iMatrId) {
-    return this.http.get(
-      `${this.urlBackendApi}/acad/apoderados/reportes-academicos/progreso/${iMatrId}`
-    );
+  obtenerAsistenciaEstudiante(iMatrId) {
+    return this.http.get(`${this.urlBackendApi}/acad/apoderados/asistencia/${iMatrId}`);
   }
 }

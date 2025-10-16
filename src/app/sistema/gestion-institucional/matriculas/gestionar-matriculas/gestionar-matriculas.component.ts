@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import {
   IActionTable,
@@ -11,23 +11,24 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { DatosMatriculaService } from '../services/datos-matricula.service';
+import { DatosMatriculaService } from '../../services/datos-matricula.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
-import { CompartirMatriculaService } from '../services/compartir-matricula.service';
-import { CompartirEstudianteService } from '../services/compartir-estudiante.service';
-import { MatriculaApoderadoComponent } from './matricula-apoderado/matricula-apoderado.component';
+import { CompartirMatriculaService } from '../../services/compartir-matricula.service';
+import { CompartirEstudianteService } from '../../services/compartir-estudiante.service';
+import { MatriculaApoderadoComponent } from '../matricula-apoderado/matricula-apoderado.component';
 
 @Component({
-  selector: 'app-gestion-matriculas',
+  selector: 'app-gestionar-matriculas',
   standalone: true,
   imports: [PrimengModule, InputNumberModule, TablePrimengComponent, MatriculaApoderadoComponent],
-  templateUrl: './gestion-matriculas.component.html',
-  styleUrl: './gestion-matriculas.component.scss',
+  templateUrl: './gestionar-matriculas.component.html',
+  styleUrl: './gestionar-matriculas.component.scss',
 })
 export class GestionMatriculasComponent implements OnInit {
+  @Input() soloLectura: boolean = false;
+  @Input() titulo: string;
   form: FormGroup;
-
   sede: any[];
   iSedeId: number;
   iYAcadId: number;
@@ -52,6 +53,79 @@ export class GestionMatriculasComponent implements OnInit {
   sexos: Array<object>;
   iCredId: number;
 
+  selectedItems = [];
+  estudianteSeleccionado: any;
+
+  actions: IActionTable[];
+
+  actionsLista: IActionTable[];
+
+  columns = [
+    {
+      type: 'item',
+      width: '1rem',
+      field: 'item',
+      header: '',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'cEstCodigo',
+      header: 'Código',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'cPersDocumento',
+      header: 'Documento',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: '_cPersNomape',
+      header: 'Estudiante',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'cGradoNombre',
+      header: 'Grado',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'cSeccionNombre',
+      header: 'Seccion',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '6rem',
+      field: 'cTurnoNombre',
+      header: 'Turno',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'actions',
+      width: '3rem',
+      field: 'actions',
+      header: 'Acciones',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
   private _MessageService = inject(MessageService); // dialog Mensaje simple
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
 
@@ -66,12 +140,40 @@ export class GestionMatriculasComponent implements OnInit {
     private fb: FormBuilder
   ) {
     const perfil = this.store.getItem('dremoPerfil');
-    console.log(perfil, 'perfil dremo', this.store);
     this.iSedeId = perfil.iSedeId;
   }
 
   ngOnInit(): void {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
+
+    if (this.soloLectura) {
+      this.actions = [
+        {
+          labelTooltip: 'Ver apoderados',
+          icon: 'pi pi-eye',
+          accion: 'asig_apoderado',
+          type: 'item',
+          class: 'p-button-rounded p-button-warning p-button-text',
+        },
+      ];
+    } else {
+      this.actions = [
+        {
+          labelTooltip: 'Editar apoderado',
+          icon: 'pi pi-user-plus',
+          accion: 'asig_apoderado',
+          type: 'item',
+          class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+          labelTooltip: 'Editar Matrícula',
+          icon: 'pi pi-pencil',
+          accion: 'editar_matricula',
+          type: 'item',
+          class: 'p-button-rounded p-button-primary p-button-text',
+        },
+      ];
+    }
 
     try {
       this.form = this.fb.group({
@@ -144,19 +246,20 @@ export class GestionMatriculasComponent implements OnInit {
 
   accionBtnItemTable({ accion, item }) {
     if (accion === 'editar_matricula') {
-      console.log(item);
       this.compartirMatriculaService.setiMatrId(item?.iMatrId);
       this.router.navigate(['/gestion-institucional/matricula-individual']);
     }
     if (accion === 'asig_apoderado') {
       this.bApoderado = true; // muestra dialogo de apoderado
       this.iEstudianteId = item?.iEstudianteId;
-      this.caption = 'Asignar Apoderado de : ' + item?._cPersNomape;
+      this.caption = this.soloLectura
+        ? 'Ver apoderados de: ' + item?._cPersNomape
+        : 'Asignar apoderados a : ' + item?._cPersNomape;
       this.iCredId = this.constantesService.iCredId;
+      this.estudianteSeleccionado = item;
     }
 
     if (accion === 'editar_estudiante') {
-      console.log(item);
       this.compartirEstudianteService.setiEstudianteId(item?.iEstudianteId);
       this.compartirEstudianteService.setiPersId(item?.iPersId);
       this.router.navigate(['/gestion-institucional/estudiante/registro/datos']);
@@ -191,7 +294,6 @@ export class GestionMatriculasComponent implements OnInit {
         next: (data: any) => {
           this.matriculas = data.data;
           this.matriculas_filtradas = this.matriculas;
-          console.log(this.matriculas, 'matriculas');
         },
         error: error => {
           console.error('Error al obtener matriculas:', error);
@@ -210,15 +312,11 @@ export class GestionMatriculasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          console.log(data.data);
           this.grados_secciones_turnos = data.data;
           this.filterGrados();
         },
         error: error => {
           console.error('Error consultando nivel grados:', error);
-        },
-        complete: () => {
-          console.log('Request completed');
         },
       });
   }
@@ -239,7 +337,6 @@ export class GestionMatriculasComponent implements OnInit {
         return prev;
       }
     }, []);
-    console.log(this.nivel_grados, 'nivel grados');
   }
 
   filterTurnos(iNivelGradoId: any) {
@@ -261,7 +358,6 @@ export class GestionMatriculasComponent implements OnInit {
     if (this.turnos.length === 1) {
       this.form.get('iTurnoId')?.setValue(this.turnos[0]['id']);
     }
-    console.log(this.turnos, 'turnos');
   }
 
   filterSecciones(iNivelGradoId: any, iTurnoId: any) {
@@ -283,7 +379,6 @@ export class GestionMatriculasComponent implements OnInit {
     if (this.secciones.length === 1) {
       this.form.get('iSeccionId')?.setValue(this.secciones[0]['id']);
     }
-    console.log(this.secciones, 'secciones');
   }
 
   getTiposMatriculas() {
@@ -301,20 +396,11 @@ export class GestionMatriculasComponent implements OnInit {
             id: tipo.iTipoMatrId,
             nombre: tipo.cTipoMatrNombre,
           }));
-          console.log(this.tipos_matriculas, 'tipos de matriculas');
         },
         error: error => {
           console.error('Error consultando tipos de matriculas:', error);
         },
-        complete: () => {
-          console.log('Request completed');
-        },
       });
-  }
-
-  //Maquetar tablas
-  handleActions(actions) {
-    console.log(actions);
   }
 
   agregarMatricula() {
@@ -328,12 +414,10 @@ export class GestionMatriculasComponent implements OnInit {
         iCredSesionId: this.constantesService.iCredId,
       })
       .subscribe({
-        next: (data: any) => {
-          console.log(data, 'delete matricula');
+        next: () => {
           this.router.navigate(['/gestion-institucional/gestion-matriculas']);
         },
         error: error => {
-          console.error('Error eliminando matricula:', error);
           this._MessageService.add({
             severity: 'error',
             summary: 'Error',
@@ -342,106 +426,4 @@ export class GestionMatriculasComponent implements OnInit {
         },
       });
   }
-
-  selectedItems = [];
-
-  actions: IActionTable[] = [
-    {
-      labelTooltip: 'Editar apoderado',
-      icon: 'pi pi-user-plus',
-      accion: 'asig_apoderado',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
-    {
-      labelTooltip: 'Editar Matrícula',
-      icon: 'pi pi-pencil',
-      accion: 'editar_matricula',
-      type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
-    },
-    // {
-    //   labelTooltip: 'Editar Estudiante',
-    //   icon: 'pi pi-user-edit',
-    //   accion: 'editar_estudiante',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-secondary p-button-text',
-    // },
-    // {
-    //   labelTooltip: 'Anular',
-    //   icon: 'pi pi-trash',
-    //   accion: 'anular',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
-  ];
-
-  actionsLista: IActionTable[];
-
-  columns = [
-    {
-      type: 'item',
-      width: '1rem',
-      field: 'item',
-      header: '',
-      text_header: 'left',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cEstCodigo',
-      header: 'Código',
-      text_header: 'left',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cPersDocumento',
-      header: 'Documento',
-      text_header: 'center',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '10rem',
-      field: '_cPersNomape',
-      header: 'Estudiante',
-      text_header: 'left',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cGradoNombre',
-      header: 'Grado',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cSeccionNombre',
-      header: 'Seccion',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '6rem',
-      field: 'cTurnoNombre',
-      header: 'Turno',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'actions',
-      width: '3rem',
-      field: 'actions',
-      header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
-    },
-  ];
 }

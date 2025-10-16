@@ -15,6 +15,10 @@ import { AsignarRolPersonalComponent } from './sistema/gestion-institucional/new
 import { AgregarPersonalPlataformaComponent } from './sistema/gestion-institucional/new-mantenimiento-usuario/agregar-personal-plataforma/agregar-personal-plataforma.component';
 import { AsistenciasComponent } from './sistema/administrativo/auxiliar/asistencias/asistencias.component';
 import { ReporteAsistenciasComponent } from './sistema/administrativo/auxiliar/reporte-asistencias/reporte-asistencias.component';
+import { EstudiantesApoderadosComponent } from './sistema/gestion-institucional/matriculas/gestionar-matriculas/estudiantes-apoderados/estudiantes-apoderados.component';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { ASISTENTE_SOCIAL, DOCENTE } from '@/app/servicios/seg/perfiles';
+import { AUXILIAR } from './servicios/perfilesConstantes';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -95,6 +99,16 @@ export const routes: Routes = [
       {
         path: 'reporte-asistencia-auxiliar',
         component: ReporteAsistenciasComponent,
+      },
+      {
+        path: 'estudiantes-apoderados',
+        component: EstudiantesApoderadosComponent,
+        canActivate: [RoleGuard],
+        data: {
+          breadcrumb: '',
+          icon: 'pi pi-list-check',
+          expectedRole: [DOCENTE, AUXILIAR, ASISTENTE_SOCIAL],
+        },
       },
     ],
   },

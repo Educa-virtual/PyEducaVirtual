@@ -111,8 +111,10 @@ export class FormDesercionComponent extends MostrarErrorComponent implements OnC
 
         iTipoDesercionId: String(item?.iTipoDesercionId ?? null),
         cMotivoDesercion: item?.cMotivoDesercion ?? null,
-        dInicioDesercion: item.dInicioDesercion ? new Date(item.dInicioDesercion) : null,
-        dFinDesercion: item.dFinDesercion ? new Date(item.dFinDesercion) : null,
+        dInicioDesercion: item.dInicioDesercion
+          ? new Date(item.dInicioDesercion + 'T00:00:00')
+          : null,
+        dFinDesercion: item.dFinDesercion ? new Date(item.dFinDesercion + 'T00:00:00') : null,
 
         iEstado: Boolean(Number(item?.iEstado ?? 0)),
       });
@@ -239,11 +241,6 @@ export class FormDesercionComponent extends MostrarErrorComponent implements OnC
       this.formDesercion.get('dFinDesercion')?.setValue(null);
       this.fechaInvalida = true;
     } else {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Validación',
-        detail: 'La fecha de fin es válida.',
-      });
       this.fechaInvalida = false;
     }
   }

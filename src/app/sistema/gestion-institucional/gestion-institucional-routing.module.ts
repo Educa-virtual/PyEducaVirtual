@@ -32,6 +32,7 @@ import { ADMINISTRADOR_DREMO, DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { GestionarMatriculasDirectorComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas-director/gestionar-matriculas-director.component';
+import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-indicadores/reporte-indicadores.component';
 const routes: Routes = [
   { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
   { path: 'years-academicos', component: YearsComponent },

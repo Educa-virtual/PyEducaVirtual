@@ -143,7 +143,8 @@ export class GestionEncuestasComponent implements OnInit {
 
   confirmarGenerarEncuestasMasivo() {
     this.confirmService.openConfirm({
-      header:
+      header: 'Atención',
+      message:
         'Se generarán las encuestas usando la última plantilla registrada por su usuario. La población objetivo y los permisos se asignarán por defecto según su jurisdicción.' +
         (this.perfil.iPerfilId === DIRECTOR_IE
           ? ' Esta acción reeemplazará todas las encuestas existentes que fueron registradas por el administrador DREMO y que aún no han sido respondidas por los estudiantes de su I.E.'

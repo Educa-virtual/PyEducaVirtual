@@ -385,6 +385,7 @@ export class GestionPlantillasComponent implements OnInit {
   abrirDialogDuplicarPlantilla(plantilla: any) {
     this.visibleDialogDuplicar = true;
     this.formPlantilla.get('iPlanId')?.setValue(plantilla?.iPlanId);
+    this.formPlantilla.get('iCateId')?.setValue(this.iCateId);
     this.formPlantilla.get('cPlanOriginalNombre')?.setValue(plantilla?.cPlanNombre);
     this.formPlantilla.get('cPlanSubtitulo')?.setValue(plantilla?.cPlanSubtitulo);
     this.formPlantilla.get('dPlanInicio')?.setValue(new Date());

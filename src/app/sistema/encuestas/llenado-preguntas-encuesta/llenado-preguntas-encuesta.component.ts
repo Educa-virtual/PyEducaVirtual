@@ -79,7 +79,10 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
           ? String(this.slicePipe.transform(this.encuesta?.cCateNombre, 0, 20))
           : 'Categoría',
       },
-      { label: 'Encuestas', routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas` },
+      {
+        label: 'Gestionar encuestas',
+        routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
+      },
       {
         label: this.encuesta?.cEncuNombre
           ? String(this.slicePipe.transform(this.encuesta?.cEncuNombre, 0, 20))

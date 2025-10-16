@@ -3,7 +3,7 @@ import { GeneralService } from '@/app/servicios/general.service';
 import { Component, OnInit, Input, inject, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg, EventApi } from '@fullcalendar/core';
 import { Data } from '../interfaces/asistencia.interface'; // * exportando intefaces
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -50,6 +50,10 @@ export class AsistenciaComponent implements OnInit {
   year: string;
   encabezado = [];
   archivo: any = [];
+  showModal = false;
+  showEventsDialog = false;
+  dialogEvents: EventApi[] = [];
+  dialogDateLabel = '';
 
   private GeneralService = inject(GeneralService);
   private unsubscribe$ = new Subject<boolean>();
@@ -80,6 +84,7 @@ export class AsistenciaComponent implements OnInit {
   ngOnInit() {
     this.getCursoHorario();
     this.detalleCurricular();
+    this.getFechasImportantes();
   }
 
   // busca los datos para el encabezado
@@ -126,6 +131,7 @@ export class AsistenciaComponent implements OnInit {
    * @param locales Traduce el calendario a español
    * @param events Se encarga de mostrar las actividades programadas por hora y fecha
    * @param dayMaxEvents limita los eventos del dia para que se desborden del calendario
+   * @param datesSet muestra el calendario en el mes actual
    */
 
   events: any[] = [];
@@ -143,6 +149,7 @@ export class AsistenciaComponent implements OnInit {
       if (data.dow === 6 || data.dow === 0) {
         data.el.style.backgroundColor = '#ffd7d7';
       }
+      //console.log("revisando #1 ",this.events);
     },
     datesSet: dateInfo => {
       const calendarioMes = dateInfo.view.currentStart.toLocaleString('default', {
@@ -153,9 +160,10 @@ export class AsistenciaComponent implements OnInit {
       });
       this.calendarioMes = calendarioMes;
       this.calendarioYear = calendarioYear;
-      //this.countAsistencias()
-      this.getFechasImportantes();
+      this.countAsistencias();
     },
+    moreLinkClick: this.handleMoreLinkClick.bind(this),
+    eventClick: this.handleEventClick.bind(this),
     dateClick: item => this.handleDateClick(item),
     headerToolbar: {
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -163,6 +171,72 @@ export class AsistenciaComponent implements OnInit {
       start: 'prev,next today',
     },
   };
+
+  /**
+   * @param allEvents Todos los eventos agregados al calendario
+   * @param eventsOnDay Eventos que se encuentran en el día
+   * @param clickedDate Fecha del día
+   */
+
+  handleEventClick(info: EventClickArg) {
+    const clickedDate = info.event.start;
+    if (!clickedDate) return;
+    const allEvents = info.view.calendar.getEvents();
+
+    const eventsOnDay = allEvents
+      .filter(e => e.display !== 'none')
+      .filter(e => this.isSameDay(e.start, clickedDate));
+
+    eventsOnDay.sort((a, b) => (a.start?.getTime() || 0) - (b.start?.getTime() || 0));
+    this.dialogEvents = eventsOnDay;
+    this.dialogDateLabel = this.formatDateLabel(clickedDate);
+    this.showEventsDialog = true;
+
+    info.jsEvent?.preventDefault();
+  }
+  formatDateLabel(d: Date): string {
+    const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+    return d.toLocaleDateString('es-PE', opts);
+  }
+  isSameDay(a?: Date | null, b?: Date | null): boolean {
+    if (!a || !b) return false;
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
+  }
+
+  handleMoreLinkClick(arg: any) {
+    const segs = arg.allSegs || arg.segs || [];
+    this.dialogEvents = segs
+      .map((s: any) => s.event)
+      .filter((event: any) => event.display !== 'none');
+
+    let fecha: Date | undefined;
+
+    if (arg && arg.date) {
+      const d = typeof arg.date === 'string' ? new Date(arg.date) : arg.date;
+      if (d instanceof Date && !isNaN(d.getTime())) {
+        fecha = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+      }
+    }
+    if (!fecha && this.dialogEvents.length > 0) {
+      const firstStart = this.dialogEvents[0].start;
+      if (firstStart instanceof Date && !isNaN(firstStart.getTime())) {
+        fecha = new Date(firstStart.getFullYear(), firstStart.getMonth(), firstStart.getDate());
+      } else if (typeof firstStart === 'string') {
+        const parsed = new Date(firstStart);
+        if (!isNaN(parsed.getTime())) {
+          fecha = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+        }
+      }
+    }
+
+    this.dialogDateLabel = fecha ? this.formatDateLabel(fecha) : '';
+    this.showEventsDialog = true;
+    return 'none';
+  }
 
   /**
    *
@@ -186,9 +260,8 @@ export class AsistenciaComponent implements OnInit {
   // * Se encarga de seleccionar la fecha de Asistencia
   handleDateClick(item) {
     this.fechaActual = item.dateStr;
-    const dia = new Date(this.fechaActual + 'T00:00:00');
-    this.limitado = dia.getDay();
-    this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha);
+    this.limitado = item.date.getDay();
+    this.fechaEspecifica = item.date.toLocaleDateString('es-PE', this.confFecha);
     this.horario.map(fecha => {
       if (fecha.dtHorarioFecha == this.fechaActual && this.limitado != 6 && this.limitado != 0) {
         if (this.fechaCaptura == this.fechaActual) {
@@ -206,11 +279,6 @@ export class AsistenciaComponent implements OnInit {
         }
       }
     });
-  }
-  showModal = false;
-  modalReporte() {
-    this.showModal = true;
-    // this.verReporte = true
   }
 
   /**
@@ -242,32 +310,28 @@ export class AsistenciaComponent implements OnInit {
     this.leyenda.filter(index => {
       index.contar = 0;
     });
-
     this.events.filter(index => {
       this.captura = index.title.split(' : ');
 
       if (this.captura.length > 1) {
-        const capturar = this.captura[0]; // Capturamos el tipo de asistencia
         const suma = parseInt(this.captura[1]); // Capturamos la cantidad del registro y lo convertimos en enteros
-        const capturarFecha = index.start.split('-'); // Dividimos la fechas en año, mes y dia para obtener la cantidad de asistencias del mes
-        const fechaAsistencia = capturarFecha[0] + '-' + capturarFecha[1];
+        const fechaAsistencia = index.years + '-' + index.mes.padStart(2, '0');
         const fechaCalendario =
           this.calendarioYear +
           '-' +
           (this.calendarioMes.length > 1 ? this.calendarioMes : '0' + this.calendarioMes);
-
         this.leyenda[0].contar +=
-          capturar == 'Asistio' && fechaCalendario == fechaAsistencia ? suma : 0;
+          index.tipoAsistencia == 1 && fechaCalendario == fechaAsistencia ? suma : 0;
         this.leyenda[1].contar +=
-          capturar == 'Inasistencia' && fechaCalendario == fechaAsistencia ? suma : 0;
+          index.tipoAsistencia == 3 && fechaCalendario == fechaAsistencia ? suma : 0;
         this.leyenda[2].contar +=
-          capturar == 'Inasistencia Justificada' && fechaCalendario == fechaAsistencia ? suma : 0;
+          index.tipoAsistencia == 4 && fechaCalendario == fechaAsistencia ? suma : 0;
         this.leyenda[3].contar +=
-          capturar == 'Tardanza' && fechaCalendario == fechaAsistencia ? suma : 0;
+          index.tipoAsistencia == 2 && fechaCalendario == fechaAsistencia ? suma : 0;
         this.leyenda[4].contar +=
-          capturar == 'Tardanza Justificada' && fechaCalendario == fechaAsistencia ? suma : 0;
+          index.tipoAsistencia == 9 && fechaCalendario == fechaAsistencia ? suma : 0;
         this.leyenda[5].contar +=
-          capturar == 'Sin Registro' && fechaCalendario == fechaAsistencia ? suma : 0;
+          index.tipoAsistencia == 7 && fechaCalendario == fechaAsistencia ? suma : 0;
       }
     });
   }

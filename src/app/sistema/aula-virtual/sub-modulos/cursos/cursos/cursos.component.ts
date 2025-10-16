@@ -54,19 +54,8 @@ export class CursosComponent implements OnDestroy, OnInit {
   }
 
   public onFilter(dv: DataView, event: Event) {
-    // console.log("revisando ",dv)
-    // console.log("revisando 2 ",event)
     const text = (event.target as HTMLInputElement).value;
-    this.cursos = this.data;
-    dv.value = this.data;
-    if (text.length > 1) {
-      // cCursoNombre
-      dv.filter(text);
-      this.cursos = dv.filteredValue;
-    }
-    if (this.layout === 'list') {
-      this.searchText = event;
-    }
+    this.cursos = this.data.filter((curso: any) => curso.cCursoNombre.toLowerCase().includes(text));
   }
 
   obtenerPerfil() {

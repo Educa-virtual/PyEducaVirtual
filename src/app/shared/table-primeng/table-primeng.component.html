@@ -285,7 +285,7 @@
             }
             @if (col.type === 'date') {
               <div [style.text-align]="col.text">
-                {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+                {{ rowData[col.field] | date: 'dd/MM/yyyy' }}
               </div>
             }
             @if (col.type === 'time') {

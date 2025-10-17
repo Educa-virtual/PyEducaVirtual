@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import {
   IActionTable,
@@ -7,17 +7,12 @@ import {
 import { RegistrarLogroAlcanzadoComponent } from './registrar-logro-alcanzado/registrar-logro-alcanzado.component';
 import { BoletaLogroComponent } from './boleta-logro/boleta-logro.component';
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
-import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
-import { GeneralService } from '@/app/servicios/general.service';
 import { MenuItem, MessageService } from 'primeng/api';
-//import { CursosComponent } from '../../aula-virtual/sub-modulos/cursos/cursos/cursos.component';
 import { CursoCardComponent } from '../../aula-virtual/sub-modulos/cursos/components/curso-card/curso-card.component';
-import { ICurso } from '../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface';
-import { Subject, takeUntil } from 'rxjs';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
-//import { HttpClient } from '@angular/common/http';
+import { ConstantesService } from '@/app/servicios/constantes.service';
+
 @Component({
   selector: 'app-logro-alcanzado',
   standalone: true,
@@ -32,46 +27,276 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
   styleUrl: './logro-alcanzado.component.scss',
 })
 export class LogroAlcanzadoComponent implements OnInit {
-  //breadCrumbHome: MenuItem
   dialogRegistrarLogroAlcanzado: boolean = false;
   registroTitleModal: string;
   registroSubTitleModal: string;
+
   dialogBoletaLogroAlcanzado: boolean = false;
   boletaTitleModal: string;
+
+  // Estudiante seleccionado
   selectedItem: any;
-  estudiante: any; //objeto estudiante seleccionado
-  competencias: any[] = []; //competencias del curso seleccionado
+  estudiante: any;
 
-  perfil: any; //perfil del usuario logueado
-
-  public data: ICurso[] = [];
-  public cursos: ICurso[] = [];
-  public area: any; //area curricular seleccionada
-  public cCursoNombre: string = ''; //nombre del curso seleccionado
+  // Area curricular seleccionada
+  area: any;
+  cCursoNombre: string = '';
   cGradoAbreviacion: string = '';
   cSeccionNombre: string = '';
+  area_seleccionada: boolean = false;
 
-  //estudiante,cargando estudiante
-  public estudiantes: any[] = [];
+  // Periodo seleccionado
+  iPeriodoId: string;
 
-  //dropdowns  properties
+  // Listados de datos
+  areas: any[] = [];
+  estudiantes: any[] = [];
+  periodos: any[] = [];
+  competencias: any[] = [];
 
-  public periodos: any[] = [];
-
-  // properties seleccionables
-  public seleccionar: boolean = false;
-  public iPeriodoId: string; //periodoSeleccionado: any = null;
-
-  private _ConstantesService = inject(ConstantesService);
-  private _CalendarioPeriodosEvalacionesService = inject(CalendarioPeriodosEvalacionesService);
-  private _GeneralService = inject(GeneralService);
-  private unsubscribe$ = new Subject<boolean>();
-  private _store = inject(LocalStoreService);
+  perfil: any;
+  usuario: any;
+  iYAcadId: number;
+  iCredId: number;
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
-  columns = [
+  constructor(
+    private evaluacionesService: ApiEvaluacionesService,
+    private messageService: MessageService,
+    private periodosService: CalendarioPeriodosEvalacionesService,
+    private constantes: ConstantesService,
+    private store: LocalStoreService
+  ) {
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.usuario = this.store.getItem('dremoUser');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.iCredId = this.perfil.iCredId;
+  }
+
+  ngOnInit() {
+    this.setBreadCrumbs();
+    this.listarCursos();
+    this.obtenerPeriodos();
+  }
+
+  setBreadCrumbs() {
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+    this.breadCrumbItems = [{ label: 'Evaluaciones' }, { label: 'Logros' }];
+  }
+
+  listarCursos(mostrarTotalAlumnos: number = 2) {
+    this.evaluacionesService
+      .listarCursos({
+        opcion: mostrarTotalAlumnos,
+        iDocenteId: this.constantes.iDocenteId, // Id de docente encriptado
+        iYAcadId: this.iYAcadId,
+        iSedeId: this.perfil.iSedeId,
+        iIieeId: this.perfil.iIieeId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.areas = data.data;
+        },
+        error: error => {
+          console.error('Error obteniendo cursos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: error.error.message ?? 'No se pudo obtener la información de cursos.',
+          });
+        },
+      });
+  }
+
+  registroLogroAlcanzado() {
+    let areas: any[] = [];
+
+    try {
+      // Parsear el string a un array real
+      areas = JSON.parse(this.estudiante?.json_cursos || '[]');
+    } catch (e) {
+      console.error('Error parseando json_cursos:', e);
+      return;
+    }
+
+    // Filtrar por el curso seleccionado
+    const curso = areas.filter((item: any) => item.cCursoNombre === this.area.cCursoNombre);
+
+    this.selectedItem = curso;
+
+    const nombreEstudiante = this.estudiante?.Estudiante || 'Estudiante';
+    const gradoEstudiante = this.estudiante?.cGradoAbreviacion || 'cGradoAbreviacion';
+    const secciconEstudiante = this.estudiante?.cSeccionNombre || 'cSeccionNombre';
+    this.registroTitleModal = `REGISTRO : ${nombreEstudiante}`;
+    this.registroSubTitleModal = `GRADO: ${gradoEstudiante} - SECCIÓN: ${secciconEstudiante}`;
+    //Generar competencias
+    this.cargarCompetencias(curso);
+  }
+
+  listenDialogRegistrarLogro(event: boolean) {
+    if (event == false) {
+      this.dialogRegistrarLogroAlcanzado = false;
+    }
+  }
+
+  cargarCompetencias(curso: any) {
+    const params = {
+      iCursoId: Number(this.area?.iCursoId), // Evitar error si no encuentra
+      iNivelTipoId: Number(this.perfil?.iNivelTipoId), // Evitar error si no encuentra
+      iDetMatrId: Number(curso[0].iDetMatrId),
+    };
+
+    this.evaluacionesService.competenciasXCursoIdXCurricula(params).subscribe({
+      next: respuesta => {
+        this.competencias = respuesta; // Guardamos los datos en nuestra variable local.
+      },
+      error: err => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: 'No se pudo generar competencias asignadas al estudiante' + err.message,
+        });
+      },
+      complete: () => {
+        this.dialogRegistrarLogroAlcanzado = true;
+      },
+    });
+  }
+
+  boletaLogroImprimir() {
+    this.boletaTitleModal = 'Boleta de Logros de';
+    this.dialogBoletaLogroAlcanzado = true;
+  }
+  listenDialogBoleta(event: boolean) {
+    if (event == false) {
+      this.dialogBoletaLogroAlcanzado = false;
+    }
+  }
+
+  seleccionarArea() {
+    this.area_seleccionada = false;
+  }
+
+  obtenerPeriodos() {
+    const params = { iCredId: this.iCredId };
+    //this.cargandoPeriodos = true;
+    this.periodosService
+      .obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular(this.iYAcadId, this.perfil.iSedeId, params)
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.periodos = resp.data;
+            if (this.periodos.length > 0) {
+              this.iPeriodoId = '1';
+            }
+          }
+        },
+        complete: () => {
+          this.periodos.push({
+            cNombrePeriodo: 'Logro final',
+            cPeriodoEvalNombre: '',
+            iEstado: '0',
+            iNumeroPeriodo: Number(this.periodos?.length) + 1,
+            iPeriodoEvalAperId: '',
+          });
+        },
+        error: error => {
+          console.error('Error obteniendo periodos:', error);
+        },
+      });
+  }
+
+  filtrarCurso($event) {
+    this.generarListaEstudiante($event);
+    this.area = $event;
+  }
+
+  generarListaEstudiante(area: any) {
+    this.estudiantes = [];
+    // 2. Aquí, el método del componente (`generarListaEstudiante`)
+    //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
+    const params = {
+      iSedeId: this.perfil.iSedeId,
+      iSeccionId: area.iSeccionId,
+      iYAcadId: this.iYAcadId,
+      iNivelGradoId: area.iGradoId,
+    };
+
+    this.evaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
+      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
+      next: respuesta => {
+        this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
+      },
+
+      // 4. Esto se ejecuta si hubo un error en la llamada.
+      error: err => {
+        // console.error('El servicio falló al generar la lista:', err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: 'No se pudo generar la lista de estudiantes' + err.message,
+        });
+      },
+      complete: () => {
+        this.area_seleccionada = true;
+        this.cCursoNombre = area.cCursoNombre || '';
+        this.cGradoAbreviacion = this.area?.cGradoAbreviacion || '';
+        this.cSeccionNombre = this.area?.cSeccionNombre || '';
+        this.estudiantes = this.estudiantes.map(estudiante => ({
+          ...estudiante, // Mantener todas las propiedades originales
+          cGradoAbreviacion: this.area?.cGradoAbreviacion || '', // Evitar error si no encuentra
+          cSeccionNombre: this.area?.cSeccionNombre || '', // Evitar error si no encuentra
+          cCursoNombre: this.area?.cCursoNombre || '', // Evitar error si no encuentra
+          iCursoId: this.area?.iCursoId || '', // Evitar error si no encuentra
+          iNivelTipoId: this.perfil?.iNivelTipoId || '', // Evitar error si no encuentra
+        }));
+
+        // this._messageService.add({
+        //   severity: 'success',
+        //   summary: 'Mensaje del sistema',
+        //   detail: 'Se selecciono con exito el área curricular',
+        // });
+      },
+    });
+  }
+
+  accionBtnItemTable({ accion, item }) {
+    switch (accion) {
+      case 'Resistrar':
+        this.estudiante = item;
+        this.registroLogroAlcanzado();
+        break;
+      case 'Imprimir':
+        this.selectedItem = item;
+        this.boletaLogroImprimir();
+        break;
+    }
+  }
+
+  actions: IActionTable[] = [
+    {
+      labelTooltip: 'Resistrar logro',
+      icon: 'pi pi-file-edit',
+      accion: 'Resistrar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+    },
+    {
+      labelTooltip: 'Imprimir Informe de Progreso',
+      icon: 'pi pi-print',
+      accion: 'Imprimir',
+      type: 'item',
+      class: 'p-button-rounded p-button-secondary p-button-text',
+    },
+  ];
+
+  columnsEstudiantes = [
     {
       type: 'item',
       width: '5%',
@@ -105,331 +330,4 @@ export class LogroAlcanzadoComponent implements OnInit {
       text: 'right',
     },
   ];
-
-  iCredId: number;
-  constructor(
-    private ApiEvaluacionesService: ApiEvaluacionesService,
-    private _messageService: MessageService
-    //private http: HttpClient
-  ) {
-    this.iCredId = this._ConstantesService.iCredId; // Initialize iCredId
-  }
-  ngOnInit() {
-    this.perfil = this._store.getItem('dremoPerfil'); // Initialize perfil after _store is available
-    this.obtenerPerfil();
-    //this.obtenerGradoSeccion();
-    this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
-    //this.cargarPeriodosEvaluacion();
-    this.setBreadCrumbs();
-  }
-
-  setBreadCrumbs() {
-    this.breadCrumbHome = {
-      icon: 'pi pi-home',
-      routerLink: '/',
-    };
-    this.breadCrumbItems = [{ label: 'Evaluaciones' }, { label: 'Logros' }];
-  }
-
-  registroLogroAlcanzado() {
-    let areas: any[] = [];
-
-    try {
-      // Parsear el string a un array real
-      areas = JSON.parse(this.estudiante?.json_cursos || '[]');
-    } catch (e) {
-      console.error('Error parseando json_cursos:', e);
-      return;
-    }
-
-    // Filtrar por el curso seleccionado
-    const curso = areas.filter((item: any) => item.cCursoNombre === this.area.cCursoNombre);
-
-    this.selectedItem = curso;
-
-    const nombreEstudiante = this.estudiante?.Estudiante || 'Estudiante';
-    const gradoEstudiante = this.estudiante?.cGradoAbreviacion || 'cGradoAbreviacion';
-    const secciconEstudiante = this.estudiante?.cSeccionNombre || 'cSeccionNombre';
-    this.registroTitleModal = `REGISTRO : ${nombreEstudiante}`;
-    this.registroSubTitleModal = `GRADO: ${gradoEstudiante} - SECCIÓN: ${secciconEstudiante}`;
-    //Generar competencias
-    this.cargarCompetencias(curso);
-  }
-  listenDialogRegistrarLogro(event: boolean) {
-    if (event == false) {
-      this.dialogRegistrarLogroAlcanzado = false;
-    }
-  }
-
-  cargarCompetencias(curso: any) {
-    const params = {
-      iCursoId: Number(this.area?.iCursoId), // Evitar error si no encuentra
-      iNivelTipoId: Number(this.perfil?.iNivelTipoId), // Evitar error si no encuentra
-      iDetMatrId: Number(curso[0].iDetMatrId),
-    };
-
-    this.ApiEvaluacionesService.competenciasXCursoIdXCurricula(params).subscribe({
-      next: respuesta => {
-        this.competencias = respuesta; // Guardamos los datos en nuestra variable local.
-      },
-      error: err => {
-        this._messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'No se pudo generar competencias asignadas al estudiante' + err.message,
-        });
-      },
-      complete: () => {
-        this.dialogRegistrarLogroAlcanzado = true;
-      },
-    });
-  }
-
-  boletaLogroImprimir() {
-    this.boletaTitleModal = 'Boleta de Logros de';
-    this.dialogBoletaLogroAlcanzado = true;
-  }
-  listenDialogBoleta(event: boolean) {
-    if (event == false) {
-      this.dialogBoletaLogroAlcanzado = false;
-    }
-  }
-  accionBtnItemTable({ accion, item }) {
-    switch (accion) {
-      case 'Resistrar':
-        this.estudiante = item;
-        this.registroLogroAlcanzado();
-        break;
-      case 'Imprimir':
-        this.selectedItem = item;
-        this.boletaLogroImprimir();
-        break;
-    }
-  }
-  actions: IActionTable[] = [
-    {
-      labelTooltip: 'Resistrar logro',
-      icon: 'pi pi-file-edit',
-      accion: 'Resistrar',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-    },
-    {
-      labelTooltip: 'Imprimir Informe de Progreso',
-      icon: 'pi pi-print',
-      accion: 'Imprimir',
-      type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
-    },
-  ];
-  /*
-  obtenerGradoSeccion() {
-    this._GeneralService
-      .searchCalendario({
-        json: JSON.stringify({
-          iSedeId: this._ConstantesService.iSedeId,
-          iYAcadId: this._ConstantesService.iYAcadId,
-        }),
-        _opcion: 'getGradoSeccionXiSedeIdXiYAcadId',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.gradosSecciones = data.data;
-          this.grados = this.removeDuplicatesByiGradoId(this.gradosSecciones);
-        },
-        error: error => {
-          this._messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Error en el procesamiento.' + error.message,
-          });
-
-          //console.error('Error fetching Servicios de Atención:', error);
-        },
-        complete: () => {
-          this._messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del sistema',
-            detail: 'Se cargaron los grados y secciones',
-          });
-        },
-      });
-  }
-
-  obtenerSecciones() {
-    this.secciones = this.gradosSecciones.filter(item => item.iGradoId === this.iGradoId);
-  }
-
-  removeDuplicatesByiGradoId(array: any[]): any[] {
-    const seen = new Set<number>();
-    return array.filter(item => {
-      if (seen.has(item.iGradoId)) {
-        return false;
-      }
-      seen.add(item.iGradoId);
-      return true;
-    });
-  } */
-
-  seleccionarCurso() {
-    this.seleccionar = false;
-  }
-
-  obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular() {
-    const iYAcadId = this._ConstantesService.iYAcadId;
-    const iSedeId = this._ConstantesService.iSedeId;
-    const params = { iCredId: this._ConstantesService.iCredId };
-
-    //this.cargandoPeriodos = true;
-
-    this._CalendarioPeriodosEvalacionesService
-      .obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular(iYAcadId, iSedeId, params)
-      .subscribe({
-        next: resp => {
-          if (resp.validated) {
-            this.periodos = resp.data;
-
-            if (this.periodos.length > 0) {
-              this.iPeriodoId = '1';
-            }
-          }
-        },
-        complete: () => {
-          this.periodos.push({
-            cNombrePeriodo: 'Logro final',
-            cPeriodoEvalNombre: '',
-            iEstado: '0',
-            iNumeroPeriodo: '5',
-            iPeriodoEvalAperId: '',
-          });
-        },
-        // error: error => this.mostrarErrores(error),
-      });
-  }
-
-  //obtener cursos del docente
-  obtenerPerfil() {
-    const perfil = this._store.getItem('dremoPerfil');
-    switch (Number(perfil.iPerfilId)) {
-      case DOCENTE:
-        this.getCursosDocente();
-        break;
-      case ESTUDIANTE:
-        //this.layout = 'grid';
-        this.getCursosEstudiante();
-        break;
-    }
-  }
-  // muestra en la area curriculares los cursos del docente,grado y seccion
-  getCursosDocente() {
-    const params = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'docente',
-      ruta: 'docente_curso',
-      data: {
-        opcion: 2,
-        iDocenteId: this._ConstantesService.iDocenteId,
-        iYAcadId: this._ConstantesService.iYAcadId,
-        iSedeId: this._ConstantesService.iSedeId,
-        iIieeId: this._ConstantesService.iIieeId,
-      },
-      params: { skipSuccessMessage: true },
-    };
-    this.obtenerCursos(params);
-  }
-
-  getCursosEstudiante() {
-    const params = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'estudiantes',
-      ruta: 'obtenerCursosXEstudianteAnioSemestre',
-      data: {
-        iEstudianteId: this._ConstantesService.iEstudianteId,
-        iYAcadId: this._ConstantesService.iYAcadId,
-        iSedeId: this._ConstantesService.iSedeId,
-        iIieeId: this._ConstantesService.iIieeId,
-      },
-      params: { skipSuccessMessage: true },
-    };
-    this.obtenerCursos(params);
-  }
-
-  obtenerCursos(params) {
-    this._GeneralService
-      .getGralPrefix(params)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: response => {
-          this.cursos = response.data.map(curso => ({
-            iCursoId: curso.idDocCursoId,
-            ...curso,
-          }));
-          this.data = this.cursos;
-        },
-        // complete: () => {},
-        error: error => {
-          this._messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'No se pudo obtener cursos. ' + error.message,
-          });
-        },
-      });
-  }
-  filtrarCurso($event) {
-    this.generarListaEstudiante($event);
-    this.area = $event;
-  }
-
-  generarListaEstudiante(area: any) {
-    this.estudiantes = [];
-    // 2. Aquí, el método del componente (`generarListaEstudiante`)
-    //    llama al método del servicio (`generarListaEstudiantesSedeSeccionGrado`).
-    const params = {
-      iSedeId: this._ConstantesService.iSedeId,
-      iSeccionId: area.iSeccionId,
-      iYAcadId: this._ConstantesService.iYAcadId,
-      iNivelGradoId: area.iGradoId,
-    };
-
-    this.ApiEvaluacionesService.generarListaEstudiantesSedeSeccionGrado(params).subscribe({
-      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
-      next: respuesta => {
-        this.estudiantes = respuesta; // Guardamos los datos en nuestra variable local.
-      },
-
-      // 4. Esto se ejecuta si hubo un error en la llamada.
-      error: err => {
-        // console.error('El servicio falló al generar la lista:', err);
-
-        this._messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'No se pudo generar la lista de estudiantes' + err.message,
-        });
-      },
-      complete: () => {
-        this.seleccionar = true;
-        this.cCursoNombre = area.cCursoNombre || '';
-        this.cGradoAbreviacion = this.area?.cGradoAbreviacion || '';
-        this.cSeccionNombre = this.area?.cSeccionNombre || '';
-        this.estudiantes = this.estudiantes.map(estudiante => ({
-          ...estudiante, // Mantener todas las propiedades originales
-          cGradoAbreviacion: this.area?.cGradoAbreviacion || '', // Evitar error si no encuentra
-          cSeccionNombre: this.area?.cSeccionNombre || '', // Evitar error si no encuentra
-          cCursoNombre: this.area?.cCursoNombre || '', // Evitar error si no encuentra
-          iCursoId: this.area?.iCursoId || '', // Evitar error si no encuentra
-          iNivelTipoId: this.perfil?.iNivelTipoId || '', // Evitar error si no encuentra
-        }));
-
-        // this._messageService.add({
-        //   severity: 'success',
-        //   summary: 'Mensaje del sistema',
-        //   detail: 'Se selecciono con exito el área curricular',
-        // });
-      },
-    });
-  }
 }

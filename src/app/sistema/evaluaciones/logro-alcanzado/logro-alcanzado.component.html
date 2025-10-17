@@ -4,32 +4,32 @@
   <ng-template pTemplate="header">
     <div class="flex flex-column">
       <div class="flex text-xl font-bold">REGISTRAR LOGROS ALCANZADOS</div>
-      <div class="flex text-sm" *ngIf="seleccionar">
+      <div class="flex text-sm" *ngIf="area_seleccionada">
         GRADO: {{ cGradoAbreviacion }} SECCIÓN: {{ cSeccionNombre }}
       </div>
     </div>
   </ng-template>
   <ng-template pTemplate="icons" class="flex justify-content-center">
     <p-button
-      *ngIf="seleccionar"
+      *ngIf="area_seleccionada"
       label="Ver Áreas"
       icon="pi pi-arrow-left"
       iconPos="left"
       size="small"
       severity="success"
-      (onClick)="seleccionarCurso()"
+      (onClick)="seleccionarArea()"
     >
     </p-button>
   </ng-template>
 
-  <div *ngIf="!seleccionar">
+  <div *ngIf="!area_seleccionada">
     <div class="grid">
-      @if (data && data.length > 0) {
+      @if (areas && areas.length > 0) {
         <div class="col-12 cursos">
-          @for (curso of cursos; track curso) {
+          @for (area of areas; track area) {
             <app-curso-card
               #dv
-              [curso]="curso"
+              [curso]="area"
               [registro]="true"
               (filtrarCurso)="filtrarCurso($event)"
             ></app-curso-card>
@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  <div *ngIf="seleccionar" class="grid">
+  <div *ngIf="area_seleccionada" class="grid">
     <!-- <div>
       <p-inputGroup>
         <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
@@ -118,10 +118,10 @@
     </div>
   </div>
   <br />
-  <div *ngIf="seleccionar">
+  <div *ngIf="area_seleccionada">
     <app-table-primeng
       [data]="estudiantes"
-      [columnas]="columns"
+      [columnas]="columnsEstudiantes"
       (accionBtnItem)="accionBtnItemTable($event)"
       [showAdvancedFilter]="true"
       [showCaption]="false"

@@ -249,4 +249,8 @@ export class ApiEvaluacionesService {
       )
       .pipe(map(resp => resp.data));
   }
+
+  listarCursos(params) {
+    return this.http.post(`${this.baseUrlApi}/acad/docente/docente_curso`, params);
+  }
 }

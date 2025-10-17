@@ -24,7 +24,6 @@ import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-us
 
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
-import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component';
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component';
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
@@ -32,9 +31,11 @@ import { YearsComponent } from './years/years.component';
 import { DIRECTOR_IE, ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { GestionarMatriculasDirectorComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas-director/gestionar-matriculas-director.component';
 import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-indicadores/reporte-indicadores.component';
 
 import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
+import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -344,6 +345,9 @@ const routes: Routes = [
       expectedRole: [DIRECTOR_IE],
     },
   },
+  { path: 'gestionar-matriculas', component: GestionarMatriculasDirectorComponent },
+  { path: 'matricula-individual', component: MatriculaIndividualComponent },
+  { path: 'matricula-masiva', component: MatriculaMasivaComponent },
 
   {
     path: 'estudiante',

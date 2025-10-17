@@ -15,11 +15,12 @@ import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calen
 import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/services/datos-matricula.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
   standalone: true,
-  imports: [PrimengModule, FormsModule],
+  imports: [PrimengModule, FormsModule, TextFieldModule],
   templateUrl: './registrar-logro-alcanzado.component.html',
   styleUrl: './registrar-logro-alcanzado.component.scss',
   providers: [MessageService],

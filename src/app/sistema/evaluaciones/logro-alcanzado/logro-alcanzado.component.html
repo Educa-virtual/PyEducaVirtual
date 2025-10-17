@@ -1,36 +1,52 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
 <p-panel>
-  <ng-template pTemplate="header" class="encabezado">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Registrar Logros Alcanzados</h3>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl font-bold">REGISTRAR LOGROS ALCANZADOS</div>
+      <div class="flex text-sm" *ngIf="seleccionar">
+        GRADO: {{ cGradoAbreviacion }} SECCIÓN: {{ cSeccionNombre }}
+      </div>
     </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <p-button
+      *ngIf="seleccionar"
+      label="Ver Áreas"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      size="small"
+      severity="success"
+      (onClick)="seleccionarCurso()"
+    >
+    </p-button>
   </ng-template>
 
   <div *ngIf="!seleccionar">
-    <div class="grid" *ngIf="data && data.length > 0">
-      <div class="col-12 cursos">
-        @for (curso of cursos; track curso) {
-          <app-curso-card
-            #dv
-            [curso]="curso"
-            [registro]="true"
-            (filtrarCurso)="filtrarCurso($event)"
-          ></app-curso-card>
-        }
-      </div>
-    </div>
-    <div class="grid" *ngIf="!data || data.length === 0">
-      <div class="col-12">
-        <p-message
-          severity="info"
-          text="No hay cursos disponibles para registrar logros alcanzados."
-        ></p-message>
-      </div>
+    <div class="grid">
+      @if (data && data.length > 0) {
+        <div class="col-12 cursos">
+          @for (curso of cursos; track curso) {
+            <app-curso-card
+              #dv
+              [curso]="curso"
+              [registro]="true"
+              (filtrarCurso)="filtrarCurso($event)"
+            ></app-curso-card>
+          }
+        </div>
+      } @else {
+        <div class="col-12">
+          <p-message
+            severity="info"
+            text="No hay cursos disponibles para registrar logros alcanzados."
+          ></p-message>
+        </div>
+      }
     </div>
   </div>
-  <div
-    *ngIf="seleccionar"
-    style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem"
-  >
+
+  <div *ngIf="seleccionar" class="grid">
     <!-- <div>
       <p-inputGroup>
         <p-inputGroupAddon> Nivel: </p-inputGroupAddon>
@@ -46,17 +62,7 @@
           (onChange)="generarListaEstudiante()" />
       </p-inputGroup>
     </div>-->
-    <div>
-      <p-button
-        label="Seleccionar Áreas"
-        icon="pi pi-file-pdf"
-        iconPos="right"
-        class="ml-2"
-        (onClick)="seleccionarCurso()"
-      >
-      </p-button>
-    </div>
-    <div>
+    <div class="col-12 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon> Área </p-inputGroupAddon>
         <input
@@ -64,12 +70,38 @@
           pInputText
           [(ngModel)]="cCursoNombre"
           disabled
-          class="w-full p-inputtext-sm opacity-100"
+          class="group-element"
           pInputText
         />
       </p-inputGroup>
     </div>
-    <div>
+    <div class="col-6 md:col-2">
+      <p-inputGroup>
+        <p-inputGroupAddon> Grado </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cGradoAbreviacion"
+          disabled
+          class="group-element"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-6 md:col-2">
+      <p-inputGroup>
+        <p-inputGroupAddon> Sección </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cSeccionNombre"
+          disabled
+          class="group-element"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-4">
       <p-inputGroup>
         <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
         <p-dropdown
@@ -78,14 +110,15 @@
           optionLabel="cNombrePeriodo"
           optionValue="iNumeroPeriodo"
           placeholder="Seleccionar"
-          styleClass="w-full"
+          [style]="{ flex: '1', width: '100%' }"
+          styleClass="group-element"
         >
         </p-dropdown>
       </p-inputGroup>
     </div>
   </div>
+  <br />
   <div *ngIf="seleccionar">
-    <br />
     <app-table-primeng
       [data]="estudiantes"
       [columnas]="columns"
@@ -93,18 +126,24 @@
       [showAdvancedFilter]="true"
       [showCaption]="false"
       [actions]="actions"
-    ></app-table-primeng>
+    />
   </div>
   <!-- Registrar Logro Alcanzado-->
   <p-dialog
     [draggable]="false"
     [maximizable]="true"
-    [header]="registroTitleModal"
     [(visible)]="dialogRegistrarLogroAlcanzado"
-    [style]="{ width: '70%', height: '80%' }"
+    [style]="{ width: '70vw' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
   >
+    <ng-template pTemplate="header">
+      <div class="flex flex-column">
+        <div class="flex text-xl font-bold">{{ registroTitleModal }}</div>
+        <div class="flex text-sm">{{ registroSubTitleModal }}</div>
+      </div>
+    </ng-template>
     <app-registrar-logro-alcanzado
       [selectedItem]="selectedItem"
       [competencias]="competencias"
@@ -112,7 +151,7 @@
       [iCredId]="iCredId"
       [periodos]="periodos"
       (registraLogroAlcanzado)="dialogRegistrarLogroAlcanzado = $event"
-    ></app-registrar-logro-alcanzado>
+    />
     <!-- (registraLogroAlcanzado)="listenDialogRegistrarLogro($event)" -->
   </p-dialog>
   <p-dialog
@@ -128,8 +167,7 @@
     <app-boleta-logro
       [selectedItem]="selectedItem"
       (boletaLogroImprimir)="listenDialogBoleta($event)"
-    >
-    </app-boleta-logro>
+    />
   </p-dialog>
 </p-panel>
 <p-toast />

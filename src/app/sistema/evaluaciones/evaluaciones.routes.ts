@@ -1,4 +1,7 @@
 import { Routes } from '@angular/router';
+import { LogroAlcanzadoComponent } from './logro-alcanzado/logro-alcanzado.component';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { DOCENTE } from '@/app/servicios/seg/perfiles';
 
 const routes: Routes = [
   {
@@ -52,11 +55,15 @@ const routes: Routes = [
         c => c.EvaluacionExamenEreComponent
       ),
   },
-
   {
     path: 'registro-logro',
-    loadComponent: () =>
-      import('./logro-alcanzado/logro-alcanzado.component').then(c => c.LogroAlcanzadoComponent),
+    component: LogroAlcanzadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-share',
+      expectedRole: [DOCENTE],
+    },
   },
   // {
   //     path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',

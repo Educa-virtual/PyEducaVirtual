@@ -1,91 +1,99 @@
 <br />
+
 <div class="grid">
-  <div class="field col-8">
+  <div class="col-12 md:col-6">
     <p-inputGroup>
-      <p-inputGroupAddon> ÁREA: </p-inputGroupAddon>
+      <p-inputGroupAddon> Área: </p-inputGroupAddon>
       <input
-        class="disabled"
+        class="group-element"
         disabled
         type="text"
         pInputText
-        [value]="selectedItem?.[0]?.cCursoNombre ?? 'sin area seleccionada'"
+        [value]="selectedItem?.[0]?.cCursoNombre"
       />
     </p-inputGroup>
   </div>
-  <div class="field col-4">
+  <div class="col-12 md:col-6">
     <p-inputGroup>
       <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
       <p-dropdown
-        styleClass="w-full"
         [(ngModel)]="iPeriodoId"
         [options]="periodos"
         optionLabel="cNombrePeriodo"
         optionValue="iNumeroPeriodo"
         placeholder="Seleccionar"
         [disabled]="true"
+        [style]="{ flex: '1', width: '100%' }"
+        styleClass="group-element"
       >
       </p-dropdown>
     </p-inputGroup>
   </div>
 </div>
+<br />
 <div class="grid">
-  <div class="field col-12">
-    <p-table
-      [value]="competencias"
-      [scrollable]="true"
-      scrollDirection="horizontal"
-      [style]="{ 'min-width': '800px' }"
-    >
+  <div class="col-12">
+    <p-table [value]="competencias">
       <ng-template pTemplate="header">
         <tr>
-          <th pFrozenColumn>Competencias</th>
-          <th colspan="2">Nivel de logro</th>
-          <th>Conclusión descriptiva</th>
-          <th>Action</th>
+          <th width="40%">Competencias</th>
+          <th width="15%">Nivel de logro</th>
+          <th width="40%">Conclusión descriptiva</th>
+          <th width="5%"></th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-competencias let-i="rowIndex">
         @if (iPeriodoId === '1') {
           <tr>
-            <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-            <td>
-              <p-inputNumber
-                [(ngModel)]="competencias.iResultado_1"
-                mode="decimal"
-                [showButtons]="false"
-                inputId="minmax-buttons"
-                [min]="0"
-                [max]="20"
-                [inputStyle]="{ width: '60px' }"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-              />
+            <td width="40%">
+              {{ competencias.cCompetenciaNombre }}
             </td>
-            <td iPeriodoId="1" disabled>
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="competencias.cNivelLogro_1"
-                name="cNivelLogro_1_{{ i }}"
-                style="width: 45px"
-                pattern="^(AD|A|B|C)$"
-                [disabled]="true"
-                maxlength="2"
-              />
+            <td iPeriodoId="1" disabled width="15%">
+              <div class="flex gap-1">
+                <p-inputNumber
+                  [(ngModel)]="competencias.iResultado_1"
+                  [inputStyle]="{ 'text-align': 'left', width: '60px' }"
+                  mode="decimal"
+                  [showButtons]="false"
+                  inputId="minmax-buttons"
+                  [min]="0"
+                  [max]="20"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="2"
+                />
+                <input
+                  type="text"
+                  [style]="{ 'text-align': 'center', width: '45px' }"
+                  pInputText
+                  [(ngModel)]="competencias.cNivelLogro_1"
+                  name="cNivelLogro_1_{{ i }}"
+                  pattern="^(AD|A|B|C)$"
+                  [disabled]="true"
+                  maxlength="2"
+                />
+              </div>
             </td>
-            <td>
+            <td width="40%">
               <textarea
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
                 pInputTextarea
                 [(ngModel)]="competencias.cDescripcion_1"
                 name="mat_{{ i }}_b1_desc"
                 rows="2"
-                style="width: 100%"
+                [style]="{ 'min-width': '200px' }"
+                [minLength]="10"
+                [maxlength]="350"
+                [style.minHeight]="2"
+                [style.maxHeight]="4"
+                cdkAutosizeMinRows="2.5"
+                cdkAutosizeMaxRows="4"
               ></textarea>
             </td>
-            <td>
+            <td width="5%">
               <p-button
-                [icon]="'pi pi-file-edit'"
+                icon="pi pi-save"
                 severity="primary"
                 *ngIf="
                   competencias.iResultado_1 !== null && competencias.iResultado_1 !== undefined

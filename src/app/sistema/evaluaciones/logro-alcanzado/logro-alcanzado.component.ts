@@ -10,7 +10,7 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { GeneralService } from '@/app/servicios/general.service';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 //import { CursosComponent } from '../../aula-virtual/sub-modulos/cursos/cursos/cursos.component';
 import { CursoCardComponent } from '../../aula-virtual/sub-modulos/cursos/components/curso-card/curso-card.component';
 import { ICurso } from '../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface';
@@ -35,6 +35,7 @@ export class LogroAlcanzadoComponent implements OnInit {
   //breadCrumbHome: MenuItem
   dialogRegistrarLogroAlcanzado: boolean = false;
   registroTitleModal: string;
+  registroSubTitleModal: string;
   dialogBoletaLogroAlcanzado: boolean = false;
   boletaTitleModal: string;
   selectedItem: any;
@@ -47,6 +48,8 @@ export class LogroAlcanzadoComponent implements OnInit {
   public cursos: ICurso[] = [];
   public area: any; //area curricular seleccionada
   public cCursoNombre: string = ''; //nombre del curso seleccionado
+  cGradoAbreviacion: string = '';
+  cSeccionNombre: string = '';
 
   //estudiante,cargando estudiante
   public estudiantes: any[] = [];
@@ -65,10 +68,13 @@ export class LogroAlcanzadoComponent implements OnInit {
   private unsubscribe$ = new Subject<boolean>();
   private _store = inject(LocalStoreService);
 
+  breadCrumbItems: MenuItem[];
+  breadCrumbHome: MenuItem;
+
   columns = [
     {
       type: 'item',
-      width: '1rem',
+      width: '5%',
       field: 'item',
       header: '#',
       text_header: 'center',
@@ -76,7 +82,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '8rem',
+      width: '25%',
       field: 'cPersDocumento',
       header: 'DNI/CE',
       text_header: 'center',
@@ -84,45 +90,19 @@ export class LogroAlcanzadoComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '60%',
       field: 'Estudiante',
-      header: 'Apellidos y Nombre',
-      text_header: 'center',
-      text: 'center',
+      header: 'Apellidos y Nombres',
+      text_header: 'left',
+      text: 'left',
     },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cCursoNombre',
-      header: 'Área curricular',
-      text_header: 'center',
-      text: 'center',
-    },
-
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cGradoAbreviacion',
-      header: 'Nivel',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '12rem',
-      field: 'cSeccionNombre',
-      header: 'Sección',
-      text_header: 'center',
-      text: 'center',
-    },
-
     {
       type: 'actions',
-      width: '3rem',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
+      text_header: 'right',
+      text: 'right',
     },
   ];
 
@@ -140,6 +120,15 @@ export class LogroAlcanzadoComponent implements OnInit {
     //this.obtenerGradoSeccion();
     this.obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular();
     //this.cargarPeriodosEvaluacion();
+    this.setBreadCrumbs();
+  }
+
+  setBreadCrumbs() {
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+    this.breadCrumbItems = [{ label: 'Evaluaciones' }, { label: 'Logros' }];
   }
 
   registroLogroAlcanzado() {
@@ -161,8 +150,8 @@ export class LogroAlcanzadoComponent implements OnInit {
     const nombreEstudiante = this.estudiante?.Estudiante || 'Estudiante';
     const gradoEstudiante = this.estudiante?.cGradoAbreviacion || 'cGradoAbreviacion';
     const secciconEstudiante = this.estudiante?.cSeccionNombre || 'cSeccionNombre';
-    const areaCurricular = this.estudiante?.cCursoNombre || 'cCursoNombre';
-    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Seccion: ${secciconEstudiante} (Area: ${areaCurricular})`;
+    this.registroTitleModal = `REGISTRO : ${nombreEstudiante}`;
+    this.registroSubTitleModal = `GRADO: ${gradoEstudiante} - SECCIÓN: ${secciconEstudiante}`;
     //Generar competencias
     this.cargarCompetencias(curso);
   }
@@ -223,14 +212,14 @@ export class LogroAlcanzadoComponent implements OnInit {
       icon: 'pi pi-file-edit',
       accion: 'Resistrar',
       type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      class: 'p-button-rounded p-button-success p-button-text',
     },
     {
-      labelTooltip: 'Imprimir Boleta',
+      labelTooltip: 'Imprimir Informe de Progreso',
       icon: 'pi pi-print',
       accion: 'Imprimir',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
+      class: 'p-button-rounded p-button-secondary p-button-text',
     },
   ];
   /*
@@ -424,6 +413,8 @@ export class LogroAlcanzadoComponent implements OnInit {
       complete: () => {
         this.seleccionar = true;
         this.cCursoNombre = area.cCursoNombre || '';
+        this.cGradoAbreviacion = this.area?.cGradoAbreviacion || '';
+        this.cSeccionNombre = this.area?.cSeccionNombre || '';
         this.estudiantes = this.estudiantes.map(estudiante => ({
           ...estudiante, // Mantener todas las propiedades originales
           cGradoAbreviacion: this.area?.cGradoAbreviacion || '', // Evitar error si no encuentra
@@ -433,11 +424,11 @@ export class LogroAlcanzadoComponent implements OnInit {
           iNivelTipoId: this.perfil?.iNivelTipoId || '', // Evitar error si no encuentra
         }));
 
-        this._messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Se selecciono con exito el área curricular',
-        });
+        // this._messageService.add({
+        //   severity: 'success',
+        //   summary: 'Mensaje del sistema',
+        //   detail: 'Se selecciono con exito el área curricular',
+        // });
       },
     });
   }

@@ -76,6 +76,7 @@ export class GestionMatriculasComponent implements OnInit {
 
   actionsLista: IActionTable[];
 
+  actions: IActionTable[] = [];
   columns = [
     {
       type: 'item',
@@ -174,6 +175,13 @@ export class GestionMatriculasComponent implements OnInit {
       ];
     } else {
       this.actions = [
+        {
+          labelTooltip: 'Agregar deserción',
+          icon: 'pi pi-user-minus',
+          accion: 'agregar_desercion',
+          type: 'item',
+          class: 'p-button-rounded p-button-danger p-button-text',
+        },
         {
           labelTooltip: 'Editar apoderado',
           icon: 'pi pi-user-plus',
@@ -605,42 +613,4 @@ export class GestionMatriculasComponent implements OnInit {
         },
       });
   }
-
-  actions: IActionTable[] = [
-    {
-      labelTooltip: 'Agregar deserción',
-      icon: 'pi pi-user-minus',
-      accion: 'agregar_desercion',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
-    {
-      labelTooltip: 'Editar apoderado',
-      icon: 'pi pi-user-plus',
-      accion: 'asig_apoderado',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
-    {
-      labelTooltip: 'Editar Matrícula',
-      icon: 'pi pi-pencil',
-      accion: 'editar_matricula',
-      type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
-    },
-    // {
-    //   labelTooltip: 'Editar Estudiante',
-    //   icon: 'pi pi-user-edit',
-    //   accion: 'editar_estudiante',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-secondary p-button-text',
-    // },
-    // {
-    //   labelTooltip: 'Anular',
-    //   icon: 'pi pi-trash',
-    //   accion: 'anular',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
-  ];
 }

@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { MantenimientoIeComponent } from './mantenimiento/mantenimiento-ie/mantenimiento-ie.component';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 
 const routes: Routes = [
   {
@@ -40,6 +43,15 @@ const routes: Routes = [
     path: 'mantenimiento-curricula',
     loadComponent: () =>
       import('./mantenimiento/curriculas/curriculas.component').then(m => m.CurriculasComponent),
+  },
+
+  {
+    path: 'mantenimiento-ie',
+    component: MantenimientoIeComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
   /*{
         path: 'gestion-usuarios',

@@ -1,0 +1,65 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center w-full">
+      <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
+      <button
+        pButton
+        label="Agregar"
+        pRipple
+        pTooltip="Agregar"
+        class="p-button-primary"
+        icon="pi pi-plus"
+        (click)="agregarMantenimiento()"
+      ></button>
+    </div>
+  </ng-template>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [data]="dataMantenimiento"
+    [actions]="actions"
+    [showPaginator]="true"
+    [searchPlaceholder]="'Buscar por nombre...'"
+    [showCaption]="true"
+    [(selectedRowData)]="selectedItem"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    sortMode="single"
+    sortField="fecha"
+    [sortOrder]="1"
+  >
+  </app-table-primeng>
+</p-panel>
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="titleEditarMantenimiento"
+  [(visible)]="mostrarEditarMantenimiento"
+  [style]="{ width: '56rem', height: '470px' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+  <app-editar-mantenimiento-ie
+    [selectedItem]="institucionSeleccionada"
+    (eventEditarMantenimientoIe)="cerrarModalEdicion($event)"
+  >
+  </app-editar-mantenimiento-ie>
+</p-dialog>
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [header]="titleAgregarMantenimiento"
+  [(visible)]="mostrarAgregarMantenimiento"
+  [style]="{ width: '56rem', height: '447px' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+>
+  <app-agregar-mantenimiento-ie
+    [selectedItem]="selectedItem"
+    (eventAgregarMantenimientoIe)="cerrarModalAgregar($event)"
+  >
+  </app-agregar-mantenimiento-ie>
+</p-dialog>
+<p-toast></p-toast>

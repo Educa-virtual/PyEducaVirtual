@@ -8,6 +8,9 @@ import { ResultadosEreComponent } from './reportes-academicos/resultados-ere/res
 import { CalendarioComponent } from '../estudiante/calendario/calendario.component';
 import { CodigoQrComponent } from './codigo-qr/codigo-qr.component';
 
+import { MesaPartesGoreComponent } from './mesa-partes-gore/mesa-partes-gore.component';
+import { AsistenciaEstudianteComponent } from './asistencia-estudiante/asistencia-estudiante.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -31,6 +34,16 @@ const routes: Routes = [
     data: {
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'calendario',
+      icon: 'pi pi-share-alt',
+    },
+  },
+  {
+    path: 'asistencia',
+    component: AsistenciaEstudianteComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'asistencia',
       icon: 'pi pi-share-alt',
     },
   },
@@ -72,6 +85,16 @@ const routes: Routes = [
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'Codigo QR',
       icon: 'pi pi-qrcode',
+    },
+  },
+  {
+    path: 'mesa-partes-gore',
+    component: MesaPartesGoreComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'Mesa de Partes GORE',
+      icon: 'pi pi-chart-bar',
     },
   },
 ];

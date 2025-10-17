@@ -11,14 +11,6 @@ export class ReporteProgresoService {
 
   constructor() {}
 
-  obtenerEstudiantesApoderado() {
-    return this.http.get(`${this.urlBackendApi}/apo/estudiantes`);
-  }
-
-  obtenerMatriculasEstudiante(iEstudianteId: any) {
-    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/${iEstudianteId}/matriculas`);
-  }
-
   obtenerReporteProgreso(iMatrId) {
     return this.http.get(
       `${this.urlBackendApi}/acad/apoderados/reportes-academicos/progreso/${iMatrId}`

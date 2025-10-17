@@ -1,0 +1,198 @@
+<p-toast />
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-primary">{{ titulo }}</h3>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1" *ngIf="soloLectura === false">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <button
+        size="small"
+        [rounded]="true"
+        pButton
+        pTooltip="Registrar matrícula"
+        tooltipPosition="top"
+        (click)="agregarMatricula()"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Registar matrícula</span>
+      </button>
+    </div>
+  </ng-template>
+
+  <p-panel header="Aplicar Filtros" [toggleable]="true">
+    <form [formGroup]="form">
+      <div class="grid p-fluid m-0">
+        <div class="col-12 lg:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>Nivel grado</p-inputGroupAddon>
+            <p-dropdown
+              [options]="nivel_grados"
+              formControlName="iNivelGradoId"
+              optionLabel="nombre"
+              styleClass="w-full"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              placeholder="Seleccione..."
+            ></p-dropdown>
+          </p-inputGroup>
+        </div>
+
+        <!-- <div class="field col-12 md:col-3">
+          <span class="p-float-label">
+                        <p-dropdown [options]="turnos" formControlName="iTurnoId" optionLabel="nombre" optionValue="id"
+                            [filter]="true" [showClear]="true" [appendTo]="'body'"></p-dropdown>
+                        <label for="iTurnoId">Turno</label>
+                    </span> 
+        </div> -->
+
+        <div class="col-12 lg:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>Sección</p-inputGroupAddon>
+            <p-dropdown
+              [options]="secciones"
+              formControlName="iSeccionId"
+              optionLabel="nombre"
+              styleClass="w-full"
+              optionValue="id"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              placeholder="Seleccione..."
+            ></p-dropdown>
+          </p-inputGroup>
+        </div>
+
+        <!-- <div class="field col-12 md:col-3">
+          <span class="p-float-label">
+                        <p-dropdown [options]="tipos_matriculas" formControlName="iTipoMatrId" optionLabel="nombre"
+                            optionValue="id" [filter]="true" [showClear]="true" [appendTo]="'body'"></p-dropdown>
+                        <label for="iTipoMatrId">Tipo</label>
+                    </span>
+        </div> -->
+      </div>
+    </form>
+  </p-panel>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="matriculas_filtradas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    sortMode="single"
+    sortField="_cPersNomape"
+    [sortOrder]="1"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+    [showAdvancedFilter]="true"
+    [showSearchTable]="false"
+    [searchPlaceholder]="'Buscar por nombres y apellidos del estudiante...'"
+    [indiceColumnaBuscar]="3"
+  >
+  </app-table-primeng>
+  <ng-container slot="caption-content"> </ng-container>
+
+  <p-dialog
+    [header]="caption"
+    [(visible)]="bApoderado"
+    [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+    [style]="{
+      width: '89rem',
+      maxWidth: '95vw',
+      height: soloLectura ? '35rem' : '80vh',
+      maxHeight: '95vh',
+    }"
+    [modal]="true"
+    [closable]="true"
+    [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+    [styleClass]="'dialog-responsive'"
+    (onHide)="bApoderado = false"
+    [resizable]="true"
+    [maximizable]="true"
+  >
+    <app-matricula-apoderado
+      [iEstudianteId]="iEstudianteId"
+      [estudiante]="estudianteSeleccionado"
+      [iCredId]="iCredId"
+      (closeDialog)="bApoderado = false"
+      [soloLectura]="soloLectura"
+    >
+    </app-matricula-apoderado>
+  </p-dialog>
+</p-panel>
+
+<p-dialog
+  header="{{ caption }}"
+  [(visible)]="visible_desercion"
+  [style]="{ width: '90rem' }"
+  [modal]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  [closable]="true"
+  [draggable]="true"
+  appendTo="body"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+>
+  <p-splitter
+    [panelSizes]="[30, 60]"
+    [style]="{ height: '90%' }"
+    styleClass="flex-column lg:flex-row"
+  >
+    <!--Bloque para buscador-->
+    <ng-template pTemplate>
+      <p-fieldset legend="Registrar deserción" [toggleable]="true">
+        <app-form-desercion
+          (accionBtnItem)="accionBtnItemTable($event)"
+          [titulo]="caption"
+          [matricula]="matricula"
+          [grado]="grado"
+          [matriculas_filtradas]="matriculas"
+          [tipo_deserciones]="tipo_desercion"
+          [bValido]="update"
+          [desercion]="desercion"
+        />
+      </p-fieldset>
+    </ng-template>
+    <ng-template pTemplate>
+      <div [style]="{ width: '100%' }">
+        <div class="card grid">
+          <div class="col-12">
+            <p-tabView [(activeIndex)]="activeIndex">
+              <p-tabPanel>
+                <ng-template pTemplate="header">
+                  <div class="flex align-items-center">
+                    <p-avatar icon="pi pi-address-book" shape="circle" />
+                    <span class="font-bold white-space-nowrap m-0"> Historial de matrícula </span>
+                  </div>
+                </ng-template>
+
+                <div class="flex align-items-center">
+                  <p-avatar icon="pi pi-user" shape="circle" />
+                  <span class="font-bold text-center m-0">
+                    Historial de deserciones - {{ matricula._cPersNomape }}
+                  </span>
+                </div>
+                <p-message
+                  severity="info"
+                  text="No cuenta con historial de deserciones."
+                  *ngIf="!deserciones || deserciones.length === 0"
+                ></p-message>
+                <br />
+                <div *ngIf="deserciones && deserciones.length > 0">
+                  <app-historial-desercion
+                    [deserciones]="deserciones"
+                    (accionBtnItem)="accionBtnItemTable($event)"
+                  />
+                </div>
+              </p-tabPanel>
+            </p-tabView>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-splitter>
+</p-dialog>

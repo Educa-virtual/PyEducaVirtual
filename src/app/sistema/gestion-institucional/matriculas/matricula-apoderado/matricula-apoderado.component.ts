@@ -1,28 +1,32 @@
-import {
-  IActionTable,
-  TablePrimengComponent,
-} from '@/app/shared/table-primeng/table-primeng.component';
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
 import { GeneralService } from '@/app/servicios/general.service';
 import { MessageService } from 'primeng/api';
 import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service';
-import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import * as XLSX from 'xlsx-js-style';
+import { saveAs } from 'file-saver';
+import {
+  IActionTable,
+  TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component';
 
 @Component({
   selector: 'app-matricula-apoderado',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent, ToolbarPrimengComponent],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './matricula-apoderado.component.html',
   styleUrl: './matricula-apoderado.component.scss',
 })
-export class MatriculaApoderadoComponent implements OnChanges {
+export class MatriculaApoderadoComponent implements OnChanges, OnInit {
   frmApoderado: FormGroup;
   form: FormGroup;
   @Input() iEstudianteId: number = 0;
   @Input() iCredId: number = 0;
+  @Input() soloLectura: boolean = false;
+
+  @Input() estudiante: any;
   // @Input() caption: string = 'Historial de Apoderados';
 
   selectedItems = [];
@@ -54,7 +58,95 @@ export class MatriculaApoderadoComponent implements OnChanges {
   es_peruano: boolean = true;
   documento_consultable: boolean = true;
 
+  actions: IActionTable[];
+
+  actionsLista: IActionTable[];
+
+  columns = [
+    {
+      type: 'item',
+      width: '1rem',
+      field: 'item',
+      header: '',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '3rem',
+      field: 'cPersDocumento',
+      header: 'Documento',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '9rem',
+      field: 'apoderado',
+      header: 'Apoderado',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '3rem',
+      field: 'cTipoFamiliarDescripcion',
+      header: 'Tipo',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '2rem',
+      field: 'cPersCorreo',
+      header: 'Correo',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '2rem',
+      field: 'cPersTelefono',
+      header: 'Teléfono',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '3rem',
+      field: 'dtCreado',
+      header: 'Inicio',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '3rem',
+      field: 'dtDeshabilitado',
+      header: 'Fin',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'cObservacion',
+      header: 'Observaciones',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'estado-activo',
+      width: '3rem',
+      field: 'iEstado',
+      header: 'Estado',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
+
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
+
   constructor(
     private fb: FormBuilder,
     private query: GeneralService,
@@ -100,6 +192,8 @@ export class MatriculaApoderadoComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iEstudianteId'] && changes['iEstudianteId'].currentValue) {
       // this.getTipoFamiliares();
+      this.apoderados = [];
+      console.log(this.estudiante);
       this.inicializarFormulario();
       this.datosEstudiante();
       this.getTipoFamiliares();
@@ -110,6 +204,50 @@ export class MatriculaApoderadoComponent implements OnChanges {
       //     this.inicializacionPendiente = false;
       //   });
       // }
+    }
+  }
+
+  ngOnInit(): void {
+    if (!this.soloLectura) {
+      this.actions = [
+        {
+          labelTooltip: 'Editar Matrícula',
+          icon: 'pi pi-pencil',
+          accion: 'editar_apoderado',
+          type: 'item',
+          class: 'p-button-rounded p-button-warning p-button-text',
+        },
+
+        {
+          labelTooltip: 'Deshabilitar apoderado',
+          icon: 'pi pi-trash',
+          accion: 'Deshabilitar',
+          type: 'item',
+          class: 'p-button-rounded p-button-danger p-button-text',
+          isVisible: rowData => {
+            return rowData.iEstado === '1';
+          },
+        },
+        {
+          labelTooltip: 'Habilitar apoderado',
+          icon: 'pi pi-check',
+          accion: 'Habilitar',
+          type: 'item',
+          class: 'p-button-rounded p-button-success p-button-text',
+          isVisible: rowData => {
+            return rowData.iEstado === '0';
+          },
+        },
+      ];
+
+      this.columns.push({
+        type: 'actions',
+        width: '1rem',
+        field: 'actions',
+        header: 'Acciones',
+        text_header: 'center',
+        text: 'center',
+      });
     }
   }
 
@@ -453,112 +591,138 @@ export class MatriculaApoderadoComponent implements OnChanges {
     });
   }
 
-  actions: IActionTable[] = [
-    {
-      labelTooltip: 'Editar Matrícula',
-      icon: 'pi pi-pencil',
-      accion: 'editar_apoderado',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
+  exportarApoderados() {
+    if (!this.apoderados || this.apoderados.length === 0) {
+      /*this.messageService.add({
+                severity: 'warn',
+                summary: 'Sin datos',
+                detail: 'No hay apoderados para exportar',
+            });*/
+      return;
+    }
 
-    {
-      labelTooltip: 'Deshabilitar apoderado',
-      icon: 'pi pi-trash',
-      accion: 'Deshabilitar',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-      isVisible: rowData => {
-        return rowData.iEstado === '1';
+    // Crear el libro de trabajo
+    const workbook = XLSX.utils.book_new();
+
+    // Definir las columnas a exportar
+    const columnasExportar = [
+      { key: 'cTipoFamiliarDescripcion', header: 'Tipo Familiar' },
+      { key: 'cPersDocumento', header: 'Documento' },
+      { key: 'apoderado', header: 'Apoderado' },
+      { key: 'cPersCorreo', header: 'Correo' },
+      { key: 'cPersTelefono', header: 'Teléfono' },
+      { key: 'iEstado', header: 'Estado' },
+    ];
+
+    // Crear cabeceras
+    const headers = columnasExportar.map(col => col.header);
+
+    // Crear los datos transformando el iEstado
+    const dataRows = this.apoderados.map(apoderado =>
+      columnasExportar.map(col => {
+        if (col.key === 'iEstado') {
+          return apoderado[col.key] === '1' || apoderado[col.key] === 1
+            ? 'Habilitado'
+            : 'Inhabilitado';
+        }
+        return apoderado[col.key] || '';
+      })
+    );
+
+    // Combinar todas las filas: Fila 1 (Estudiante label), Fila 2 (Nombre estudiante), Fila 3 (Cabeceras), Fila 4+ (Datos)
+    const data = [
+      ['Estudiante:', this.estudiante?._cPersNomape, '', '', '', ''], // Fila 1
+      ['', '', '', '', '', ''], // Fila 2
+      headers, // Fila 3 - Cabeceras
+      ...dataRows, // Fila 4+ - Datos
+    ];
+
+    // Crear la hoja de trabajo
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+    // Estilo para "Estudiante" (A1)
+    const estudianteLabelStyle = {
+      font: { bold: true, size: 12 },
+      alignment: { horizontal: 'left', vertical: 'center' },
+    };
+
+    // Estilo para el nombre del estudiante (A2)
+    const estudianteNombreStyle = {
+      font: { size: 11 },
+      alignment: { horizontal: 'left', vertical: 'center' },
+    };
+
+    // Aplicar estilos a las cabeceras (fila 3, índice 2)
+    const headerStyle = {
+      font: { bold: true, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: '4472C4' } },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      border: {
+        top: { style: 'thin', color: { rgb: '000000' } },
+        bottom: { style: 'thin', color: { rgb: '000000' } },
+        left: { style: 'thin', color: { rgb: '000000' } },
+        right: { style: 'thin', color: { rgb: '000000' } },
       },
-    },
-    {
-      labelTooltip: 'Habilitar apoderado',
-      icon: 'pi pi-check',
-      accion: 'Habilitar',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-      isVisible: rowData => {
-        return rowData.iEstado === '0';
-      },
-    },
-  ];
+    };
 
-  actionsLista: IActionTable[];
+    // Aplicar estilo a A1
+    const cellA1 = XLSX.utils.encode_cell({ r: 0, c: 0 });
+    if (!worksheet[cellA1]) worksheet[cellA1] = {};
+    worksheet[cellA1].s = estudianteLabelStyle;
 
-  columns = [
-    {
-      type: 'item',
-      width: '1rem',
-      field: 'item',
-      header: '',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '3rem',
-      field: 'cPersDocumento',
-      header: 'Documento',
-      text_header: 'center',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '9rem',
-      field: 'apoderado',
-      header: 'Apoderado',
-      text_header: 'center',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '3rem',
-      field: 'cTipoFamiliarDescripcion',
-      header: 'Tipo',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'date',
-      width: '3rem',
-      field: 'dtCreado',
-      header: 'Inicio',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'date',
-      width: '3rem',
-      field: 'dtDeshabilitado',
-      header: 'Fin',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cObservacion',
-      header: 'Observaciones',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'estado-activo',
-      width: '3rem',
-      field: 'iEstado',
-      header: 'Estado',
-      text_header: 'center',
-      text: 'center',
-    },
+    // Aplicar estilo a B1 (nombre del estudiante)
+    const cellB1 = XLSX.utils.encode_cell({ r: 0, c: 1 });
+    if (!worksheet[cellB1]) worksheet[cellB1] = {};
+    worksheet[cellB1].s = estudianteNombreStyle;
 
-    {
-      type: 'actions',
-      width: '1rem',
-      field: 'actions',
-      header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
-    },
-  ];
+    // Hacer merge de B1 hasta F1
+    if (!worksheet['!merges']) worksheet['!merges'] = [];
+    worksheet['!merges'].push({
+      s: { r: 0, c: 1 }, // B1 (start)
+      e: { r: 0, c: 5 }, // F1 (end)
+    });
+
+    // Aplicar estilo a las celdas de cabecera (fila 3, índice 2)
+    headers.forEach((header, index) => {
+      const cellAddress = XLSX.utils.encode_cell({ r: 2, c: index });
+      if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
+      worksheet[cellAddress].s = headerStyle;
+    });
+
+    // Ajustar ancho de columnas automáticamente
+    const colWidths = columnasExportar.map((col, index) => {
+      // Para la primera columna (Estudiante:), usar un ancho fijo pequeño
+      if (index === 0) {
+        return { wch: 15 }; // Ancho fijo de 15 caracteres para "Estudiante:"
+      }
+
+      const maxLength = Math.max(
+        col.header.length,
+        ...this.apoderados.map(apoderado => {
+          let valor = apoderado[col.key];
+          if (col.key === 'iEstado') {
+            valor =
+              apoderado[col.key] === '1' || apoderado[col.key] === 1
+                ? 'Habilitado'
+                : 'Inhabilitado';
+          }
+          return String(valor || '').length;
+        })
+      );
+      return { wch: maxLength + 2 };
+    });
+    worksheet['!cols'] = colWidths;
+
+    // Agregar la hoja al libro
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Apoderados');
+
+    // Generar el archivo Excel
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    const nombreArchivo = `Apoderados_${this.estudiante?._cPersNomape}.xlsx`;
+    saveAs(blob, nombreArchivo);
+  }
 }

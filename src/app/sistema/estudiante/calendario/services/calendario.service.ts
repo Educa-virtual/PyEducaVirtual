@@ -10,10 +10,6 @@ export class CalendarioService {
 
   constructor(private http: HttpClient) {}
 
-  /*obtenerDiasFestivos() {
-      return this.http.post(`${this.urlBackendApi}/docente/asistencia/obtenerFestividad`, {});
-    }*/
-
   obtenerTiposFechasImportantes() {
     return this.http.get(`${this.urlBackendApi}/acad/fechas-importantes/tipos`);
   }
@@ -23,10 +19,4 @@ export class CalendarioService {
       `${this.urlBackendApi}/acad/estudiantes/calendario-academico/anio/${iYAcadId}`
     );
   }
-
-  /*obtenerAreasCurriculares() {
-          return this.http.get(
-              `${this.urlBackendApi}/acad/estudiantes/matriculas/cursos`
-          )
-      }*/
 }

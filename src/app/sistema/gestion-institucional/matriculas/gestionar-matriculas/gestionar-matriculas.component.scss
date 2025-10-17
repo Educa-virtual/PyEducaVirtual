@@ -1,0 +1,64 @@
+:host ::ng-deep p-inputGroupAddon {
+  background-color: var(--bg-header-modal) !important;
+  color: var(--primary-color-text) !important;
+
+  i {
+    color: var(--primary-color-text) !important;
+  }
+}
+
+// Estilos para hacer el diálogo responsive en móviles
+:host ::ng-deep .dialog-responsive {
+  .p-dialog {
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+  }
+
+  .p-dialog-content {
+    padding: 1rem !important;
+  }
+
+  // Estilos específicos para tablets y móviles
+  @media screen and (max-width: 960px) {
+    .p-dialog {
+      width: 95vw !important;
+      margin: 1rem !important;
+    }
+
+    .p-dialog-header {
+      padding: 1rem !important;
+      font-size: 1.1rem !important;
+    }
+
+    .p-dialog-content {
+      padding: 0.75rem !important;
+      overflow-y: auto !important;
+    }
+  }
+
+  // Estilos específicos para móviles pequeños
+  @media screen and (max-width: 640px) {
+    .p-dialog {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+    }
+
+    .p-dialog-header {
+      padding: 0.75rem !important;
+      font-size: 1rem !important;
+    }
+
+    .p-dialog-content {
+      padding: 0.5rem !important;
+    }
+
+    // Ocultar los botones de maximizar y redimensionar en móviles
+    .p-dialog-header-maximize,
+    .p-resizable-handle {
+      display: none !important;
+    }
+  }
+}

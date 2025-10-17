@@ -97,7 +97,7 @@ export class InstructoresComponent implements OnInit {
     {
       label: 'Nuevo Instructor',
       icon: 'pi pi-plus',
-      class: 'p-button-primary',
+      class: 'p-button-success',
       action: () => this.accionBnt({ accion: 'guardar' }),
     },
   ];

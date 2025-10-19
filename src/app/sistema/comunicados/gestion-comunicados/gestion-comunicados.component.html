@@ -1,0 +1,49 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl font-bold">GESTIONAR COMUNICADOS</div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <p-button
+      severity="success"
+      pTooltip="Nuevo"
+      tooltipPosition="top"
+      (click)="agregarComunicado()"
+    >
+      <i class="pi pi-fw pi-plus"></i>
+      <span class="hidden md:inline ml-2">Nuevo</span>
+    </p-button>
+  </ng-template>
+
+  <div class="grid p-fluid">
+    <div class="col">
+      <p-inputGroup>
+        <p-inputGroupAddon for="buscar"> Buscar </p-inputGroupAddon>
+        <input
+          #filtro
+          type="text"
+          pInputText
+          (input)="filtrarTabla()"
+          aria-label="Buscar"
+          name="buscar"
+        />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [data]="encuestas_filtradas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [(selectedRowData)]="selectedItem"
+    [actions]="actions"
+    [showCaption]="false"
+  >
+  </app-table-primeng>
+</p-panel>
+
+<p-toast></p-toast>

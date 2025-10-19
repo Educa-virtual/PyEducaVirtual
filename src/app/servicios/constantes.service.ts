@@ -799,11 +799,11 @@ const administracion = [
   {
     label: 'Otros Módulos',
     items: [
-      // {
-      //   label: 'Comunicados',
-      //   icon: 'pi pi-fw pi-bell',
-      //   routerLink: ['/docente/comunicados'],
-      // },
+      {
+        label: 'Comunicados',
+        icon: 'pi pi-fw pi-bell',
+        routerLink: ['/comunicados/gestion-comunicados'],
+      },
       {
         label: 'ERE',
         icon: 'pi pi-pen-to-square',

@@ -1,0 +1,454 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Nueva encuesta</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="encuesta_registrada && iEncuId">
+      <p-button
+        label="Ver preguntas"
+        icon="pi pi-list-check"
+        iconPos="left"
+        size="small"
+        severity="warning"
+        pTooltip="Ver preguntas"
+        tooltipPosition="top"
+        (click)="verPreguntas()"
+      />
+    </div>
+  </ng-template>
+  <p-stepper class="mt-3" [(activeStep)]="active">
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <button
+          class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+          (click)="handlePanelClick(onClick, active)"
+        >
+          <span
+            class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+            [ngClass]="{
+              'bg-primary border-primary': index <= active,
+              'surface-border': index > active,
+            }"
+          >
+            <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
+          </span>
+          <span class="hidden md:block font-bold text-primary">Información general</span>
+        </button>
+      </ng-template>
+      <ng-template
+        pTemplate="content"
+        let-nextCallback="nextCallback"
+        let-index="index"
+        class="p-0 m-0"
+      >
+        <form [formGroup]="formEncuesta">
+          <div class="grid">
+            <div class="col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon> Título * </p-inputGroupAddon>
+                <input
+                  pInputText
+                  styleClass="group-element"
+                  placeholder="Ingrese título"
+                  formControlName="cEncuNombre"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+                <input
+                  pInputText
+                  styleClass="group-element"
+                  placeholder="Ingrese subtítulo"
+                  formControlName="cEncuSubtitulo"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+                <p-calendar
+                  inputStyleClass="group-element"
+                  view="date"
+                  formControlName="dEncuInicio"
+                  dateFormat="dd/mm/yy"
+                  placeholder="Fecha de inicio"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Cierre</p-inputGroupAddon>
+                <p-calendar
+                  inputStyleClass="group-element"
+                  view="date"
+                  formControlName="dEncuFin"
+                  dateFormat="dd/mm/yy"
+                  placeholder="Fecha de cierre"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <a
+                    role="button"
+                    class="p-button p-button-secondary mr-2"
+                    (click)="iTiemDurId.toggle($event)"
+                    (keypress)="iTiemDurId.toggle($event)"
+                    tabindex="0"
+                  >
+                    <i class="pi pi-question-circle"></i>
+                  </a>
+                  <span>Tiempo edición</span>
+                </p-inputGroupAddon>
+                <p-dropdown
+                  styleClass="group-element"
+                  [options]="tiempos_duracion"
+                  placeholder="Seleccione tiempo"
+                  formControlName="iTiemDurId"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+                <p-overlayPanel #iTiemDurId showCloseIcon="true" appendTo="body">
+                  <div class="flex w-15rem">
+                    El tiempo que el encuestado tendrá para editar sus respuestas una vez que las
+                    haya registrado por primera vez.
+                  </div>
+                </p-overlayPanel>
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <a
+                    role="button"
+                    class="p-button p-button-secondary mr-2"
+                    (click)="iTiemDurId.toggle($event)"
+                    (keypress)="iTiemDurId.toggle($event)"
+                    tabindex="0"
+                  >
+                    <i class="pi pi-question-circle"></i>
+                  </a>
+                  <span>Tipo de fuente</span>
+                </p-inputGroupAddon>
+                <p-dropdown
+                  styleClass="group-element"
+                  [options]="fuentes"
+                  showClear="true"
+                  placeholder="Seleccione una fuente"
+                  formControlName="iFuenteId"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    <div
+                      class="flex align-items-center gap-2"
+                      [style.font-family]="item.cFuenteCSS"
+                    >
+                      <div>{{ item.label }}</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    <div
+                      class="flex align-items-center gap-2"
+                      [style.font-family]="item.cFuenteCSS"
+                    >
+                      <div>{{ item.label }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <p-overlayPanel #iFuenteId showCloseIcon="true" appendTo="body">
+                  <div class="flex w-15rem">
+                    La fuente de texto que seleccione se mostrará en los encabezados, los datos
+                    adicionales, las preguntas y alternativas cuando el participante responda la
+                    encuesta. Tenga en cuenta que la fuente mostrará dependerá de la disponibilidad
+                    en el dispositivo del participante. Si no selecciona ninguna fuente se usará la
+                    fuente predeterminada por la plataforma.
+                  </div>
+                </p-overlayPanel>
+              </p-inputGroup>
+            </div>
+            <div class="col-12">
+              <p-inputGroup class="vertical-group">
+                <p-inputGroupAddon>Consideraciones generales:</p-inputGroupAddon>
+                <textarea
+                  formControlName="cEncuDescripcion"
+                  inputStyleClass="group-element"
+                  rows="4"
+                  style="resize: none"
+                  pInputTextarea
+                  class="group-element"
+                  appendTo="body"
+                ></textarea>
+              </p-inputGroup>
+            </div>
+          </div>
+        </form>
+        <div class="flex pt-4 justify-content-between">
+          <p-button
+            label="Salir"
+            severity="secondary"
+            icon="pi pi-arrow-left"
+            (onClick)="salir()"
+          />
+          <p-button
+            label="Continuar"
+            severity="success"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (onClick)="handleNextEncuestaPoblacion(nextCallback)"
+          />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <button
+          class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+          (click)="handlePanelClick(onClick, active)"
+        >
+          <span
+            class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+            [ngClass]="{
+              'bg-primary border-primary': index <= active,
+              'surface-border': index > active,
+            }"
+          >
+            <i class="pi pi-users" style="font-size: 1.5rem"></i>
+          </span>
+          <span class="hidden md:block font-bold text-primary">Población objetivo</span>
+        </button>
+      </ng-template>
+      <ng-template
+        pTemplate="content"
+        let-prevCallback="prevCallback"
+        let-nextCallback="nextCallback"
+        let-index="index"
+      >
+        <form [formGroup]="formPoblacion">
+          <p-fieldset
+            legend="Seleccione y presione Agregar"
+            styleClass="mb-3 {{ puede_editar ? '' : 'hidden' }}"
+          >
+            <div class="grid">
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Participantes</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="participantes"
+                    [showClear]="!es_director"
+                    formControlName="iPerfilId"
+                    placeholder="Seleccione un tipo de participante"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Áreas</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="areas"
+                    [showClear]="!es_director"
+                    formControlName="iCursoId"
+                    placeholder="Seleccione un área"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="nivel_tipos"
+                    [showClear]="!es_director"
+                    formControlName="iNivelTipoId"
+                    placeholder="Seleccione un nivel educativo"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon> Gestión </p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="tipo_sectores"
+                    [showClear]="true"
+                    formControlName="iTipoSectorId"
+                    placeholder="Seleccione un tipo de gestión"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="zonas"
+                    [showClear]="true"
+                    formControlName="iZonaId"
+                    placeholder="Seleccione un tipo de zona"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="ugeles"
+                    [showClear]="!es_especialista_ugel"
+                    formControlName="iUgelId"
+                    placeholder="Seleccione una UGEL"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="distritos"
+                    [showClear]="true"
+                    formControlName="iDsttId"
+                    placeholder="Seleccione un distrito"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Grado</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="nivel_grados"
+                    formControlName="iNivelGradoId"
+                    placeholder="Seleccione un grado"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-inputGroup>
+                  <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="ies"
+                    [showClear]="!es_director"
+                    formControlName="iIieeId"
+                    placeholder="Seleccione una Institución Educativa"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="secciones"
+                    [showClear]="true"
+                    formControlName="iSeccionId"
+                    placeholder="Seleccione una sección"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Género</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="sexos"
+                    [showClear]="true"
+                    formControlName="cPersSexo"
+                    placeholder="Seleccione un género"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-button
+                  label="Agregar"
+                  severity="success"
+                  icon="pi pi-plus"
+                  iconPos="right"
+                  (onClick)="agregarPoblacion()"
+                />
+              </div>
+            </div>
+          </p-fieldset>
+        </form>
+        <p-panel header="POBLACIÓN OBJETIVO">
+          <ng-template pTemplate="icons">
+            <p-tag [value]="cantidad_poblacion" severity="danger" />
+          </ng-template>
+          <div class="grid">
+            <div class="col-12">
+              <app-table-primeng
+                [columnas]="columns_poblacion"
+                [showCaption]="false"
+                [data]="poblacion"
+                (accionBtnItem)="accionBtnItemTablePoblacion($event)"
+                [showPaginator]="false"
+                [showSortIcon]="false"
+                [actions]="actions_poblacion"
+              />
+            </div>
+          </div>
+        </p-panel>
+        <div class="flex pt-4 justify-content-between">
+          <p-button
+            label="Regresar"
+            severity="secondary"
+            icon="pi pi-arrow-left"
+            (onClick)="prevCallback.emit()"
+          />
+          <p-button
+            *ngIf="puede_editar && !encuesta_registrada"
+            label="Guardar"
+            severity="success"
+            icon="pi pi-save"
+            iconPos="right"
+            (onClick)="guardarEncuesta()"
+          />
+          <p-button
+            *ngIf="puede_editar && encuesta_registrada"
+            label="Actualizar"
+            severity="success"
+            icon="pi pi-save"
+            iconPos="right"
+            (onClick)="actualizarEncuesta()"
+          />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+  </p-stepper>
+</p-panel>
+
+<p-toast></p-toast>

@@ -144,6 +144,10 @@ export const routes: Routes = [
     loadChildren: () => import('./sistema/bienestar/bienestar.routes'),
   },
   {
+    path: 'comunicados',
+    loadChildren: () => import('./sistema/comunicados/comunicados.routes'),
+  },
+  {
     path: 'apoderado',
     loadChildren: () => import('./sistema/apoderado/apoderado.module').then(m => m.ApoderadoModule),
   },

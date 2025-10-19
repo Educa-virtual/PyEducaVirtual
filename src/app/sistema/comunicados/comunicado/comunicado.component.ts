@@ -22,18 +22,16 @@ import { ComunicadosService } from '../services/comunicados.services';
   providers: [SlicePipe],
 })
 export class ComunicadoComponent implements OnInit {
-  categoria: any = null;
-  encuesta: any = null;
   active: number = 0;
-  iCateId: number;
-  iEncuId: number;
+  comunicado: any = null;
+  iComunicadoId: number;
 
-  formEncuesta: FormGroup;
-  formPoblacion: FormGroup;
+  formComunicado: FormGroup;
+  formGrupo: FormGroup;
 
-  poblacion: Array<object> = [];
-  cantidad_poblacion: any = 0;
-  columns_poblacion: IColumn[];
+  grupo: Array<object> = [];
+  cantidad_grupo: any = 0;
+  columns_grupo: IColumn[];
 
   perfil: any;
   iYAcadId: number;
@@ -41,11 +39,13 @@ export class ComunicadoComponent implements OnInit {
   es_director: boolean = false;
   es_especialista_ugel: boolean = false;
   puede_editar: boolean = true;
-  encuesta_registrada: boolean = false;
+  comunicado_registrado: boolean = false;
 
   breadCrumbHome: MenuItem;
   breadCrumbItems: MenuItem[];
 
+  tipos_comunicados: Array<object>;
+  prioridades: Array<object>;
   distritos: Array<object>;
   nivel_tipos: Array<object>;
   nivel_grados: Array<object>;
@@ -56,17 +56,7 @@ export class ComunicadoComponent implements OnInit {
   ugeles: Array<object>;
   ies: Array<object>;
   sexos: Array<object>;
-  estados: Array<object>;
-  perfiles: Array<object>;
-  tipos_reportes: Array<object>;
-  tipos_graficos: Array<object>;
-  tiempos_duracion: Array<object>;
-  participantes: Array<object>;
-  fuentes: Array<object>;
-
-  ESTADO_BORRADOR: number = this.comunicadosService.ESTADO_BORRADOR;
-  ESTADO_APROBADA: number = this.comunicadosService.ESTADO_APROBADA;
-  USUARIO_ENCUESTADOR: number = this.comunicadosService.USUARIO_ENCUESTADOR;
+  recipientes: Array<object>;
 
   constructor(
     private fb: FormBuilder,
@@ -74,7 +64,6 @@ export class ComunicadoComponent implements OnInit {
     private route: ActivatedRoute,
     private store: LocalStoreService,
     private comunicadosService: ComunicadosService,
-    private slicePipe: SlicePipe,
     private messageService: MessageService
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
@@ -82,32 +71,28 @@ export class ComunicadoComponent implements OnInit {
     this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
     this.es_especialista_ugel = [ESPECIALISTA_UGEL].includes(Number(this.perfil.iPerfilId));
     this.route.paramMap.subscribe((params: any) => {
-      this.iCateId = params.params.iCateId || null;
-      this.iEncuId = params.params.iEncuId || null;
+      this.iComunicadoId = params.params.iComunicadoId || null;
     });
     this.setBreadCrumbs();
   }
 
   ngOnInit() {
     try {
-      this.formEncuesta = this.fb.group({
-        iEncuId: [0],
-        cEncuNombre: ['', Validators.required],
-        cEncuSubtitulo: [''],
-        cEncuDescripcion: [''],
-        iEstado: [this.ESTADO_BORRADOR],
-        dEncuInicio: ['', Validators.required],
-        dEncuFin: ['', Validators.required],
-        iTiemDurId: ['', Validators.required],
-        iCateId: [this.iCateId, Validators.required],
+      this.formComunicado = this.fb.group({
+        iComunicadoId: [0],
+        iTipoComId: [null, Validators.required],
+        iPrioridadId: [null, Validators.required],
+        cComunicadoTitulo: ['', Validators.required],
+        cComunicadoDescripcion: [''],
+        dtComunicadoEmision: ['', Validators.required],
+        dtComunicadoHasta: ['', Validators.required],
         iYAcadId: [this.store.getItem('dremoiYAcadId')],
-        iFuenteId: [null],
-        poblacion: [null],
-        jsonPoblacion: [null],
+        grupo: [null],
+        jsonGrupo: [null],
       });
 
-      this.formPoblacion = this.fb.group({
-        iPobId: [null],
+      this.formGrupo = this.fb.group({
+        iGrupoId: [null],
         iPerfilId: [null],
         iCursoId: [null],
         iNivelTipoId: [null],
@@ -119,22 +104,21 @@ export class ComunicadoComponent implements OnInit {
         iNivelGradoId: [null],
         iSeccionId: [null],
         cPersSexo: [null],
-        poblacion: [''],
+        grupo: [''],
       });
     } catch (error) {
       console.error('Error al inicializar el formulario', error);
     }
 
-    this.verCategoria();
-
     this.comunicadosService
-      .crearEncuesta({
-        iCredEntPerfId: this.perfil.iCredEntPerfId,
+      .crearComunicado({
         iYAcadId: this.iYAcadId,
-        iCateId: this.iCateId,
       })
       .subscribe((data: any) => {
-        this.perfiles = this.comunicadosService.getPerfiles(data?.perfiles);
+        this.tipos_comunicados = this.comunicadosService.getTiposComunicados(
+          data?.tipos_comunicados
+        );
+        this.prioridades = this.comunicadosService.getPrioridades(data?.prioridades);
         this.distritos = this.comunicadosService.getDistritos(data?.distritos);
         this.zonas = this.comunicadosService.getZonas(data?.zonas);
         this.tipo_sectores = this.comunicadosService.getTipoSectores(data?.tipo_sectores);
@@ -144,115 +128,81 @@ export class ComunicadoComponent implements OnInit {
           data?.instituciones_educativas
         );
         this.distritos = this.comunicadosService.getDistritos(data?.distritos);
-        this.participantes = this.comunicadosService.getParticipantes(
-          data?.participantes,
+        this.recipientes = this.comunicadosService.getRecipientes(
+          data?.recipientes,
           Number(this.perfil.iPerfilId)
         );
         this.areas = this.comunicadosService.getAreas(data?.areas);
-        this.tiempos_duracion = this.comunicadosService.getTiemposDuracion(data?.tiempos_duracion);
-        this.fuentes = this.comunicadosService.getFuentes(data?.fuentes);
         this.sexos = this.comunicadosService.getSexos();
-        this.estados = this.comunicadosService.getEstados();
         this.comunicadosService.getNivelesGrados(data?.nivel_grados);
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {
           const nivel_tipo = this.nivel_tipos[0]['value'];
-          this.formPoblacion.get('iNivelTipoId')?.setValue(nivel_tipo);
+          this.formGrupo.get('iNivelTipoId')?.setValue(nivel_tipo);
           this.filterNivelesGrados(nivel_tipo);
           this.filterInstitucionesEducativas();
         }
         if (this.ugeles && this.ugeles.length === 1) {
           const ugel = this.ugeles[0]['value'];
-          this.formPoblacion.get('iUgelId')?.setValue(ugel);
+          this.formGrupo.get('iUgelId')?.setValue(ugel);
           this.filterInstitucionesEducativas();
         }
         if (this.ies && this.ies.length === 1) {
           const ie = this.ies[0]['value'];
-          this.formPoblacion.get('iIieeId')?.setValue(ie);
+          this.formGrupo.get('iIieeId')?.setValue(ie);
         }
       });
 
-    this.formPoblacion.get('iNivelTipoId').valueChanges.subscribe(value => {
-      this.formPoblacion.get('iNivelGradoId')?.setValue(null);
+    this.formGrupo.get('iNivelTipoId').valueChanges.subscribe(value => {
+      this.formGrupo.get('iNivelGradoId')?.setValue(null);
       this.nivel_grados = null;
       this.filterNivelesGrados(value);
 
-      this.formPoblacion.get('iIieeId')?.setValue(null);
+      this.formGrupo.get('iIieeId')?.setValue(null);
       this.ies = null;
       this.filterInstitucionesEducativas();
     });
-    this.formPoblacion.get('iDsttId').valueChanges.subscribe(() => {
-      this.formPoblacion.get('iIieeId')?.setValue(null);
+    this.formGrupo.get('iDsttId').valueChanges.subscribe(() => {
+      this.formGrupo.get('iIieeId')?.setValue(null);
       this.ies = null;
       this.filterInstitucionesEducativas();
     });
-    this.formPoblacion.get('iZonaId').valueChanges.subscribe(() => {
-      this.formPoblacion.get('iIieeId')?.setValue(null);
+    this.formGrupo.get('iZonaId').valueChanges.subscribe(() => {
+      this.formGrupo.get('iIieeId')?.setValue(null);
       this.ies = null;
       this.filterInstitucionesEducativas();
     });
-    this.formPoblacion.get('iTipoSectorId').valueChanges.subscribe(() => {
-      this.formPoblacion.get('iIieeId')?.setValue(null);
+    this.formGrupo.get('iTipoSectorId').valueChanges.subscribe(() => {
+      this.formGrupo.get('iIieeId')?.setValue(null);
       this.ies = null;
       this.filterInstitucionesEducativas();
     });
-    this.formPoblacion.get('iUgelId').valueChanges.subscribe(value => {
-      this.formPoblacion.get('iDsttId')?.setValue(null);
-      this.formPoblacion.get('iIieeId')?.setValue(null);
+    this.formGrupo.get('iUgelId').valueChanges.subscribe(value => {
+      this.formGrupo.get('iDsttId')?.setValue(null);
+      this.formGrupo.get('iIieeId')?.setValue(null);
       this.ies = null;
       this.distritos = null;
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
     });
 
-    if (this.iEncuId) {
-      this.verEncuesta();
+    if (this.iComunicadoId) {
+      this.verComunicado();
     }
 
     this.inicializarColumnas();
   }
 
-  verCategoria() {
-    this.comunicadosService
-      .verCategoria({
-        iCateId: this.iCateId,
-        iYAcadId: this.iYAcadId,
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.categoria = data.data;
-          this.setBreadCrumbs();
-        },
-        error: error => {
-          console.error('Error obteniendo datos:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message ?? 'Ocurrió un error',
-          });
-        },
-      });
-  }
-
   setBreadCrumbs() {
     this.breadCrumbItems = [
       {
-        label: 'Encuestas',
+        label: 'Comunicados',
       },
       {
-        label: 'Categorias',
-        routerLink: `/encuestas/categorias`,
+        label: 'Gestionar comunicados',
+        routerLink: `/comunicados/gestion-comunicados`,
       },
       {
-        label: this.categoria?.cCateNombre
-          ? String(this.slicePipe.transform(this.categoria?.cCateNombre, 0, 20))
-          : 'Categoría',
-      },
-      {
-        label: 'Gestionar encuestas',
-        routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
-      },
-      {
-        label: 'Nueva encuesta',
+        label: 'Nuevo comunicado',
       },
     ];
     this.breadCrumbHome = {
@@ -274,11 +224,11 @@ export class ComunicadoComponent implements OnInit {
   }
 
   filterInstitucionesEducativas() {
-    const iNivelTipoId = this.formPoblacion.get('iNivelTipoId')?.value;
-    const iDsttId = this.formPoblacion.get('iDsttId')?.value;
-    const iZonaId = this.formPoblacion.get('iZonaId')?.value;
-    const iTipoSectorId = this.formPoblacion.get('iTipoSectorId')?.value;
-    const iUgelId = this.formPoblacion.get('iUgelId')?.value;
+    const iNivelTipoId = this.formGrupo.get('iNivelTipoId')?.value;
+    const iDsttId = this.formGrupo.get('iDsttId')?.value;
+    const iZonaId = this.formGrupo.get('iZonaId')?.value;
+    const iTipoSectorId = this.formGrupo.get('iTipoSectorId')?.value;
+    const iUgelId = this.formGrupo.get('iUgelId')?.value;
     this.ies = this.comunicadosService.filterInstitucionesEducativas(
       iNivelTipoId,
       iDsttId,
@@ -290,126 +240,105 @@ export class ComunicadoComponent implements OnInit {
 
   handlePanelClick(onClick: any, active: number) {
     if (active === 0) {
-      this.handleNextEncuestaPoblacion(onClick);
+      this.handleNextComunicadoGrupo(onClick);
     } else {
       onClick.emit();
     }
   }
 
-  handleNextEncuestaPoblacion(nextCallback: any) {
+  handleNextComunicadoGrupo(nextCallback: any) {
     this.messageService.clear();
-    if (this.formEncuesta.invalid) {
+    if (this.formComunicado.invalid) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debe completar los campos requeridos',
       });
-      this.comunicadosService.formMarkAsDirty(this.formEncuesta);
+      this.comunicadosService.formMarkAsDirty(this.formComunicado);
       return;
     }
     nextCallback.emit();
   }
 
-  verEncuesta() {
+  verComunicado() {
     this.comunicadosService
-      .verEncuesta({
+      .verComunicado({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
-        iEncuId: this.iEncuId,
-        iTipoUsuario: this.USUARIO_ENCUESTADOR,
+        iComunicadoId: this.iComunicadoId,
       })
       .subscribe({
         next: (data: any) => {
           if (data.data) {
-            this.encuesta = data.data;
-            this.encuesta_registrada = true;
+            this.comunicado = data.data;
+            this.comunicado_registrado = true;
             this.setBreadCrumbs();
-            this.setFormEncuesta(this.encuesta);
+            this.setformComunicado(this.comunicado);
             this.inicializarColumnas();
           } else {
-            this.router.navigate(['/encuestas/categorias/']);
+            this.router.navigate(['/comunicado/gestion-comunicados/']);
           }
         },
         error: error => {
-          console.error('Error obteniendo encuesta:', error);
+          console.error('Error obteniendo comunicado:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error.message,
           });
-          this.router.navigate(['/encuestas/categorias/']);
+          this.router.navigate(['/comunicados/gestion-comunicados/']);
         },
       });
   }
 
-  setFormEncuesta(data: any) {
-    if (Number(data.iEstado) !== this.ESTADO_BORRADOR || Number(data.puede_editar) !== 1) {
-      data.iEstado = this.ESTADO_APROBADA;
-      this.formEncuesta.disable();
+  setformComunicado(data: any) {
+    if (Number(data.puede_editar) !== 1) {
+      this.formComunicado.disable();
       this.puede_editar = false;
     }
-    this.formEncuesta.reset();
-    this.formEncuesta.patchValue(data);
+    this.formComunicado.reset();
+    this.formComunicado.patchValue(data);
     this.comunicadosService.formatearFormControl(
-      this.formEncuesta,
-      'iTiemDurId',
-      data.iTiemDurId,
+      this.formComunicado,
+      'iTipoComId',
+      data.iTipoComId,
       'number'
     );
     this.comunicadosService.formatearFormControl(
-      this.formEncuesta,
-      'iCateId',
-      data.iCateId,
+      this.formComunicado,
+      'iPrioridadId',
+      data.iPrioridadId,
       'number'
     );
     this.comunicadosService.formatearFormControl(
-      this.formEncuesta,
-      'iEstado',
-      data.iEstado,
-      'number'
-    );
-    this.comunicadosService.formatearFormControl(
-      this.formEncuesta,
-      'dEncuInicio',
-      data.dEncuInicio,
+      this.formComunicado,
+      'dtComunicadoEmision',
+      data.dtComunicadoEmision,
       'date'
     );
     this.comunicadosService.formatearFormControl(
-      this.formEncuesta,
-      'dEncuFin',
-      data.dEncuFin,
+      this.formComunicado,
+      'dtComunicadoHasta',
+      data.dtComunicadoHasta,
       'date'
-    );
-    this.comunicadosService.formatearFormControl(
-      this.formEncuesta,
-      'iFuenteId',
-      data.iFuenteId,
-      'number'
     );
 
-    const poblacion = JSON.parse(data.poblacion);
-    if (poblacion && poblacion.length) {
-      for (let i = 0; i < poblacion.length; i++) {
-        this.agregarPoblacion(poblacion[i]);
+    const grupo = JSON.parse(data.grupo);
+    if (grupo && grupo.length) {
+      for (let i = 0; i < grupo.length; i++) {
+        this.agregarGrupo(grupo[i]);
       }
     }
-    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
-    this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
+    this.formComunicado.get('iYAcadId')?.setValue(this.iYAcadId);
 
-    this.encuesta = data;
+    this.comunicado = data;
   }
 
-  verPreguntas() {
-    this.router.navigate([
-      '/encuestas/categorias/' + this.iCateId + '/gestion-encuestas/' + this.iEncuId + '/preguntas',
-    ]);
-  }
-
-  guardarEncuesta() {
-    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
-    this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
+  guardarComunicado() {
+    this.formComunicado.get('iYAcadId')?.setValue(this.iYAcadId);
+    this.formComunicado.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
 
     this.messageService.clear();
-    if (this.formEncuesta.invalid) {
+    if (this.formComunicado.invalid) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
@@ -418,7 +347,7 @@ export class ComunicadoComponent implements OnInit {
       return;
     }
 
-    if (this.formEncuesta.get('poblacion').value.length == 0) {
+    if (this.formComunicado.get('grupo').value.length == 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
@@ -427,77 +356,18 @@ export class ComunicadoComponent implements OnInit {
       return;
     }
 
-    this.comunicadosService.formControlJsonStringify(
-      this.formEncuesta,
-      'jsonPoblacion',
-      'poblacion',
-      ''
-    );
-    this.comunicadosService.guardarEncuesta(this.formEncuesta.value).subscribe({
-      next: (data: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro exitoso',
-          detail: 'Se registraron los datos',
-        });
-        const iEncuId = data.data.iEncuId;
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${iEncuId}/preguntas`,
-        ]);
-      },
-      error: error => {
-        console.error('Error guardando encuesta:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.message,
-        });
-      },
-    });
-  }
-
-  actualizarEncuesta() {
-    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
-    this.formEncuesta.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
-
-    this.messageService.clear();
-    if (this.formEncuesta.invalid) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe llenar todos los campos de la primera sección: Información General',
-      });
-      return;
-    }
-
-    if (this.formEncuesta.get('poblacion').value.length == 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe especificar al menos una población objetivo',
-      });
-      return;
-    }
-
-    this.comunicadosService.formControlJsonStringify(
-      this.formEncuesta,
-      'jsonPoblacion',
-      'poblacion',
-      ''
-    );
-    this.comunicadosService.actualizarEncuesta(this.formEncuesta.getRawValue()).subscribe({
+    this.comunicadosService.formControlJsonStringify(this.formComunicado, 'jsonGrupo', 'grupo', '');
+    this.comunicadosService.guardarComunicado(this.formComunicado.value).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}/preguntas`,
-        ]);
+        this.router.navigate([`/comunicado/gestion-comunicados`]);
       },
       error: error => {
-        console.error('Error guardando encuesta:', error);
+        console.error('Error guardando comunicado:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -507,36 +377,79 @@ export class ComunicadoComponent implements OnInit {
     });
   }
 
-  agregarPoblacion(item: any = null) {
-    if (item) {
-      this.formPoblacion.patchValue(item);
-    }
+  actualizarComunicado() {
+    this.formComunicado.get('iYAcadId')?.setValue(this.iYAcadId);
+
     this.messageService.clear();
-    if (this.formPoblacion.value.iPerfilId === null) {
-      this.comunicadosService.formMarkAsDirty(this.formPoblacion);
+    if (this.formComunicado.invalid) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Debe indicar los participantes de la encuesta',
+        detail: 'Debe llenar todos los campos de la primera sección: Información General',
       });
       return;
     }
-    const duplicados = this.poblacion.filter(
+
+    if (this.formComunicado.get('grupo').value.length == 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe especificar al menos un grupo o persona',
+      });
+      return;
+    }
+
+    this.comunicadosService.formControlJsonStringify(this.formComunicado, 'jsonGrupo', 'grupo', '');
+    this.comunicadosService.actualizarComunicado(this.formComunicado.getRawValue()).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registro exitoso',
+          detail: 'Se registraron los datos',
+        });
+        this.router.navigate([`/comunicados/gestion-comunicados`]);
+      },
+      error: error => {
+        console.error('Error guardando comunicado:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  agregarGrupo(item: any = null) {
+    if (item) {
+      this.formGrupo.patchValue(item);
+    }
+    this.messageService.clear();
+    if (this.formGrupo.value.iPerfilId === null) {
+      this.comunicadosService.formMarkAsDirty(this.formGrupo);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe indicar los recipientes del comunicado',
+      });
+      return;
+    }
+    const duplicados = this.grupo.filter(
       (item: any) =>
-        Number(item.iNivelTipoId) === Number(this.formPoblacion.value.iNivelTipoId) &&
-        Number(item.iPerfilId) === Number(this.formPoblacion.value.iPerfilId) &&
-        Number(item.iCursoId) === Number(this.formPoblacion.value.iCursoId) &&
-        Number(item.iTipoSectorId) === Number(this.formPoblacion.value.iTipoSectorId) &&
-        Number(item.iZonaId) === Number(this.formPoblacion.value.iZonaId) &&
-        Number(item.iUgelId) === Number(this.formPoblacion.value.iUgelId) &&
-        Number(item.iDsttId) === Number(this.formPoblacion.value.iDsttId) &&
-        Number(item.iIieeId) === Number(this.formPoblacion.value.iIieeId) &&
-        Number(item.iNivelGradoId) === Number(this.formPoblacion.value.iNivelGradoId) &&
-        Number(item.iSeccionId) === Number(this.formPoblacion.value.iSeccionId) &&
-        Number(item.cPersSexo) === Number(this.formPoblacion.value.cPersSexo)
+        Number(item.iNivelTipoId) === Number(this.formGrupo.value.iNivelTipoId) &&
+        Number(item.iPerfilId) === Number(this.formGrupo.value.iPerfilId) &&
+        Number(item.iCursoId) === Number(this.formGrupo.value.iCursoId) &&
+        Number(item.iTipoSectorId) === Number(this.formGrupo.value.iTipoSectorId) &&
+        Number(item.iZonaId) === Number(this.formGrupo.value.iZonaId) &&
+        Number(item.iUgelId) === Number(this.formGrupo.value.iUgelId) &&
+        Number(item.iDsttId) === Number(this.formGrupo.value.iDsttId) &&
+        Number(item.iIieeId) === Number(this.formGrupo.value.iIieeId) &&
+        Number(item.iNivelGradoId) === Number(this.formGrupo.value.iNivelGradoId) &&
+        Number(item.iSeccionId) === Number(this.formGrupo.value.iSeccionId) &&
+        Number(item.cPersSexo) === Number(this.formGrupo.value.cPersSexo)
     );
     if (duplicados.length) {
-      this.comunicadosService.formMarkAsDirty(this.formPoblacion);
+      this.comunicadosService.formMarkAsDirty(this.formGrupo);
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
@@ -544,68 +457,62 @@ export class ComunicadoComponent implements OnInit {
       });
       return;
     }
-    this.actualizarPoblacion(this.formPoblacion.value);
-    const form: Array<object> = this.formPoblacion.value;
-    this.poblacion = [...this.poblacion, form];
-    this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
-    this.formPoblacion.reset();
+    this.actualizarGrupo(this.formGrupo.value);
+    const form: Array<object> = this.formGrupo.value;
+    this.grupo = [...this.grupo, form];
+    this.formComunicado.get('grupo')?.setValue(this.grupo);
+    this.formGrupo.reset();
     if (this.es_director && this.nivel_tipos && this.ies) {
-      this.formPoblacion.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
-      this.formPoblacion.get('iIieeId')?.setValue(this.ies[0]['value']);
+      this.formGrupo.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
+      this.formGrupo.get('iIieeId')?.setValue(this.ies[0]['value']);
     }
 
-    this.obtenerPoblacionObjetivo(form);
+    this.obtenerGrupoCantidad(form);
   }
 
-  obtenerPoblacionObjetivo(ultima_poblacion: any = []) {
-    this.comunicadosService.formControlJsonStringify(
-      this.formEncuesta,
-      'jsonPoblacion',
-      'poblacion',
-      ''
-    );
+  obtenerGrupoCantidad(ultima_grupo: any = []) {
+    this.comunicadosService.formControlJsonStringify(this.formComunicado, 'jsonGrupo', 'grupo', '');
 
     this.comunicadosService
-      .obtenerPoblacionObjetivo({
-        iCredEntPerfId: this.perfil.iCredEntPerfId,
+      .obtenerGrupoCantidad({
         iYAcadId: this.iYAcadId,
-        jsonPoblacion: this.formEncuesta.get('jsonPoblacion')?.value,
+        jsonGrupo: this.formComunicado.get('jsonGrupo')?.value,
       })
       .subscribe({
         next: (data: any) => {
           if (data.data) {
             /**
-             * Si esta editando encuesta y la última población es cero,
-             * entonces quitarla y mostrar advertencia
+             * Si esta editando comunicado y el último grupo es cero,
+             * entonces quitarlo y mostrar advertencia
              */
             if (
               this.puede_editar &&
-              this.poblacion.length > 0 &&
-              Number(data.data.iPoblacionObjetivo) === Number(this.cantidad_poblacion)
+              this.grupo.length > 0 &&
+              Number(data.data.iGrupoObjetivo) === Number(this.cantidad_grupo)
             ) {
-              this.poblacion = this.poblacion.filter(
-                (poblacion: any) => ultima_poblacion.iPobId != poblacion.iPobId
+              this.grupo = this.grupo.filter(
+                (grupo: any) => ultima_grupo.iGrupoId != grupo.iGrupoId
               );
-              this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
+              this.formComunicado.get('grupo')?.setValue(this.grupo);
               this.messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail: `La población objetivo indicada (${ultima_poblacion.poblacion}) es cero, seleccione otra`,
+                detail: `La población objetivo indicada (${ultima_grupo.grupo}) es cero, seleccione otra`,
               });
             }
             /** Luego cargar cantidad acumulada de población objetivo */
-            this.cantidad_poblacion = data.data.iPoblacionObjetivo;
+            this.cantidad_grupo = data.data.iGrupoObjetivo;
           } else {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
               detail: 'No se pudo calcular la cantidad de población objetivo',
             });
-            this.cantidad_poblacion = 0;
+            this.cantidad_grupo = 0;
           }
         },
         error: error => {
-          console.error('Error obteniendo cantidad poblacion:', error);
+          console.error('Error obteniendo cantidad grupo:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -615,12 +522,12 @@ export class ComunicadoComponent implements OnInit {
       });
   }
 
-  actualizarPoblacion(item: any) {
+  actualizarGrupo(item: any) {
     const nivel_tipo: any = this.nivel_tipos
       ? this.nivel_tipos.find((nivel: any) => nivel.value == item.iNivelTipoId)
       : null;
-    const participante: any = this.participantes
-      ? this.participantes.find((participante: any) => participante.value == item.iPerfilId)
+    const recipiente: any = this.recipientes
+      ? this.recipientes.find((recipiente: any) => recipiente.value == item.iPerfilId)
       : null;
     const area: any = this.areas
       ? this.areas.find((area: any) => area.value == item.iCursoId)
@@ -648,8 +555,8 @@ export class ComunicadoComponent implements OnInit {
       ? this.sexos.find((sexo: any) => sexo.value == item.cPersSexo)
       : null;
 
-    let poblacion: any = [
-      participante?.label,
+    let grupo: any = [
+      recipiente?.label,
       nivel_tipo?.label,
       tipo_sector?.label,
       tipo_zona?.label,
@@ -661,25 +568,25 @@ export class ComunicadoComponent implements OnInit {
       seccion ? 'SECCIÓN ' + seccion.label : null,
       sexo ? 'GENERO ' + sexo.label : null,
     ];
-    poblacion = poblacion.filter((item: any) => item != null);
-    this.formPoblacion.get('poblacion')?.setValue(poblacion.join(', '));
-    this.formEncuesta.get('poblacion')?.setValue(poblacion);
-    this.formPoblacion.get('iPobId')?.setValue(item.iPobId ?? new Date().getTime());
+    grupo = grupo.filter((item: any) => item != null);
+    this.formGrupo.get('grupo')?.setValue(grupo.join(', '));
+    this.formComunicado.get('grupo')?.setValue(grupo);
+    this.formGrupo.get('iGrupoId')?.setValue(item.iGrupoId ?? new Date().getTime());
   }
 
   salir() {
-    this.router.navigate(['/encuestas/categorias/']);
+    this.router.navigate(['/comunicados/gestion-comunicados/']);
   }
 
-  accionBtnItemTablePoblacion({ accion, item }) {
+  accionBtnItemTableGrupo({ accion, item }) {
     if (accion == 'eliminar') {
-      this.poblacion = this.poblacion.filter((poblacion: any) => item.iPobId != poblacion.iPobId);
-      this.formEncuesta.get('poblacion')?.setValue(this.poblacion);
-      this.obtenerPoblacionObjetivo();
+      this.grupo = this.grupo.filter((grupo: any) => item.iGrupoId != grupo.iGrupoId);
+      this.formComunicado.get('grupo')?.setValue(this.grupo);
+      this.obtenerGrupoCantidad();
     }
   }
 
-  actions_poblacion: IActionTable[] = [
+  actions_grupo: IActionTable[] = [
     {
       labelTooltip: 'Eliminar',
       icon: 'pi pi-trash',
@@ -690,7 +597,7 @@ export class ComunicadoComponent implements OnInit {
   ];
 
   inicializarColumnas() {
-    this.columns_poblacion = [
+    this.columns_grupo = [
       {
         type: 'item',
         width: '10%',
@@ -702,15 +609,15 @@ export class ComunicadoComponent implements OnInit {
       {
         type: 'text',
         width: '70%',
-        field: 'poblacion',
+        field: 'grupo',
         header: 'Población',
         text_header: 'left',
         text: 'left',
       },
     ];
 
-    if (!this.encuesta || Number(this.encuesta?.iEstado) === this.ESTADO_BORRADOR) {
-      this.columns_poblacion.push({
+    if (!this.comunicado) {
+      this.columns_grupo.push({
         type: 'actions',
         width: '20%',
         field: '',

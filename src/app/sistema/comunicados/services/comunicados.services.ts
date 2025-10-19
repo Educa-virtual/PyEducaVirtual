@@ -45,7 +45,8 @@ export class ComunicadosService implements OnDestroy {
 
   parametros: any;
 
-  permisos: Array<object>;
+  tipos_comunicados: Array<object>;
+  prioridades: Array<object>;
   distritos: Array<object>;
   nivel_tipos: Array<object>;
   nivel_grados: Array<object>;
@@ -57,232 +58,47 @@ export class ComunicadosService implements OnDestroy {
   instituciones_educativas: Array<object>;
   sexos: Array<object>;
   estados: Array<object>;
-  perfiles: Array<object>;
-  alternativas: Array<object>;
-  tipos_reportes: Array<object>;
-  tipos_graficos: Array<object>;
-  tiempos_duracion: Array<object>;
-  participantes: Array<object>;
-  tipos_preguntas: Array<object>;
-  fuentes: Array<object>;
+  recipientes: Array<object>;
 
   /**
    * CONEXIONES A LA API
    */
 
-  listarCategorias(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarCategorias`, data);
+  listarComunicados(data: any) {
+    return this.http.post(`${baseUrl}/enc/listarComunicados`, data);
   }
 
-  verCategoria(data: any) {
-    return this.http.post(`${baseUrl}/enc/verCategoria`, data);
+  verComunicado(data: any) {
+    return this.http.post(`${baseUrl}/enc/verComunicado`, data);
   }
 
-  guardarCategoria(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarCategoria`, data);
+  guardarComunicado(data: any) {
+    return this.http.post(`${baseUrl}/enc/guardarComunicado`, data);
   }
 
-  actualizarCategoria(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarCategoria`, data);
+  actualizarComunicado(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarComunicado`, data);
   }
 
-  borrarCategoria(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarCategoria`, data);
+  actualizarComunicadoEstado(data: any) {
+    return this.http.post(`${baseUrl}/enc/actualizarComunicadoEstado`, data);
   }
 
-  listarEncuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarEncuestas`, data);
+  borrarComunicado(data: any) {
+    return this.http.post(`${baseUrl}/enc/borrarComunicado`, data);
   }
 
-  verEncuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/verEncuesta`, data);
-  }
-
-  guardarEncuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarEncuesta`, data);
-  }
-
-  actualizarEncuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarEncuesta`, data);
-  }
-
-  actualizarEncuestaEstado(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarEncuestaEstado`, data);
-  }
-
-  borrarEncuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarEncuesta`, data);
-  }
-
-  obtenerPoblacionObjetivo(data: any) {
-    return this.http.post(`${baseUrl}/enc/obtenerPoblacionObjetivo`, data);
-  }
-
-  listarSecciones(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarSecciones`, data);
-  }
-
-  verSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/verSeccion`, data);
-  }
-
-  guardarSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarSeccion`, data);
-  }
-
-  actualizarSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarSeccion`, data);
-  }
-
-  borrarSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarSeccion`, data);
-  }
-
-  listarPreguntas(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarPreguntas`, data);
-  }
-
-  verPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/verPregunta`, data);
-  }
-
-  guardarPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarPregunta`, data);
-  }
-
-  actualizarPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarPregunta`, data);
-  }
-
-  borrarPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarPregunta`, data);
-  }
-
-  listarRespuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarRespuestas`, data);
-  }
-
-  verRespuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/verRespuestas`, data);
-  }
-
-  guardarRespuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarRespuestas`, data);
-  }
-
-  actualizarRespuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarRespuestas`, data);
-  }
-
-  imprimirRespuestas(data: any) {
-    return this.http.post(`${baseUrl}/enc/imprimirRespuestas`, data, {
-      responseType: 'blob',
-    });
-  }
-
-  verResumen(data: any) {
-    return this.http.post(`${baseUrl}/enc/verResumen`, data);
-  }
-
-  listarEncuestasSatisfaccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarEncuestasSatisfaccion`, data);
-  }
-
-  crearEncuestaSatisfaccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/crearEncuestaSatisfaccion`, data);
-  }
-
-  listarEncuestasAutoevaluacion(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarEncuestasAutoevaluacion`, data);
-  }
-
-  crearEncuestaAutoevaluacion(data: any) {
-    return this.http.post(`${baseUrl}/enc/crearEncuestaAutoevaluacion`, data);
-  }
-
-  listarPlantillas(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarPlantillas`, data);
-  }
-
-  verPlantilla(data: any) {
-    return this.http.post(`${baseUrl}/enc/verPlantilla`, data);
-  }
-
-  guardarPlantilla(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarPlantilla`, data);
-  }
-
-  actualizarPlantilla(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarPlantilla`, data);
-  }
-
-  borrarPlantilla(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarPlantilla`, data);
-  }
-
-  actualizarPlantillaEstado(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarPlantillaEstado`, data);
-  }
-
-  listarPlantillaSecciones(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarPlantillaSecciones`, data);
-  }
-
-  verPlantillaSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/verPlantillaSeccion`, data);
-  }
-
-  guardarPlantillaSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarPlantillaSeccion`, data);
-  }
-
-  actualizarPlantillaSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarPlantillaSeccion`, data);
-  }
-
-  borrarPlantillaSeccion(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarPlantillaSeccion`, data);
-  }
-
-  verPlantillaPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/verPlantillaPregunta`, data);
-  }
-
-  guardarPlantillaPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarPlantillaPregunta`, data);
-  }
-
-  actualizarPlantillaPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarPlantillaPregunta`, data);
-  }
-
-  borrarPlantillaPregunta(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarPlantillaPregunta`, data);
-  }
-
-  guardarEncuestaDesdePlantilla(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarEncuestaDesdePlantilla`, data);
-  }
-
-  guardarEncuestaDesdeDuplicado(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarEncuestaDesdeDuplicado`, data);
-  }
-
-  guardarPlantillaDesdeEncuesta(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarPlantillaDesdeEncuesta`, data);
-  }
-
-  guardarPlantillaDesdeDuplicado(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarPlantillaDesdeDuplicado`, data);
+  obtenerGrupoCantidad(data: any) {
+    return this.http.post(`${baseUrl}/enc/obtenerGrupoCantidad`, data);
   }
 
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */
 
-  crearEncuesta(data: any) {
+  crearComunicado(data: any) {
     if (!this.parametros) {
-      this.parametros = this.http.post(`${baseUrl}/enc/crearEncuesta`, data).pipe(
+      this.parametros = this.http.post(`${baseUrl}/com/crearComunicado`, data).pipe(
         map((data: any) => {
           this.parametros = data.data;
           return this.parametros;
@@ -293,66 +109,53 @@ export class ComunicadosService implements OnDestroy {
     return of(this.parametros);
   }
 
-  getTiposPreguntas(data: any) {
-    if (!this.tipos_preguntas && data) {
+  getTiposComunicados(data: any) {
+    if (!this.tipos_comunicados && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.tipos_preguntas = items.map(tipo => ({
-        value: tipo.iTipoPregId,
-        label: tipo.cTipoPregNombre,
-        icono: tipo.cTipoPregIcono,
+      this.tipos_comunicados = items.map(tipo => ({
+        value: tipo.iTipoComId,
+        label: tipo.cTipoComNombre,
       }));
-      return this.tipos_preguntas;
+      return this.tipos_comunicados;
     }
-    return this.tipos_preguntas;
+    return this.tipos_comunicados;
   }
 
-  getTiemposDuracion(data: any) {
-    if (!this.tiempos_duracion && data) {
+  getPrioridades(data: any) {
+    if (!this.prioridades && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.tiempos_duracion = items.map(tiempo => ({
-        value: tiempo.iTiemDurId,
-        label: tiempo.cTiemDurNombre,
+      this.prioridades = items.map(prioridad => ({
+        value: prioridad.iPrioridadId,
+        label: prioridad.cPrioridadNombre,
       }));
-      return this.tiempos_duracion;
+      return this.prioridades;
     }
-    return this.tiempos_duracion;
+    return this.prioridades;
   }
 
-  getPermisos(data: any) {
-    if (!this.permisos && data) {
+  getRecipientes(data: any, iPerfilId: number | null = null) {
+    if (!this.recipientes && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.permisos = items.map(permiso => ({
-        value: permiso.iPermId,
-        label: permiso.cPermNombre,
-      }));
-      return this.permisos;
-    }
-    return this.permisos;
-  }
-
-  getParticipantes(data: any, iPerfilId: number | null = null) {
-    if (!this.participantes && data) {
-      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.participantes = items.map(participante => ({
-        value: participante.iPerfilId,
-        label: participante.cPerfilNombre,
+      this.recipientes = items.map(recipiente => ({
+        value: recipiente.iPerfilId,
+        label: recipiente.cPerfilNombre,
         disabled: iPerfilId
-          ? !this.getParticipantesJurisdiccion(participante.iPerfilId, iPerfilId)
+          ? !this.getRecipientesJurisdiccion(recipiente.iPerfilId, iPerfilId)
           : false,
       }));
-      return this.participantes;
+      return this.recipientes;
     }
-    return this.participantes;
+    return this.recipientes;
   }
 
-  getParticipantesJurisdiccion(iPerfilIdParticipante: number, iPerfilIdUsuario: number) {
+  getRecipientesJurisdiccion(iPerfilIdRecipiente: number, iPerfilIdUsuario: number) {
     if (iPerfilIdUsuario === DIRECTOR_IE) {
-      return [DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdParticipante);
+      return [DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdRecipiente);
     } else if (iPerfilIdUsuario === ESPECIALISTA_UGEL) {
-      return [DIRECTOR_IE, DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdParticipante);
+      return [DIRECTOR_IE, DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdRecipiente);
     } else if (iPerfilIdUsuario === ESPECIALISTA_DREMO) {
       return [ESPECIALISTA_UGEL, DIRECTOR_IE, DOCENTE, ESTUDIANTE, APODERADO].includes(
-        iPerfilIdParticipante
+        iPerfilIdRecipiente
       );
     } else if (iPerfilIdUsuario === ADMINISTRADOR_DREMO) {
       return [
@@ -362,7 +165,7 @@ export class ComunicadosService implements OnDestroy {
         DOCENTE,
         ESTUDIANTE,
         APODERADO,
-      ].includes(iPerfilIdParticipante);
+      ].includes(iPerfilIdRecipiente);
     }
     return false;
   }
@@ -512,18 +315,6 @@ export class ComunicadosService implements OnDestroy {
     return this.ugeles;
   }
 
-  getPerfiles(data: any) {
-    if (!this.perfiles && data) {
-      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.perfiles = items.map(perfil => ({
-        value: perfil.iPerfilId,
-        label: perfil.cPerfilNombre,
-      }));
-      return this.perfiles;
-    }
-    return this.perfiles;
-  }
-
   getInstitucionesEducativas(data: any) {
     if (!this.instituciones_educativas && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
@@ -540,20 +331,6 @@ export class ComunicadosService implements OnDestroy {
       return this.instituciones_educativas;
     }
     return this.instituciones_educativas;
-  }
-
-  getFuentes(data: any) {
-    if (!this.fuentes && data) {
-      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.fuentes = items.map(fuente => ({
-        value: fuente.iFuenteId,
-        label: fuente.cFuenteNombre,
-        cFuenteCSS: fuente.cFuenteCSS,
-        cFuenteURL: fuente.cFuenteURL,
-      }));
-      return this.fuentes;
-    }
-    return this.fuentes;
   }
 
   filterInstitucionesEducativas(
@@ -628,38 +405,6 @@ export class ComunicadosService implements OnDestroy {
       ];
     }
     return this.estados;
-  }
-
-  getTiposReportes() {
-    if (!this.tipos_reportes) {
-      this.tipos_reportes = [
-        {
-          label: 'LISTA DE PALABRAS UNICAS (TOP 15)',
-          value: this.TIPO_REPORTE_LISTA,
-        },
-        {
-          label: 'NUBE DE PALABRAS UNICAS (TOP 50)',
-          value: this.TIPO_REPORTE_INDIVIDUAL,
-        },
-      ];
-    }
-    return this.tipos_reportes;
-  }
-
-  getTiposGraficos() {
-    if (!this.tipos_graficos) {
-      this.tipos_graficos = [
-        {
-          label: 'BARRA',
-          value: this.GRAFICO_BARRA,
-        },
-        {
-          label: 'CIRCULAR',
-          value: this.GRAFICO_CIRCULAR,
-        },
-      ];
-    }
-    return this.tipos_graficos;
   }
 
   /**

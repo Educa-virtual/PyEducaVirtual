@@ -3,24 +3,10 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-xl">Nueva encuesta</div>
-      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+      <div class="flex text-xl">Nuevo comunicado</div>
     </div>
   </ng-template>
-  <ng-template pTemplate="icons" class="flex justify-content-center">
-    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="encuesta_registrada && iEncuId">
-      <p-button
-        label="Ver preguntas"
-        icon="pi pi-list-check"
-        iconPos="left"
-        size="small"
-        severity="warning"
-        pTooltip="Ver preguntas"
-        tooltipPosition="top"
-        (click)="verPreguntas()"
-      />
-    </div>
-  </ng-template>
+
   <p-stepper class="mt-3" [(activeStep)]="active">
     <p-stepperPanel>
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
@@ -46,7 +32,7 @@
         let-index="index"
         class="p-0 m-0"
       >
-        <form [formGroup]="formEncuesta">
+        <form [formGroup]="formComunicado">
           <div class="grid">
             <div class="col-12">
               <p-inputGroup>
@@ -55,20 +41,7 @@
                   pInputText
                   styleClass="group-element"
                   placeholder="Ingrese título"
-                  formControlName="cEncuNombre"
-                  appendTo="body"
-                  [style]="{ flex: '1', width: '100%' }"
-                />
-              </p-inputGroup>
-            </div>
-            <div class="col-12">
-              <p-inputGroup>
-                <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
-                <input
-                  pInputText
-                  styleClass="group-element"
-                  placeholder="Ingrese subtítulo"
-                  formControlName="cEncuSubtitulo"
+                  formControlName="cComunicadoTitulo"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
@@ -76,13 +49,13 @@
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+                <p-inputGroupAddon>Desde</p-inputGroupAddon>
                 <p-calendar
                   inputStyleClass="group-element"
                   view="date"
-                  formControlName="dEncuInicio"
+                  formControlName="dtComunicadoEmision"
                   dateFormat="dd/mm/yy"
-                  placeholder="Fecha de inicio"
+                  placeholder="Fecha de emisión"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
@@ -90,13 +63,13 @@
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon>Cierre</p-inputGroupAddon>
+                <p-inputGroupAddon>Hasta</p-inputGroupAddon>
                 <p-calendar
                   inputStyleClass="group-element"
                   view="date"
-                  formControlName="dEncuFin"
+                  formControlName="dtComunicadoHasta"
                   dateFormat="dd/mm/yy"
-                  placeholder="Fecha de cierre"
+                  placeholder="Fecha de finalización"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
@@ -104,90 +77,37 @@
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon>
-                  <a
-                    role="button"
-                    class="p-button p-button-secondary mr-2"
-                    (click)="iTiemDurId.toggle($event)"
-                    (keypress)="iTiemDurId.toggle($event)"
-                    tabindex="0"
-                  >
-                    <i class="pi pi-question-circle"></i>
-                  </a>
-                  <span>Tiempo edición</span>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon>Tipo de comunicado</p-inputGroupAddon>
                 <p-dropdown
                   styleClass="group-element"
-                  [options]="tiempos_duracion"
-                  placeholder="Seleccione tiempo"
-                  formControlName="iTiemDurId"
+                  showClear="false"
+                  [options]="tipos_comunicados"
+                  placeholder="Seleccione tipo de comunicado"
+                  formControlName="iTipoComId"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
-                <p-overlayPanel #iTiemDurId showCloseIcon="true" appendTo="body">
-                  <div class="flex w-15rem">
-                    El tiempo que el encuestado tendrá para editar sus respuestas una vez que las
-                    haya registrado por primera vez.
-                  </div>
-                </p-overlayPanel>
               </p-inputGroup>
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon>
-                  <a
-                    role="button"
-                    class="p-button p-button-secondary mr-2"
-                    (click)="iTiemDurId.toggle($event)"
-                    (keypress)="iTiemDurId.toggle($event)"
-                    tabindex="0"
-                  >
-                    <i class="pi pi-question-circle"></i>
-                  </a>
-                  <span>Tipo de fuente</span>
-                </p-inputGroupAddon>
+                <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
                 <p-dropdown
                   styleClass="group-element"
-                  [options]="fuentes"
-                  showClear="true"
-                  placeholder="Seleccione una fuente"
+                  [options]="prioridades"
+                  showClear="false"
+                  placeholder="Seleccione una prioridad"
                   formControlName="iFuenteId"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
-                >
-                  <ng-template let-item pTemplate="selectedItem">
-                    <div
-                      class="flex align-items-center gap-2"
-                      [style.font-family]="item.cFuenteCSS"
-                    >
-                      <div>{{ item.label }}</div>
-                    </div>
-                  </ng-template>
-                  <ng-template let-item pTemplate="item">
-                    <div
-                      class="flex align-items-center gap-2"
-                      [style.font-family]="item.cFuenteCSS"
-                    >
-                      <div>{{ item.label }}</div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-                <p-overlayPanel #iFuenteId showCloseIcon="true" appendTo="body">
-                  <div class="flex w-15rem">
-                    La fuente de texto que seleccione se mostrará en los encabezados, los datos
-                    adicionales, las preguntas y alternativas cuando el participante responda la
-                    encuesta. Tenga en cuenta que la fuente mostrará dependerá de la disponibilidad
-                    en el dispositivo del participante. Si no selecciona ninguna fuente se usará la
-                    fuente predeterminada por la plataforma.
-                  </div>
-                </p-overlayPanel>
+                />
               </p-inputGroup>
             </div>
             <div class="col-12">
               <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>Consideraciones generales:</p-inputGroupAddon>
+                <p-inputGroupAddon>Descripción:</p-inputGroupAddon>
                 <textarea
-                  formControlName="cEncuDescripcion"
+                  formControlName="cComunicadoDescripcion"
                   inputStyleClass="group-element"
                   rows="4"
                   style="resize: none"
@@ -211,7 +131,7 @@
             severity="success"
             icon="pi pi-arrow-right"
             iconPos="right"
-            (onClick)="handleNextEncuestaPoblacion(nextCallback)"
+            (onClick)="handleNextComunicadoGrupo(nextCallback)"
           />
         </div>
       </ng-template>
@@ -240,7 +160,7 @@
         let-nextCallback="nextCallback"
         let-index="index"
       >
-        <form [formGroup]="formPoblacion">
+        <form [formGroup]="formGrupo">
           <p-fieldset
             legend="Seleccione y presione Agregar"
             styleClass="mb-3 {{ puede_editar ? '' : 'hidden' }}"
@@ -248,12 +168,12 @@
             <div class="grid">
               <div class="col-12 md:col-6">
                 <p-inputGroup>
-                  <p-inputGroupAddon>Participantes</p-inputGroupAddon>
+                  <p-inputGroupAddon>Recipientes</p-inputGroupAddon>
                   <p-dropdown
-                    [options]="participantes"
+                    [options]="recipientes"
                     [showClear]="!es_director"
                     formControlName="iPerfilId"
-                    placeholder="Seleccione un tipo de participante"
+                    placeholder="Seleccione un tipo de recipiente"
                     styleClass="group-element"
                     appendTo="body"
                   />
@@ -398,7 +318,7 @@
                   severity="success"
                   icon="pi pi-plus"
                   iconPos="right"
-                  (onClick)="agregarPoblacion()"
+                  (onClick)="agregarGrupo()"
                 />
               </div>
             </div>
@@ -406,18 +326,18 @@
         </form>
         <p-panel header="POBLACIÓN OBJETIVO">
           <ng-template pTemplate="icons">
-            <p-tag [value]="cantidad_poblacion" severity="danger" />
+            <p-tag [value]="cantidad_grupo" severity="danger" />
           </ng-template>
           <div class="grid">
             <div class="col-12">
               <app-table-primeng
-                [columnas]="columns_poblacion"
+                [columnas]="columns_grupo"
                 [showCaption]="false"
-                [data]="poblacion"
-                (accionBtnItem)="accionBtnItemTablePoblacion($event)"
+                [data]="grupo"
+                (accionBtnItem)="accionBtnItemTableGrupo($event)"
                 [showPaginator]="false"
                 [showSortIcon]="false"
-                [actions]="actions_poblacion"
+                [actions]="actions_grupo"
               />
             </div>
           </div>
@@ -430,20 +350,20 @@
             (onClick)="prevCallback.emit()"
           />
           <p-button
-            *ngIf="puede_editar && !encuesta_registrada"
+            *ngIf="puede_editar && !comunicado_registrado"
             label="Guardar"
             severity="success"
             icon="pi pi-save"
             iconPos="right"
-            (onClick)="guardarEncuesta()"
+            (onClick)="guardarComunicado()"
           />
           <p-button
-            *ngIf="puede_editar && encuesta_registrada"
+            *ngIf="puede_editar && comunicado_registrado"
             label="Actualizar"
             severity="success"
             icon="pi pi-save"
             iconPos="right"
-            (onClick)="actualizarEncuesta()"
+            (onClick)="actualizarComunicado()"
           />
         </div>
       </ng-template>

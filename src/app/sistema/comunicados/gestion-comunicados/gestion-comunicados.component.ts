@@ -3,12 +3,10 @@ import { PrimengModule } from '@/app/primeng.module';
 import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component';
 import { MenuItem, MessageService } from 'primeng/api';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { SlicePipe } from '@angular/common';
-import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ComunicadosService } from '../services/comunicados.services';
 
 @Component({
@@ -22,49 +20,25 @@ import { ComunicadosService } from '../services/comunicados.services';
 export class GestionComunicadosComponent implements OnInit {
   @ViewChild('filtro') filtro: ElementRef;
 
-  visibleDialogDuplicar: boolean = false;
-  visibleDialogPlantilla: boolean = false;
-
-  iCateId: number = null;
-  categoria: any = null;
   selectedItem: any;
   iYAcadId: number;
   perfil: any;
-  cCateNombre: string;
 
-  formEncuesta: FormGroup;
-  formPlantilla: FormGroup;
-  tiempos_duracion: Array<object>;
+  tipos_comunicados: Array<object>;
 
-  encuestas: Array<any> = [];
-  encuestas_filtradas: Array<any> = [];
+  comunicados: Array<any> = [];
+  comunicados_filtrados: Array<any> = [];
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
-
-  ESTADO_BORRADOR: number = this.comunicadosService.ESTADO_BORRADOR;
-  ESTADO_APROBADA: number = this.comunicadosService.ESTADO_APROBADA;
-
-  USUARIO_ENCUESTADOR: number = this.comunicadosService.USUARIO_ENCUESTADOR;
-
-  CATEGORIA_SATISFACCION: number = this.comunicadosService.CATEGORIA_SATISFACCION;
-  CATEGORIA_AUTOEVALUACION: number = this.comunicadosService.CATEGORIA_AUTOEVALUACION;
-
-  puede_generar_fija: boolean = false;
 
   constructor(
     private messageService: MessageService,
     private comunicadosService: ComunicadosService,
     private confirmService: ConfirmationModalService,
-    private route: ActivatedRoute,
     private store: LocalStoreService,
-    private router: Router,
-    private slicePipe: SlicePipe,
-    private fb: FormBuilder
+    private router: Router
   ) {
-    this.route.params.subscribe(params => {
-      this.iCateId = params['iCateId'];
-    });
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
     this.setBreadCrumbs();
@@ -72,63 +46,23 @@ export class GestionComunicadosComponent implements OnInit {
 
   ngOnInit() {
     try {
-      this.formEncuesta = this.fb.group({
-        iYAcadId: [this.iYAcadId, Validators.required],
-        iCateId: [this.iCateId, Validators.required],
-        iEncuId: [null],
-        cEncuOriginalNombre: [{ value: '', disabled: true }],
-        cEncuNombre: [''],
-        cEncuSubtitulo: [''],
-        dEncuInicio: ['', Validators.required],
-        dEncuFin: ['', Validators.required],
-        iTiemDurId: [null, Validators.required],
-        bCopiarPoblacion: [true],
-        bCopiarAccesos: [true],
-        bCopiarPreguntas: [true],
-      });
-
-      this.formPlantilla = this.fb.group({
-        iCateId: [this.iCateId, Validators.required],
-        iEncuId: [null],
-        cEncuOriginalNombre: [{ value: '', disabled: true }],
-        cPlanNombre: [''],
-        cPlanSubtitulo: [''],
-        bCopiarPoblacion: [true],
-        bCopiarAccesos: [true],
-        bCopiarPreguntas: [true],
-      });
-
       this.comunicadosService
-        .crearEncuesta({
-          iCredEntPerfId: this.perfil.iCredEntPerfId,
+        .crearComunicado({
           iYAcadId: this.iYAcadId,
-          iCateId: this.iCateId,
         })
         .subscribe((data: any) => {
-          this.tiempos_duracion = this.comunicadosService.getTiemposDuracion(
-            data?.tiempos_duracion
+          this.tipos_comunicados = this.comunicadosService.getTiposComunicados(
+            data?.tipos_comunicados
           );
         });
     } catch (error) {
       console.error('Error al inicializar el formulario', error);
     }
-    if (this.iCateId) {
-      this.verCategoria();
-      this.listarEncuestas();
-    }
+    this.listarComunicados();
   }
 
   setBreadCrumbs() {
-    this.breadCrumbItems = [
-      { label: 'Encuestas' },
-      { label: 'Categorías', routerLink: '/encuestas/categorias' },
-      {
-        label: this.categoria?.cCateNombre
-          ? String(this.slicePipe.transform(this.categoria?.cCateNombre, 0, 20))
-          : 'Categoría',
-      },
-      { label: 'Gestionar encuestas' },
-    ];
+    this.breadCrumbItems = [{ label: 'Comunicados' }, { label: 'Gestionar comunicados' }];
     this.breadCrumbHome = {
       icon: 'pi pi-home',
       routerLink: '/',
@@ -139,104 +73,18 @@ export class GestionComunicadosComponent implements OnInit {
     this.router.navigate([`/comunicados/nuevo-comunicado`]);
   }
 
-  confirmarGenerarEncuestasMasivo() {
-    this.confirmService.openConfirm({
-      header: 'Atención',
-      message:
-        'Se generarán las encuestas usando la última plantilla registrada por su usuario. La población objetivo y los permisos se asignarán por defecto según su jurisdicción.' +
-        (this.perfil.iPerfilId === DIRECTOR_IE
-          ? ' Esta acción reeemplazará todas las encuestas existentes que fueron registradas por el administrador DREMO y que aún no han sido respondidas por los estudiantes de su I.E.'
-          : '') +
-        ' ¿Está seguro(a) de generar las encuestas?',
-      accept: () => {
-        this.generarEncuestaPlantilla();
-      },
-      reject: () => {},
-    });
-  }
-
-  generarEncuestaPlantilla(encuesta_reemplazada: any | null = null) {
-    this.messageService.clear();
-    if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
-      this.comunicadosService
-        .crearEncuestaSatisfaccion({
-          iCateId: this.iCateId,
-          iYAcadId: this.iYAcadId,
-          iEncuId: encuesta_reemplazada?.iEncuId,
-        })
-        .subscribe({
-          next: () => {
-            this.listarEncuestas();
-          },
-          error: error => {
-            console.error('Error obteniendo lista de encuestas:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: error.error.message,
-            });
-          },
-        });
-    } else if (Number(this.iCateId) === this.CATEGORIA_AUTOEVALUACION) {
-      this.comunicadosService
-        .crearEncuestaAutoevaluacion({
-          iCateId: this.iCateId,
-          iYAcadId: this.iYAcadId,
-          iEncuId: encuesta_reemplazada?.iEncuId,
-        })
-        .subscribe({
-          next: () => {
-            this.listarEncuestas();
-          },
-          error: error => {
-            console.error('Error obteniendo lista de encuestas:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: error.error.message,
-            });
-          },
-        });
-    }
-  }
-
-  verCategoria() {
+  listarComunicados() {
     this.comunicadosService
-      .verCategoria({
-        iCateId: this.iCateId,
+      .listarComunicados({
         iYAcadId: this.iYAcadId,
       })
       .subscribe({
         next: (data: any) => {
-          this.categoria = data.data;
-          this.setBreadCrumbs();
-          this.puede_generar_fija = Number(this.categoria?.bEsFija) === 1;
-        },
-        error: error => {
-          console.error('Error obteniendo datos:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message ?? 'Ocurrió un error',
-          });
-        },
-      });
-  }
-
-  listarEncuestas() {
-    this.comunicadosService
-      .listarEncuestas({
-        iCateId: this.iCateId,
-        iYAcadId: this.iYAcadId,
-        iTipoUsuario: this.USUARIO_ENCUESTADOR,
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.encuestas = data.data;
+          this.comunicados = data.data;
           this.filtrarTabla();
         },
         error: error => {
-          console.error('Error obteniendo lista de encuestas:', error);
+          console.error('Error obteniendo lista de comunicados:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -248,67 +96,52 @@ export class GestionComunicadosComponent implements OnInit {
 
   filtrarTabla() {
     const filtro = this.filtro.nativeElement.value;
-    this.encuestas_filtradas = this.encuestas.filter(encuesta => {
-      if (encuesta.cEncuNombre && encuesta.cEncuNombre.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
-      if (encuesta.cCateNombre && encuesta.cCateNombre.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
+    this.comunicados_filtrados = this.comunicados.filter(comunicado => {
       if (
-        encuesta.cTiemDurNombre &&
-        encuesta.cTiemDurNombre.toLowerCase().includes(filtro.toLowerCase())
+        comunicado.cComunicadoTitulo &&
+        comunicado.cComunicadoTitulo.toLowerCase().includes(filtro.toLowerCase())
       )
-        return encuesta;
-      if (encuesta.dEncuInicio && encuesta.dEncuInicio.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
-      if (encuesta.dEncuFin && encuesta.dEncuFin.toLowerCase().includes(filtro.toLowerCase()))
-        return encuesta;
+        return comunicado;
+      if (
+        comunicado.cTipoComNombre &&
+        comunicado.cTipoComNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return comunicado;
+      if (
+        comunicado.cComunicadoDescripcion &&
+        comunicado.cComunicadoDescripcion.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return comunicado;
+      if (
+        comunicado.dtComunicadoEmision &&
+        comunicado.dtComunicadoEmision.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return comunicado;
+      if (
+        comunicado.dtComunicadoHasta &&
+        comunicado.dtComunicadoHasta.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return comunicado;
       return null;
     });
   }
 
-  eliminarEncuesta(item: any) {
+  eliminarComunicado(item: any) {
     this.comunicadosService
-      .borrarEncuesta({
-        iEncuId: item.iEncuId,
+      .borrarComunicado({
+        iComunicadoId: item.iComunicadoId,
       })
       .subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
-            detail: 'Encuesta eliminada',
+            detail: 'Comunicado eliminado',
           });
-          this.listarEncuestas();
+          this.listarComunicados();
         },
         error: error => {
-          console.error('Error obteniendo lista de encuestas:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message,
-          });
-        },
-      });
-  }
-
-  actualizarEncuestaEstado(item: any, iEstado: number) {
-    this.comunicadosService
-      .actualizarEncuestaEstado({
-        iCredEntPerfId: this.perfil.iCredEntPerfId,
-        iEncuId: item.iEncuId,
-        iEstado: iEstado,
-      })
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Actualización exitosa',
-            detail: 'Se actualizó el estado de la encuesta',
-          });
-          this.listarEncuestas();
-        },
-        error: error => {
-          console.error('Error actualizando estado de encuesta:', error);
+          console.error('Error obteniendo lista de comunicados:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -319,115 +152,7 @@ export class GestionComunicadosComponent implements OnInit {
   }
 
   listarPlantillas() {
-    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
-  }
-
-  abrirDialogoDuplicarEncuesta(encuesta: any) {
-    this.visibleDialogDuplicar = true;
-    this.formEncuesta.get('iYAcadId')?.setValue(this.iYAcadId);
-    this.formEncuesta.get('iCateId')?.setValue(this.iCateId);
-    this.formEncuesta.get('iEncuId')?.setValue(encuesta?.iEncuId);
-    this.formEncuesta.get('cEncuOriginalNombre')?.setValue(encuesta?.cEncuNombre);
-    this.formEncuesta.get('dEncuInicio')?.setValue(new Date());
-    this.formEncuesta.get('bCopiarPoblacion')?.setValue(true);
-    this.formEncuesta.get('bCopiarAccesos')?.setValue(true);
-    this.formEncuesta.get('bCopiarPreguntas')?.setValue(true);
-  }
-
-  cerrarDialogDuplicarEncuesta() {
-    this.visibleDialogDuplicar = false;
-    this.resetFormEncuesta();
-  }
-
-  resetFormEncuesta() {
-    this.formEncuesta.reset();
-  }
-
-  duplicarEncuesta() {
-    if (this.formEncuesta.invalid) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe completar los campos requeridos',
-      });
-      this.comunicadosService.formMarkAsDirty(this.formEncuesta);
-      return;
-    }
-    this.comunicadosService.guardarEncuestaDesdeDuplicado(this.formEncuesta.value).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro exitoso',
-          detail: 'Se registraron los datos',
-        });
-        this.cerrarDialogDuplicarEncuesta();
-        this.listarEncuestas();
-      },
-      error: error => {
-        console.error('Error guardando encuesta:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.message,
-        });
-      },
-    });
-  }
-
-  resetFormPlantilla() {
-    this.formPlantilla.reset();
-  }
-
-  abrirDialogoCrearPlantilla(encuesta: any) {
-    this.visibleDialogPlantilla = true;
-    console.log(encuesta, 'encuesta');
-    this.formPlantilla.get('iCateId')?.setValue(this.iCateId);
-    this.formPlantilla.get('iEncuId')?.setValue(encuesta?.iEncuId);
-    this.formPlantilla.get('cEncuOriginalNombre')?.setValue(encuesta?.cEncuNombre);
-    this.formPlantilla.get('bCopiarPoblacion')?.setValue(true);
-    this.formPlantilla.get('bCopiarAccesos')?.setValue(true);
-    this.formPlantilla.get('bCopiarPreguntas')?.setValue(true);
-  }
-
-  cerrarDialogCrearPlantilla() {
-    this.visibleDialogPlantilla = false;
-    this.resetFormPlantilla();
-  }
-
-  crearPlantilla() {
-    if (this.formPlantilla.invalid) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe completar los campos requeridos',
-      });
-      this.comunicadosService.formMarkAsDirty(this.formPlantilla);
-      return;
-    }
-    this.comunicadosService.guardarPlantillaDesdeEncuesta(this.formPlantilla.value).subscribe({
-      next: (data: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro exitoso',
-          detail: 'Se registraron los datos, redirigiendo a la plantilla generada...',
-        });
-        this.cerrarDialogCrearPlantilla();
-        const iPlanId = data.data.iPlanId;
-        setTimeout(() => {
-          this.router.navigate([
-            `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${iPlanId}`,
-          ]);
-        }, 1000);
-      },
-      error: error => {
-        console.error('Error guardando plantilla:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.message,
-        });
-      },
-    });
+    this.router.navigate([`/comunicados/gestion-comunicados`]);
   }
 
   accionBtnItemTable({ accion, item }) {
@@ -435,70 +160,16 @@ export class GestionComunicadosComponent implements OnInit {
     switch (accion) {
       case 'editar':
       case 'ver':
-        if (Number(this.categoria.bEsFija) === 1) {
-          this.router.navigate([
-            `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/fija`,
-          ]);
-        } else {
-          this.router.navigate([
-            `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}`,
-          ]);
-        }
-        break;
-      case 'preguntas':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/preguntas`,
-        ]);
+        this.router.navigate([`/comunicado/gestion-comunicados/${item.iComunicadoId}`]);
         break;
       case 'eliminar':
         this.confirmService.openConfirm({
-          header: '¿Está seguro de eliminar la encuesta seleccionada?',
+          header: '¿Está seguro de eliminar el comunicado seleccionado?',
           accept: () => {
-            this.eliminarEncuesta(item);
+            this.eliminarComunicado(item);
           },
           reject: () => {},
         });
-        break;
-      case 'aprobar':
-        this.confirmService.openConfirm({
-          message: '¿Está seguro de aprobar la encuesta seleccionada?',
-          header: 'Confirmación',
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-            this.actualizarEncuestaEstado(item, this.ESTADO_APROBADA);
-          },
-          reject: () => {},
-        });
-        break;
-      case 'desaprobar':
-        this.confirmService.openConfirm({
-          message: '¿Está seguro de cambiar el estado de la encuesta seleccionada?',
-          header: 'Confirmación',
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-            this.actualizarEncuestaEstado(item, this.ESTADO_BORRADOR);
-          },
-          reject: () => {},
-        });
-        break;
-      case 'respuestas':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/respuestas`,
-        ]);
-        break;
-      case 'resumen':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${item.iEncuId}/resumen`,
-        ]);
-        break;
-      case 'reemplazar':
-        this.generarEncuestaPlantilla(item);
-        break;
-      case 'duplicar':
-        this.abrirDialogoDuplicarEncuesta(item);
-        break;
-      case 'plantilla':
-        this.abrirDialogoCrearPlantilla(item);
         break;
       default:
         console.warn('Acción no reconocida:', accion);
@@ -512,8 +183,7 @@ export class GestionComunicadosComponent implements OnInit {
       accion: 'editar',
       type: 'item',
       class: 'p-menuitem-link text-green-500',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
+      isVisible: (rowData: any) => Number(rowData.puede_editar) === 1,
     },
     {
       labelTooltip: 'Ver',
@@ -521,24 +191,7 @@ export class GestionComunicadosComponent implements OnInit {
       accion: 'ver',
       type: 'item',
       class: 'p-menuitem-link text-gray-500',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) !== this.ESTADO_BORRADOR || Number(rowData.puede_editar) !== 1,
-    },
-    {
-      labelTooltip: 'Ver Preguntas',
-      icon: 'pi pi-question',
-      accion: 'preguntas',
-      type: 'item',
-      class: 'p-menuitem-link text-yellow-500',
-    },
-    {
-      labelTooltip: 'Aprobar',
-      icon: 'pi pi-check',
-      accion: 'aprobar',
-      type: 'item',
-      class: 'p-menuitem-link text-primary',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
+      isVisible: (rowData: any) => Number(rowData.puede_editar) !== 1,
     },
     {
       labelTooltip: 'Eliminar',
@@ -546,54 +199,7 @@ export class GestionComunicadosComponent implements OnInit {
       accion: 'eliminar',
       type: 'item',
       class: 'p-menuitem-link text-red-500',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
-    },
-    {
-      labelTooltip: 'Ver respuestas',
-      icon: 'pi pi-users',
-      accion: 'respuestas',
-      type: 'item',
-      class: 'p-menuitem-link text-primary',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_APROBADA &&
-        Number(rowData.puede_ver_respuestas) === 1,
-    },
-    {
-      labelTooltip: 'Ver resumen',
-      icon: 'pi pi-chart-pie',
-      accion: 'resumen',
-      type: 'item',
-      class: 'p-menuitem-link p-button-primary',
-      isVisible: (rowData: any) =>
-        Number(rowData.iEstado) == this.ESTADO_APROBADA && Number(rowData.puede_ver_resumen) === 1,
-    },
-    {
-      labelTooltip: 'Reemplazar',
-      icon: 'pi pi-sync',
-      accion: 'reemplazar',
-      type: 'item',
-      class: 'p-menuitem-link text-green-500',
-      isVisible: (rowData: any) =>
-        Number(this.categoria.bEsFija) === 1 &&
-        Number(this.perfil.iPerfilId) === DIRECTOR_IE &&
-        !rowData.iSedeId &&
-        new Date() < new Date(rowData.dEncuInicio),
-    },
-    {
-      labelTooltip: 'Duplicar',
-      icon: 'pi pi-copy',
-      accion: 'duplicar',
-      type: 'item',
-      class: 'p-menuitem-link text-green-500',
-      isVisible: () => Number(this.categoria.bEsFija) !== 1,
-    },
-    {
-      labelTooltip: 'Hacer plantilla',
-      icon: 'pi pi-arrow-up',
-      accion: 'plantilla',
-      type: 'item',
-      class: 'p-menuitem-link text-primary',
+      isVisible: (rowData: any) => Number(rowData.puede_editar) === 1,
     },
   ];
 
@@ -609,15 +215,23 @@ export class GestionComunicadosComponent implements OnInit {
     {
       type: 'text',
       width: '30%',
-      field: 'cEncuNombre',
-      header: 'Título de encuesta',
+      field: 'cComunicadoTitulo',
+      header: 'Comunicado',
       text_header: 'center',
       text: 'left',
     },
     {
       type: 'text',
-      width: '15%',
-      field: 'cTiemDurNombre',
+      width: '10%',
+      field: 'cTipoComNombre',
+      header: 'Tiempo',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '5%',
+      field: 'cPrioridadNombre',
       header: 'Tiempo',
       text_header: 'center',
       text: 'center',
@@ -625,7 +239,7 @@ export class GestionComunicadosComponent implements OnInit {
     {
       type: 'date',
       width: '15%',
-      field: 'dEncuInicio',
+      field: 'dtComunicadoEmision',
       header: 'Desde',
       text_header: 'center',
       text: 'center',
@@ -633,22 +247,10 @@ export class GestionComunicadosComponent implements OnInit {
     {
       type: 'date',
       width: '15%',
-      field: 'dEncuFin',
+      field: 'dtComunicadoHasta',
       header: 'Hasta',
       text_header: 'center',
       text: 'center',
-    },
-    {
-      field: 'cEstadoNombre',
-      type: 'tag',
-      width: '10%',
-      header: 'Estado',
-      text_header: 'center',
-      text: 'center',
-      styles: {
-        BORRADOR: 'danger',
-        APROBADA: 'success',
-      },
     },
     {
       type: 'dropdown-actions',

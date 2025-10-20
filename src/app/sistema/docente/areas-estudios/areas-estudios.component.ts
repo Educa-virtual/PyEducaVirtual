@@ -621,7 +621,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           this.MessageService.add({
             severity: 'success',
             summary: 'Exito de Registro',
-            detail: 'Se guardo el archivo Itinerario',
+            detail: 'Se guardo el archivo Instrumento de Evaluación',
           });
         },
         error: err => {

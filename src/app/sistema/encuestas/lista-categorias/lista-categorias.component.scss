@@ -249,6 +249,10 @@
   border-left: 15px solid var(--yellow-500);
 }
 
+:host ::ng-deep .p-message-wrapper {
+  display: inline-block;
+}
+
 .image-container {
   height: 8rem;
 

@@ -76,7 +76,7 @@
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+                <p-inputGroupAddon>Inicio *</p-inputGroupAddon>
                 <p-calendar
                   inputStyleClass="group-element"
                   view="date"
@@ -90,7 +90,7 @@
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon>Cierre</p-inputGroupAddon>
+                <p-inputGroupAddon>Cierre *</p-inputGroupAddon>
                 <p-calendar
                   inputStyleClass="group-element"
                   view="date"
@@ -114,7 +114,7 @@
                   >
                     <i class="pi pi-question-circle"></i>
                   </a>
-                  <span>Tiempo edición</span>
+                  <span>Tiempo edición *</span>
                 </p-inputGroupAddon>
                 <p-dropdown
                   styleClass="group-element"
@@ -176,7 +176,7 @@
                   <div class="flex w-15rem">
                     La fuente de texto que seleccione se mostrará en los encabezados, los datos
                     adicionales, las preguntas y alternativas cuando el participante responda la
-                    encuesta. Tenga en cuenta que la fuente mostrará dependerá de la disponibilidad
+                    encuesta. Tenga en cuenta que la fuente mostrada dependerá de si está instalada
                     en el dispositivo del participante. Si no selecciona ninguna fuente se usará la
                     fuente predeterminada por la plataforma.
                   </div>
@@ -464,6 +464,9 @@
               <strong>El creador de la encuesta tiene todos los accesos por defecto.</strong>
               Cada perfil tendrá accesos dentro de su jurisdicción, por ejemplo: los especialistas
               solo de su UGEL, los directores solo de su I.E., etc.
+            </p>
+            <p *ngIf="encuesta?.cCreador">
+              <strong>CREADA POR: {{ encuesta?.cCreador }}</strong>
             </p>
           </ng-template>
         </p-messages>

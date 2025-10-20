@@ -32,6 +32,7 @@ const encuestadores = [
   SUBDIRECTOR_IE,
 ];
 const encuestados = [
+  ADMINISTRADOR_DREMO,
   ESPECIALISTA_DREMO,
   ESPECIALISTA_UGEL,
   DIRECTOR_IE,

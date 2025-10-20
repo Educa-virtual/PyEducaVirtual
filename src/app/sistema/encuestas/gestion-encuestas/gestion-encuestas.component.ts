@@ -143,15 +143,14 @@ export class GestionEncuestasComponent implements OnInit {
 
   confirmarGenerarEncuestasMasivo() {
     this.confirmService.openConfirm({
-      header: 'Atención',
+      header: '¿Desea ir al listado de plantillas?',
       message:
-        'Se generarán las encuestas usando la última plantilla registrada por su usuario. La población objetivo y los permisos se asignarán por defecto según su jurisdicción.' +
-        (this.perfil.iPerfilId === DIRECTOR_IE
-          ? ' Esta acción reeemplazará todas las encuestas existentes que fueron registradas por el administrador DREMO y que aún no han sido respondidas por los estudiantes de su I.E.'
-          : '') +
-        ' ¿Está seguro(a) de generar las encuestas?',
+        'Para generar encuestas de forma masiva ingrese al "Listado de plantillas", seleccione la plantilla que desee utilizar y haga clic en "Hacer encuestas".' +
+        (Number(this.perfil.iPerfilId) === DIRECTOR_IE
+          ? ' Esta acción reeemplazará las encuestas existentes registradas por el Administrador, y que aún no han sido respondidas. Solo usted podrá editar las nuevas encuestas.'
+          : ''),
       accept: () => {
-        this.generarEncuestaPlantilla();
+        this.listarPlantillas();
       },
       reject: () => {},
     });
@@ -613,7 +612,7 @@ export class GestionEncuestasComponent implements OnInit {
       width: '30%',
       field: 'cEncuNombre',
       header: 'Título de encuesta',
-      text_header: 'center',
+      text_header: 'left',
       text: 'left',
     },
     {

@@ -264,7 +264,7 @@ export class EncuestaComponent implements OnInit {
         routerLink: `/encuestas/categorias/${this.iCateId}/gestion-encuestas`,
       },
       {
-        label: 'Nueva encuesta',
+        label: this.iEncuId ? 'Editar encuesta' : 'Nueva encuesta',
       },
     ];
     this.breadCrumbHome = {

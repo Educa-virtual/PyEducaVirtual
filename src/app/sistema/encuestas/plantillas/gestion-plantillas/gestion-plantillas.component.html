@@ -3,7 +3,7 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-xl">Gestionar plantillas de categoría</div>
+      <div class="flex text-xl">GESTIONAR PLANTILLAS DE CATEGORÍA</div>
       <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
     </div>
   </ng-template>
@@ -30,13 +30,13 @@
         </div>
         <div class="col-auto align-content-center">
           <p-button
-            severity="primary"
-            pTooltip="Encuestas"
+            severity="info"
+            pTooltip="Ver Encuestas"
             tooltipPosition="top"
-            arial-label="Encuestas"
+            arial-label="Ver Encuestas"
             (onClick)="listarEncuestas()"
           >
-            <i class="pi pi-fw pi-file"></i>
+            <i class="pi pi-fw pi-arrow-right-arrow-left"></i>
             <span class="hidden md:inline ml-2">Encuestas</span>
           </p-button>
         </div>

@@ -22,6 +22,7 @@ export class ListaComunicadosComponent implements OnInit {
   mostrarDialogoAccesosComunicado: boolean = false;
   iYAcadId: number;
   perfil: any;
+  seleccionarLista: any;
 
   comunicados: Array<any> = [];
   comunicados_filtrados: Array<any> = [];

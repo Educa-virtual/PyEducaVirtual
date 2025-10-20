@@ -3,7 +3,7 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-xl">Listar comunicados</div>
+      <div class="flex text-xl font-bold">LISTAR COMUNICADOS</div>
     </div>
   </ng-template>
 
@@ -19,8 +19,37 @@
   @if (!comunicados_filtrados || comunicados_filtrados.length === 0) {
     <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay comunicados disponibles" />
   } @else {
-    <p-dataView [rows]="10" [paginator]="true" [value]="comunicados_filtrados">
-      <ng-template pTemplate="list" let-comunicados_filtrados>
+    <p-table
+      [value]="comunicados_filtrados"
+      selectionMode="single"
+      [(selection)]="seleccionarLista"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center">#</th>
+          <th class="text-center">Titulo</th>
+          <th class="text-center">Descricpion</th>
+          <th class="text-center">Emision</th>
+          <th class="text-center">Finalizacion</th>
+          <th class="text-center">Estado</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-index="rowIndex" let-com>
+        <tr [pSelectableRow]="com" [pSelectableRowIndex]="index">
+          <td class="text-center">{{ index + 1 }}</td>
+          <td>{{ com.cComunicadoTitulo }}</td>
+          <td>{{ com.cComunicadoDescripcion }}</td>
+          <td>{{ com.dtComunicadoEmision | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ com.dtComunicadoHasta | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td class="text-center">
+            <!-- <i class="pi pi-circle-off"></i> -->
+            <i class="pi pi-check-circle"></i>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <!-- <p-dataView [rows]="10" [paginator]="true" [value]="comunicados_filtrados"> -->
+    <!-- <ng-template pTemplate="list" let-comunicados_filtrados>
         <div
           *ngFor="let comunicado of comunicados_filtrados; let first = first"
           class="card mb-5 relative overflow-visible {{ getColorComunicado(comunicado) }}"
@@ -47,7 +76,7 @@
           </div>
         </div>
       </ng-template>
-    </p-dataView>
+    </p-dataView> -->
   }
 </p-panel>
 

@@ -48,16 +48,16 @@ export const administradorDremo = [
       },
       {
         label: 'Mantenimiento IE',
-        icon: 'pi pi-config',
+        icon: 'pi pi-sitemap',
         items: [
           {
             label: 'Administrar IE',
-            icon: 'pi pi-star',
-            routerLink: ['/administrador/mantenimiento-curricula'],
+            icon: 'pi pi-tablet',
+            routerLink: ['/administrador/mantenimiento-ie'],
           },
           {
             label: 'Curricula',
-            icon: 'pi pi-star',
+            icon: 'pi pi-folder',
             routerLink: ['/administrador/mantenimiento-curricula'],
           },
         ],

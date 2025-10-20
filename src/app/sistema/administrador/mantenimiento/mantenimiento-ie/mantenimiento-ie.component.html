@@ -10,25 +10,81 @@
         pTooltip="Agregar"
         class="p-button-primary"
         icon="pi pi-plus"
-        (click)="agregarMantenimiento()"
+        (click)="accionBtnItemTable({ accion: 'agregar', item: [] })"
       ></button>
     </div>
   </ng-template>
 
-  <app-table-primeng
-    [columnas]="columns"
-    [data]="dataMantenimiento"
-    [actions]="actions"
-    [showPaginator]="true"
-    [searchPlaceholder]="'Buscar por nombre...'"
-    [showCaption]="true"
-    [(selectedRowData)]="selectedItem"
-    (accionBtnItem)="accionBtnItemTable($event)"
-    sortMode="single"
-    sortField="fecha"
-    [sortOrder]="1"
-  >
-  </app-table-primeng>
+  <div class="card">
+    <form [formGroup]="formMantenimiento" class="grid">
+      <div class="col-12 lg:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+          <p-dropdown
+            [options]="nivelTipos()"
+            [showClear]="true"
+            formControlName="iNivelTipoId"
+            placeholder="Seleccione un nivel"
+            styleClass="w-full"
+            appendTo="body"
+            (onChange)="obtenerInstituciones()"
+            (onClear)="obtenerInstituciones()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Institución Educativa</p-inputGroupAddon>
+          <p-dropdown
+            [options]="institucionesxiNivelTipoId()"
+            optionLabel="cNombre"
+            optionValue="iIieeId"
+            styleClass="w-full"
+            [filter]="true"
+            filterBy="cIieeNombre"
+            [showClear]="true"
+            placeholder="Seleccionar una Institución Educativa"
+            (onChange)="obtenerSedesIe()"
+            (onClear)="obtenerSedesIe()"
+            formControlName="iIieeId"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-2">
+        <p-button
+          pRipple
+          severity="primary"
+          label="Buscar"
+          icon="pi pi-search"
+          (onClick)="obtenerIE()"
+        />
+      </div>
+
+      <div class="col-12">
+        @if (data().length) {
+          <app-table-primeng
+            [columnas]="columns"
+            [data]="data()"
+            [actions]="actions"
+            [showPaginator]="true"
+            [searchPlaceholder]="'Buscar por nombre...'"
+            [showCaption]="false"
+            [showAdvancedFilter]="true"
+            [(selectedRowData)]="selectedItem"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            sortMode="single"
+            sortField="fecha"
+            [sortOrder]="1"
+          >
+          </app-table-primeng>
+        } @else {
+          <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
+        }
+      </div>
+    </form>
+  </div>
+  <p-toast></p-toast>
 </p-panel>
 <p-dialog
   [draggable]="false"
@@ -42,7 +98,7 @@
 >
   <app-editar-mantenimiento-ie
     [selectedItem]="institucionSeleccionada"
-    (eventEditarMantenimientoIe)="cerrarModalEdicion($event)"
+    (eventEditarMantenimientoIe)="accionBtnItemTable($event)"
   >
   </app-editar-mantenimiento-ie>
 </p-dialog>
@@ -58,7 +114,7 @@
 >
   <app-agregar-mantenimiento-ie
     [selectedItem]="selectedItem"
-    (eventAgregarMantenimientoIe)="cerrarModalAgregar($event)"
+    (eventAgregarMantenimientoIe)="accionBtnItemTable($event)"
   >
   </app-agregar-mantenimiento-ie>
 </p-dialog>

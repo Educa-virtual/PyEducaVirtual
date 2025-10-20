@@ -313,6 +313,12 @@ export class GeneralService {
   insertarCurriculaCusros(data: any) {
     return this.http.post(`${baseUrl}/administrador/addCurriculas`, data);
   }
+  insertarIntituciones(data: any) {
+    return this.http.post(`${baseUrl}/administrador/insertarIntituciones`, data);
+  }
+  insertarSedes(data: any) {
+    return this.http.post(`${baseUrl}/administrador/insertarSedes`, data);
+  }
 
   obtenerEstudiantesMatriculados(data: any) {
     return this.http.post(

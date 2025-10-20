@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MantenimientoIeComponent } from './mantenimiento/mantenimiento-ie/mantenimiento-ie.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
-import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
 
 const routes: Routes = [
   {
@@ -38,6 +38,14 @@ const routes: Routes = [
         m => m.SolicitudesRegistroComponent
       ),
   },*/
+  {
+    path: 'mantenimiento-ie',
+    component: MantenimientoIeComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+    },
+  },
 
   {
     path: 'mantenimiento-curricula',
@@ -45,14 +53,6 @@ const routes: Routes = [
       import('./mantenimiento/curriculas/curriculas.component').then(m => m.CurriculasComponent),
   },
 
-  {
-    path: 'mantenimiento-ie',
-    component: MantenimientoIeComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
   /*{
         path: 'gestion-usuarios',
         loadComponent: () =>

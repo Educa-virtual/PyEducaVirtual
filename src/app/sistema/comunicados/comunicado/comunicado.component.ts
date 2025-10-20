@@ -377,7 +377,7 @@ export class ComunicadoComponent implements OnInit {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Debe especificar al menos una población objetivo',
+        detail: 'Debe especificar al menos un grupo de recipientes',
       });
       return;
     }
@@ -592,16 +592,16 @@ export class ComunicadoComponent implements OnInit {
               this.messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
-                detail: `La población objetivo indicada (${ultima_grupo.grupo}) es cero, seleccione otra`,
+                detail: `El grupo de recipientes indicado (${ultima_grupo.grupo}) es cero, seleccione otro`,
               });
             }
-            /** Luego cargar cantidad acumulada de población objetivo */
+            /** Luego cargar cantidad acumulada de recipientes */
             this.cantidad_grupo = data.data.iGrupoCantidad;
           } else {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'No se pudo calcular la cantidad de población objetivo',
+              detail: 'No se pudo calcular la cantidad de recipientes',
             });
             this.cantidad_grupo = 0;
           }
@@ -707,13 +707,13 @@ export class ComunicadoComponent implements OnInit {
         type: 'text',
         width: '70%',
         field: 'grupo',
-        header: 'Población',
+        header: 'Recipientes',
         text_header: 'left',
         text: 'left',
       },
     ];
 
-    if (!this.comunicado) {
+    if (this.comunicado) {
       this.columns_grupo.push({
         type: 'actions',
         width: '20%',

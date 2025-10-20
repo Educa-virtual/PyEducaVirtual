@@ -108,6 +108,11 @@ export class GestionComunicadosComponent implements OnInit {
       )
         return comunicado;
       if (
+        comunicado.cPrioridadNombre &&
+        comunicado.cPrioridadNombre.toLowerCase().includes(filtro.toLowerCase())
+      )
+        return comunicado;
+      if (
         comunicado.cComunicadoDescripcion &&
         comunicado.cComunicadoDescripcion.toLowerCase().includes(filtro.toLowerCase())
       )
@@ -151,16 +156,12 @@ export class GestionComunicadosComponent implements OnInit {
       });
   }
 
-  listarPlantillas() {
-    this.router.navigate([`/comunicados/gestion-comunicados`]);
-  }
-
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {
       case 'editar':
       case 'ver':
-        this.router.navigate([`/comunicado/gestion-comunicados/${item.iComunicadoId}`]);
+        this.router.navigate([`/comunicados/gestion-comunicados/${item.iComunicadoId}`]);
         break;
       case 'eliminar':
         this.confirmService.openConfirm({
@@ -182,7 +183,7 @@ export class GestionComunicadosComponent implements OnInit {
       icon: 'pi pi-file-edit',
       accion: 'editar',
       type: 'item',
-      class: 'p-menuitem-link text-green-500',
+      class: 'p-button-rounded p-button-success p-button-text',
       isVisible: (rowData: any) => Number(rowData.puede_editar) === 1,
     },
     {
@@ -190,7 +191,7 @@ export class GestionComunicadosComponent implements OnInit {
       icon: 'pi pi-eye',
       accion: 'ver',
       type: 'item',
-      class: 'p-menuitem-link text-gray-500',
+      class: 'p-button-rounded p-button-secondary p-button-text',
       isVisible: (rowData: any) => Number(rowData.puede_editar) !== 1,
     },
     {
@@ -198,7 +199,7 @@ export class GestionComunicadosComponent implements OnInit {
       icon: 'pi pi-trash',
       accion: 'eliminar',
       type: 'item',
-      class: 'p-menuitem-link text-red-500',
+      class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: (rowData: any) => Number(rowData.puede_editar) === 1,
     },
   ];
@@ -217,14 +218,14 @@ export class GestionComunicadosComponent implements OnInit {
       width: '30%',
       field: 'cComunicadoTitulo',
       header: 'Comunicado',
-      text_header: 'center',
+      text_header: 'left',
       text: 'left',
     },
     {
       type: 'text',
       width: '10%',
       field: 'cTipoComNombre',
-      header: 'Tiempo',
+      header: 'Tipo',
       text_header: 'center',
       text: 'center',
     },
@@ -232,7 +233,7 @@ export class GestionComunicadosComponent implements OnInit {
       type: 'text',
       width: '5%',
       field: 'cPrioridadNombre',
-      header: 'Tiempo',
+      header: 'Prioridad',
       text_header: 'center',
       text: 'center',
     },
@@ -253,12 +254,12 @@ export class GestionComunicadosComponent implements OnInit {
       text: 'center',
     },
     {
-      type: 'dropdown-actions',
+      type: 'actions',
       width: '10%',
       field: 'actions',
       header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
+      text_header: 'right',
+      text: 'right',
     },
   ];
 }

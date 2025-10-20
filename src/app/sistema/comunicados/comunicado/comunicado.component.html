@@ -13,6 +13,7 @@
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
           (click)="handlePanelClick(onClick, active)"
+          labelTooltip="Información general"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -36,15 +37,30 @@
           <div class="grid">
             <div class="col-12">
               <p-inputGroup>
-                <p-inputGroupAddon> Título * </p-inputGroupAddon>
+                <p-inputGroupAddon> Título </p-inputGroupAddon>
                 <input
                   pInputText
                   styleClass="group-element"
                   placeholder="Ingrese título"
                   formControlName="cComunicadoTitulo"
+                  maxlength="150"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
+              </p-inputGroup>
+            </div>
+            <div class="col-12">
+              <p-inputGroup class="vertical-group">
+                <p-inputGroupAddon>Descripción:</p-inputGroupAddon>
+                <textarea
+                  formControlName="cComunicadoDescripcion"
+                  inputStyleClass="group-element"
+                  rows="4"
+                  style="resize: none"
+                  pInputTextarea
+                  class="group-element"
+                  appendTo="body"
+                ></textarea>
               </p-inputGroup>
             </div>
             <div class="col-12 md:col-6">
@@ -97,24 +113,10 @@
                   [options]="prioridades"
                   showClear="false"
                   placeholder="Seleccione una prioridad"
-                  formControlName="iFuenteId"
+                  formControlName="iPrioridadId"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
                 />
-              </p-inputGroup>
-            </div>
-            <div class="col-12">
-              <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>Descripción:</p-inputGroupAddon>
-                <textarea
-                  formControlName="cComunicadoDescripcion"
-                  inputStyleClass="group-element"
-                  rows="4"
-                  style="resize: none"
-                  pInputTextarea
-                  class="group-element"
-                  appendTo="body"
-                ></textarea>
               </p-inputGroup>
             </div>
           </div>
@@ -141,6 +143,7 @@
         <button
           class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
           (click)="handlePanelClick(onClick, active)"
+          labelTooltip="Grupo de recipíentes"
         >
           <span
             class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
@@ -151,7 +154,7 @@
           >
             <i class="pi pi-users" style="font-size: 1.5rem"></i>
           </span>
-          <span class="hidden md:block font-bold text-primary">Población objetivo</span>
+          <span class="hidden md:block font-bold text-primary">Grupo de recipíentes</span>
         </button>
       </ng-template>
       <ng-template
@@ -309,6 +312,59 @@
                     placeholder="Seleccione un género"
                     styleClass="group-element"
                     appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Tipo Documento</p-inputGroupAddon>
+                  <p-dropdown
+                    formControlName="iTipoIdentId"
+                    [options]="tipos_documentos"
+                    placeholder="Tipo de documento"
+                    [showClear]="false"
+                    [filter]="true"
+                    appendTo="body"
+                    [style]="{ flex: '1', width: '100%' }"
+                    styleClass="group-element"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <p-button
+                      size="small"
+                      label="Buscar"
+                      styleClass="p-button-primary ml-2"
+                      (onClick)="buscarPersona()"
+                      severity="success"
+                    />
+                    Documento
+                  </p-inputGroupAddon>
+                  <p-inputMask
+                    formControlName="cPersDocumento"
+                    [maxlength]="longitud_documento"
+                    [mask]="formato_documento"
+                    autoClear="false"
+                    slotChar=""
+                    class="group-element"
+                    styleClass="group-element"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-inputGroup styleClass="vertical-group">
+                  <p-inputGroupAddon>
+                    <span>Datos de la persona</span>
+                  </p-inputGroupAddon>
+                  <input
+                    pInputText
+                    formControlName="cPersApeNombres"
+                    [style]="{ flex: '1', width: '100%' }"
+                    appenTo="body"
+                    class="group-element"
+                    readonly
                   />
                 </p-inputGroup>
               </div>

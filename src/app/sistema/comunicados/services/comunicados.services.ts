@@ -23,25 +23,8 @@ export class ComunicadosService implements OnDestroy {
 
   constructor(private http: HttpClient) {}
 
-  public readonly ESTADO_BORRADOR = 1;
-  public readonly ESTADO_APROBADA = 2;
-
-  public readonly TIPO_REPORTE_LISTA = 1;
-  public readonly TIPO_REPORTE_INDIVIDUAL = 2;
-
-  public readonly GRAFICO_BARRA = 1;
-  public readonly GRAFICO_CIRCULAR = 2;
-  public readonly GRAFICO_NUBE = 3;
-
-  public readonly USUARIO_ENCUESTADO = 1;
-  public readonly USUARIO_ENCUESTADOR = 2;
-
-  public readonly TIPO_PREG_TEXTO = 1;
-  public readonly TIPO_PREG_SIMPLE = 3;
-  public readonly TIPO_PREG_MULTIPLE = 4;
-
-  public readonly CATEGORIA_SATISFACCION = 1;
-  public readonly CATEGORIA_AUTOEVALUACION = 2;
+  public readonly USUARIO_EMISOR = 1;
+  public readonly USUARIO_RECIPIENTE = 2;
 
   parametros: any;
 
@@ -59,37 +42,42 @@ export class ComunicadosService implements OnDestroy {
   sexos: Array<object>;
   estados: Array<object>;
   recipientes: Array<object>;
+  tipos_documentos: Array<object>;
 
   /**
    * CONEXIONES A LA API
    */
 
   listarComunicados(data: any) {
-    return this.http.post(`${baseUrl}/enc/listarComunicados`, data);
+    return this.http.post(`${baseUrl}/com/listarComunicados`, data);
   }
 
   verComunicado(data: any) {
-    return this.http.post(`${baseUrl}/enc/verComunicado`, data);
+    return this.http.post(`${baseUrl}/com/verComunicado`, data);
   }
 
   guardarComunicado(data: any) {
-    return this.http.post(`${baseUrl}/enc/guardarComunicado`, data);
+    return this.http.post(`${baseUrl}/com/guardarComunicado`, data);
   }
 
   actualizarComunicado(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarComunicado`, data);
+    return this.http.post(`${baseUrl}/com/actualizarComunicado`, data);
   }
 
   actualizarComunicadoEstado(data: any) {
-    return this.http.post(`${baseUrl}/enc/actualizarComunicadoEstado`, data);
+    return this.http.post(`${baseUrl}/com/actualizarComunicadoEstado`, data);
   }
 
   borrarComunicado(data: any) {
-    return this.http.post(`${baseUrl}/enc/borrarComunicado`, data);
+    return this.http.post(`${baseUrl}/com/borrarComunicado`, data);
   }
 
   obtenerGrupoCantidad(data: any) {
-    return this.http.post(`${baseUrl}/enc/obtenerGrupoCantidad`, data);
+    return this.http.post(`${baseUrl}/com/obtenerGrupoCantidad`, data);
+  }
+
+  buscarPersona(data: any) {
+    return this.http.post(`${baseUrl}/com/buscarPersona`, data);
   }
 
   /**
@@ -397,14 +385,17 @@ export class ComunicadosService implements OnDestroy {
     return this.sexos;
   }
 
-  getEstados() {
-    if (!this.estados) {
-      this.estados = [
-        { label: 'BORRADOR', value: this.ESTADO_BORRADOR },
-        { label: 'APROBADA', value: this.ESTADO_APROBADA },
-      ];
+  getTiposDocumentos(data: any) {
+    if (!this.tipos_documentos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_documentos = items.map(doc => ({
+        value: doc.iTipoIdentId,
+        label: doc.cTipoIdentSigla + ' - ' + doc.cTipoIdentNombre,
+        longitud: doc.iTipoIdentLongitud,
+      }));
+      return this.tipos_documentos;
     }
-    return this.estados;
+    return this.tipos_documentos;
   }
 
   /**
@@ -440,7 +431,7 @@ export class ComunicadosService implements OnDestroy {
       if (!value) value = null;
       form.get(formControl)?.patchValue(value);
     } else if (tipo === 'date') {
-      let fecha = new Date(value + 'T00:00:00');
+      let fecha = new Date(value);
       if (!value) fecha = null;
       form.get(formControl)?.patchValue(fecha);
     } else if (tipo === 'json') {

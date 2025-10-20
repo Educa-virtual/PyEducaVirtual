@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { DIRECTOR_IE, ESPECIALISTA_UGEL, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
@@ -57,6 +57,12 @@ export class ComunicadoComponent implements OnInit {
   ies: Array<object>;
   sexos: Array<object>;
   recipientes: Array<object>;
+  tipos_documentos: Array<object>;
+
+  USUARIO_EMISOR = this.comunicadosService.USUARIO_EMISOR;
+
+  longitud_documento: number = 8;
+  formato_documento: string = '99999999';
 
   constructor(
     private fb: FormBuilder,
@@ -64,7 +70,8 @@ export class ComunicadoComponent implements OnInit {
     private route: ActivatedRoute,
     private store: LocalStoreService,
     private comunicadosService: ComunicadosService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cf: ChangeDetectorRef
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
@@ -82,11 +89,11 @@ export class ComunicadoComponent implements OnInit {
         iComunicadoId: [0],
         iTipoComId: [null, Validators.required],
         iPrioridadId: [null, Validators.required],
-        cComunicadoTitulo: ['', Validators.required],
+        cComunicadoTitulo: ['', [Validators.required, Validators.maxLength(150)]],
         cComunicadoDescripcion: [''],
         dtComunicadoEmision: ['', Validators.required],
         dtComunicadoHasta: ['', Validators.required],
-        iYAcadId: [this.store.getItem('dremoiYAcadId')],
+        iYAcadId: [this.iYAcadId],
         grupo: [null],
         jsonGrupo: [null],
       });
@@ -104,6 +111,10 @@ export class ComunicadoComponent implements OnInit {
         iNivelGradoId: [null],
         iSeccionId: [null],
         cPersSexo: [null],
+        iTipoIdentId: [null],
+        cPersDocumento: [null],
+        iPersId: [null],
+        cPersApeNombres: [null],
         grupo: [''],
       });
     } catch (error) {
@@ -124,6 +135,7 @@ export class ComunicadoComponent implements OnInit {
         this.tipo_sectores = this.comunicadosService.getTipoSectores(data?.tipo_sectores);
         this.ugeles = this.comunicadosService.getUgeles(data?.ugeles);
         this.nivel_tipos = this.comunicadosService.getNivelesTipos(data?.nivel_tipos);
+        this.secciones = this.comunicadosService.getSecciones(data?.secciones);
         this.ies = this.comunicadosService.getInstitucionesEducativas(
           data?.instituciones_educativas
         );
@@ -134,6 +146,7 @@ export class ComunicadoComponent implements OnInit {
         );
         this.areas = this.comunicadosService.getAreas(data?.areas);
         this.sexos = this.comunicadosService.getSexos();
+        this.tipos_documentos = this.comunicadosService.getTiposDocumentos(data?.tipos_documentos);
         this.comunicadosService.getNivelesGrados(data?.nivel_grados);
         if (this.nivel_tipos && this.nivel_tipos.length == 1) {
           const nivel_tipo = this.nivel_tipos[0]['value'];
@@ -183,6 +196,18 @@ export class ComunicadoComponent implements OnInit {
       this.distritos = null;
       this.filterInstitucionesEducativas();
       this.filterDistritos(value);
+    });
+
+    this.formGrupo.get('iTipoIdentId').valueChanges.subscribe(value => {
+      const tipo_doc = this.tipos_documentos.find((item: any) => item.value === value);
+      if (tipo_doc) {
+        const longitud = this.formGrupo.get('cPersDocumento')?.value;
+        if (longitud && longitud.length > tipo_doc['longitud']) {
+          this.formGrupo.get('cPersDocumento').setValue(null);
+        }
+        this.longitud_documento = tipo_doc['longitud'];
+        this.formato_documento = '9'.repeat(this.longitud_documento);
+      }
     });
 
     if (this.iComunicadoId) {
@@ -265,6 +290,7 @@ export class ComunicadoComponent implements OnInit {
       .verComunicado({
         iCredEntPerfId: this.perfil.iCredEntPerfId,
         iComunicadoId: this.iComunicadoId,
+        iTipoUsuario: this.USUARIO_EMISOR,
       })
       .subscribe({
         next: (data: any) => {
@@ -275,7 +301,7 @@ export class ComunicadoComponent implements OnInit {
             this.setformComunicado(this.comunicado);
             this.inicializarColumnas();
           } else {
-            this.router.navigate(['/comunicado/gestion-comunicados/']);
+            this.router.navigate(['/comunicados/gestion-comunicados/']);
           }
         },
         error: error => {
@@ -364,7 +390,7 @@ export class ComunicadoComponent implements OnInit {
           summary: 'Registro exitoso',
           detail: 'Se registraron los datos',
         });
-        this.router.navigate([`/comunicado/gestion-comunicados`]);
+        this.router.navigate([`/comunicados/gestion-comunicados`]);
       },
       error: error => {
         console.error('Error guardando comunicado:', error);
@@ -420,6 +446,61 @@ export class ComunicadoComponent implements OnInit {
     });
   }
 
+  buscarPersona() {
+    if (
+      this.formGrupo.value.iPerfilId === null ||
+      this.formGrupo.value.iTipoIdentId === null ||
+      this.formGrupo.value.cPersDocumento === null
+    ) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe indicar el tipo de recipiente y el documento de la persona',
+      });
+      this.formGrupo.get('iPerfilId').markAsDirty();
+      this.formGrupo.get('iTipoIdentId').markAsDirty();
+      this.formGrupo.get('cPersDocumento').markAsDirty();
+      return;
+    }
+    this.comunicadosService
+      .buscarPersona({
+        iYAcadId: this.iYAcadId,
+        jsonDatos: JSON.stringify(this.formGrupo.value),
+      })
+      .subscribe({
+        next: (data: any) => {
+          if (data.data) {
+            this.formGrupo.patchValue({
+              cPersApeNombres: data.data?.cPersApeNombres ?? null,
+              iPersId: data.data?.iPersId ?? null,
+            });
+          } else {
+            this.formGrupo.patchValue({
+              cPersApeNombres: null,
+              iPersId: null,
+            });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se encontró la persona',
+            });
+          }
+        },
+        error: error => {
+          this.formGrupo.patchValue({
+            cPersApeNombres: null,
+            iPersId: null,
+          });
+          console.error('Error obteniendo datos de la persona:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
   agregarGrupo(item: any = null) {
     if (item) {
       this.formGrupo.patchValue(item);
@@ -446,7 +527,9 @@ export class ComunicadoComponent implements OnInit {
         Number(item.iIieeId) === Number(this.formGrupo.value.iIieeId) &&
         Number(item.iNivelGradoId) === Number(this.formGrupo.value.iNivelGradoId) &&
         Number(item.iSeccionId) === Number(this.formGrupo.value.iSeccionId) &&
-        Number(item.cPersSexo) === Number(this.formGrupo.value.cPersSexo)
+        Number(item.cPersSexo) === Number(this.formGrupo.value.cPersSexo) &&
+        Number(item.iPersId) == Number(this.formGrupo.value.iPersId) &&
+        item.cPersApeNombres === this.formGrupo.value.cPersApeNombres
     );
     if (duplicados.length) {
       this.comunicadosService.formMarkAsDirty(this.formGrupo);
@@ -462,9 +545,21 @@ export class ComunicadoComponent implements OnInit {
     this.grupo = [...this.grupo, form];
     this.formComunicado.get('grupo')?.setValue(this.grupo);
     this.formGrupo.reset();
-    if (this.es_director && this.nivel_tipos && this.ies) {
-      this.formGrupo.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
-      this.formGrupo.get('iIieeId')?.setValue(this.ies[0]['value']);
+    this.cf.detectChanges();
+    if (this.nivel_tipos && this.nivel_tipos.length == 1) {
+      const nivel_tipo = this.nivel_tipos[0]['value'];
+      this.formGrupo.get('iNivelTipoId')?.setValue(nivel_tipo);
+      this.filterNivelesGrados(nivel_tipo);
+      this.filterInstitucionesEducativas();
+    }
+    if (this.ugeles && this.ugeles.length === 1) {
+      const ugel = this.ugeles[0]['value'];
+      this.formGrupo.get('iUgelId')?.setValue(ugel);
+      this.filterInstitucionesEducativas();
+    }
+    if (this.ies && this.ies.length === 1) {
+      const ie = this.ies[0]['value'];
+      this.formGrupo.get('iIieeId')?.setValue(ie);
     }
 
     this.obtenerGrupoCantidad(form);
@@ -488,7 +583,7 @@ export class ComunicadoComponent implements OnInit {
             if (
               this.puede_editar &&
               this.grupo.length > 0 &&
-              Number(data.data.iGrupoObjetivo) === Number(this.cantidad_grupo)
+              Number(data.data.iGrupoCantidad) === Number(this.cantidad_grupo)
             ) {
               this.grupo = this.grupo.filter(
                 (grupo: any) => ultima_grupo.iGrupoId != grupo.iGrupoId
@@ -501,7 +596,7 @@ export class ComunicadoComponent implements OnInit {
               });
             }
             /** Luego cargar cantidad acumulada de población objetivo */
-            this.cantidad_grupo = data.data.iGrupoObjetivo;
+            this.cantidad_grupo = data.data.iGrupoCantidad;
           } else {
             this.messageService.add({
               severity: 'error',
@@ -554,9 +649,11 @@ export class ComunicadoComponent implements OnInit {
     const sexo: any = this.sexos
       ? this.sexos.find((sexo: any) => sexo.value == item.cPersSexo)
       : null;
+    const persona: any = item.cPersApeNombres;
 
     let grupo: any = [
       recipiente?.label,
+      persona ? persona : null,
       nivel_tipo?.label,
       tipo_sector?.label,
       tipo_zona?.label,
@@ -566,7 +663,7 @@ export class ComunicadoComponent implements OnInit {
       nivel_grado?.label,
       area?.label,
       seccion ? 'SECCIÓN ' + seccion.label : null,
-      sexo ? 'GENERO ' + sexo.label : null,
+      sexo ? 'GÉNERO ' + sexo.label : null,
     ];
     grupo = grupo.filter((item: any) => item != null);
     this.formGrupo.get('grupo')?.setValue(grupo.join(', '));

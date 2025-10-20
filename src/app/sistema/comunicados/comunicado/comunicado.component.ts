@@ -713,7 +713,7 @@ export class ComunicadoComponent implements OnInit {
       },
     ];
 
-    if (this.comunicado) {
+    if (Number(this.puede_editar) === 1) {
       this.columns_grupo.push({
         type: 'actions',
         width: '20%',

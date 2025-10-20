@@ -32,6 +32,8 @@ export class GestionComunicadosComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
+  USUARIO_EMISOR: number = this.comunicadosService.USUARIO_EMISOR;
+
   constructor(
     private messageService: MessageService,
     private comunicadosService: ComunicadosService,
@@ -77,6 +79,7 @@ export class GestionComunicadosComponent implements OnInit {
     this.comunicadosService
       .listarComunicados({
         iYAcadId: this.iYAcadId,
+        iTipoUsuario: this.USUARIO_EMISOR,
       })
       .subscribe({
         next: (data: any) => {

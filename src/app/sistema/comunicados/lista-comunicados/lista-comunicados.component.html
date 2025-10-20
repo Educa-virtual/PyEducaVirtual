@@ -1,0 +1,54 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Listar comunicados</div>
+    </div>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  @if (!comunicados_filtrados || comunicados_filtrados.length === 0) {
+    <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay comunicados disponibles" />
+  } @else {
+    <p-dataView [rows]="10" [paginator]="true" [value]="comunicados_filtrados">
+      <ng-template pTemplate="list" let-comunicados_filtrados>
+        <div
+          *ngFor="let comunicado of comunicados_filtrados; let first = first"
+          class="card mb-5 relative overflow-visible {{ getColorComunicado(comunicado) }}"
+        >
+          <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
+            <div class="flex gap-4 font-normal">
+              <div class="flex flex-column my-2 align-items-start">
+                <span class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2">
+                  {{ comunicado?.cComunicadoTitulo }}
+                </span>
+                <div
+                  class="flex flex-column gap-2 sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                >
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-primary ml-1"></i>
+                    <span>Del:</span>
+                    <span>{{ comunicado?.dtComunicadoEmision | date: 'dd/MM/yyyy HH:mm' }}</span>
+                    <span>Al: {{ comunicado?.dtComunicadoHasta | date: 'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                </div>
+                <p>{{ comunicado?.cComunicadoDescripcion }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  }
+</p-panel>
+
+<p-toast></p-toast>

@@ -156,6 +156,10 @@ export class GestionComunicadosComponent implements OnInit {
       });
   }
 
+  verListaComunicados() {
+    this.router.navigate([`/comunicados/lista-comunicados`]);
+  }
+
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {

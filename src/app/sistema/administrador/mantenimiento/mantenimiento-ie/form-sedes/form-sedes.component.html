@@ -1,0 +1,70 @@
+<app-modal-primeng
+  [title]="(this.formSedes.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Institución Educativa'"
+  [showModal]="showModal()"
+  class="uppercase"
+  [width]="'70rem'"
+  (accionBtnItem)="closeModal.emit()"
+>
+  <form [formGroup]="formSedes" class="mt-3">
+    <div class="grid">
+      <div class="col-12 md:col-8">
+        <p-inputGroup>
+          <p-inputGroupAddon>Servicio Educativos</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iServEdId"
+            formControlName="iServEdId"
+            [options]="serviciosEducativos()"
+            optionLabel="cServEdNombre"
+            optionValue="iServEdId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre</p-inputGroupAddon>
+          <input
+            id="cSedeNombre"
+            type="text"
+            pInputText
+            placeholder="Ej: Sede Principal"
+            formControlName="cSedeNombre"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
+          <input
+            id="cSedeDireccion"
+            type="text"
+            pInputText
+            placeholder="Ej: Av. Los Olivos N° 123, San Martín"
+            formControlName="cSedeDireccion"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+  <div footer class="flex justify-content-end gap-2">
+    <p-button
+      styleClass="uppercase"
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="closeModal.emit()"
+    />
+    <p-button
+      styleClass="uppercase"
+      type="submit"
+      [loading]="isLoading()"
+      [label]="this.formSedes.value.iSedeId ? 'Actualizar' : 'Guardar'"
+      [severity]="this.formSedes.value.iSedeId ? 'warning' : 'success'"
+      [loading]="isLoading()"
+      (onClick)="enviarFormulario()"
+    ></p-button>
+  </div>
+</app-modal-primeng>

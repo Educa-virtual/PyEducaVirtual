@@ -19,6 +19,16 @@ export interface InstitucionEducativa {
   iSesionId: number;
 }
 
+export interface Sede {
+  iCredEntPerfId: number;
+  iCredId: string;
+  iSedeId?: number;
+  iIieeId: number;
+  cSedeNombre: string;
+  cSedeDireccion: string;
+  iServEdId: number;
+}
+
 export interface FiltrosIE {
   iDsttId?: number;
   iZonaId?: number;
@@ -52,6 +62,7 @@ export interface Ugel {
 export class MantenimientoIeService {
   private urlBackendApi = environment.backendApi;
   private baseUrl = `${this.urlBackendApi}/acad/mantenimiento-ie`;
+  private baseUrlIE = `${this.urlBackendApi}/acad/administrador`;
 
   constructor(private http: HttpClient) {}
 
@@ -75,7 +86,10 @@ export class MantenimientoIeService {
   crearInstitucionEducativa(
     data: InstitucionEducativa
   ): Observable<RespuestaApi<InstitucionEducativa>> {
-    return this.http.post<RespuestaApi<InstitucionEducativa>>(this.baseUrl, data);
+    return this.http.post<RespuestaApi<InstitucionEducativa>>(
+      this.baseUrlIE + '/insertarIntituciones',
+      data
+    );
   }
 
   actualizarInstitucionEducativa(
@@ -113,4 +127,8 @@ export class MantenimientoIeService {
   // obtenerSedes(): Observable<RespuestaApi<any[]>> {
   //   return this.http.get<RespuestaApi<any[]>>(`${this.urlBackendApi}/catalogos/sedes`);
   // }
+
+  crearSede(data: Sede): Observable<RespuestaApi<Sede>> {
+    return this.http.post<RespuestaApi<Sede>>(this.baseUrlIE + '/insertarSedes', data);
+  }
 }

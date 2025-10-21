@@ -99,13 +99,13 @@ export class GeneralService {
       esquema: 'grl',
       tabla: 'distritos',
       campos: '*',
-      condicion: '1 = 1',
+      condicion: 'iPrvnId in (147,148,149)',
     });
   }
 
   getZonas() {
     return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
-      esquema: 'grl',
+      esquema: 'acad',
       tabla: 'zonas',
       campos: '*',
       condicion: '1 = 1',
@@ -115,6 +115,15 @@ export class GeneralService {
     return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
       esquema: 'grl',
       tabla: 'tipos_sectores',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+
+  getUgeles() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'acad',
+      tabla: 'ugeles',
       campos: '*',
       condicion: '1 = 1',
     });
@@ -410,5 +419,14 @@ export class GeneralService {
 
   subirSvgPizarra(data: any) {
     return this.http.post(`${baseUrl}/general/subir-svg-pizarra`, data);
+  }
+
+  getServicioEducativos() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'acad',
+      tabla: 'servicio_educativos',
+      campos: '*',
+      condicion: '1 = 1',
+    });
   }
 }

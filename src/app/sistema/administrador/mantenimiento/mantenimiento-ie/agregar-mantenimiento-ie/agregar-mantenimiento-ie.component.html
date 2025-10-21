@@ -1,167 +1,144 @@
-<br />
-<form [formGroup]="formulario">
-  <div class="grid">
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="cIieeCodigoModular" class="block text-900 font-medium mb-2">
-        Código Modular *
-      </label>
-      <input
-        id="cIieeCodigoModular"
-        formControlName="cIieeCodigoModular"
-        type="text"
-        pInputText
-        class="w-full"
-        placeholder="Insertar el código modular"
-        (input)="soloNumeros($event)"
-        [class.ng-invalid]="esInvalido('cIieeCodigoModular')"
-      />
-      <small class="p-error" *ngIf="esInvalido('cIieeCodigoModular')">
-        {{ obtenerMensajeError('cIieeCodigoModular') }}
-      </small>
-    </div>
+<app-modal-primeng
+  [title]="(this.formInstitucion.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Institución Educativa'"
+  [showModal]="showModal()"
+  class="uppercase"
+  [width]="'70rem'"
+  (accionBtnItem)="closeModal.emit()"
+>
+  <form [formGroup]="formInstitucion" class="mt-3">
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Código Modular</p-inputGroupAddon>
+          <input
+            id="cIieeCodigoModular"
+            type="text"
+            pInputText
+            placeholder="Ej: 0123456"
+            formControlName="cIieeCodigoModular"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-inputGroup>
+          <p-inputGroupAddon>RUC</p-inputGroupAddon>
+          <input
+            id="cIieeRUC"
+            formControlName="cIieeRUC"
+            type="text"
+            pInputText
+            class="w-full"
+            placeholder="Ej: 20123456789"
+            (input)="soloNumeros($event)"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-3">
+        <p-inputGroup>
+          <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iUgelId"
+            formControlName="iUgelId"
+            [options]="ugeles()"
+            optionLabel="cUgelNombre"
+            optionValue="iUgelId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre de la I.E.</p-inputGroupAddon>
+          <input
+            id="cIieeNombre"
+            type="text"
+            pInputText
+            placeholder="Ej: I.E. San Martín de Porres"
+            formControlName="cIieeNombre"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iDsttId"
+            formControlName="iDsttId"
+            [options]="distritos()"
+            optionLabel="cDsttNombre"
+            optionValue="iDsttId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Zona</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iZonaId"
+            formControlName="iZonaId"
+            [options]="zonas()"
+            optionLabel="cZonaNombre"
+            optionValue="iZonaId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sector</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iTipoSectorId"
+            formControlName="iTipoSectorId"
+            [options]="sectores()"
+            optionLabel="cTipoSectorNombre"
+            optionValue="iTipoSectorId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
 
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="cIieeNombre" class="block text-900 font-medium mb-2">
-        Institución Educativa *
-      </label>
-      <input
-        id="cIieeNombre"
-        formControlName="cIieeNombre"
-        type="text"
-        pInputText
-        class="w-full"
-        placeholder="Insertar I.E."
-        (input)="convertirMayusculas($event)"
-        [class.ng-invalid]="esInvalido('cIieeNombre')"
-      />
-      <small class="p-error" *ngIf="esInvalido('cIieeNombre')">
-        {{ obtenerMensajeError('cIieeNombre') }}
-      </small>
+      <!-- <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
+          <input
+            id="cIieeDireccion"
+            type="text"
+            pInputText
+            placeholder="Ej: Av. Los Olivos N° 123, San Martín"
+            formControlName="cIieeDireccion"
+          />
+        </p-inputGroup>
+      </div> -->
     </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="iDsttId" class="block text-900 font-medium mb-2"> Distrito * </label>
-      <p-dropdown
-        id="iDsttId"
-        [(ngModel)]="distritoSeleccionado"
-        formControlName="iDsttId"
-        [options]="distritos"
-        optionLabel="cDsttNombre"
-        optionValue="iDsttId"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-        [class.ng-invalid]="esInvalido('iDsttId')"
-      >
-      </p-dropdown>
-      <small class="p-error" *ngIf="esInvalido('iDsttId')">
-        {{ obtenerMensajeError('iDsttId') }}
-      </small>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="iZonaId" class="block text-900 font-medium mb-2"> Zona </label>
-      <p-dropdown
-        id="iZonaId"
-        [(ngModel)]="zonaSeleccionado"
-        formControlName="iZonaId"
-        [options]="zonas"
-        optionLabel="cZonaNombre"
-        optionValue="iZonaId"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-      >
-      </p-dropdown>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="iTipoSectorId" class="block text-900 font-medium mb-2"> Sector * </label>
-      <p-dropdown
-        id="iTipoSectorId"
-        [(ngModel)]="sectorSeleccionado"
-        formControlName="iTipoSectorId"
-        [options]="sectores"
-        optionLabel="cTipoSectorNombre"
-        optionValue="iTipoSectorId"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-        [class.ng-invalid]="esInvalido('iTipoSectorId')"
-      >
-      </p-dropdown>
-      <small class="p-error" *ngIf="esInvalido('iTipoSectorId')">
-        {{ obtenerMensajeError('iTipoSectorId') }}
-      </small>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="iUgelId" class="block text-900 font-medium mb-2"> UGEL </label>
-      <p-dropdown
-        id="iUgelId"
-        [(ngModel)]="ugelSeleccionado"
-        formControlName="iUgelId"
-        [options]="ugeles"
-        optionLabel="cUgelNombre"
-        optionValue="iUgelId"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-      >
-      </p-dropdown>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="cIieeDireccion" class="block text-900 font-medium mb-2"> Dirección </label>
-      <input
-        id="cIieeDireccion"
-        formControlName="cIieeDireccion"
-        type="text"
-        pInputText
-        class="w-full"
-        placeholder="Insertar dirección"
-        (input)="convertirMayusculas($event)"
-      />
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="iNivelTipoId" class="block text-900 font-medium mb-2"> Nivel </label>
-      <p-dropdown
-        [(ngModel)]="nivelSeleccionado"
-        id="iNivelTipoId"
-        formControlName="iNivelTipoId"
-        [options]="Niveles"
-        optionLabel="cNivelTipoNombre"
-        optionValue="iNivelTipoId"
-        placeholder="Seleccionar..."
-        [style]="{ width: '100%' }"
-      >
-      </p-dropdown>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-4">
-      <label for="cIieeRUC" class="block text-900 font-medium mb-2"> RUC </label>
-      <input
-        id="cIieeRUC"
-        formControlName="cIieeRUC"
-        type="text"
-        pInputText
-        class="w-full"
-        placeholder="Insertar RUC"
-        (input)="soloNumeros($event)"
-        [class.ng-invalid]="esInvalido('cIieeRUC')"
-      />
-      <small class="p-error" *ngIf="esInvalido('cIieeRUC')">
-        {{ obtenerMensajeError('cIieeRUC') }}
-      </small>
-    </div>
+  </form>
+  <div footer class="flex justify-content-end gap-2">
+    <p-button
+      styleClass="uppercase"
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="closeModal.emit()"
+    />
+    <p-button
+      styleClass="uppercase"
+      type="submit"
+      [loading]="isLoading()"
+      [label]="this.formInstitucion.value.iIieeId ? 'Actualizar' : 'Guardar'"
+      [severity]="this.formInstitucion.value.iIieeId ? 'warning' : 'success'"
+      [loading]="isLoading()"
+      (onClick)="enviarFormulario()"
+    ></p-button>
   </div>
-</form>
-
-<div class="flex justify-content-end gap-2 mt-7">
-  <p-button
-    [severity]="'secondary'"
-    label="Cancelar"
-    (click)="btnCancelar()"
-    [disabled]="guardando"
-  >
-  </p-button>
-  <p-button [severity]="'primary'" label="Guardar" (click)="btnGuardar()" [loading]="guardando">
-  </p-button>
-</div>
+</app-modal-primeng>

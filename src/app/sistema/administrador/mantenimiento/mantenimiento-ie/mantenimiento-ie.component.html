@@ -1,121 +1,179 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
-<p-panel>
-  <ng-template pTemplate="header">
-    <div class="flex justify-content-between align-items-center w-full">
-      <h3 class="m-0 text-uppercase text-primary">{{ title }}</h3>
-      <button
-        pButton
-        label="Agregar"
-        pRipple
-        pTooltip="Agregar"
-        class="p-button-primary"
-        icon="pi pi-plus"
-        (click)="accionBtnItemTable({ accion: 'agregar', item: [] })"
-      ></button>
-    </div>
-  </ng-template>
-
-  <div class="card">
-    <form [formGroup]="formMantenimiento" class="grid">
-      <div class="col-12 lg:col-4">
-        <p-inputGroup>
-          <p-inputGroupAddon>Nivel</p-inputGroupAddon>
-          <p-dropdown
-            [options]="nivelTipos()"
-            [showClear]="true"
-            formControlName="iNivelTipoId"
-            placeholder="Seleccione un nivel"
-            styleClass="w-full"
-            appendTo="body"
-            (onChange)="obtenerInstituciones()"
-            (onClear)="obtenerInstituciones()"
-          />
-        </p-inputGroup>
-      </div>
-      <div class="col-12 lg:col-6">
-        <p-inputGroup>
-          <p-inputGroupAddon>Institución Educativa</p-inputGroupAddon>
-          <p-dropdown
-            [options]="institucionesxiNivelTipoId()"
-            optionLabel="cNombre"
-            optionValue="iIieeId"
-            styleClass="w-full"
-            [filter]="true"
-            filterBy="cIieeNombre"
-            [showClear]="true"
-            placeholder="Seleccionar una Institución Educativa"
-            (onChange)="obtenerSedesIe()"
-            (onClear)="obtenerSedesIe()"
-            formControlName="iIieeId"
-          >
-          </p-dropdown>
-        </p-inputGroup>
-      </div>
-      <div class="col-12 lg:col-2">
-        <p-button
-          pRipple
-          severity="primary"
-          label="Buscar"
-          icon="pi pi-search"
-          (onClick)="obtenerIE()"
-        />
-      </div>
-
-      <div class="col-12">
-        @if (data().length) {
-          <app-table-primeng
-            [columnas]="columns"
-            [data]="data()"
-            [actions]="actions"
-            [showPaginator]="true"
-            [searchPlaceholder]="'Buscar por nombre...'"
-            [showCaption]="false"
-            [showAdvancedFilter]="true"
-            [(selectedRowData)]="selectedItem"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            sortMode="single"
-            sortField="fecha"
-            [sortOrder]="1"
-          >
-          </app-table-primeng>
-        } @else {
-          <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
-        }
-      </div>
-    </form>
+<div class="grid">
+  <div class="col-12">
+    <app-toolbar-primeng [title]="title" [butons]="[]"> </app-toolbar-primeng>
   </div>
-  <p-toast></p-toast>
-</p-panel>
-<p-dialog
-  [draggable]="false"
-  [maximizable]="true"
-  [header]="titleEditarMantenimiento"
-  [(visible)]="mostrarEditarMantenimiento"
-  [style]="{ width: '56rem', height: '470px' }"
-  [modal]="true"
-  [contentStyle]="{ overflow: 'auto' }"
-  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
->
-  <app-editar-mantenimiento-ie
-    [selectedItem]="institucionSeleccionada"
-    (eventEditarMantenimientoIe)="accionBtnItemTable($event)"
-  >
-  </app-editar-mantenimiento-ie>
-</p-dialog>
-<p-dialog
-  [draggable]="false"
-  [maximizable]="true"
-  [header]="titleAgregarMantenimiento"
-  [(visible)]="mostrarAgregarMantenimiento"
-  [style]="{ width: '56rem', height: '447px' }"
-  [modal]="true"
-  [contentStyle]="{ overflow: 'auto' }"
-  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
->
-  <app-agregar-mantenimiento-ie
-    [selectedItem]="selectedItem"
-    (eventAgregarMantenimientoIe)="accionBtnItemTable($event)"
-  >
-  </app-agregar-mantenimiento-ie>
-</p-dialog>
+</div>
+<div class="card">
+  <form [formGroup]="formMantenimiento" class="grid">
+    <div class="col-12 lg:col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+        <p-dropdown
+          [options]="nivelTipos()"
+          [showClear]="true"
+          formControlName="iNivelTipoId"
+          placeholder="Seleccione un nivel"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col flex justify-content-end gap-2">
+      <p-button
+        pRipple
+        severity="primary"
+        label="Buscar"
+        icon="pi pi-search"
+        (onClick)="obtenerInstituciones(); institucionSeleccionada.set(null)"
+      />
+      <p-button
+        pRipple
+        severity="success"
+        label="Agregar"
+        icon="pi pi-plus"
+        [disabled]="!formMantenimiento.value.iNivelTipoId"
+        (onClick)="formMantenimiento.value.iNivelTipoId ? showModal.set(true) : null"
+      />
+    </div>
+  </form>
+  <div class="grid relative mt-4">
+    @if (institucionesxiNivelTipoId().length) {
+      <div class="tag">Lista de Instituciones Educativas</div>
+      <div class="col-12 lg:col-4 mt-3 lg:overflow-scroll">
+        <app-card-orderlist
+          (datoSeleccionado)="obtenerInformacionIE($event)"
+          [data]="institucionesxiNivelTipoId()"
+          [mostrarImagen]="true"
+        ></app-card-orderlist>
+      </div>
+      @if (institucionSeleccionada()?.iIieeId) {
+        <div class="col-12 lg:col-8 mt-3">
+          <app-toolbar-primeng
+            [title]="'Información de la Institución Educativa'"
+            [className]="'text-lg'"
+            [butons]="[]"
+          >
+          </app-toolbar-primeng>
+          <p-toolbar styleClass="border-0">
+            <div class="p-toolbar-group-center">
+              <p-avatar
+                [image]="
+                  institucionSeleccionada().cIieeLogo || './assets/images/icons/no-image.png'
+                "
+                styleClass="mr-2"
+                size="xlarge"
+                shape="circle"
+              />
+              <div class="flex-1 w-full text-center sm:text-left">
+                <h2 class="m-0 text-xl font-semibold">
+                  {{ institucionSeleccionada().cIieeNombre || '-' }} -
+                  {{ institucionSeleccionada().cIieeCodigoModular || '-' }}
+                </h2>
+                <p class="m-0 text-sm text-color-secondary">
+                  <i class="pi pi-map-marker mr-2"></i
+                  >{{ institucionSeleccionada().cIieeDireccion || '-' }}
+                </p>
+                <p class="m-0 text-sm">
+                  <i class="pi pi-user mr-2"></i>Director(a):
+                  {{ institucionSeleccionada().cIieeDirector || '-' }}
+                </p>
+                <p class="m-0 text-sm">
+                  <i class="pi pi-envelope mr-2"></i
+                  >{{ institucionSeleccionada().cIieeEmail || '-' }}
+                </p>
+              </div>
+            </div>
+            <div class="p-toolbar-group-end">
+              <div>
+                <p-button
+                  *ngIf="institucionSeleccionada().cIieeNlat && institucionSeleccionada().cIieeNlog"
+                  icon="pi pi-map-marker"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="info"
+                  (onClick)="abrirEnMaps()"
+                />
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="warning"
+                  (onClick)="showModal.set(true); itemSelected.set(institucionSeleccionada())"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  (onClick)="eliminarIE(institucionSeleccionada())"
+                />
+              </div>
+            </div>
+          </p-toolbar>
+          <div class="grid">
+            <div class="col-12">
+              <div class="flex justify-content-between align-items-center w-full">
+                <div class="text-primary text-lg font-bold ml-2">Sedes</div>
+
+                <div class="flex gap-2">
+                  <p-button
+                    pRipple
+                    severity="success"
+                    label="Agregar Sede"
+                    icon="pi pi-plus"
+                    (onClick)="
+                      this.formMantenimiento.controls.iIieeId.setValue(
+                        institucionSeleccionada()?.iIieeId
+                      );
+                      this.showModalSedes.set(true)
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <app-table-primeng
+                [data]="sedes()"
+                [columnas]="columnasSedes()"
+                [actions]="accionesSedes()"
+                (accionBtnItem)="accionBtn($event)"
+              ></app-table-primeng>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="col-12 lg:col-7">
+          <div class="grid mt-2 flex justify-content-end ml-1">
+            <div class="col-12 alert-institucion my-1 mx-2">
+              <i class="pi pi-info-circle mr-2 text-primary"></i>
+              <span>
+                Seleccione una <strong>institución educativa</strong> para ver más información.
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="col-12">
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
+      </div>
+    }
+  </div>
+</div>
+<app-agregar-mantenimiento-ie
+  [showModal]="showModal()"
+  [data]="itemSelected()"
+  [iNivelTipoId]="this.formMantenimiento.value.iNivelTipoId"
+  (closeModal)="showModal.set(false)"
+  (recargarLista)="this.instituciones.set([]); getIntitucionEducativa(); obtenerInstituciones()"
+></app-agregar-mantenimiento-ie>
+<app-form-sedes
+  [showModal]="showModalSedes()"
+  [data]="itemSelectedSede()"
+  [iIieeId]="this.formMantenimiento.value.iIieeId"
+  (closeModal)="showModalSedes.set(false)"
+  (recargarLista)="this.sedes.set([]); obtenerSedesIe(this.institucionSeleccionada()?.iIieeId)"
+></app-form-sedes>
 <p-toast></p-toast>

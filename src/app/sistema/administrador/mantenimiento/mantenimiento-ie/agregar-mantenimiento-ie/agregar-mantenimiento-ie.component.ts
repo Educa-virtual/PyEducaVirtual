@@ -1,260 +1,101 @@
-import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  input,
+  output,
+  signal,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
 import { MantenimientoIeService, InstitucionEducativa } from '../mantenimiento-ie.service';
-import { MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
+import { catchError, finalize, forkJoin, of } from 'rxjs';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-agregar-mantenimiento-ie',
   standalone: true,
-  imports: [PrimengModule, ReactiveFormsModule],
+  imports: [PrimengModule, ReactiveFormsModule, ModalPrimengComponent],
   templateUrl: './agregar-mantenimiento-ie.component.html',
   styleUrl: './agregar-mantenimiento-ie.component.scss',
 })
-export class AgregarMantenimientoIeComponent implements OnInit {
-  @Input() selectedItem: any = null;
-  @Output() eventAgregarMantenimientoIe = new EventEmitter<boolean>();
-  private generalService = inject(GeneralService);
-  formulario!: FormGroup;
-  guardando: boolean = false;
-  distritos = [];
-  distritoSeleccionado: any;
-  zonaSeleccionado: any;
-  sectorSeleccionado: any;
-  nivelSeleccionado: any;
-  ugelSeleccionado: any;
+export class AgregarMantenimientoIeComponent
+  extends MostrarErrorComponent
+  implements OnInit, OnChanges
+{
+  showModal = input<boolean>(false);
+  iNivelTipoId = input<string | number>(null);
+  data = input(null);
 
-  zonas = [];
-  Niveles = [];
-  ugeles = [];
-  sectores = [];
-  constructor(
-    private fb: FormBuilder,
-    private mantenimientoIeService: MantenimientoIeService,
-    private messageService: MessageService
-  ) {
-    this.crearFormulario();
-  }
+  closeModal = output<void>();
+  recargarLista = output<void>();
 
-  ngOnInit() {
-    console.log('AgregarMantenim`ientoIeComponent2222');
-    this.cargarDistritos();
-    this.cargarZonas();
-    this.cargarSectores();
-    this.cargarNiveles();
-    this.cargarUgeles();
-    console.log('pas0');
-  }
+  isLoading = signal<boolean>(false);
+  distritos = signal<any[]>([]);
+  zonas = signal<any[]>([]);
+  ugeles = signal<any[]>([]);
+  sectores = signal<any[]>([]);
 
-  cargarUgeles() {
-    const data = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'mantenimiento-ie',
-      ruta: 'getData',
-      data: {
-        esquema: 'acad',
-        tabla: 'ugeles',
-        campos: '*',
-        where: '',
-      },
-    };
+  private _GeneralService = inject(GeneralService);
+  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
+  private _MantenimientoIeService = inject(MantenimientoIeService);
+  private _FormBuilder = inject(FormBuilder);
+  private _LocalStoreService = inject(LocalStoreService);
 
-    this.generalService.getGralPrefix(data).subscribe({
-      next: response => {
-        this.ugeles = response.data;
-      },
-      complete: () => {},
-      error: error => {
-        console.log(error);
-      },
-    });
-  }
+  formInstitucion: FormGroup = this._FormBuilder.group({
+    cIieeCodigoModular: [
+      '',
+      [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
+    ],
+    cIieeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+    iDsttId: [null, Validators.required],
+    iZonaId: [null],
+    iTipoSectorId: [null, Validators.required],
+    cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
+    // cIieeDireccion: ['', Validators.required],
+    iNivelTipoId: [null, Validators.required],
+    iUgelId: [null, Validators.required],
+    iSedeId: [null],
+    iSesionId: [1],
 
-  cargarNiveles() {
-    const data = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'mantenimiento-ie',
-      ruta: 'getData',
-      data: {
-        esquema: 'acad',
-        tabla: 'nivel_tipos',
-        campos: '*',
-        where: 'iNivelTipoId in (1,3,4)',
-      },
-    };
+    iIieeId: [],
+    iCredEntPerfId: [],
+  });
 
-    this.generalService.getGralPrefix(data).subscribe({
-      next: response => {
-        this.Niveles = response.data;
-      },
-      complete: () => {},
-      error: error => {
-        console.log(error);
-      },
-    });
-  }
-
-  cargarDistritos() {
-    const data = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'mantenimiento-ie',
-      ruta: 'getData',
-      data: {
-        esquema: 'grl',
-        tabla: 'distritos',
-        campos: '*',
-        where: 'iPrvnId in (147,148,149)',
-      },
-    };
-
-    this.generalService.getGralPrefix(data).subscribe({
-      next: response => {
-        this.distritos = response.data;
-      },
-      complete: () => {},
-      error: error => {
-        console.log(error);
-      },
-    });
-  }
-
-  cargarZonas() {
-    const data = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'mantenimiento-ie',
-      ruta: 'getData',
-      data: {
-        esquema: 'acad',
-        tabla: 'zonas',
-        campos: '*',
-        where: '',
-      },
-    };
-    this.generalService.getGralPrefix(data).subscribe({
-      next: response => {
-        this.zonas = response.data;
-      },
-      complete: () => {},
-      error: error => {
-        console.log(error);
-      },
-    });
-  }
-
-  cargarSectores() {
-    const data = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'mantenimiento-ie',
-      ruta: 'getData',
-      data: {
-        esquema: 'grl',
-        tabla: 'tipos_sectores',
-        campos: '*',
-        where: '',
-      },
-    };
-    this.generalService.getGralPrefix(data).subscribe({
-      next: response => {
-        this.sectores = response.data;
-      },
-      complete: () => {},
-      error: error => {
-        console.log(error);
-      },
-    });
-  }
-
-  crearFormulario() {
-    this.formulario = this.fb.group({
-      cIieeCodigoModular: [
-        '',
-        [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
-      ],
-      cIieeNombre: ['', [Validators.required, Validators.maxLength(200)]],
-      iDsttId: [null, Validators.required],
-      iZonaId: [null],
-      iTipoSectorId: [null, Validators.required],
-      cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
-      cIieeDireccion: [''],
-      iNivelTipoId: [null],
-      iUgelId: [null],
-      iSedeId: [null],
-      iSesionId: [1],
-    });
-  }
-
-  btnCancelar() {
-    this.formulario.reset();
-    this.eventAgregarMantenimientoIe.emit(false);
-  }
-
-  btnGuardar() {
-    if (this.formulario.valid) {
-      this.guardarInstitucion();
-    } else {
-      this.mostrarErroresValidacion();
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      const data = changes['data'].currentValue;
+      if (data?.iIieeId) {
+        this.formInstitucion.patchValue(data);
+      } else {
+        this.formInstitucion.reset();
+      }
     }
   }
 
-  guardarInstitucion() {
-    this.guardando = true;
-
-    const datosInstitucion: InstitucionEducativa = this.formulario.value;
-
-    console.log('Datos a enviar:', datosInstitucion);
-
-    this.mantenimientoIeService.crearInstitucionEducativa(datosInstitucion).subscribe({
-      next: response => {
-        this.guardando = false;
-
-        if (response.validated) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Institución educativa creada correctamente',
-          });
-
-          this.formulario.reset();
-          this.eventAgregarMantenimientoIe.emit(false);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: response.mensaje || 'Error al crear la institución',
-          });
-        }
-      },
-      error: error => {
-        this.guardando = false;
-        console.error('Error al crear institución:', error);
-
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al crear la institución educativa',
-        });
-      },
-    });
+  ngOnInit() {
+    this.cargarDatosIniciales();
   }
 
-  mostrarErroresValidacion() {
-    Object.keys(this.formulario.controls).forEach(key => {
-      const control = this.formulario.get(key);
-      if (control && control.invalid) {
-        control.markAsTouched();
-      }
-    });
-
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Formulario incompleto',
-      detail: 'Por favor complete los campos requeridos',
+  cargarDatosIniciales() {
+    forkJoin({
+      ugeles: this._GeneralService.getUgeles().pipe(catchError(() => of({ data: [] }))),
+      distritos: this._GeneralService.getDistritos().pipe(catchError(() => of({ data: [] }))),
+      zonas: this._GeneralService.getZonas().pipe(catchError(() => of({ data: [] }))),
+      sectores: this._GeneralService.getTipoSector().pipe(catchError(() => of({ data: [] }))),
+    }).subscribe({
+      next: (response: any) => {
+        this.ugeles.set(response.ugeles.data);
+        this.distritos.set(response.distritos.data);
+        this.zonas.set(response.zonas.data);
+        this.sectores.set(response.sectores.data);
+      },
     });
   }
 
@@ -264,8 +105,8 @@ export class AgregarMantenimientoIeComponent implements OnInit {
     input.value = valor;
 
     const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
-    if (controlName && this.formulario.get(controlName)) {
-      this.formulario.get(controlName)?.setValue(valor);
+    if (controlName && this.formInstitucion.get(controlName)) {
+      this.formInstitucion.get(controlName)?.setValue(valor);
     }
   }
 
@@ -275,27 +116,76 @@ export class AgregarMantenimientoIeComponent implements OnInit {
     input.value = valor;
 
     const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
-    if (controlName && this.formulario.get(controlName)) {
-      this.formulario.get(controlName)?.setValue(valor);
+    if (controlName && this.formInstitucion.get(controlName)) {
+      this.formInstitucion.get(controlName)?.setValue(valor);
     }
   }
 
-  esInvalido(campo: string): boolean {
-    const control = this.formulario.get(campo);
-    return !!(control && control.invalid && (control.dirty || control.touched));
-  }
+  enviarFormulario() {
+    if (this.isLoading()) return;
+    this.isLoading.set(true);
 
-  obtenerMensajeError(campo: string): string {
-    const control = this.formulario.get(campo);
+    const perfil = this._LocalStoreService.getItem('dremoPerfil');
 
-    if (control?.errors) {
-      if (control.errors['required']) return `${campo} es requerido`;
-      if (control.errors['minlength'])
-        return `${campo} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`;
-      if (control.errors['maxlength'])
-        return `${campo} debe tener máximo ${control.errors['maxlength'].requiredLength} caracteres`;
+    this.formInstitucion.patchValue({
+      iNivelTipoId: this.iNivelTipoId(),
+      iCredEntPerfId: perfil?.iCredEntPerfId,
+    });
+
+    const nombresCampos: Record<string, string> = {
+      iCredEntPerfId: 'Credencial Entidad',
+      cIieeCodigoModular: 'Código Modular',
+      cIieeNombre: 'Nombre de la I.E.',
+      iDsttId: 'Distrito',
+      iTipoSectorId: 'Tipo Sector',
+      cIieeRUC: 'RUC',
+      // cIieeDireccion: 'Dirección',
+      iNivelTipoId: 'Nivel tipo',
+      iUgelId: 'Ugel',
+    };
+
+    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
+      this.formInstitucion,
+      nombresCampos
+    );
+
+    if (!valid && message) {
+      this.mostrarMensajeToast(message);
+      this.isLoading.set(false);
+      return;
     }
 
-    return '';
+    this.guardarInstitucion();
+  }
+
+  guardarInstitucion() {
+    const datosInstitucion: InstitucionEducativa = this.formInstitucion.value;
+
+    this._MantenimientoIeService
+      .crearInstitucionEducativa(datosInstitucion)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: response => {
+          if (response.validated) {
+            this.mostrarMensajeToast({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Institución educativa creada correctamente',
+            });
+            this.formInstitucion.reset();
+            this.closeModal.emit();
+            this.recargarLista.emit();
+          } else {
+            this.mostrarMensajeToast({
+              severity: 'error',
+              summary: 'Error',
+              detail: response.mensaje || 'Error al crear la institución',
+            });
+          }
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
 }

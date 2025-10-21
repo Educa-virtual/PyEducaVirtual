@@ -16,6 +16,7 @@ import {
   ESPECIALISTA_UGEL,
   DIRECTOR_IE,
   SUBDIRECTOR_IE,
+  ESTUDIANTE,
 } from '@/app/servicios/seg/perfiles';
 
 @Component({
@@ -93,6 +94,8 @@ export class CategoriasEncuestaComponent implements OnInit {
           this.categorias_filtradas = this.categorias;
           this.categorias.forEach(cat => {
             cat.btnItems = this.es_encuestador ? this.setBtnItems(cat) : [];
+            cat.btnVisibleItems = cat.btnItems.filter(item => item.visible).length;
+            cat.btnPrimary = this.setBtnPrimary(cat);
           });
         },
         error: error => {
@@ -198,31 +201,56 @@ export class CategoriasEncuestaComponent implements OnInit {
     this.router.navigate([`/encuestas/categorias/${iCateId}/gestion-plantillas`]);
   }
 
+  setBtnPrimary(categoria: any): MenuItem {
+    if (
+      (Boolean(+categoria.bEsFija) || Boolean(+categoria?.bEsEnlace)) &&
+      Number(this.perfil.iPerfilId) !== ESTUDIANTE
+    ) {
+      return {
+        label: 'Gestionar',
+        icon: 'pi pi-cog',
+        severity: 'info',
+        command: () => this.gestionarEncuestas(categoria?.iCateId),
+      };
+    } else {
+      return {
+        label: 'Responder',
+        icon: 'pi pi-check',
+        severity: 'primary',
+        command: () => this.listarEncuestas(categoria?.iCateId),
+      };
+    }
+  }
+
   setBtnItems(categoria: any): MenuItem[] {
     return [
       {
         label: 'Gestionar encuestas',
         icon: 'pi pi-cog',
         command: () => this.gestionarEncuestas(categoria?.iCateId),
+        visible: Boolean(+categoria.bEsFija) === false && Boolean(+categoria?.bEsEnlace) === false,
       },
       {
         label: 'Gestionar plantillas',
         icon: 'pi pi-file-plus',
         command: () => this.gestionarPlantillas(categoria?.iCateId),
-        visible: !+categoria?.bEsEnlace,
+        visible: Boolean(+categoria?.bEsEnlace) === false,
       },
       {
         label: 'Editar Categoría',
         icon: 'pi pi-pencil',
         command: () => this.editarCategoria(categoria?.iCateId),
-        visible: !+categoria?.bEsFija && this.puede_crear,
+        visible:
+          Boolean(+categoria?.bEsFija) === false &&
+          Boolean(+categoria?.bEsEnlace) === false &&
+          Boolean(+this.puede_crear),
       },
       {
         label: 'Borrar Categoría',
         icon: 'pi pi-trash',
         command: () => this.borrarCategoria(categoria?.iCateId),
-        visible: Boolean(+categoria?.puede_crear) && this.puede_crear,
-        disabled: !+categoria?.bEsFija || categoria?.iTotalEncuestas > 0,
+        visible: Boolean(+categoria?.puede_crear) && Boolean(+this.puede_crear),
+        disabled: Boolean(+categoria?.bEsFija) || categoria?.iTotalEncuestas > 0,
       },
     ];
   }

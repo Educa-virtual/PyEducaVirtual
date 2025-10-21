@@ -27,36 +27,41 @@
             <article
               class="card p-0 border-1 flex flex-column surface-border h-full post-module border-round"
             >
-              <div class="image-container img-transition border-round-top overflow-hidden">
+              <img
+                [src]="rutaImagenPlaceholder(categoria)"
+                [alt]="categoria?.cCateNombre"
+                class="absolute top-0 right-0 h-full opacity-20 block md:hidden z-0"
+              />
+              <div
+                class="image-container img-transition border-round-top overflow-hidden hidden md:block"
+              >
                 <img
                   [alt]="categoria?.cCateNombre"
                   class="w-full h-full"
                   [src]="rutaImagenPlaceholder(categoria)"
                 />
               </div>
-              <div class="p-3 mb-auto">
+              <div class="p-3 mb-auto z-1 relative">
                 <h3 class="text-xl p-0 m-0">
                   <i
                     *ngIf="+categoria?.bEsFija"
                     class="pi pi-fw pi-lock"
-                    (click)="panel.toggle($event)"
-                    (keypress)="panel.toggle($event)"
                     pTooltip="Categoría fija: Tiene una cantidad fija de encuestas, no puede modificar la población objetivo y accesos predeterminados"
                     tooltipPosition="top"
                     tabindex="0"
                   >
                   </i>
-                  <i *ngIf="+categoria?.bEsEnlace" class="pi pi-fw pi-link"></i>
-                  {{ categoria?.cCateNombre | uppercase }}
+                  <i
+                    *ngIf="+categoria?.bEsEnlace"
+                    class="pi pi-fw pi-link"
+                    pTooltip="Enlace a encuestas de bienestar"
+                    tooltipPosition="top"
+                    tabindex="0"
+                  ></i>
+                  <span class="z-2 relative">{{ categoria?.cCateNombre | uppercase }}</span>
                 </h3>
               </div>
-              <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
-                <div class="flex w-15rem">
-                  Categoría fija: Tiene una cantidad fija de encuestas, no puede modificar la
-                  población objetivo y accesos predeterminados
-                </div>
-              </p-overlayPanel>
-              <footer class="p-3 pt-0 flex align-items-center justify-content-between">
+              <footer class="p-3 pt-0 flex align-items-center justify-content-between z-1 relative">
                 <a [routerLink]="" (click)="gestionarEncuestas(categoria?.iCateId)">
                   <span *ngIf="+categoria?.iCantBorradores > 0">
                     {{ +categoria?.iCantBorradores }}
@@ -65,17 +70,24 @@
                 </a>
                 <span *ngIf="+categoria?.iCantBorradores === 0"></span>
                 <div class="flex gap-1">
-                  @if (categoria?.btnItems.length > 0) {
+                  @if (categoria?.btnVisibleItems > 0) {
                     <p-splitButton
-                      severity="primary"
+                      class="z-2 relative"
+                      [severity]="categoria?.btnPrimary?.severity"
                       size="small"
                       [model]="categoria?.btnItems"
-                      badge="100"
-                      (onClick)="listarEncuestas(categoria?.iCateId)"
-                      [menuStyle]="{ 'z-index': '1000' }"
+                      (onClick)="categoria?.btnPrimary?.command()"
+                      [menuStyle]="{ 'z-index': '10', position: 'absolute' }"
+                      appendTo="body"
                     >
                       <ng-template pTemplate="content">
-                        {{ +categoria?.iCantSinResponder === 0 ? 'Acceder' : 'Responder' }}
+                        <span class="font-bold">
+                          {{
+                            +categoria?.iCantSinResponder > 0
+                              ? 'Responder'
+                              : categoria?.btnPrimary?.label
+                          }}
+                        </span>
                         <p-badge
                           *ngIf="+categoria?.iCantSinResponder > 0"
                           [value]="categoria?.iCantSinResponder"
@@ -85,11 +97,18 @@
                     </p-splitButton>
                   } @else {
                     <p-button
+                      class="z-2 relative"
+                      [severity]="categoria?.btnPrimary?.severity"
                       size="small"
-                      severity="primary"
-                      (onClick)="listarEncuestas(categoria?.iCateId)"
+                      (onClick)="categoria?.btnPrimary?.command()"
                     >
-                      {{ +categoria?.iCantSinResponder === 0 ? 'Acceder' : 'Responder' }}
+                      <span class="font-bold">
+                        {{
+                          +categoria?.iCantSinResponder > 0
+                            ? 'Responder'
+                            : categoria?.btnPrimary?.label
+                        }}
+                      </span>
                       <p-badge
                         *ngIf="+categoria?.iCantSinResponder > 0"
                         [value]="categoria?.iCantSinResponder"

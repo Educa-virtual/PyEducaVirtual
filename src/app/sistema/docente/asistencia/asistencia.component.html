@@ -13,62 +13,61 @@
   </p-toolbar>
 
   <div class="col-12">
-    <div class="card">
-      <h5 class="font-bold">Instrucciones</h5>
+    <div class="card informacion">
+      <div class="font-bold"><i class="pi pi-info-circle"></i> INSTRUCCIONES</div>
       <ol>
         <li>Hacer doble click en la fecha que desea registrar asistencia.</li>
         <li>Luego registrar asistencia de cada alumno de acuerdo a la leyenda</li>
       </ol>
     </div>
   </div>
-
-  <div class="grid">
-    <div class="xl:col-3 sm:col-12 md:col-12">
-      <div class="card">
-        <div class="flex block p-2">
-          <div class="font-bold pb-2">LEGENDA</div>
+</div>
+<div class="grid">
+  <div class="xl:col-3 sm:col-12 md:col-12">
+    <div class="card">
+      <div class="flex block p-2">
+        <div class="font-bold pb-2">LEGENDA</div>
+      </div>
+      <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
+        <div *ngFor="let lista of leyenda" class="flex w-full mr-1">
+          <p-inputGroup>
+            <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+              {{ lista.simbolo }}
+            </button>
+            <div [ngClass]="lista.divColor">
+              {{ lista.significado }}
+            </div>
+            <button type="button" size="small" pButton [ngClass]="lista.bgColor">
+              {{ lista.contar }}
+            </button>
+          </p-inputGroup>
         </div>
-        <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
-          <div *ngFor="let lista of leyenda" class="flex w-full mr-1">
-            <p-inputGroup>
-              <button type="button" size="small" pButton [ngClass]="lista.bgColor">
-                {{ lista.simbolo }}
-              </button>
-              <div [ngClass]="lista.divColor">
-                {{ lista.significado }}
-              </div>
-              <button type="button" size="small" pButton [ngClass]="lista.bgColor">
-                {{ lista.contar }}
-              </button>
-            </p-inputGroup>
-          </div>
-        </div>
-        <div class="w-full">
-          <p-button
-            class="flex align-items-center justify-content-center w-full"
-            [outlined]="true"
-            icon="pi pi-file-pdf"
-            label="Descargar Reporte"
-            (click)="modalReporte()"
-          />
-        </div>
+      </div>
+      <div class="w-full">
+        <p-button
+          class="flex align-items-center justify-content-center w-full"
+          [outlined]="true"
+          icon="pi pi-file-pdf"
+          label="Descargar Reporte"
+          (click)="showModal = true"
+        />
       </div>
     </div>
-    <div class="xl:col-9 sm:col-12 md:col-12">
-      <div class="card">
-        <full-calendar [options]="calendarOptions">
-          <ng-template #eventContent let-arg>
-            <div class="fc-event-time">{{ arg.timeText }}</div>
-            <div class="fc-event-title">{{ arg.event.title }}</div>
-          </ng-template>
-        </full-calendar>
-      </div>
+  </div>
+  <div class="xl:col-9 sm:col-12 md:col-12">
+    <div class="card">
+      <full-calendar [options]="calendarOptions">
+        <ng-template #eventContent let-arg>
+          <div class="fc-event-time">{{ arg.timeText }}</div>
+          <div class="fc-event-title">{{ arg.event.title }}</div>
+        </ng-template>
+      </full-calendar>
     </div>
   </div>
 </div>
 
 <p-dialog
-  header="Asistencia del Dia : {{ fechaEspecifica }}"
+  header="ASISTENCIA DEL DÍA : {{ fechaEspecifica }}"
   [modal]="true"
   class="asistenciaModal"
   [(visible)]="verAsistencia"
@@ -219,6 +218,71 @@
   </div>
 </p-dialog>
 
+<p-dialog
+  header="ASISTENCIA DEL DÍA : {{ fechaEspecifica }}"
+  [(visible)]="showEventsDialog"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '620px' }"
+>
+  <div *ngIf="dialogEvents.length === 0" class="no-events">No hay eventos.</div>
+
+  <table *ngIf="dialogEvents.length > 0" class="event-table" role="table">
+    <thead>
+      <tr>
+        <th class="col-index">#</th>
+        <th class="col-time">Fecha</th>
+        <th class="col-event">Evento</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let ev of dialogEvents; let i = index"
+        class="event-row"
+        [style.background-color]="ev.backgroundColor"
+      >
+        <td class="index-cell">{{ i + 1 }}</td>
+        <td class="time-cell">
+          <ng-container *ngIf="ev.allDay; else timed">
+            <div *ngIf="ev.start">{{ ev.start | date: 'dd/MMM' : undefined : 'es' }}</div>
+            <div *ngIf="ev.end">- {{ ev.end | date: 'dd/MMM' : undefined : 'es' }}</div>
+          </ng-container>
+          <ng-template #timed>
+            <div *ngIf="ev.start">
+              Inicio: {{ ev.start | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
+            </div>
+            <div *ngIf="ev.end">
+              Fin: &nbsp;&nbsp;&nbsp;&nbsp;{{ ev.end | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
+            </div>
+            <div *ngIf="!ev.end && ev.start">
+              {{ ev.start | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
+            </div>
+          </ng-template>
+        </td>
+
+        <td class="event-cell">
+          <div class="event-title">{{ ev.title }}</div>
+          <div *ngIf="ev.extendedProps?.['cCursoNombre']" class="event-course">
+            -Área: {{ ev.extendedProps?.['cCursoNombre'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cContenidoSemTitulo']" class="event-course">
+            -Ses. aprendizaje: {{ ev.extendedProps?.['cContenidoSemTitulo'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cDocenteNombre']" class="event-course">
+            -Docente: {{ ev.extendedProps?.['cDocenteNombre'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cRVirtualUrlJoin']" class="event-course">
+            -Ingresar:
+            <a href="{{ ev.extendedProps?.['cRVirtualUrlJoin'] }}" target="_blank">
+              {{ ev.extendedProps?.['cRVirtualUrlJoin'] }}</a
+            >
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</p-dialog>
+
 <p-toast />
 
 <app-reporte-asistencia
@@ -241,5 +305,6 @@
   [iIieeId]="iIieeId"
   [iSedeId]="iSedeId"
   [iNivelGradoId]="iNivelGradoId"
+  [datos]="events"
   (accionBtnItem)="accionBtnItem($event)"
 ></app-reporte-asistencia>

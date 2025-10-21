@@ -329,12 +329,11 @@ const estudiante = [
         icon: 'pi pi-external-link',
         routerLink: ['/estudiante/mesa-partes-gore'],
       },
-      /*{
-              label: 'Mesa de Partes GORE',
-              icon: 'pi pi-external-link',
-              url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
-              target: '_blank',
-            },*/
+      {
+        label: 'Codigo QR',
+        icon: 'pi pi-qrcode',
+        routerLink: ['/estudiante/codigo-qr'],
+      },
     ],
   },
 ];
@@ -673,6 +672,11 @@ const administracion = [
             icon: 'pi pi-file-import',
             routerLink: ['/gestion-institucional/gestion-vacantes'],
           },
+          // {
+          //   label: 'Registro de deserciones',
+          //   icon: 'pi pi-file-import',
+          //   routerLink: ['/gestion-institucional/gestion-deserciones'],
+          // },
         ],
       },
 

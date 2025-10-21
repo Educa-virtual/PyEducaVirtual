@@ -1,0 +1,13 @@
+<app-table-primeng
+  [columnas]="columns"
+  [data]="deserciones"
+  [showCaption]="false"
+  [showPaginator]="true"
+  [showAdvancedFilter]="true"
+  (accionBtnItem)="procesar($event)"
+  [(selectedRowData)]="selectedItems"
+  [actions]="actions"
+  [showPaginator]="false"
+>
+  <!-- <ng-container slot="caption-content"> </ng-container> -->
+</app-table-primeng>

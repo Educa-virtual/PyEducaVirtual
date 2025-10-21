@@ -94,6 +94,32 @@ export class GeneralService {
     });
   }
 
+  getDistritos() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'grl',
+      tabla: 'distritos',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+
+  getZonas() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'grl',
+      tabla: 'zonas',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+  getTipoSector() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'grl',
+      tabla: 'tipos_sectores',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+
   getModalidad() {
     return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
       esquema: 'acad',

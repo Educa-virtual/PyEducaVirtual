@@ -28,6 +28,7 @@
               class="card p-0 border-1 flex flex-column surface-border h-full post-module border-round"
             >
               <img
+                fetchpriority="high"
                 [src]="rutaImagenPlaceholder(categoria)"
                 [alt]="categoria?.cCateNombre"
                 class="absolute top-0 right-0 h-full opacity-20 block md:hidden z-0"
@@ -36,6 +37,7 @@
                 class="image-container img-transition border-round-top overflow-hidden hidden md:block"
               >
                 <img
+                  fetchpriority="high"
                   [alt]="categoria?.cCateNombre"
                   class="w-full h-full"
                   [src]="rutaImagenPlaceholder(categoria)"

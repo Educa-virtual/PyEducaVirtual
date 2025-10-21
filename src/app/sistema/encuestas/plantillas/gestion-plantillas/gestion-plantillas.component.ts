@@ -437,14 +437,16 @@ export class GestionPlantillasComponent implements OnInit {
     this.selectedItem = item;
     switch (accion) {
       case 'editar':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}`,
-        ]);
-        break;
       case 'ver':
-        this.router.navigate([
-          `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}`,
-        ]);
+        if (Number(this.categoria.bEsFija) === 1) {
+          this.router.navigate([
+            `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}/fija`,
+          ]);
+        } else {
+          this.router.navigate([
+            `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${item.iPlanId}`,
+          ]);
+        }
         break;
       case 'preguntas':
         this.router.navigate([
@@ -462,8 +464,9 @@ export class GestionPlantillasComponent implements OnInit {
         break;
       case 'aprobar':
         this.confirmService.openConfirm({
-          message: '¿Está seguro de aprobar la plantilla seleccionada?',
-          header: 'Confirmación',
+          header: 'Aprobar plantilla',
+          message:
+            'Una vez aprobada la plantilla podrá ser usada para generar nuevas encuestas, pero ya no se podrá editar. ¿Está seguro de aprobar la plantilla seleccionada?',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
             this.actualizarPlantillaEstado(item, this.ESTADO_APROBADA);
@@ -476,9 +479,24 @@ export class GestionPlantillasComponent implements OnInit {
         break;
       case 'generar':
         if (Number(this.categoria?.bEsFija) === 1) {
-          this.generarEncuestaPlantilla(null, item);
+          this.confirmService.openConfirm({
+            header: 'Generar encuesta desde plantilla',
+            message:
+              'Se generarán todas las encuestas de las áreas y periodos faltantes con un nombre, fechas, población objetivo y accesos por defecto. ¿Está seguro de generar todas las encuestas faltantes desde la plantilla seleccionada?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+              this.generarEncuestaPlantilla(null, item);
+            },
+          });
         } else {
-          this.abrirDialogGenerarEncuesta(item);
+          this.confirmService.openConfirm({
+            header: 'Generar encuesta desde plantilla',
+            message: '¿Está seguro de generar la encuesta desde la plantilla seleccionada?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+              this.abrirDialogGenerarEncuesta(item);
+            },
+          });
         }
         break;
       default:

@@ -7,7 +7,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { EncuestasService } from '../../services/encuestas.services';
 import { SlicePipe } from '@angular/common';
-import { DIRECTOR_IE, ESPECIALISTA_UGEL } from '@/app/servicios/seg/perfiles';
+import {
+  ADMINISTRADOR_DREMO,
+  DIRECTOR_IE,
+  ESPECIALISTA_DREMO,
+  ESPECIALISTA_UGEL,
+} from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-plantilla-fija',
@@ -40,6 +45,7 @@ export class PlantillaFijaComponent implements OnInit {
 
   es_director: boolean = false;
   es_especialista_ugel: boolean = false;
+  es_especialista_dremo: boolean = false;
 
   puede_editar: boolean = true;
   plantilla_registrada: boolean = false;
@@ -66,6 +72,9 @@ export class PlantillaFijaComponent implements OnInit {
     this.perfil = this.store.getItem('dremoPerfil');
     this.es_director = [DIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
     this.es_especialista_ugel = [ESPECIALISTA_UGEL].includes(Number(this.perfil.iPerfilId));
+    this.es_especialista_dremo = [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO].includes(
+      Number(this.perfil.iPerfilId)
+    );
     this.route.paramMap.subscribe((params: any) => {
       this.iCateId = params.params.iCateId || null;
       this.iPlanId = params.params.iPlanId || null;

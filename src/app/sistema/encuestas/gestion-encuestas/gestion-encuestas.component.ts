@@ -147,7 +147,7 @@ export class GestionEncuestasComponent implements OnInit {
       message:
         'Para generar encuestas de forma masiva ingrese al "Listado de plantillas", seleccione la plantilla que desee utilizar y haga clic en "Hacer encuestas".' +
         (Number(this.perfil.iPerfilId) === DIRECTOR_IE
-          ? ' Esta acción reeemplazará las encuestas existentes registradas por el Administrador, y que aún no han sido respondidas. Solo usted podrá editar las nuevas encuestas.'
+          ? ' Esta acción reeemplazará, para su I.E., las encuestas existentes registradas por el Administrador que aún no han sido respondidas por sus estudiantes. Solo usted podrá editar las nuevas encuestas.'
           : ''),
       accept: () => {
         this.listarPlantillas();
@@ -462,8 +462,8 @@ export class GestionEncuestasComponent implements OnInit {
         break;
       case 'aprobar':
         this.confirmService.openConfirm({
+          header: 'Aprobar encuesta',
           message: '¿Está seguro de aprobar la encuesta seleccionada?',
-          header: 'Confirmación',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
             this.actualizarEncuestaEstado(item, this.ESTADO_APROBADA);
@@ -473,8 +473,8 @@ export class GestionEncuestasComponent implements OnInit {
         break;
       case 'desaprobar':
         this.confirmService.openConfirm({
+          header: 'Volver encuesta a borrador',
           message: '¿Está seguro de cambiar el estado de la encuesta seleccionada?',
-          header: 'Confirmación',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
             this.actualizarEncuestaEstado(item, this.ESTADO_BORRADOR);
@@ -493,10 +493,26 @@ export class GestionEncuestasComponent implements OnInit {
         ]);
         break;
       case 'reemplazar':
-        this.generarEncuestaPlantilla(item);
+        this.confirmService.openConfirm({
+          header: 'Reemplazar encuesta',
+          message:
+            'Se creará una copia de esta encuesta en estado Borrador (podrá editarla) que reemplazará, solo para los estudiantes de su I.E., la creada por el Administrador ¿Está seguro de reemplazar la encuesta seleccionada?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.generarEncuestaPlantilla(item);
+          },
+        });
         break;
       case 'duplicar':
-        this.abrirDialogoDuplicarEncuesta(item);
+        this.confirmService.openConfirm({
+          header: 'Duplicar encuesta',
+          message:
+            'Se creará una copia de esta encuesta en estado Borrador (podrá editarla). ¿Está seguro de duplicar la encuesta seleccionada?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.abrirDialogoDuplicarEncuesta(item);
+          },
+        });
         break;
       case 'plantilla':
         this.abrirDialogoCrearPlantilla(item);

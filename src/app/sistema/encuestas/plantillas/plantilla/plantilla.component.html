@@ -89,47 +89,51 @@
                 ></textarea>
               </p-inputGroup>
             </div>
-            <div class="col-12 md:col-4">
-              <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>
-                  <p-inputSwitch formControlName="bCompartirDirectores" />
-                  <span>Compartir con Directores</span>
-                </p-inputGroupAddon>
-              </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-4">
-              <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>
-                  <p-inputSwitch formControlName="bCompartirEspUgel" />
-                  <span>Compartir con Esp. UGEL</span>
-                </p-inputGroupAddon>
-              </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-4">
-              <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>
-                  <p-inputSwitch formControlName="bCompartirEspDremo" />
-                  <span>Compartir con Esp. DREMO</span>
-                </p-inputGroupAddon>
-              </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-4" *ngIf="es_director">
-              <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>
-                  <p-inputSwitch formControlName="bCompartirMismaIe" />
-                  <span>Compartir en mi I.E.</span>
-                </p-inputGroupAddon>
-              </p-inputGroup>
-            </div>
-            <div class="col-12 md:col-4" *ngIf="es_especialista_ugel">
-              <p-inputGroup class="vertical-group">
-                <p-inputGroupAddon>
-                  <p-inputSwitch formControlName="bCompartirMismaUgel" />
-                  <span>Compartir en mi UGEL</span>
-                </p-inputGroupAddon>
-              </p-inputGroup>
-            </div>
           </div>
+          <p-fieldset legend="Compartir con">
+            <div class="grid">
+              <div class="col-12 md:col-4">
+                <p-inputGroup class="vertical-group" *ngIf="es_especialista_dremo">
+                  <p-inputGroupAddon>
+                    <p-inputSwitch formControlName="bCompartirDirectores" />
+                    <span>Todos los Directores</span>
+                  </p-inputGroupAddon>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-4">
+                <p-inputGroup class="vertical-group" *ngIf="es_especialista_dremo">
+                  <p-inputGroupAddon>
+                    <p-inputSwitch formControlName="bCompartirEspUgel" />
+                    <span>Todos los Esp. UGEL</span>
+                  </p-inputGroupAddon>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-4">
+                <p-inputGroup class="vertical-group" *ngIf="es_especialista_dremo">
+                  <p-inputGroupAddon>
+                    <p-inputSwitch formControlName="bCompartirEspDremo" />
+                    <span>Todos los Esp. DREMO</span>
+                  </p-inputGroupAddon>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="es_director">
+                <p-inputGroup class="vertical-group">
+                  <p-inputGroupAddon>
+                    <p-inputSwitch formControlName="bCompartirMismaIe" />
+                    <span>Otros directores de mi I.E.</span>
+                  </p-inputGroupAddon>
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="es_especialista_ugel">
+                <p-inputGroup class="vertical-group">
+                  <p-inputGroupAddon>
+                    <p-inputSwitch formControlName="bCompartirMismaUgel" />
+                    <span>Otros Esp. de mi UGEL</span>
+                  </p-inputGroupAddon>
+                </p-inputGroup>
+              </div>
+            </div>
+          </p-fieldset>
         </form>
         <div class="flex pt-4 justify-content-between">
           <p-button

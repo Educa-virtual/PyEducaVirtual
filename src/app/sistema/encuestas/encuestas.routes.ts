@@ -210,6 +210,15 @@ const routes: Routes = [
     },
   },
   {
+    path: 'categorias/:iCateId/gestion-plantillas/:iPlanId/fija',
+    component: PlantillaFijaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: encuestadores,
+      breadcrumb: 'Plantilla fija',
+    },
+  },
+  {
     path: 'categorias/:iCateId/gestion-plantillas/:iPlanId/preguntas',
     component: LlenadoPreguntasPlantillaComponent,
     canActivate: [RoleGuard],

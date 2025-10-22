@@ -10,7 +10,6 @@
   <ng-template pTemplate="icons" class="flex justify-content-center">
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
-        size="small"
         severity="secondary"
         pTooltip="Volver a plantilla"
         tooltipPosition="top"
@@ -177,6 +176,19 @@
       <br />
     }
   </p-accordion>
+
+  <div class="flex justify-content-end flex-wrap gap-2">
+    <p-button
+      severity="secondary"
+      size="small"
+      pTooltip="Vista previa"
+      tooltipPosition="top"
+      (onClick)="vistaPrevia()"
+    >
+      <i class="pi pi-eye mr-2"></i>
+      <span class="font-bold">Vista previa</span>
+    </p-button>
+  </div>
 
   <app-plantilla-seccion
     [(visible)]="mostrarDialogoSeccion"

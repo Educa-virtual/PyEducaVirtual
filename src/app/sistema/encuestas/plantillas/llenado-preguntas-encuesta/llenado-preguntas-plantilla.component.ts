@@ -301,4 +301,10 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
   cerrarDialogoSeccion() {
     this.mostrarDialogoSeccion = false;
   }
+
+  vistaPrevia() {
+    this.router.navigate([
+      `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${this.iPlanId}/ver`,
+    ]);
+  }
 }

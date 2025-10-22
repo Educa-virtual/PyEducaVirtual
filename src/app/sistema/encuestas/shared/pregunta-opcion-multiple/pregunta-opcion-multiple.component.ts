@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, Input, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -9,7 +9,7 @@ import { FormControl } from '@angular/forms';
   templateUrl: './pregunta-opcion-multiple.component.html',
   styleUrl: './pregunta-opcion-multiple.component.scss',
 })
-export class PreguntaOpcionMultipleComponent {
+export class PreguntaOpcionMultipleComponent implements OnInit {
   @Input() switchControl: FormControl = new FormControl();
 
   @Input() addonLabel: string = 'Campo';
@@ -33,14 +33,15 @@ export class PreguntaOpcionMultipleComponent {
       const alternativas = JSON.parse(this.jsonAlternativas);
       alternativas.forEach((alternativa: any) => {
         this.alternativas.push({
-          label: alternativa.cEncuAlterNombre,
-          value: alternativa.iEncuAlterOrden,
+          label: alternativa.cAlternativaContenido || alternativa.cPlanAlternativaContenido,
+          value: alternativa.iAlternativaId || alternativa.iPlanAlternativaId,
         });
       });
     } else if (this.alternativas) {
       this.alternativas.forEach((alternativa: any) => {
-        alternativa.value = alternativa.iAlternativaId;
-        alternativa.label = alternativa.cAlternativaContenido;
+        alternativa.value = alternativa.iAlternativaId || alternativa.iPlanAlternativaId;
+        alternativa.label =
+          alternativa.cAlternativaContenido || alternativa.cPlanAlternativaContenido;
       });
     }
   }

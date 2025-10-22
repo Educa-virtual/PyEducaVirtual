@@ -1,12 +1,21 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 <p-panel styleClass="container-page">
   <ng-template pTemplate="header" class="encabezado">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">
-        Vista previa ERE:
-        {{ this.evaluacion?.cEvaluacionNombre || '-' }} -
-        {{ this.evaluacion?.cCursoNombre || '-' }}
-      </h3>
+    <div class="flex align-items-center justify-content-between w-full">
+      <div class="flex flex-column gap-2">
+        <h3 class="m-0 text-uppercase text-primary">
+          Vista previa:
+          {{ this.evaluacion?.cEvaluacionNombre || '-' }} -
+          {{ this.evaluacion?.cCursoNombre || '-' }}
+        </h3>
+      </div>
+      <p-button
+        (onClick)="regresar()"
+        icon="pi pi-arrow-left"
+        label="Regresar"
+        severity="success"
+        iconPos="left"
+      />
     </div>
   </ng-template>
   <ng-template pTemplate="icons" class="flex flex-column flex-1">
@@ -14,7 +23,7 @@
             <p>Tiempo restante: {{ getTiempoFormateado() }}</p>
         </div> -->
   </ng-template>
-  <div class="grid" *ngIf="!finalizado">
+  <div class="grid">
     <div class="col-3"></div>
     <div class="col-6 text-center">
       <p-button
@@ -87,7 +96,7 @@
                           [trueValue]="1"
                           [falseValue]="0"
                           (onChange)="
-                            guardarPregunta(pregunta.alternativas, opcion, opcion.iMarcado)
+                            marcarAlternativa(pregunta.alternativas, opcion, opcion.iMarcado)
                           "
                         />
 
@@ -146,6 +155,7 @@
                       [binary]="true"
                       [trueValue]="1"
                       [falseValue]="0"
+                      (onChange)="marcarAlternativa(pregunta.alternativas, opcion, opcion.iMarcado)"
                     />
                     <label [for]="opcion.iAlternativaId">
                       <div class="ml-2">
@@ -182,9 +192,10 @@
         }
       </div>
     </p-accordion>
-    <div class="col-12 text-center" *ngIf="activeIndex === preguntas.length - 1">
+    <!--<div class="col-12 text-center" *ngIf="activeIndex === preguntas.length - 1">
+         <p-button label="Regresar a gestionar preguntas" icon="pi pi-eye" severity="success" iconPos="left" class="mr-1" (click)="regresar()"/>
       <p-button label="Regresar a gestionar preguntas" severity="success" (onClick)="regresar()" />
-    </div>
+    </div>-->
   </div>
 </p-panel>
 <p-toast></p-toast>
@@ -192,7 +203,7 @@
 <app-image-preview
   [imageUrl]="previewImage"
   [showModal]="showModalPreview"
-  (accionBtnItem)="accionBtnItem($event)"
+  (accionBtnItem)="cerrarImagePreview()"
 ></app-image-preview>
 
 <p-confirmDialog />

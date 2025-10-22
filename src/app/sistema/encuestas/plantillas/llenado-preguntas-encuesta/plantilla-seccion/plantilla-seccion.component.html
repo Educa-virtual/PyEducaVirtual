@@ -12,6 +12,18 @@
       <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iPlanSeccionOrden.toggle($event)"
+              (keypress)="iPlanSeccionOrden.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iPlanSeccionOrden [showCloseIcon]="true" appendTo="body">
+              Dejar en blanco para colocar al final
+            </p-overlayPanel>
             <span>Orden</span>
           </p-inputGroupAddon>
           <p-inputNumber

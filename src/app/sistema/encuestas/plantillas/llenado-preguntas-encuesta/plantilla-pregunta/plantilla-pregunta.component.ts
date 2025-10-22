@@ -107,15 +107,12 @@ export class PlantillaPreguntaComponent implements OnInit, OnChanges {
         iPlanAlternativaId: [null],
         cPlanAlternativaContenido: ['', Validators.maxLength(150)],
       });
-
-      if (this.iPlanPregId) {
-        this.getParametros();
-      }
+      this.getParametros();
     } catch (error) {
       console.log(error);
     }
 
-    this.secciones = this.encuestasService.getSeccionesEncuesta(null);
+    this.secciones = this.encuestasService.getSeccionesPlantilla(null);
     this.formPregunta.get('iTipoPregId').valueChanges.subscribe(value => {
       this.iTipoPregId = value;
     });
@@ -134,10 +131,7 @@ export class PlantillaPreguntaComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.iPlanPregId) {
-      this.getParametros();
-    }
-    this.secciones = this.encuestasService.getSeccionesEncuesta(null);
+    this.secciones = this.encuestasService.getSeccionesPlantilla(null);
     if (this.iPlanPregId && changes['visible']?.currentValue === true) {
       this.dialogTitle = 'Editar pregunta';
       this.verPregunta();

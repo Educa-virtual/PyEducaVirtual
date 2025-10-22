@@ -46,7 +46,7 @@
               <div class="p-3 mb-auto z-1 relative">
                 <h3 class="text-xl p-0 m-0">
                   <i
-                    *ngIf="+categoria?.bEsFija"
+                    *ngIf="+categoria?.bEsFija && es_encuestador"
                     class="pi pi-fw pi-lock"
                     pTooltip="Categoría fija: En estas encuestas no puede modificar la población objetivo ni accesos predeterminados"
                     tooltipPosition="top"

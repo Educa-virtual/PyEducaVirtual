@@ -193,9 +193,7 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
                 summary: 'Sección eliminada',
                 detail: 'La sección ha sido eliminada correctamente',
               });
-              this.secciones = this.secciones.filter(
-                (sec: any) => sec.iPlanSeccionId !== seccion?.iPlanSeccionId
-              );
+              this.listarSecciones();
             },
             error: error => {
               console.error('Error eliminando la sección:', error);

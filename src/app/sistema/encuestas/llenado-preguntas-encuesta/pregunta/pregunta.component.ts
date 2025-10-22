@@ -138,7 +138,12 @@ export class PreguntaComponent implements OnInit, OnChanges {
       this.pregunta_registrada = false;
       this.clearForm();
       if (this.formPregunta && !this.iPregId) {
-        this.formPregunta.get('iSeccionId').patchValue(this.iSeccionId);
+        this.encuestasService.formatearFormControl(
+          this.formPregunta,
+          'iSeccionId',
+          this.iSeccionId,
+          'number'
+        );
       }
     }
   }

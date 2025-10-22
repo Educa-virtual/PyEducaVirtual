@@ -187,9 +187,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
                 summary: 'Sección eliminada',
                 detail: 'La sección ha sido eliminada correctamente',
               });
-              this.secciones = this.secciones.filter(
-                (sec: any) => sec.iSeccionId !== seccion?.iSeccionId
-              );
+              this.listarSecciones();
             },
             error: error => {
               console.error('Error eliminando la sección:', error);

@@ -1,0 +1,26 @@
+<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
+<app-container-page
+  title="Lista de competencias"
+  [actions]="accionesCompetencias"
+  (accionBtnItem)="accionBtnItem($event)"
+>
+  <div class="grid">
+    <div class="col-12 mt-3">
+      @if (competencias.length > 0) {
+        <app-table-primeng
+          class="w-full"
+          [columnas]="competenciasColumns"
+          [data]="competencias"
+          [actions]="accionesTablacompetencias"
+          (accionBtnItem)="accionBtnItem($event)"
+          [searchPlaceholder]="'Buscar por competencia...'"
+        />
+      } @else {
+        <app-no-data
+          [showIcon]="'NO-DATA'"
+          mensaje="No se encontraron áreas curriculares asignadas"
+        />
+      }
+    </div>
+  </div>
+</app-container-page>

@@ -2,12 +2,21 @@ import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ContainerPageComponent,
   IActionContainer,
 } from '@/app/shared/container-page/container-page.component';
+
 import { DialogModule } from 'primeng/dialog';
 import { ImageModule } from 'primeng/image';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -16,13 +25,27 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { FieldsetModule } from 'primeng/fieldset';
+import { PrimengModule } from '@/app/primeng.module';
+import { CurriculaCursoCompetenciasComponent } from '../curricula-curso-competencias/curricula-curso-competencias.component';
+import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
+import { environment } from '@/environments/environment';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { HttpClient } from '@angular/common/http';
+import imagenesRecursos from '@/app/shared/imagenes/recursos';
+
+interface Image {
+  id: number;
+  url: string;
+  title: string;
+}
 
 @Component({
   selector: 'app-curricula-curso',
   standalone: true,
   imports: [
     ContainerPageComponent,
-    ReactiveFormsModule,
     TablePrimengComponent,
     DialogModule,
     ImageModule,
@@ -30,6 +53,13 @@ import { GeneralService } from '@/app/servicios/general.service';
     EditorModule,
     FileUploadModule,
     ToggleButtonModule,
+    ReactiveFormsModule,
+    NoDataComponent,
+    FieldsetModule,
+    PrimengModule,
+    FormsModule,
+    CurriculaCursoCompetenciasComponent,
+    TypesFilesUploadPrimengComponent,
   ],
   templateUrl: './curricula-curso.component.html',
   styleUrl: './curricula-curso.component.scss',
@@ -38,9 +68,9 @@ export class CurriculaCursoComponent implements OnChanges {
   @Output() asignarCurso = new EventEmitter();
 
   @Input() iCurrId: number = 0;
+  @Input() curriculas: any = [];
 
-  frmCursos: FormGroup;
-  cursos: any = null;
+  cursos: any[] = [];
   visible: boolean = false;
   totalCursos: any[] = [];
   nivelesTipos: any[] = [];
@@ -49,42 +79,81 @@ export class CurriculaCursoComponent implements OnChanges {
   capacidades: any[] = [];
   iCursoId: number = 0;
   capacidadesCurso: any[] = [];
+  titulo: string = '';
 
+  perfil: any;
+  filesUrl = [];
+  typesFiles = {
+    file: false,
+    url: false,
+    youtube: false,
+    repository: false,
+    image: true,
+  };
+  portada = imagenesRecursos;
+  selectedImageId: any;
+  ruta_imagen: string = '';
+  showVistaPrevia: boolean = false;
+  datosprevios: any;
+  responsiveOptions: any[] = [
+    {
+      breakpoint: '1024px',
+      numVisible: 5,
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3,
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1,
+    },
+  ];
+
+  backend = environment.backend;
+  private http = inject(HttpClient);
+  private backendApi = environment.backendApi;
+  private _LocalStoreService = inject(LocalStoreService);
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
     private query: GeneralService
   ) {
-    this.frmCursos = this.fb.group({
-      iCurrId: [''],
-      iTipoCursoId: [''],
-      cCursoNombre: [''],
-      nCursoCredTeoria: [''],
-      nCursoCredPractica: [''],
-      cCursoDescripcion: [''],
-      nCursoTotalCreditos: [''],
-      cCursoPerfilDocente: [''],
-      iCursoTotalHoras: [''],
-      iCursoEstado: [''],
-      cCursoImagen: [''],
-    });
+    this.perfil = this._LocalStoreService.getItem('dremoPerfil');
+    this.ruta_imagen = String('cursos/images/SVG/');
   }
-  choose(event, callback) {
-    console.log('click');
 
-    callback();
-  }
+  frmCursos = this.fb.group({
+    iCursoId: [0],
+    iCurrId: ['', Validators.required],
+    iTipoCursoId: ['', Validators.required],
+    cCursoNombre: [''],
+    nCursoCredTeoria: [''],
+    nCursoCredPractica: [''],
+    cCursoDescripcion: [''],
+    nCursoTotalCreditos: [''],
+    cCursoPerfilDocente: [''],
+    iCursoTotalHoras: [''],
+    iCursoEstado: ['', Validators.required],
+    cCursoImagen: [''],
+  });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
+      // Si iCurrId cambió y tiene valor válido
       this.inicializacion();
       this.getTipoCurso();
-      this.getCapacidades();
+    }
+
+    if (changes['curriculas'] && changes['curriculas'].currentValue) {
+      // Si curriculas cambió
+      this.curriculas = changes['curriculas'].currentValue;
     }
   }
 
   inicializacion() {
     //const item = event.item || this.cursos || null
+    this.cursos = [];
     this.query
       .searchCalendario({
         json: JSON.stringify({
@@ -94,89 +163,77 @@ export class CurriculaCursoComponent implements OnChanges {
       })
       .subscribe({
         next: (data: any) => {
-          this.totalCursos = data.data;
+          // this.totalCursos = data.data;
+          this.cursos = data.data;
         },
         error: error => {
+          let message = error?.error?.message || 'Error desconocido';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error de conexión' + error.error.message,
+            detail: message,
           });
         },
         complete: () => {
-          this.cursos = Array.from(
-            new Map(
-              this.totalCursos
-                //.filter((curso: any) => curso.iCurrId === this.iCurrId)
-                .map((curso: any) => [curso.iCursoId, curso])
-            ).values()
-          );
-          this.nivelesTipos = Array.from(
-            new Map(
-              this.totalCursos
-                //.filter((curso: any) => curso.iCurrId === this.iCurrId)
-                .map((curso: any) => [curso.iNivelTipos, curso])
-            ).values()
-          );
-          this.grados = Array.from(
-            new Map(
-              this.totalCursos
-                //.filter((curso: any) => curso.iCurrId === this.iCurrId)
-                .map((curso: any) => [curso.iNivelTipos, curso])
-            ).values()
-          );
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del sistema',
-            detail: 'Se cargo exitosamente',
-          });
+          if (this.cursos && this.cursos.length === 0) {
+            this.messageService.add({
+              severity: 'warning',
+              summary: 'Mensaje del sistema',
+              detail: 'La curricula no cuenta con áreas curriculares',
+            });
+            return;
+          }
         },
       });
   }
 
-  getCapacidades() {
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          iCurrId: this.iCurrId,
-        }),
-        _opcion: 'getCursoCapacidades',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.capacidades = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Error de conexión' + error.error.message,
-          });
-        },
-      });
-  }
-  getCapacidadesCurso() {
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          iCursoId: this.iCursoId,
-        }),
-        _opcion: 'getCursoCapacidades',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.capacidadesCurso = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Error de conexión' + error.error.message,
-          });
-        },
-      });
-  }
+  // getCapacidades() {
+  //   this.query
+  //     .searchCalendario({
+  //       json: JSON.stringify({
+  //         iCurrId: this.iCurrId,
+  //       }),
+  //       _opcion: 'getCursoCapacidades',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.capacidades = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Mensaje del sistema',
+  //           detail: 'Error de conexión' + error.error.message,
+  //         });
+  //       },
+  //     });
+  // }
+  // getCapacidadesCurso() {
+  //   this.query
+  //     .searchCalendario({
+  //       json: JSON.stringify({
+  //         iCursoId: this.iCursoId,
+  //       }),
+  //       _opcion: 'getCursoCapacidades',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.capacidadesCurso = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Mensaje del sistema',
+  //           detail: 'Error de conexión' + error.error.message,
+  //         });
+  //       },
+  //     });
+  // }
 
   getTipoCurso() {
     this.query
@@ -208,117 +265,15 @@ export class CurriculaCursoComponent implements OnChanges {
       case 'cursos':
         this.asignarCurso.emit(item);
         break;
-
-      default:
-        break;
-    }
-  }
-  accionesCursos: IActionContainer[] = [
-    {
-      labelTooltip: 'Agregar curso',
-      text: 'Nuevo curso',
-      icon: 'pi pi-plus',
-      accion: 'nuevo_curso',
-      class: 'p-button-primary',
-    },
-    {
-      labelTooltip: 'Mostrar cursos',
-      text: 'Mostrar cursos',
-      icon: 'pi pi-search',
-      accion: 'mostrar_curso',
-      class: 'p-button-warning',
-    },
-  ];
-
-  accionesTablaCurso: IActionTable[] = [
-    {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-pencil',
-      accion: 'editar',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
-    {
-      labelTooltip: 'Mostrar cursos',
-      icon: 'pi pi-book',
-      accion: 'cursos',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-    },
-  ];
-
-  cursosColumns = [
-    {
-      type: 'item',
-      width: '5rem',
-      field: '',
-      header: 'Item',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'cCursoNombre',
-      header: 'Nombre',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'nCursoTotalCreditos',
-      header: 'Créditos totales',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'iCursoTotalHoras',
-      header: 'Horas totales',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'estado-activo',
-      width: '5rem',
-      field: 'iCursoEstado',
-      header: 'Estado',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'actions',
-      width: '3rem',
-      field: 'actions',
-      header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
-    },
-  ];
-
-  accionBtnCursos(event: any) {
-    this.frmCursos.reset();
-
-    switch (event.accion) {
       case 'agregar':
-        this.cursos = {
-          ...this.cursos,
-          title: 'Agregar curso',
-          visible: true,
-        };
+        (this.titulo = 'Formulario para agregar  área curricular'), this.frmCursos.reset();
+        this.visible = true;
         break;
+
       case 'editar':
+        this.titulo = 'Formulario para editar áreas curriculares';
         this.frmCursos.reset();
-
-        this.cursos.container.actions = [];
-
-        this.cursos = {
-          ...this.cursos,
-          title: 'Editar curso',
-          visible: true,
-        };
+        this.iCursoId = event.item.iCursoId;
 
         this.frmCursos.patchValue({
           iCurrId: event.item.iCurrId,
@@ -331,10 +286,146 @@ export class CurriculaCursoComponent implements OnChanges {
           cCursoPerfilDocente: event.item.cCursoPerfilDocente,
           iCursoTotalHoras: event.item.iCursoTotalHoras,
           iCursoEstado: event.item.iCursoEstado,
-          cCursoImagen: event.item.cCursoImagen,
         });
+        this.frmCursos.get('cCursoImagen')?.setValue(event.item.cCursoImagen), (this.filesUrl = []);
+        if ((event.item.cCursoImagen ?? '').length > 0) {
+          this.filesUrl.push({
+            name: 'imagen',
+            ruta: event.item.cCursoImagen,
+          });
+          this.ruta_imagen = event.item.cCursoImagen;
+        }
+
+        this.visible = true;
 
         break;
+
+      default:
+        break;
+    }
+  }
+
+  // mostrar modal de visualizacion de una vista previa del curso creado
+  showVistaPreviaCurso() {
+    this.showVistaPrevia = true;
+    this.datosprevios = this.frmCursos.value;
+  }
+
+  //
+  seleccionarImagen(event: any) {
+    const index = event.detail.index; // Acceder al índice correcto
+    this.portada[index]; // Obtiene la imagen según el índice
+  }
+
+  selectImage(image: any) {
+    this.selectedImageId = image.id;
+
+    const data = {
+      id: image.id,
+      name: image.name,
+      url: image.url,
+    };
+    const jsonData = JSON.stringify(data);
+    this.frmCursos.patchValue({
+      cCursoImagen: jsonData,
+    });
+    // const ruta = this.frmCursos.value.cCursoImagen
+    // alert(ruta)
+  }
+
+  isSelected(image: Image): boolean {
+    return this.selectedImageId === image.id;
+  }
+
+  accionesCursos: IActionContainer[] = [
+    {
+      labelTooltip: 'Agregar área',
+      text: '',
+      icon: 'pi pi-plus',
+      accion: 'agregar',
+      class: 'p-button-primary',
+    },
+  ];
+
+  accionesTablaCurso: IActionTable[] = [
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-warning p-button-text',
+    },
+    // {
+    //   labelTooltip: 'Mostrar competencias',
+    //   icon: 'pi pi-book',
+    //   accion: 'cursos',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-primary p-button-text',
+    // },
+    {
+      labelTooltip: 'Eliminar área curricular',
+      icon: 'pi pi-trash',
+      accion: 'eliminar_area',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+    },
+  ];
+
+  cursosColumns = [
+    {
+      type: 'item',
+      width: '5%',
+      field: '',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '60%',
+      field: 'cCursoNombre',
+      header: 'Área curricular',
+      text_header: 'center',
+      text: 'left',
+    },
+    // {
+    //   type: 'text',
+    //   width: '5rem',
+    //   field: 'nCursoTotalCreditos',
+    //   header: 'Créditos',
+    //   text_header: 'center',
+    //   text: 'center',
+    // },
+    // {
+    //   type: 'text',
+    //   width: '5rem',
+    //   field: 'iCursoTotalHoras',
+    //   header: 'Horas',
+    //   text_header: 'center',
+    //   text: 'center',
+    // },
+    {
+      type: 'estado-activo',
+      width: '5%',
+      field: 'iCursoEstado',
+      header: '',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'actions',
+      width: '30%',
+      field: 'actions',
+      header: 'Acciones',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
+
+  accionBtnCursos(event: any) {
+    this.frmCursos.reset();
+
+    switch (event.accion) {
       // case 'assignCursosInNivelesGrados':
       // Object.keys(
       //     this.forms.assignCursosInNivelesGrados.controls

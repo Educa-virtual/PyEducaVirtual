@@ -1,0 +1,119 @@
+<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
+<app-container-page
+  title="Lista de competencias"
+  [actions]="actionsContainer"
+  (accionBtnItem)="accionBtnItem($event)"
+>
+  <div class="grid">
+    <div class="col-12 md:col-4">
+      <form [formGroup]="frmCursosCompetencias" class="flex flex-column gap-3 w-full">
+        <!-- iCompCursoId iNivelTipoId  iCursoId iCompetenciaId-->
+        <div class="col-12">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="modalidad"
+              [showClear]="true"
+              formControlName="iNivelId"
+              optionValue="iNivelId"
+              placeholder="Seleccione una modalidad"
+              styleClass="w-full"
+              (onChange)="accionBtnItem({ accion: 'select_modalidad', item: [] })"
+              appendTo="body"
+              optionLabel="cNivelNombre"
+            />
+            <label for="iNivelId">Modalidad</label>
+          </span>
+        </div>
+        <div class="col-12" *ngIf="this.frmCursosCompetencias.value.iNivelId > 0">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="nivel_tipo_actual"
+              [showClear]="true"
+              formControlName="iNivelTipoId"
+              optionValue="iNivelTipoId"
+              placeholder="Seleccione un nivel"
+              styleClass="w-full"
+              appendTo="body"
+              optionLabel="cNivelTipoNombre"
+            />
+            <label for="iNivelTipoId">Nivel</label>
+          </span>
+        </div>
+        <!-- <div class="col-12">
+          <span class="p-float-label">
+            <p-dropdown [options]="cursos" [showClear]="true" formControlName="iCursoId" optionLabel="cCursoNombre"
+              optionValue="iCursoId" placeholder="Seleccione un nivel" styleClass="w-full" appendTo="body" />
+            <label for="iNivelTipoId">Área curricular</label>
+          </span>
+        </div> -->
+        <div class="col-12">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="competencias"
+              [showClear]="true"
+              formControlName="iCompetenciaId"
+              optionLabel="competencia"
+              optionValue="iCompetenciaId"
+              placeholder="Seleccione un competencia"
+              styleClass="w-full"
+              appendTo="body"
+              filter="true"
+            />
+            <label for="iCompetenciaId">Competencia</label>
+          </span>
+        </div>
+        <div class="col-12">
+          <div class="grid">
+            <div class="col-6">
+              <label for="iEstado">Estado:</label>
+              <p-inputSwitch formControlName="iEstado" [trueValue]="1" [falseValue]="0" />
+            </div>
+            <div class="col-6">
+              <button
+                pButton
+                label="Guardar"
+                *ngIf="!bUpdate"
+                icon="pi pi-save"
+                class="p-button-success"
+                size="small"
+                (click)="accionBtnItem({ accion: 'guardar', item: frmCursosCompetencias.value })"
+              ></button>
+
+              <button
+                pButton
+                label="Actualizar"
+                *ngIf="bUpdate"
+                icon="pi pi-pencil"
+                class="p-button-warning"
+                size="small"
+                (click)="accionBtnItem({ accion: 'actualizar', item: frmCursosCompetencias.value })"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-12 md:col-8">
+      <div class="grid">
+        <div class="col-12 mt-3">
+          @if (competencias_area.length > 0) {
+            <app-table-primeng
+              class="w-full"
+              [columnas]="columns"
+              [data]="competencias_area"
+              [actions]="actions"
+              (accionBtnItem)="accionBtnItem($event)"
+              [showAdvancedFilter]="true"
+              [showCaption]="false"
+            />
+          } @else {
+            <app-no-data
+              [showIcon]="'NO-DATA'"
+              mensaje="No se encontraron áreas curriculares asignadas"
+            />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</app-container-page>

@@ -56,3 +56,14 @@
     color: white !important;
   }
 }
+
+/* --- Responsive: móviles y tablets --- */
+@media (max-width: 768px) {
+  :host ::ng-deep {
+    .p-orderlist-list {
+      max-height: 60vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+}

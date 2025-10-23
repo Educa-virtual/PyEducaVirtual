@@ -58,7 +58,7 @@ export class AgregarMantenimientoIeComponent
     iZonaId: [null],
     iTipoSectorId: [null, Validators.required],
     cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
-    // cIieeDireccion: ['', Validators.required],
+    cIieeDireccion: ['', Validators.required],
     iNivelTipoId: [null, Validators.required],
     iUgelId: [null, Validators.required],
     iSedeId: [null],
@@ -66,15 +66,22 @@ export class AgregarMantenimientoIeComponent
 
     iIieeId: [],
     iCredEntPerfId: [],
+
+    cIieeEmail: [null, [Validators.required, Validators.email]],
+    cIieeTelefono: [null, Validators.required],
+    iEstado: [null, Validators.required],
+    cIieeDirector: [null, Validators.required],
   });
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
       const data = changes['data'].currentValue;
       if (data?.iIieeId) {
+        data.iEstado = Number(data.iEstado);
         this.formInstitucion.patchValue(data);
       } else {
         this.formInstitucion.reset();
+        this.formInstitucion.controls['iEstado'].setValue(1);
       }
     }
   }
@@ -136,10 +143,13 @@ export class AgregarMantenimientoIeComponent
       iCredEntPerfId: 'Credencial Entidad',
       cIieeCodigoModular: 'Código Modular',
       cIieeNombre: 'Nombre de la I.E.',
+      cIieeDirector: 'Nombre del(a) Director(a)',
+      cIieeEmail: 'Correo electrónico',
+      cIieeTelefono: 'Teléfono',
       iDsttId: 'Distrito',
       iTipoSectorId: 'Tipo Sector',
       cIieeRUC: 'RUC',
-      // cIieeDireccion: 'Dirección',
+      cIieeDireccion: 'Dirección',
       iNivelTipoId: 'Nivel tipo',
       iUgelId: 'Ugel',
     };
@@ -160,7 +170,7 @@ export class AgregarMantenimientoIeComponent
 
   guardarInstitucion() {
     const datosInstitucion: InstitucionEducativa = this.formInstitucion.value;
-
+    datosInstitucion.iEstado = this.formInstitucion.value.iEstado ? 1 : 2;
     this._MantenimientoIeService
       .crearInstitucionEducativa(datosInstitucion)
       .pipe(finalize(() => this.isLoading.set(false)))

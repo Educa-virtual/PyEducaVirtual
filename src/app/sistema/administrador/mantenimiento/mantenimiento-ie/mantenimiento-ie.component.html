@@ -19,13 +19,35 @@
         />
       </p-inputGroup>
     </div>
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Estado</p-inputGroupAddon>
+        <p-dropdown
+          [options]="[
+            { iEstado: 1, cEstado: 'Activo' },
+            { iEstado: 0, cEstado: 'Inactivo' },
+          ]"
+          optionValue="iEstado"
+          optionLabel="cEstado"
+          [showClear]="true"
+          formControlName="iEstado"
+          placeholder="Seleccione un estado"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
     <div class="col flex justify-content-end gap-2">
       <p-button
         pRipple
         severity="primary"
         label="Buscar"
         icon="pi pi-search"
-        (onClick)="obtenerInstituciones(); institucionSeleccionada.set(null)"
+        (onClick)="
+          obtenerInstituciones();
+          institucionSeleccionada.set(null);
+          isLoadingDatosIniciales.set(true)
+        "
       />
       <p-button
         pRipple
@@ -42,6 +64,7 @@
       <div class="tag">Lista de Instituciones Educativas</div>
       <div class="col-12 lg:col-4 mt-3 lg:overflow-scroll">
         <app-card-orderlist
+          [seleccionado]="institucionSeleccionada()"
           (datoSeleccionado)="obtenerInformacionIE($event)"
           [data]="institucionesxiNivelTipoId()"
           [mostrarImagen]="true"
@@ -65,7 +88,7 @@
                 size="xlarge"
                 shape="circle"
               />
-              <div class="flex-1 w-full text-center sm:text-left">
+              <div class="flex-1 w-full">
                 <h2 class="m-0 text-xl font-semibold">
                   {{ institucionSeleccionada().cIieeNombre || '-' }} -
                   {{ institucionSeleccionada().cIieeCodigoModular || '-' }}
@@ -82,10 +105,24 @@
                   <i class="pi pi-envelope mr-2"></i
                   >{{ institucionSeleccionada().cIieeEmail || '-' }}
                 </p>
+                <p class="m-0 text-sm">
+                  <i class="pi pi-phone mr-2"></i
+                  >{{ institucionSeleccionada().cIieeTelefono || '-' }}
+                </p>
               </div>
             </div>
             <div class="p-toolbar-group-end">
-              <div>
+              <div class="flex justify-content-center align-items-center">
+                @if (institucionSeleccionada()?.iEstado) {
+                  <div class="border-1 border-green-200 border-round bg-green-50 p-2 text-center">
+                    <span class="font-bold text-green-600">ACTIVO</span>
+                  </div>
+                }
+                @if (!institucionSeleccionada()?.iEstado) {
+                  <div class="border-1 border-red-200 border-round bg-red-50 p-2 text-center">
+                    <span class="font-bold text-red-600">INACTIVO</span>
+                  </div>
+                }
                 <p-button
                   *ngIf="institucionSeleccionada().cIieeNlat && institucionSeleccionada().cIieeNlog"
                   icon="pi pi-map-marker"
@@ -163,6 +200,7 @@
   </div>
 </div>
 <app-agregar-mantenimiento-ie
+  *ngIf="isLoadingDatosIniciales()"
   [showModal]="showModal()"
   [data]="itemSelected()"
   [iNivelTipoId]="this.formMantenimiento.value.iNivelTipoId"

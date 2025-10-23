@@ -54,6 +54,8 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   showModal = signal<boolean>(false);
   showModalSedes = signal<boolean>(false);
 
+  isLoadingDatosIniciales = signal<boolean>(false);
+
   breadCrumbItems: MenuItem[] = [
     {
       label: this.title,
@@ -73,6 +75,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     iNivelTipoId: [null],
     iIieeId: [null],
     iSedeId: [null],
+    iEstado: [null],
   });
 
   accionesSedes = signal<any[]>([
@@ -126,6 +129,14 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
       text: 'center',
     },
     {
+      type: 'estado-activo',
+      width: '1rem',
+      field: 'iEstado',
+      header: 'Estado',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
       type: 'actions',
       width: '1rem',
       field: '',
@@ -160,12 +171,13 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
         next: (data: any) => {
           const instituciones = (data.data ?? []).map((institucion: any) => ({
             ...institucion,
+            iEstado: Number(institucion.iEstado) === 2 ? 0 : institucion.iEstado,
             cTitulo: `${institucion.cIieeNombre} `,
             cImgUrl: institucion.cIieeLogo,
             cDescripcion: institucion.cIieeEmail || '-',
           }));
 
-          this.instituciones.set(instituciones);
+          this.instituciones.set([...instituciones]);
         },
         error: error => {
           this.mostrarErrores(error);
@@ -194,12 +206,15 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     this.formMantenimiento.controls.iIieeId.setValue(null);
     this.formMantenimiento.controls.iSedeId.setValue(null);
 
-    if (!this.formMantenimiento.value.iNivelTipoId) return;
-    this.institucionesxiNivelTipoId.set(
-      this.instituciones().filter(
-        item => Number(item.iNivelTipoId) === this.formMantenimiento.value.iNivelTipoId
-      )
-    );
+    const { iNivelTipoId, iEstado } = this.formMantenimiento.value;
+
+    const institucionesFiltradas = this.instituciones().filter(item => {
+      const coincideNivel = iNivelTipoId == null || Number(item.iNivelTipoId) === iNivelTipoId;
+      const coincideEstado = iEstado == null || Number(item.iEstado) === iEstado;
+      return coincideNivel && coincideEstado;
+    });
+
+    this.institucionesxiNivelTipoId.set(institucionesFiltradas);
   }
 
   obtenerInformacionIE(evn) {

@@ -2,14 +2,14 @@
   [title]="(this.formSedes.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Institución Educativa'"
   [showModal]="showModal()"
   class="uppercase"
-  [width]="'70rem'"
+  [width]="'50rem'"
   (accionBtnItem)="closeModal.emit()"
 >
   <form [formGroup]="formSedes" class="mt-3">
     <div class="grid">
-      <div class="col-12 md:col-8">
+      <div class="col-12 md:col-7">
         <p-inputGroup>
-          <p-inputGroupAddon>Servicio Educativos</p-inputGroupAddon>
+          <p-inputGroupAddon>Servicio Educativo</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             id="iServEdId"
@@ -21,6 +21,18 @@
             [style]="{ width: '100%' }"
           >
           </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-5">
+        <p-inputGroup>
+          <p-inputGroupAddon><i class="pi pi-phone"></i></p-inputGroupAddon>
+          <input
+            id="cSedeTelefono"
+            type="text"
+            pInputText
+            placeholder="Ej: 900010010"
+            formControlName="cSedeTelefono"
+          />
         </p-inputGroup>
       </div>
       <div class="col-12">
@@ -36,7 +48,7 @@
         </p-inputGroup>
       </div>
 
-      <div class="col-12">
+      <div class="col-12 md:col-8">
         <p-inputGroup>
           <p-inputGroupAddon>Dirección</p-inputGroupAddon>
           <input
@@ -47,6 +59,21 @@
             formControlName="cSedeDireccion"
           />
         </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4 align-content-center">
+        <div class="flex align-items-center justify-content-between">
+          <label for="iEstado" class="pr-1">Estado:</label>
+          <div class="flex align-items-center gap-2">
+            <p-inputSwitch
+              formControlName="iEstado"
+              [trueValue]="1"
+              [falseValue]="0"
+            ></p-inputSwitch>
+            <span [ngClass]="formSedes.value.iEstado === 1 ? 'text-green-500' : 'text-red-500'">
+              {{ formSedes.value.iEstado === 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </form>

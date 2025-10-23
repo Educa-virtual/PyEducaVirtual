@@ -17,6 +17,10 @@ export interface InstitucionEducativa {
   iUgelId?: number;
   iSedeId?: number;
   iSesionId: number;
+  cIieeEmail: string;
+  cIieeTelefono: number;
+  iEstado: number;
+  cIieeDirector: string;
 }
 
 export interface Sede {
@@ -27,6 +31,7 @@ export interface Sede {
   cSedeNombre: string;
   cSedeDireccion: string;
   iServEdId: number;
+  iEstado: number;
 }
 
 export interface FiltrosIE {

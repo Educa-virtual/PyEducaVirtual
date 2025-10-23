@@ -52,14 +52,24 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
 
     iSedeId: [],
     iCredEntPerfId: [],
+
+    cSedeTelefono: [null, Validators.required],
+    iEstado: [null, Validators.required],
   });
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
       const data = changes['data'].currentValue;
+      data.iEstado = Number(data.iEstado);
       if (data?.iSedeId) {
         this.formSedes.patchValue(data);
+
+        this.formSedes.get('iIieeId')?.clearValidators();
+        this.formSedes.get('iIieeId')?.updateValueAndValidity();
       } else {
         this.formSedes.reset();
+
+        this.formSedes.get('iIieeId')?.setValidators(Validators.required);
+        this.formSedes.get('iIieeId')?.updateValueAndValidity();
       }
     }
   }
@@ -94,6 +104,7 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       iCredEntPerfId: 'Credencial Entidad',
       cSedeNombre: 'Nombre de la sede',
       iServEdId: 'Servicio Educativo',
+      cSedeTelefono: 'Teléfono',
       cSedeDireccion: 'Dirección',
       iIieeId: 'Institución Educativa',
       iCredId: 'Credencial',
@@ -115,7 +126,7 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
 
   guardarSede() {
     const datosSedes: Sede = this.formSedes.value;
-
+    datosSedes.iEstado = this.formSedes.value.iEstado ? 1 : 0;
     this._MantenimientoIeService
       .crearSede(datosSedes)
       .pipe(finalize(() => this.isLoading.set(false)))

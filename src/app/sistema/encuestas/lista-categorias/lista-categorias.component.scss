@@ -348,3 +348,7 @@
 :host ::ng-deep .p-orderlist-item:hover {
   background-color: var(--surface-hovered-background) !important;
 }
+
+:host ::ng-deep .p-stepper-nav {
+  overflow-y: hidden !important;
+}

@@ -18,11 +18,19 @@ import {
   SUBDIRECTOR_IE,
   ESTUDIANTE,
 } from '@/app/servicios/seg/perfiles';
+import { TutorialCategoriasComponent } from '../tutoriales/tutorial-categorias/tutorial-categorias.component';
 
 @Component({
   selector: 'app-categorias-encuestas',
   standalone: true,
-  imports: [PrimengModule, CommonModule, FormsModule, NuevaCategoriaComponent, NoDataComponent],
+  imports: [
+    PrimengModule,
+    CommonModule,
+    FormsModule,
+    NuevaCategoriaComponent,
+    NoDataComponent,
+    TutorialCategoriasComponent,
+  ],
   templateUrl: './lista-categorias.component.html',
   styleUrl: './lista-categorias.component.scss',
 })
@@ -39,8 +47,13 @@ export class CategoriasEncuestaComponent implements OnInit {
   categorias: ICategoria[] = [];
   categorias_filtradas: ICategoria[] = [];
 
+  visibleDialogTutorial: boolean = false;
+
   perfil: any;
   es_encuestador: boolean = false;
+  crea_categorias = [ADMINISTRADOR_DREMO];
+  puede_crear = false;
+
   encuestadores = [
     ADMINISTRADOR_DREMO,
     ESPECIALISTA_DREMO,
@@ -48,8 +61,7 @@ export class CategoriasEncuestaComponent implements OnInit {
     DIRECTOR_IE,
     SUBDIRECTOR_IE,
   ];
-  crea_categorias = [ADMINISTRADOR_DREMO];
-  puede_crear = false;
+
   USUARIO_ENCUESTADOR: number = this.encuestasService.USUARIO_ENCUESTADOR;
   USUARIO_ENCUESTADO: number = this.encuestasService.USUARIO_ENCUESTADO;
 
@@ -253,5 +265,9 @@ export class CategoriasEncuestaComponent implements OnInit {
         disabled: Boolean(+categoria?.bEsFija) || categoria?.iTotalEncuestas > 0,
       },
     ];
+  }
+
+  verTutorial(visible: boolean) {
+    this.visibleDialogTutorial = visible;
   }
 }

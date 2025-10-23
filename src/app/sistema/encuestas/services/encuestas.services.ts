@@ -65,6 +65,7 @@ export class EncuestasService implements OnDestroy {
   participantes: Array<object>;
   tipos_preguntas: Array<object>;
   fuentes: Array<object>;
+  tipos_reportes_plantillas: Array<object>;
 
   /**
    * CONEXIONES A LA API
@@ -274,6 +275,10 @@ export class EncuestasService implements OnDestroy {
 
   guardarPlantillaDesdeDuplicado(data: any) {
     return this.http.post(`${baseUrl}/enc/guardarPlantillaDesdeDuplicado`, data);
+  }
+
+  archivarPlantilla(data: any) {
+    return this.http.post(`${baseUrl}/enc/archivarPlantilla`, data);
   }
 
   /**
@@ -660,6 +665,34 @@ export class EncuestasService implements OnDestroy {
       ];
     }
     return this.tipos_graficos;
+  }
+
+  getTiposReportesPlantillas() {
+    if (!this.tipos_reportes_plantillas) {
+      this.tipos_reportes_plantillas = [
+        {
+          value: 1,
+          label: 'ACTIVAS (BORRADORES Y APROBADAS)',
+        },
+        {
+          value: 2,
+          label: 'ARCHIVADAS',
+        },
+        {
+          value: 3,
+          label: 'TODAS',
+        },
+        {
+          value: 4,
+          label: 'ACTIVAS (BORRADORES)',
+        },
+        {
+          value: 5,
+          label: 'ACTIVAS (APROBADAS)',
+        },
+      ];
+    }
+    return this.tipos_reportes_plantillas;
   }
 
   /**

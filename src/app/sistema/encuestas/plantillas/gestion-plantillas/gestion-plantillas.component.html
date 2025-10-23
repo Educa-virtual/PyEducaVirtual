@@ -21,26 +21,44 @@
 
   <div class="grid">
     <div class="col-12">
-      <div class="grid p-fluid">
-        <div class="col">
-          <p-inputGroup>
-            <p-inputGroupAddon> Buscar </p-inputGroupAddon>
-            <input #filtro type="text" pInputText (input)="filtrarPlantillas()" />
-          </p-inputGroup>
+      <form [formGroup]="formPlantillas">
+        <div class="grid p-fluid">
+          <div class="col-12 md:col align-content-center">
+            <p-inputGroup>
+              <p-inputGroupAddon> Estado </p-inputGroupAddon>
+              <p-dropdown
+                #tipo_reporte
+                [options]="tipos_reportes_plantillas"
+                formControlName="iTipoReporte"
+                [showClear]="false"
+                appendTo="body"
+                placeholder="Seleccione"
+                styleClass="group-element"
+                appendTo="body"
+                (onChange)="listarPlantillas()"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col">
+            <p-inputGroup>
+              <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+              <input #filtro type="text" pInputText (input)="filtrarPlantillas()" />
+            </p-inputGroup>
+          </div>
+          <div class="col-auto align-content-center">
+            <p-button
+              severity="info"
+              pTooltip="Ver Encuestas"
+              tooltipPosition="top"
+              arial-label="Ver Encuestas"
+              (onClick)="listarEncuestas()"
+            >
+              <i class="pi pi-fw pi-arrow-right-arrow-left"></i>
+              <span class="hidden md:inline ml-2">Encuestas</span>
+            </p-button>
+          </div>
         </div>
-        <div class="col-auto align-content-center">
-          <p-button
-            severity="info"
-            pTooltip="Ver Encuestas"
-            tooltipPosition="top"
-            arial-label="Ver Encuestas"
-            (onClick)="listarEncuestas()"
-          >
-            <i class="pi pi-fw pi-arrow-right-arrow-left"></i>
-            <span class="hidden md:inline ml-2">Encuestas</span>
-          </p-button>
-        </div>
-      </div>
+      </form>
     </div>
     <div class="col-12">
       <app-table-primeng

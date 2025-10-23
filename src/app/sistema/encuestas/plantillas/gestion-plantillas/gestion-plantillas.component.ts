@@ -28,6 +28,7 @@ export class GestionPlantillasComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
+  formPlantillas: FormGroup;
   formEncuestaPlantilla: FormGroup;
   formPlantilla: FormGroup;
 
@@ -44,6 +45,7 @@ export class GestionPlantillasComponent implements OnInit {
   plantilla: any;
 
   tiempos_duracion: Array<object>;
+  tipos_reportes_plantillas: Array<object>;
 
   visibleDialogEncuesta: boolean = false;
   visibleDialogDuplicar: boolean = false;
@@ -73,6 +75,10 @@ export class GestionPlantillasComponent implements OnInit {
 
   ngOnInit(): void {
     try {
+      this.formPlantillas = this.fb.group({
+        iTipoReporte: [1, Validators.required],
+      });
+
       this.formEncuestaPlantilla = this.fb.group({
         iYAcadId: [this.iYAcadId, Validators.required],
         iCateId: [this.iCateId, Validators.required],
@@ -102,6 +108,7 @@ export class GestionPlantillasComponent implements OnInit {
       console.error('Error creando formulario:', error);
     }
 
+    this.tipos_reportes_plantillas = this.encuestasService.getTiposReportesPlantillas();
     if (this.iCateId) {
       this.verCategoria();
       this.listarPlantillas();
@@ -159,6 +166,8 @@ export class GestionPlantillasComponent implements OnInit {
         plantilla.cPlanNombre.toLowerCase().includes(filtro.toLowerCase())
       )
         return plantilla;
+      if (plantilla.cCreador && plantilla.cCreador.toLowerCase().includes(filtro.toLowerCase()))
+        return plantilla;
       if (
         plantilla?.dtUltimaModificacion &&
         plantilla.dtUltimaModificacion.toString().includes(filtro)
@@ -172,6 +181,7 @@ export class GestionPlantillasComponent implements OnInit {
       .listarPlantillas({
         iCateId: this.iCateId,
         iYAcadId: this.iYAcadId,
+        iTipoReporte: this.formPlantillas.value.iTipoReporte,
       })
       .subscribe({
         next: (data: any) => {
@@ -433,6 +443,32 @@ export class GestionPlantillasComponent implements OnInit {
     });
   }
 
+  archivarPlantilla(item: any, bArchivar: boolean = true) {
+    this.encuestasService
+      .archivarPlantilla({
+        iPlanId: item.iPlanId,
+        bArchivar: bArchivar,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Archivado exitoso',
+            detail: 'Se ha archivado la plantilla',
+          });
+          this.listarPlantillas();
+        },
+        error: error => {
+          console.error('Error obteniendo lista de plantillas:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
   accionBtnItemTable({ accion, item }) {
     this.selectedItem = item;
     switch (accion) {
@@ -498,6 +534,30 @@ export class GestionPlantillasComponent implements OnInit {
             },
           });
         }
+        break;
+      case 'archivar':
+        this.confirmService.openConfirm({
+          header: 'Archivar plantilla',
+          message:
+            'Puede archivar la plantilla para dejar de mostrarla en la lista principal. Este cambio solo es visible para usted. ¿Realmente quiere archivar la plantilla seleccionada?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.archivarPlantilla(item);
+          },
+          reject: () => {},
+        });
+        break;
+      case 'desarchivar':
+        this.confirmService.openConfirm({
+          header: 'Desarchivar plantilla',
+          message:
+            'Puede desarchivar la plantilla para volver a mostrarla en la lista principal. Este cambio solo es visible para usted. ¿Realmente quiere desarchivar la plantilla seleccionada?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.archivarPlantilla(item, false);
+          },
+          reject: () => {},
+        });
         break;
       default:
         console.warn('Acción no reconocida:', accion);
@@ -567,6 +627,24 @@ export class GestionPlantillasComponent implements OnInit {
           (Number(this.categoria?.bEsFija) === 1 &&
             Number(this.categoria?.iTotalEncuestasFijasSede) === 0)),
     },
+    {
+      labelTooltip: 'Archivar',
+      icon: 'pi pi-folder',
+      accion: 'archivar',
+      type: 'item',
+      class: 'p-menuitem-link text-gray-500',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) === this.ESTADO_APROBADA && Number(rowData.esta_archivada) === 0,
+    },
+    {
+      labelTooltip: 'Desarchivar',
+      icon: 'pi pi-folder-open',
+      accion: 'desarchivar',
+      type: 'item',
+      class: 'p-menuitem-link text-green-500',
+      isVisible: (rowData: any) =>
+        Number(rowData.iEstado) === this.ESTADO_APROBADA && Number(rowData.esta_archivada) === 1,
+    },
   ];
 
   columns_plantillas = [
@@ -612,6 +690,7 @@ export class GestionPlantillasComponent implements OnInit {
       styles: {
         BORRADOR: 'danger',
         APROBADA: 'success',
+        ARCHIVADA: 'secondary',
       },
     },
     {

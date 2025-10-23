@@ -1,205 +1,308 @@
+<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
 <app-container-page
-  title="Cursos"
+  title="Lista de áreas"
   [actions]="accionesCursos"
   (accionBtnItem)="accionBtnItem($event)"
 >
-  <app-table-primeng
-    class="w-full"
-    [columnas]="cursosColumns"
-    [data]="cursos"
-    [actions]="accionesTablaCurso"
-    (accionBtnItem)="accionBtnItem($event)"
-  />
-</app-container-page>
-<p-dialog
-  #cursoDialog
-  [modal]="true"
-  [(visible)]="visible"
-  [style]="{ width: '75rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  [maximizable]="true"
->
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <span class="font-bold white-space-nowrap">
-        {{ cursos.title }}
-      </span>
+  <div class="grid">
+    <div class="col-12 mt-3">
+      @if (cursos.length > 0) {
+        <app-table-primeng
+          class="w-full"
+          [columnas]="cursosColumns"
+          [data]="cursos"
+          [actions]="accionesTablaCurso"
+          (accionBtnItem)="accionBtnItem($event)"
+          [searchPlaceholder]="'Buscar por área...'"
+        />
+      } @else {
+        <app-no-data
+          [showIcon]="'NO-DATA'"
+          mensaje="No se encontraron áreas curriculares asignadas"
+        />
+      }
     </div>
+  </div>
+</app-container-page>
+
+<!-- </app-container-page> -->
+
+<p-dialog
+  header="{{ titulo }}"
+  [(visible)]="visible"
+  [style]="{ width: '90rem' }"
+  [modal]="true"
+  [resizable]="true"
+  [maximizable]="true"
+  [closable]="true"
+  [draggable]="true"
+  appendTo="body"
+  [breakpoints]="{ '1199px': '75vw', '575px': '95vw' }"
+>
+  <!-- CONTENIDO DEL DIALOG -->
+  <ng-template pTemplate="content">
+    <p-tabView>
+      <p-tabPanel header="Información del área">
+        <app-container-page title="Área curricular" [actions]="[]">
+          <br />
+          <form [formGroup]="frmCursos" class="flex flex-column gap-3 w-full">
+            <div class="grid">
+              <div class="field col-12 md:col-5">
+                <span class="p-float-label">
+                  <p-dropdown
+                    [filter]="true"
+                    formControlName="iCurrId"
+                    styleClass="w-full"
+                    [showClear]="true"
+                    placeholder="Seleccione curricula"
+                    optionValue="iCurrId"
+                    [options]="curriculas"
+                    optionLabel="cCurrDescripcion"
+                    appendTo="body"
+                  />
+                  <label for="cCursoNombre">Curricula</label>
+                </span>
+              </div>
+              <div class="field col-12 md:col-5">
+                <span class="p-float-label w-full">
+                  <input
+                    pInputText
+                    id="cCursoNombre"
+                    class="w-full"
+                    formControlName="cCursoNombre"
+                  />
+                  <label for="cCursoNombre">Nombre</label>
+                </span>
+              </div>
+
+              <div class="field col-12 md:col-2">
+                <!-- <span class="p-float-label"> -->
+                <p-toggleButton
+                  styleClass="w-full"
+                  onLabel="Activo"
+                  offLabel="Inactivo"
+                  formControlName="iCursoEstado"
+                ></p-toggleButton>
+                <!-- <label for="iCursoEstado">Estado</label> -->
+                <!-- </span> -->
+              </div>
+            </div>
+
+            <div class="grid p-fluid mt-3">
+              <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                  <p-dropdown
+                    [filter]="true"
+                    [showClear]="true"
+                    [filter]="true"
+                    formControlName="iTipoCursoId"
+                    styleClass="w-full"
+                    placeholder="Seleccione Tipo"
+                    optionValue="iTipoCursoId"
+                    [options]="tiposCursos"
+                    optionLabel="cTipoCursoNombre"
+                    appendTo="body"
+                  />
+                  <label for="iTipoCursoId">Tipo de curso</label>
+                </span>
+              </div>
+
+              <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    type="number"
+                    id="nCursoCredTeoria"
+                    formControlName="nCursoCredTeoria"
+                    mode="decimal"
+                    [min]="0"
+                    [max]="100"
+                    class="w-full"
+                  />
+                  <label for="nCursoCredTeoria">Créditos teoría</label>
+                </span>
+              </div>
+              <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    type="number"
+                    id="nCursoCredPractica"
+                    formControlName="nCursoCredPractica"
+                    mode="decimal"
+                    [min]="0"
+                    [max]="100"
+                    class="w-full"
+                  />
+                  <label for="nCursoCredPractica">Créditos práctica</label>
+                </span>
+              </div>
+
+              <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    type="number"
+                    id="iCursoTotalHoras"
+                    formControlName="iCursoTotalHoras"
+                    mode="decimal"
+                    [min]="0"
+                    [max]="100"
+                    class="w-full"
+                  />
+                  <label for="iCursoTotalHoras">Total horas</label>
+                </span>
+              </div>
+
+              <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                  <input
+                    pInputText
+                    id="nCursoTotalCreditos"
+                    formControlName="nCursoTotalCreditos"
+                    mode="decimal"
+                    [min]="0"
+                    [max]="20"
+                    class="w-full"
+                  />
+                  <label for="nCursoTotalCreditos">Total créditos</label>
+                </span>
+              </div>
+            </div>
+
+            <div class="grid mt-4">
+              <div class="field col-12 md:col-3">
+                <label for="cCursoDescripcion">Descripción del curso</label>
+                <textarea
+                  pInputTextarea
+                  id="cCursoDescripcion"
+                  class="w-full"
+                  formControlName="cCursoDescripcion"
+                  rows="5"
+                ></textarea>
+              </div>
+
+              <div class="field col-12 md:col-3">
+                <label for="cCursoPerfilDocente">Perfil del docente</label>
+                <textarea
+                  pInputTextarea
+                  id="cCursoPerfilDocente"
+                  class="w-full"
+                  formControlName="cCursoPerfilDocente"
+                  rows="5"
+                ></textarea>
+              </div>
+
+              <div class="field col-12 md:col-4">
+                <div class="border-round w-full btnimag">
+                  <div class="flex justify-content-between flex-wrap">
+                    <div class="flex align-items-center justify-content-center m-2">
+                      Cambiar Imagen
+                    </div>
+                    <div class="flex align-items-center justify-content-center m-2">
+                      <p-inputSwitch
+                        formControlName="iImageAleatorio"
+                        class="pr-3"
+                        (onChange)="showVistaPrevia = $event.checked"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <p-image
+                  class="flex align-items-center justify-content-center m-2"
+                  *ngIf="!showVistaPrevia"
+                  [src]="backend + '/' + ruta_imagen"
+                  alt="Image"
+                  height="150"
+                  [preview]="false"
+                />
+                <div class="card w-full mt-2 justify-content-center" *ngIf="showVistaPrevia">
+                  <div class="container">
+                    <!-- <h2>Selecciona una imagen</h2> -->
+                    <!-- (ngSubmit)="onSubmit()" -->
+                    <p-carousel
+                      #carousel
+                      [value]="portada"
+                      [numVisible]="3"
+                      [numScroll]="1"
+                      [circular]="true"
+                    >
+                      <ng-template let-image let-index="index" pTemplate="item">
+                        <div
+                          [tabindex]="index"
+                          class="image-item"
+                          [class.selected]="isSelected(image)"
+                          (click)="selectImage(image)"
+                          (keyup)="selectImage(null)"
+                        >
+                          <div class="image-container">
+                            <img
+                              [src]="backend + image.url"
+                              [alt]="image.title"
+                              class="carousel-image"
+                            />
+                            <div class="image-title">
+                              {{ image.title }}
+                            </div>
+                            <div *ngIf="isSelected(image)" class="selected-indicator">
+                              <i class="pi pi-check-circle"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-template>
+                    </p-carousel>
+
+                    <div class="form-info" *ngIf="selectedImageId">
+                      <p>
+                        Imagen seleccionada: Nro
+                        {{ selectedImageId }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 md:col-2">
+                <button
+                  pButton
+                  label="Guardar"
+                  icon="pi pi-save"
+                  class="p-button-success w-full"
+                  size="small"
+                  (click)="accionBtnCursos({ accion: 'agregar', item: frmCursos.value })"
+                ></button>
+              </div>
+            </div>
+          </form>
+        </app-container-page>
+      </p-tabPanel>
+
+      <p-tabPanel header="Competencias asignadas">
+        <div *ngIf="iCursoId === 0">
+          <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
+        </div>
+        <div *ngIf="iCursoId > 0">
+          <app-curricula-curso-competencias
+            [iCurrId]="iCurrId"
+            [iCursoId]="iCursoId"
+            [cursos]="cursos"
+          ></app-curricula-curso-competencias>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </ng-template>
 
-  <div>
-    <form [formGroup]="frmCursos">
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <input pInputText id="cCursoNombre" formControlName="cCursoNombre" />
-            <label for="cCursoNombre">Nombre</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <label for="iCursoEstado">Estado</label>
-            <p-toggleButton
-              styleClass="w-full"
-              onLabel="Activo"
-              offLabel="Inactivo"
-              formControlName="iCursoEstado"
-            />
-          </span>
-        </div>
-      </div>
-
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <input pInputText id="fechaResolucion" formControlName="iTipoCursoId" />
-            <label for="fechaResolucion">Tipo de curso</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <input pInputText id="fechaResolucion" formControlName="iCursoTotalHoras" />
-            <label for="fechaResolucion">Total horas</label>
-          </span>
-        </div>
-      </div>
-
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input pInputText id="fechaResolucion" formControlName="nCursoCredTeoria" />
-            <label for="fechaResolucion">Créditos de teoría</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input pInputText id="fechaResolucion" formControlName="nCursoCredPractica" />
-            <label for="fechaResolucion">Créditos de práctica</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input pInputText id="fechaResolucion" formControlName="nCursoTotalCreditos" />
-            <label for="fechaResolucion">Total de créditos</label>
-          </span>
-        </div>
-      </div>
-      <div class="col-12">
-        <div class="col-12">
-          <label for="fechaResolucion">Descripción</label>
-          <p-editor
-            class="col-12"
-            id="totalCreditos"
-            styleClass="h-full"
-            formControlName="cCursoDescripcion"
-            [style]="{ height: '80px' }"
-          />
-        </div>
-
-        <div class="col-12">
-          <label for="fechaResolucion">Perfil de docente</label>
-          <p-editor
-            class="col-12"
-            id="totalCreditos"
-            formControlName="cCursoPerfilDocente"
-            [style]="{ height: '80px' }"
-          />
-        </div>
-
-        <div class="col-12">
-          <label for="fechaResolucion">Imagen</label>
-          <p-fileUpload
-            [multiple]="false"
-            accept="image/*"
-            maxFileSize="1000000"
-            (onSelect)="
-              frmCursos.patchValue({
-                cCursoImagen: $event.currentFiles?.[0],
-              })
-            "
-            (onClear)="frmCursos.patchValue({ cCursoImagen: '' })"
-          >
-            <ng-template
-              pTemplate="header"
-              let-files
-              let-chooseCallback="chooseCallback"
-              let-clearCallback="clearCallback"
-              let-uploadCallback="uploadCallback"
-            >
-              <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
-                <div class="flex gap-2">
-                  <p-button
-                    (onClick)="choose($event, chooseCallback)"
-                    icon="pi pi-images"
-                    [rounded]="true"
-                    [outlined]="true"
-                  />
-                  <p-button
-                    (onClick)="clearCallback()"
-                    icon="pi pi-times"
-                    [rounded]="true"
-                    [outlined]="true"
-                    severity="danger"
-                    [disabled]="!files || files.length === 0"
-                  />
-                </div>
-                <p-progressBar> </p-progressBar>
-              </div>
-            </ng-template>
-            <ng-template
-              pTemplate="content"
-              let-files
-              let-uploadedFiles="uploadedFiles"
-              let-removeFileCallback="removeFileCallback"
-              let-removeUploadedFileCallback="removeUploadedFileCallback"
-            >
-              <div class="grid justify-content-center">
-                @for (file of files; track file.id) {
-                  <p-image
-                    [src]="file.objectURL"
-                    alt="Image"
-                    appendTo="body"
-                    width="160"
-                    [preview]="true"
-                  />
-                }
-              </div>
-            </ng-template>
-            <ng-template pTemplate="file"> </ng-template>
-            <ng-template pTemplate="empty">
-              <div class="flex align-items-center justify-content-center flex-column">
-                <i
-                  class="pi pi-cloud-upload border-2 border-circle p-3 text-3xl text-400 border-400"
-                ></i>
-                <p class="mt-2 mb-0">Drag and drop files here to upload.</p>
-              </div>
-            </ng-template>
-          </p-fileUpload>
-        </div>
-      </div>
-    </form>
-  </div>
-
+  <!-- PIE DEL DIALOG -->
   <ng-template pTemplate="footer">
-    <div>
+    <div class="flex justify-content-end gap-2">
       <button
         pButton
-        label="Cancel"
-        icon="pi pi-close"
-        size="small"
+        label="Cancelar"
+        icon="pi pi-times"
         class="p-button-danger"
+        size="small"
         (click)="visible = false"
       ></button>
-
-      <button
-        pButton
-        label="Guardar"
-        icon="pi pi-save"
-        size="small"
-        class="p-button-success"
-        (click)="accionBtnCursos({ accion: 'agregar', item: frmCursos.value })"
-      ></button>
-      <!-- [outlined]="true" -->
     </div>
   </ng-template>
 </p-dialog>

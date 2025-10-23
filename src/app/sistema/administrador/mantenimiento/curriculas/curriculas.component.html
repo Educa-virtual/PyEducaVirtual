@@ -3,17 +3,39 @@
   [actions]="accionesCurricula"
   (accionBtnItem)="accionBtnItem($event)"
   ><p-toast />
-  @if (iCurrId > 0) {
-    <app-curricula-curso [iCurrId]="iCurrId"></app-curricula-curso>
-  } @else {
-    <app-table-primeng
-      [columnas]="curriculasColumns"
-      [actions]="accionesTablaCurricula"
-      [data]="curriculas"
-      (accionBtnItem)="accionBtnItem($event)"
-    >
-    </app-table-primeng>
-  }
+  <div class="grid">
+    <div class="field col-12 md:col-4">
+      <app-container-page title="Lista de Curriculas" [actions]="[]">
+        <div class="grid">
+          <div class="col-12 mt-3">
+            <app-table-primeng
+              [columnas]="curriculasColumns"
+              [actions]="accionesTablaCurricula"
+              [data]="curriculas"
+              (accionBtnItem)="accionBtnItem($event)"
+              [searchPlaceholder]="'Buscar por refencia...'"
+            >
+            </app-table-primeng>
+          </div>
+        </div>
+      </app-container-page>
+    </div>
+
+    <div class="field col-12 md:col-4">
+      @if (iCurrId > 0) {
+        <app-curricula-curso [iCurrId]="iCurrId" [curriculas]="curriculas"></app-curricula-curso>
+      } @else {
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron áreas relacionados" />
+      }
+    </div>
+    <div class="field col-12 md:col-4">
+      @if (iCurrId > 0) {
+        <app-curricula-competencia [iCurrId]="iCurrId" />
+      } @else {
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias relacionados" />
+      }
+    </div>
+  </div>
 </app-container-page>
 
 <p-dialog
@@ -117,7 +139,7 @@
             [minFractionDigits]="0"
             [maxFractionDigits]="2"
           />
-          <label for="notaMinima">Nota minima</label>
+          <label for="notaMinima">Nota mínima</label>
         </span>
       </div>
       <div class="col-4">

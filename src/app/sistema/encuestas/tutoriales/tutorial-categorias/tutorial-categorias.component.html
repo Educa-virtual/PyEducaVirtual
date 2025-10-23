@@ -1,7 +1,6 @@
 <br />
 
 <p-stepper class="mt-3" [(activeStep)]="active">
-  <ng-template pTemplate="separator"></ng-template>
   <p-stepperPanel>
     <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
       <button
@@ -9,7 +8,7 @@
         (click)="onClick.emit()"
       >
         <span
-          class="border-round border-2 w-1rem h-1rem inline-flex align-items-center justify-content-center"
+          class="border-round border-2 w-1rem h-1rem"
           [ngClass]="{
             'bg-primary border-primary': index <= active,
             'surface-border': index > active,
@@ -55,7 +54,7 @@
         (click)="onClick.emit()"
       >
         <span
-          class="border-round border-2 w-1rem h-1rem inline-flex align-items-center justify-content-center"
+          class="border-round border-2 w-1rem h-1rem"
           [ngClass]="{
             'bg-primary border-primary': index <= active,
             'surface-border': index > active,
@@ -131,7 +130,7 @@
         (click)="onClick.emit()"
       >
         <span
-          class="border-round border-2 w-1rem h-1rem inline-flex align-items-center justify-content-center"
+          class="border-round border-2 w-1rem h-1rem"
           [ngClass]="{
             'bg-primary border-primary': index <= active,
             'surface-border': index > active,
@@ -176,7 +175,6 @@
         <strong>por cada curso y por cada periodo académico</strong> (bimestre, trimestre, semestre,
         etc.).
       </p>
-
       <div class="flex gap-2 justify-content-center mb-2">
         <p-splitButton
           severity="primary"
@@ -211,7 +209,7 @@
         (click)="onClick.emit()"
       >
         <span
-          class="border-round border-2 w-1rem h-1rem inline-flex align-items-center justify-content-center"
+          class="border-round border-2 w-1rem h-1rem"
           [ngClass]="{
             'bg-primary border-primary': index <= active,
             'surface-border': index > active,
@@ -275,7 +273,7 @@
         (click)="onClick.emit()"
       >
         <span
-          class="border-round border-2 w-1rem h-1rem inline-flex align-items-center justify-content-center"
+          class="border-round border-2 w-1rem h-1rem"
           [ngClass]="{
             'bg-primary border-primary': index <= active,
             'surface-border': index > active,
@@ -338,7 +336,7 @@
         (click)="onClick.emit()"
       >
         <span
-          class="border-round border-2 w-1rem h-1rem inline-flex align-items-center justify-content-center"
+          class="border-round border-2 w-1rem h-1rem"
           [ngClass]="{
             'bg-primary border-primary': index <= active,
             'surface-border': index > active,

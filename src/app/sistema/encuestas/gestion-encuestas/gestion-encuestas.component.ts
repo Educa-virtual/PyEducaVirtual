@@ -10,11 +10,12 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { SlicePipe } from '@angular/common';
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TutorialEncuestasComponent } from '../tutoriales/tutorial-encuestas/tutorial-encuestas.component';
 
 @Component({
   selector: 'app-gestion-encuestas',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent],
+  imports: [PrimengModule, TablePrimengComponent, TutorialEncuestasComponent],
   templateUrl: './gestion-encuestas.component.html',
   styleUrl: './gestion-encuestas.component.scss',
   providers: [SlicePipe],
@@ -24,6 +25,7 @@ export class GestionEncuestasComponent implements OnInit {
 
   visibleDialogDuplicar: boolean = false;
   visibleDialogPlantilla: boolean = false;
+  visibleDialogTutorial: boolean = false;
 
   iCateId: number = null;
   categoria: any = null;
@@ -429,6 +431,10 @@ export class GestionEncuestasComponent implements OnInit {
         });
       },
     });
+  }
+
+  verTutorial(visible: boolean) {
+    this.visibleDialogTutorial = visible;
   }
 
   accionBtnItemTable({ accion, item }) {

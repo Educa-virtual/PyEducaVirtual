@@ -7,15 +7,6 @@
   <ng-template pTemplate="icons" class="flex justify-content-center">
     <div class="flex gap-2">
       <p-button
-        labelTooltip="Tutorial"
-        tooltipPosition="top"
-        severity="secondary"
-        (click)="verTutorial(true)"
-      >
-        <i class="pi pi-question-circle"></i>
-        <span class="hidden md:inline ml-2">Tutorial</span>
-      </p-button>
-      <p-button
         *ngIf="puede_crear"
         labelTooltip="Nueva"
         tooltipPosition="top"
@@ -24,6 +15,15 @@
       >
         <i class="pi pi-plus"></i>
         <span class="hidden md:inline ml-2">Nueva</span>
+      </p-button>
+      <p-button
+        labelTooltip="Tutorial"
+        tooltipPosition="top"
+        severity="secondary"
+        (click)="verTutorial(true)"
+      >
+        <i class="pi pi-question-circle"></i>
+        <span class="hidden md:inline ml-2">Tutorial</span>
       </p-button>
     </div>
   </ng-template>

@@ -9,26 +9,37 @@
   </ng-template>
 
   <ng-template pTemplate="icons" class="flex justify-content-center">
-    <p-button
-      *ngIf="categoria && !+categoria?.bEsFija"
-      severity="success"
-      pTooltip="Nueva"
-      tooltipPosition="top"
-      (click)="agregarEncuesta()"
-    >
-      <i class="pi pi-fw pi-plus"></i>
-      <span class="hidden md:inline ml-2">Nueva</span>
-    </p-button>
-    <p-button
-      *ngIf="puede_generar_fija"
-      severity="success"
-      pTooltip="Generar desde plantillas"
-      tooltipPosition="top"
-      (click)="confirmarGenerarEncuestasMasivo()"
-    >
-      <i class="pi pi-fw pi-file-plus"></i>
-      <span class="hidden md:inline ml-2">Generar</span>
-    </p-button>
+    <div class="flex gap-2">
+      <p-button
+        *ngIf="categoria && !+categoria?.bEsFija"
+        severity="success"
+        pTooltip="Nueva"
+        tooltipPosition="top"
+        (click)="agregarEncuesta()"
+      >
+        <i class="pi pi-fw pi-plus"></i>
+        <span class="hidden md:inline ml-2">Nueva</span>
+      </p-button>
+      <p-button
+        *ngIf="puede_generar_fija"
+        severity="success"
+        pTooltip="Generar desde plantillas"
+        tooltipPosition="top"
+        (click)="confirmarGenerarEncuestasMasivo()"
+      >
+        <i class="pi pi-fw pi-file-plus"></i>
+        <span class="hidden md:inline ml-2">Generar</span>
+      </p-button>
+      <p-button
+        labelTooltip="Tutorial"
+        tooltipPosition="top"
+        severity="secondary"
+        (click)="verTutorial(true)"
+      >
+        <i class="pi pi-question-circle"></i>
+        <span class="hidden md:inline ml-2">Tutorial</span>
+      </p-button>
+    </div>
   </ng-template>
 
   <div class="grid p-fluid">
@@ -330,6 +341,19 @@
       (onClick)="crearPlantilla()"
     />
   </div>
+</p-dialog>
+
+<p-dialog
+  header="Tutorial"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogTutorial"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+>
+  <app-tutorial-encuestas (visibleDialogTutorial)="verTutorial($event)" />
 </p-dialog>
 
 <p-toast></p-toast>

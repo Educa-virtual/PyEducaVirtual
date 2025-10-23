@@ -168,50 +168,57 @@
 
 <p-dialog [modal]="true" [(visible)]="visibleProgramacion" [style]="{ width: '50rem' }">
   <ng-template pTemplate="header">
-    <span class="font-bold text-xl text-white">Programacion Curricular</span>
+    <span class="font-bold text-xl text-white">PROGRAMACIÓN CURRICULAR</span>
   </ng-template>
   <div class="grid mt-3">
-    <div class="col-12">
+    <div class="col-12 flex">
       <p-fileUpload
-        #fileUpload
-        name="archivos[]"
-        (onSelect)="seleccionar($event, fileUpload)"
-        [auto]="true"
-        [multiple]="false"
-        [showUploadButton]="false"
-        [showCancelButton]="false"
-        [customUpload]="true"
+        #portafolios
+        class="flex mr-1"
+        mode="basic"
+        chooseLabel="Seleccionar Archivo"
+        chooseIcon="pi pi-upload"
+        name="demo[]"
         accept=".pdf"
-        maxFileSize="10000000"
-      >
-        <ng-template pTemplate="content">
-          <div class="grid">
-            <div class="col-12" *ngFor="let ficha of documentos">
-              <p-inputGroup>
-                <button type="button" pButton class="p-button-default">
-                  <i class="pi pi-link"></i>
-                </button>
-                <input
-                  type="text"
-                  pInputText
-                  [placeholder]="ficha.nombre ? ficha.nombre : 'Programacion Curricular'"
-                  disabled
-                  class="w-full p-inputtext-sm opacity-100"
-                  pInputText
-                />
-                <button
-                  type="button"
-                  (click)="descargarArchivo(ficha.ruta)"
-                  pButton
-                  class="p-button-default"
-                >
-                  <i class="pi pi-eye"></i>
-                </button>
-              </p-inputGroup>
-            </div>
-          </div>
-        </ng-template>
-      </p-fileUpload>
+        maxFileSize="20000000"
+      />
+      <p-button
+        class="flex mr-1"
+        type="button"
+        icon="pi pi-times"
+        (click)="portafolios.clear()"
+      ></p-button>
+      <p-button
+        [disabled]="portafolios.files.length <= 0"
+        styleClass="flex p-button-success"
+        type="button"
+        icon="pi pi-upload"
+        label="Subir"
+        (click)="seleccionar(portafolios)"
+      ></p-button>
+    </div>
+    <div class="col-12">
+      <p-inputGroup>
+        <button type="button" pButton class="p-button-default">
+          <i class="pi pi-link"></i>
+        </button>
+        <input
+          type="text"
+          pInputText
+          [placeholder]="documentos ? documentos.nombre : 'PROGRAMACIÓN CURRICULAR'"
+          disabled
+          class="w-full p-inputtext-sm opacity-100"
+          pInputText
+        />
+        <button
+          type="button"
+          (click)="descargarArchivo(documentos.ruta)"
+          pButton
+          class="p-button-default"
+        >
+          <i class="pi pi-eye"></i>
+        </button>
+      </p-inputGroup>
     </div>
   </div>
 </p-dialog>
@@ -230,7 +237,7 @@
         <input
           type="text"
           pInputText
-          [placeholder]="itinerarioInterno ? itinerarioInterno[0].name : 'Nombre del Itinerario'"
+          [placeholder]="itinerarioInterno ? itinerarioInterno.name : 'Nombre del Itinerario'"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
@@ -247,7 +254,7 @@
         </button>
         <button
           type="button"
-          (click)="descargarArchivo(itinerarioInterno.length ? itinerarioInterno[0]['ruta'] : null)"
+          (click)="descargarArchivo(itinerarioInterno.ruta)"
           [disabled]="!itinerarioInterno || itinerarioInterno.length === 0"
           pButton
           icon="pi pi-eye"
@@ -266,14 +273,14 @@
         <input
           type="text"
           pInputText
-          [placeholder]="reglamentoInterno ? reglamentoInterno[0].name : 'Reglamento Interno'"
+          placeholder="Reglamento Interno"
           disabled
           class="w-full p-inputtext-sm opacity-100"
           pInputText
         />
         <button
           type="button"
-          (click)="descargarArchivo(reglamentoInterno.length ? reglamentoInterno[0]['ruta'] : null)"
+          (click)="descargarArchivo(reglamentoInterno ? reglamentoInterno[0]['ruta'] : null)"
           [disabled]="!reglamentoInterno"
           pButton
           icon="pi pi-eye"
@@ -398,36 +405,5 @@
     </div>
   </div>
 </p-dialog>
-
-<!-- <p-dialog [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }">
-  <ng-template pTemplate="header">
-    <span class="font-bold text-xl text-white"
-      >Importar Silabos - {{ descripcion | lowercase }}</span
-    >
-  </ng-template>
-  <div class="grid mt-3">
-    <div class="col-12 md:col-6">
-      <p-dropdown
-        appendTo="body"
-        [options]="opcionCurso"
-        [(ngModel)]="seleccionarCurso"
-        optionValue="idDocCursoId"
-        optionLabel="curso"
-        placeholder="Seleccionar silabos del Área Curricular"
-      />
-    </div>
-    <div class="col-12 md:col-6">
-      <button
-        [disabled]="seleccionarCurso === ''"
-        [rounded]="true"
-        pButton
-        pRipple
-        (click)="guardarImportacion()"
-      >
-        Guardar Importación
-      </button>
-    </div>
-  </div>
-</p-dialog> -->
 
 <p-toast />

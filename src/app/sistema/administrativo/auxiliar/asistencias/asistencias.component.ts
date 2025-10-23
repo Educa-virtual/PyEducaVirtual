@@ -247,6 +247,7 @@ export class AsistenciasComponent implements OnInit {
     if (this.buscar) {
       this.buscar = false;
       const extraer = qr.split('|');
+
       if (extraer.length > 0) {
         this.visible = true;
         this.datos.cEstCodigo = extraer[1];
@@ -268,11 +269,9 @@ export class AsistenciasComponent implements OnInit {
 
         this.servicioGeneral.getRecibirDatos(enlace).subscribe({
           next: data => {
-            this.codigo = data.data[0];
-            if (!this.codigo) {
+            this.codigo = data.data[0] ? data.data[0] : [];
+            if (this.codigo.length == 0) {
               this.mensajeError('Mensaje del sistema', 'No se encontro el registro');
-              this.visible = false;
-              this.buscar = true;
               return;
             }
             this.codigo.dtAsistencia = this.marcador;
@@ -313,7 +312,7 @@ export class AsistenciasComponent implements OnInit {
         const idAsistencia = parseInt(data.data[0]);
         const verificar = this.temporal.find(item => item.idAsistencia == idAsistencia);
         if (verificar) {
-          this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+          this.mensajeSuccess('Mensaje del sistema', 'Éxito al guardar asistencia');
         } else {
           this.mensajeSuccess('Mensaje del sistema', 'Ya fue registrado el alumno');
         }
@@ -366,7 +365,7 @@ export class AsistenciasComponent implements OnInit {
     this.servicioGeneral.getMultipleMedia(enlace).subscribe({
       next: () => {
         this.buscarGrupo();
-        this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+        this.mensajeSuccess('Mensaje del sistema', 'Éxito al guardar asistencia');
       },
       error: () => {
         this.buscarGrupo();
@@ -400,7 +399,7 @@ export class AsistenciasComponent implements OnInit {
 
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
       next: () => {
-        this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+        this.mensajeSuccess('Mensaje del sistema', 'Éxito al guardar asistencia');
         this.buscarCodigo();
       },
       error: () => {

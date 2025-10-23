@@ -16,6 +16,7 @@ import { RendirExamenComponent } from './evaluaciones/examen/rendir-examen/rendi
 import { AsignarAreasEspecialistaDremoComponent } from '../especialista-dremo/asignar-areas/especialista-dremo.component';
 import { AsignarAreasEspecialistaUgelComponent } from '../especialista-ugel/asignar-areas/asignar-areas.component';
 import { EvaluacionExclusionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaciones/evaluacion-exclusiones/evaluacion-exclusiones.component';
+import { VistaPreviaEreComponent } from './evaluaciones/examen/vista-previa-ere/vista-previa-ere.component';
 /*import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
@@ -63,6 +64,16 @@ const routes: Routes = [
     data: {
       expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
       breadcrumb: 'Gestionar Preguntas',
+      icon: 'pi pi-list-check',
+    },
+  },
+  {
+    path: 'evaluaciones/:iEvaluacionId/areas/:iCursoNivelGradId/preguntas/vista-previa',
+    component: VistaPreviaEreComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
+      breadcrumb: 'Vista previa Preguntas',
       icon: 'pi pi-list-check',
     },
   },

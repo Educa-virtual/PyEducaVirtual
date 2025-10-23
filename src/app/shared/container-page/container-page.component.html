@@ -1,42 +1,42 @@
 <p-panel styleClass="container-page">
-    <ng-template pTemplate="header" class="encabezado">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-uppercase text-primary">
-                {{ title }}
-            </h3>
-            @if (subtitle) {
-                <p>{{ subtitle }}</p>
-            }
-        </div>
-    </ng-template>
-    <ng-template pTemplate="icons" class="flex flex-column flex-1">
-        <div class="flex flex-wrap gap-2 justify-content-end">
-            <ng-content select="[icons]"></ng-content>
-            @for (item of actions; track $index) {
-                <button
-                    size="small"
-                    [rounded]="true"
-                    pButton
-                    pRipple
-                    [disabled]="item?.disabled ?? false"
-                    [pTooltip]="item.labelTooltip"
-                    tooltipPosition="top"
-                    (click)="accionBtn(item.accion, [])"
-                    [ngClass]="item.class"
-                >
-                    @if (item.icon | isIconType) {
-                        <app-icon
-                            [name]="item.icon.name"
-                            [color]="item.icon.color"
-                            [size]="item.icon.size"
-                        ></app-icon>
-                    } @else {
-                        <i class="{{ item.icon }}"></i>
-                    }
-                    &nbsp;{{ item.text }}
-                </button>
-            }
-        </div>
-    </ng-template>
-    <ng-content></ng-content>
+  <ng-template pTemplate="header" class="encabezado">
+    <div class="flex flex-column gap-2">
+      <h3 class="m-0 text-uppercase text-white font-bold">
+        {{ title }}
+      </h3>
+      @if (subtitle) {
+        <p>{{ subtitle }}</p>
+      }
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <ng-content select="[icons]"></ng-content>
+      @for (item of actions; track $index) {
+        <button
+          size="small"
+          [rounded]="true"
+          pButton
+          pRipple
+          [disabled]="item?.disabled ?? false"
+          [pTooltip]="item.labelTooltip"
+          tooltipPosition="top"
+          (click)="accionBtn(item.accion, [])"
+          [ngClass]="item.class"
+        >
+          @if (item.icon | isIconType) {
+            <app-icon
+              [name]="item.icon.name"
+              [color]="item.icon.color"
+              [size]="item.icon.size"
+            ></app-icon>
+          } @else {
+            <i class="{{ item.icon }}"></i>
+          }
+          &nbsp;{{ item.text }}
+        </button>
+      }
+    </div>
+  </ng-template>
+  <ng-content></ng-content>
 </p-panel>

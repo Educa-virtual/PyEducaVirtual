@@ -53,7 +53,7 @@ const docente = [
         routerLink: ['/aula-virtual/areas-curriculares'],
       },
       {
-        label: 'Actividades No Lectivas',
+        label: 'Actividades De Gestión',
         icon: 'pi pi-fw pi-list-check',
         routerLink: ['/docente/actividades-no-lectivas'],
       },

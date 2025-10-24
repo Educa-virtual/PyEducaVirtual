@@ -1,4 +1,7 @@
-<app-toolbar-primeng title="Solicitudes de Inscripciones"></app-toolbar-primeng>
+<app-toolbar-primeng
+  *ngIf="!detalleVisible"
+  title="Solicitudes de Inscripciones"
+></app-toolbar-primeng>
 
 <div class="grid" *ngIf="!detalleVisible">
   <div class="col-12">

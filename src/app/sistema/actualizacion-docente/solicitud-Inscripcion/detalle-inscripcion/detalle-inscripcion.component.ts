@@ -15,6 +15,8 @@ import { InscripcionesService } from '@/app/servicios/cap/inscripciones.service'
 import { SubirArchivoComponent } from '@/app/shared/subir-archivo/subir-archivo.component';
 import { environment } from '@/environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-detalle-inscripcion',
@@ -23,7 +25,10 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   templateUrl: './detalle-inscripcion.component.html',
   styleUrl: './detalle-inscripcion.component.scss',
 })
-export class DetalleInscripcionComponent implements OnInit, OnChanges {
+export class DetalleInscripcionComponent
+  extends MostrarErrorComponent
+  implements OnInit, OnChanges
+{
   @Input() id!: string;
   @Output() volver = new EventEmitter<void>();
 
@@ -34,6 +39,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
   private _constantesService = inject(ConstantesService);
   private _InscripcionesService = inject(InscripcionesService);
   private _MessageService = inject(MessageService);
+  private sanitizer: DomSanitizer;
 
   alumnos: any[];
   showModal: boolean = false;
@@ -60,15 +66,13 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     cPersDomicilio: ['', [Validators.required]],
     cInscripCorreo: ['', [Validators.required, Validators.email]],
     cInscripCel: ['', [Validators.required]],
-    cIieeNombre: ['', [Validators.required]],
+    iIieeId: ['', [Validators.required]],
     cVoucher: [''],
     iPersId: [''],
   });
-  constructor(private sanitizer: DomSanitizer) {}
 
   // changes
   ngOnChanges() {
-    // console.log(changes);
     this.formIncripcion.reset();
   }
   ngOnInit(): void {
@@ -277,10 +281,14 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
                       cPersMaterno: data.cPersMaterno,
                       cPersDomicilio: data.cPersDomicilio,
                       cInscripCorreo: data.cPersCorreo,
-                      cInscripCel: data.cPersCel,
+                      cInscripCel: data.cPersTelefono,
                       iPersId: data.iPersId,
                     });
                     this.instituciones = resp.instituciones;
+                    this.instituciones = this.instituciones.map((item: any) => ({
+                      ...item,
+                      cNombre: `${item.cIieeCodigoModular} - ${item.cIieeNombre} - ${item.cNivelTipoNombre}`,
+                    }));
                   } else {
                     this.mostrarMensajeToast({
                       severity: 'warning',
@@ -290,26 +298,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
                   }
                 },
                 error: error => {
-                  const errores = error?.error?.errors;
-                  if (error.status === 422 && errores) {
-                    // Recorre y muestra cada mensaje de error
-                    Object.keys(errores).forEach(campo => {
-                      errores[campo].forEach((mensaje: string) => {
-                        this.mostrarMensajeToast({
-                          severity: 'error',
-                          summary: 'Error de validación',
-                          detail: mensaje,
-                        });
-                      });
-                    });
-                  } else {
-                    // Error genérico si no hay errores específicos
-                    this.mostrarMensajeToast({
-                      severity: 'error',
-                      summary: 'Error',
-                      detail: error?.error?.message || 'Ocurrió un error inesperado',
-                    });
-                  }
+                  this.mostrarErrores(error);
                 },
               });
           }
@@ -330,7 +319,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
       iPersId: datos.iPersId,
       cInscripCorreo: datos.cInscripCorreo,
       cInscripCel: datos.cInscripCel,
-      iIieeId: datos.cIieeNombre, // Institución Educativa ID
+      iIieeId: datos.iIieeId, // Institución Educativa ID
       iCredId: this._constantesService.iCredId, // Credencial ID
       cVoucher: datos.cVoucher, // Nombre del archivo
       iTipoIdentId: datos.iTipoIdentId,
@@ -341,46 +330,24 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
       cPersDomicilio: datos.cPersDomicilio,
     };
 
-    this._InscripcionesService.guardarInscripcion(data).subscribe({
-      next: resp => {
-        if (resp.validated) {
-          this.obtenerSolicitudesXCurso();
-          this.showModalInscripcion = false;
-          this.mostrarMensajeToast({
-            severity: 'success',
-            summary: '¡Genial!',
-            detail: resp.message,
-          });
-          setTimeout(() => {
-            this.showModalInscripcion = false;
-          }, 2000);
-        }
-        this.loadingFormulario = false;
-      },
-      error: error => {
-        const errores = error?.error?.errors;
-        if (error.status === 422 && errores) {
-          // Recorre y muestra cada mensaje de error
-          Object.keys(errores).forEach(campo => {
-            errores[campo].forEach((mensaje: string) => {
-              this.mostrarMensajeToast({
-                severity: 'error',
-                summary: 'Error de validación',
-                detail: mensaje,
-              });
+    this._InscripcionesService
+      .guardarInscripcion(data)
+      .pipe(finalize(() => (this.showModalInscripcion = false)))
+      .subscribe({
+        next: resp => {
+          if (resp.validated) {
+            this.obtenerSolicitudesXCurso();
+            this.mostrarMensajeToast({
+              severity: 'success',
+              summary: '¡Genial!',
+              detail: resp.message,
             });
-          });
-        } else {
-          // Error genérico si no hay errores específicos
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: error?.error?.message || 'Ocurrió un error inesperado',
-          });
-        }
-        this.loadingFormulario = false;
-      },
-    });
+          }
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+      });
   }
   // obtener tipo de documentación
   obtenerTipoIdentificaciones(): void {
@@ -396,11 +363,7 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
         this.tiposIdentificaciones = data.length ? [data[0]] : [];
       },
       error: error => {
-        this.mostrarMensajeToast({
-          severity: 'error',
-          summary: 'Error',
-          detail: error?.error?.message || error || 'Ocurrió un error inesperado',
-        });
+        this.mostrarErrores(error);
       },
     });
   }
@@ -421,9 +384,6 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     ];
   }
 
-  mostrarMensajeToast(message) {
-    this._MessageService.add(message);
-  }
   obtenerArchivo(file) {
     const documentos = file[0]['path'];
     if (documentos.validated) {
@@ -485,7 +445,9 @@ export class DetalleInscripcionComponent implements OnInit, OnChanges {
     const rutaRelativa = data.cVoucher;
     const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
     const url = baseURL + rutaRelativa;
-
+    console.log(url);
+    console.log(rutaRelativa);
+    if (!rutaRelativa) return;
     this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

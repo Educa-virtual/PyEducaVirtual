@@ -6,7 +6,6 @@
   <app-table-primeng
     [columnas]="columnasTabla"
     [data]="alumnos"
-    [showCaption]="false"
     [actions]="accionesTabla"
     (accionBtnItem)="accionBnt($event)"
   ></app-table-primeng>
@@ -194,10 +193,10 @@
           placeholder="Seleccionar Institución"
           [filter]="true"
           optionValue="iIieeId"
-          optionLabel="cIieeNombre"
+          optionLabel="cNombre"
           [appendTo]="'body'"
           styleClass="w-full"
-          formControlName="cIieeNombre"
+          formControlName="iIieeId"
         ></p-dropdown>
       </p-inputGroup>
     </div>

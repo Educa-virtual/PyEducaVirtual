@@ -52,7 +52,7 @@ import { ComunicadosComponent } from './comunicados/comunicados.component';
         component: ActividadesNoLectivasComponent,
       },
       {
-        path: 'material-educativo/:idDocCursoId/:cCursoNombre/:iCursosNivelGradId',
+        path: 'material-educativo/:idDocCursoId/:cCursoNombre/:iCursosNivelGradId/:cGradoAbreviacion/:cSeccionNombre',
         component: MaterialEducativoComponent,
       },
       {

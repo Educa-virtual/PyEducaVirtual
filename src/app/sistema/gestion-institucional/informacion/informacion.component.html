@@ -68,6 +68,51 @@
                 <label for="cIieeDireccion">Dirección</label>
               </span>
             </div>
+            <div class="field col-12 md:col-12">
+              <label for="cIieeUrlReglamentoInterno">Reglamento</label>
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <i class="pi pi-link" style="color: #333437"></i>
+                </p-inputGroupAddon>
+                <!-- <input type="hidden" pInputText
+                  [placeholder]="filesUrl.length ? filesUrl[0]['name'] : 'seleccionar reglamento'"
+                  class="w-full p-inputtext-sm opacity-100" formControlName="cIieeUrlReglamentoInterno" pInputText
+                  readonly /> -->
+                <input
+                  type="text"
+                  pInputText
+                  [placeholder]="filesUrl.length ? filesUrl[0]['name'] : 'seleccionar reglamento'"
+                  class="w-full p-inputtext-sm opacity-100"
+                  formControlName="reglamentoInterno"
+                  pInputText
+                  readonly
+                />
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  severity="primary"
+                  class="p-button-primary btn-file-image"
+                >
+                  <i class="pi pi-upload"></i
+                  ><input
+                    type="file"
+                    (change)="onUploadChange($event, 'reglamento')"
+                    accept=".pdf "
+                  />
+                </button>
+                <button
+                  type="button"
+                  (click)="openLink(filesUrl.length ? filesUrl[0]['ruta'] : null)"
+                  [disabled]="!filesUrl"
+                  pButton
+                  icon="pi pi-eye"
+                  class="p-button-info"
+                >
+                  &nbsp;
+                </button>
+              </p-inputGroup>
+            </div>
           </div>
         </p-fieldset>
       </form>

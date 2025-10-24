@@ -11,11 +11,12 @@ import {
 import { SlicePipe } from '@angular/common';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TutorialPlantillasComponent } from '../../tutoriales/tutorial-plantillas/tutorial-plantillas.component';
 
 @Component({
   selector: 'app-gestion-plantillas',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent],
+  imports: [PrimengModule, TablePrimengComponent, TutorialPlantillasComponent],
   templateUrl: './gestion-plantillas.component.html',
   styleUrl: './gestion-plantillas.component.scss',
   providers: [SlicePipe],
@@ -49,6 +50,7 @@ export class GestionPlantillasComponent implements OnInit {
 
   visibleDialogEncuesta: boolean = false;
   visibleDialogDuplicar: boolean = false;
+  visibleDialogTutorial: boolean = false;
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
@@ -467,6 +469,10 @@ export class GestionPlantillasComponent implements OnInit {
           });
         },
       });
+  }
+
+  verTutorial(visible: boolean) {
+    this.visibleDialogTutorial = visible;
   }
 
   accionBtnItemTable({ accion, item }) {

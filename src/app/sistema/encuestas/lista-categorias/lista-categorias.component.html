@@ -86,7 +86,7 @@
               <footer class="p-3 pt-0 flex align-items-center justify-content-between z-1 relative">
                 <a
                   [routerLink]="
-                    '/encuestas/categorias/$' + categoria?.iCateId + '/gestion-encuestas'
+                    '/encuestas/categorias/' + categoria?.iCateId + '/gestion-encuestas'
                   "
                   *ngIf="+categoria?.iCantBorradores > 0"
                 >

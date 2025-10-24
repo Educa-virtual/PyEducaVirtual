@@ -356,4 +356,73 @@
   <app-tutorial-encuestas (visibleDialogTutorial)="verTutorial($event)" />
 </p-dialog>
 
+<p-confirmDialog
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [visible]="visibleDialogGenerar"
+>
+  <ng-template pTemplate="headless">
+    <div class="surface-overlay border-round text-center p-5">
+      <i class="pi pi-exclamation-triangle text-yellow-500 mb-3" style="font-size: 3.5rem"></i>
+      <span class="block mb-3 font-bold text-xl">Generar encuestas masivas</span>
+      <p>
+        Para generar encuestas de forma masiva ingrese al "Listado de plantillas", seleccione la
+        plantilla que desee utilizar y haga clic en "Hacer encuestas.
+      </p>
+      @if (es_director) {
+        <p>
+          Esta acción reeemplazará, para su I.E., las encuestas existentes registradas por el
+          Administrador que aún no han sido respondidas por sus estudiantes. Solo usted podrá editar
+          las nuevas encuestas.
+        </p>
+      }
+      <p>
+        Las encuestas se crearán para todos las áreas y/o periodos configurados. Revise que las
+        siguientes listas contengan datos, en caso contrario realice la configuración de áreas y
+        periodos académicos.
+      </p>
+      <div class="grid">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              Cursos
+              <p-badge [value]="cursos.length" severity="danger" *ngIf="cursos.length" />
+            </p-inputGroupAddon>
+            <p-dropdown
+              [options]="cursos"
+              [showClear]="false"
+              appendTo="body"
+              styleClass="group-element text-left"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              Periodos
+              <p-badge [value]="periodos.length" severity="danger" *ngIf="periodos.length" />
+            </p-inputGroupAddon>
+            <p-dropdown
+              [options]="periodos"
+              [showClear]="false"
+              appendTo="body"
+              styleClass="group-element text-left"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+
+      <div class="flex justify-content-center flex-wrap gap-2">
+        <button pButton label="Si" (click)="listarPlantillas()" class="p-button-danger"></button>
+        <button
+          pButton
+          label="No, cancelar"
+          (click)="visibleDialogGenerar = false"
+          class="p-button-outlined p-button-secondary"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
+
 <p-toast></p-toast>

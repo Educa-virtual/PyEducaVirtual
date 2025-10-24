@@ -26,13 +26,16 @@ export class GestionEncuestasComponent implements OnInit {
   visibleDialogDuplicar: boolean = false;
   visibleDialogPlantilla: boolean = false;
   visibleDialogTutorial: boolean = false;
+  visibleDialogGenerar: boolean = false;
 
   iCateId: number = null;
   categoria: any = null;
   selectedItem: any;
+  cCateNombre: string;
+
   iYAcadId: number;
   perfil: any;
-  cCateNombre: string;
+  es_director: boolean = false;
 
   formEncuesta: FormGroup;
   formPlantilla: FormGroup;
@@ -54,6 +57,9 @@ export class GestionEncuestasComponent implements OnInit {
 
   puede_generar_fija: boolean = false;
 
+  cursos: Array<object>;
+  periodos: Array<object>;
+
   constructor(
     private messageService: MessageService,
     private encuestasService: EncuestasService,
@@ -69,6 +75,7 @@ export class GestionEncuestasComponent implements OnInit {
     });
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
+    this.es_director = [DIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
     this.setBreadCrumbs();
   }
 
@@ -115,6 +122,7 @@ export class GestionEncuestasComponent implements OnInit {
     if (this.iCateId) {
       this.verCategoria();
       this.listarEncuestas();
+      this.obtenerParametrosFija();
     }
   }
 
@@ -144,18 +152,20 @@ export class GestionEncuestasComponent implements OnInit {
   }
 
   confirmarGenerarEncuestasMasivo() {
-    this.confirmService.openConfirm({
-      header: '¿Desea ir al listado de plantillas?',
-      message:
-        'Para generar encuestas de forma masiva ingrese al "Listado de plantillas", seleccione la plantilla que desee utilizar y haga clic en "Hacer encuestas".' +
-        (Number(this.perfil.iPerfilId) === DIRECTOR_IE
-          ? ' Esta acción reeemplazará, para su I.E., las encuestas existentes registradas por el Administrador que aún no han sido respondidas por sus estudiantes. Solo usted podrá editar las nuevas encuestas.'
-          : ''),
-      accept: () => {
-        this.listarPlantillas();
-      },
-      reject: () => {},
-    });
+    this.visibleDialogGenerar = true;
+  }
+
+  obtenerParametrosFija() {
+    this.encuestasService
+      .crearEncuestaFija({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iYAcadId: this.iYAcadId,
+        iCateId: this.iCateId,
+      })
+      .subscribe((data: any) => {
+        this.cursos = JSON.parse(data.data.cursos);
+        this.periodos = JSON.parse(data.data.periodos);
+      });
   }
 
   generarEncuestaPlantilla(encuesta_reemplazada: any | null = null) {

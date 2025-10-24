@@ -201,6 +201,10 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/crearEncuestaAutoevaluacion`, data);
   }
 
+  crearEncuestaFija(data: any) {
+    return this.http.post(`${baseUrl}/enc/crearEncuestaFija`, data);
+  }
+
   listarPlantillas(data: any) {
     return this.http.post(`${baseUrl}/enc/listarPlantillas`, data);
   }

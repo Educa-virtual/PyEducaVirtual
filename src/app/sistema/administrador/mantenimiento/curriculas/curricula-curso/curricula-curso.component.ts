@@ -33,13 +33,13 @@ import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-uploa
 import { environment } from '@/environments/environment';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { HttpClient } from '@angular/common/http';
-import imagenesRecursos from '@/app/shared/imagenes/recursos';
+import imagenesRecursosAreas from '@/app/shared/imagenes/areas';
 
-interface Image {
-  id: number;
-  url: string;
-  title: string;
-}
+// interface Image {
+//   id: number;
+//   url: string;
+//   title: string;
+// }
 
 @Component({
   selector: 'app-curricula-curso',
@@ -69,6 +69,7 @@ export class CurriculaCursoComponent implements OnChanges {
 
   @Input() iCurrId: number = 0;
   @Input() curriculas: any = [];
+  @Input() caption: string = '';
 
   cursos: any[] = [];
   visible: boolean = false;
@@ -90,8 +91,9 @@ export class CurriculaCursoComponent implements OnChanges {
     repository: false,
     image: true,
   };
-  portada = imagenesRecursos;
+  portada = imagenesRecursosAreas;
   selectedImageId: any;
+  selectedImageName: string;
   ruta_imagen: string = '';
   showVistaPrevia: boolean = false;
   datosprevios: any;
@@ -109,6 +111,7 @@ export class CurriculaCursoComponent implements OnChanges {
       numVisible: 1,
     },
   ];
+  bUpdate: boolean = false;
 
   backend = environment.backend;
   private http = inject(HttpClient);
@@ -120,27 +123,30 @@ export class CurriculaCursoComponent implements OnChanges {
     private query: GeneralService
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
-    this.ruta_imagen = String('cursos/images/SVG/');
+    this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
   }
 
   frmCursos = this.fb.group({
-    iCursoId: [0],
-    iCurrId: ['', Validators.required],
+    iCursoId: [''],
+    iCurrId: [0, Validators.required],
     iTipoCursoId: ['', Validators.required],
-    cCursoNombre: [''],
+    cCursoNombre: ['', Validators.required],
     nCursoCredTeoria: [''],
     nCursoCredPractica: [''],
     cCursoDescripcion: [''],
     nCursoTotalCreditos: [''],
     cCursoPerfilDocente: [''],
     iCursoTotalHoras: [''],
-    iCursoEstado: ['', Validators.required],
+    iCursoEstado: [1, Validators.required],
     cCursoImagen: [''],
+    iImageAleatorio: [false],
+    iEstado: [1],
   });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
       // Si iCurrId cambió y tiene valor válido
+      this.iCurrId = changes['iCurrId'].currentValue;
       this.inicializacion();
       this.getTipoCurso();
     }
@@ -192,49 +198,6 @@ export class CurriculaCursoComponent implements OnChanges {
       });
   }
 
-  // getCapacidades() {
-  //   this.query
-  //     .searchCalendario({
-  //       json: JSON.stringify({
-  //         iCurrId: this.iCurrId,
-  //       }),
-  //       _opcion: 'getCursoCapacidades',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.capacidades = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Mensaje del sistema',
-  //           detail: 'Error de conexión' + error.error.message,
-  //         });
-  //       },
-  //     });
-  // }
-  // getCapacidadesCurso() {
-  //   this.query
-  //     .searchCalendario({
-  //       json: JSON.stringify({
-  //         iCursoId: this.iCursoId,
-  //       }),
-  //       _opcion: 'getCursoCapacidades',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.capacidadesCurso = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Mensaje del sistema',
-  //           detail: 'Error de conexión' + error.error.message,
-  //         });
-  //       },
-  //     });
-  // }
-
   getTipoCurso() {
     this.query
       .searchCalendario({
@@ -258,7 +221,7 @@ export class CurriculaCursoComponent implements OnChanges {
   }
 
   accionBtnItem(event: any) {
-    const item = event.item || null;
+    const item = event.item;
     const accion = event.accion || null;
 
     switch (accion) {
@@ -266,16 +229,61 @@ export class CurriculaCursoComponent implements OnChanges {
         this.asignarCurso.emit(item);
         break;
       case 'agregar':
-        (this.titulo = 'Formulario para agregar  área curricular'), this.frmCursos.reset();
-        this.visible = true;
+        this.titulo =
+          'Formulario para agregar  área curricular' + '( Referencia: ' + this.caption + ')';
+        this.frmCursos.reset();
+        this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
+        this.frmCursos.patchValue({
+          iEstado: 1,
+          iCursoEstado: 1,
+          iCurrId: this.iCurrId,
+          cCursoImagen: this.ruta_imagen,
+        });
+
+        this.bUpdate = false;
+
+        break;
+
+      case 'actualizar_area':
+        this.bUpdate = true;
+        this.frmCursos.patchValue({
+          iEstado: 1,
+        });
+        this.insertarArea(this.frmCursos.value);
+        break;
+
+      case 'agregar_area':
+        this.bUpdate = false;
+        this.visible = false;
+        this.frmCursos.patchValue({
+          iEstado: 1,
+        });
+        this.insertarArea(this.frmCursos.value);
+
+        break;
+
+      case 'eliminar_area':
+        const params = {
+          iCursoId: event.item.iCursoId,
+          iCurrId: event.item.iCurrId,
+          iTipoCursoId: event.item.iTipoCursoId,
+          cCursoNombre: 'eliminado',
+          iEstado: 0,
+        };
+        this.insertarArea(params);
+        this.visible = false;
+
         break;
 
       case 'editar':
-        this.titulo = 'Formulario para editar áreas curriculares';
+        this.titulo =
+          'Formulario para editar áreas curriculares ' + '( Referencia: ' + this.caption + ')';
         this.frmCursos.reset();
         this.iCursoId = event.item.iCursoId;
+        this.bUpdate = true;
 
         this.frmCursos.patchValue({
+          iCursoId: event.item.iCursoId,
           iCurrId: event.item.iCurrId,
           iTipoCursoId: event.item.iTipoCursoId,
           cCursoNombre: event.item.cCursoNombre,
@@ -286,8 +294,11 @@ export class CurriculaCursoComponent implements OnChanges {
           cCursoPerfilDocente: event.item.cCursoPerfilDocente,
           iCursoTotalHoras: event.item.iCursoTotalHoras,
           iCursoEstado: event.item.iCursoEstado,
+          iImageAleatorio: false,
         });
+        this.showVistaPrevia = false;
         this.frmCursos.get('cCursoImagen')?.setValue(event.item.cCursoImagen), (this.filesUrl = []);
+
         if ((event.item.cCursoImagen ?? '').length > 0) {
           this.filesUrl.push({
             name: 'imagen',
@@ -295,9 +306,7 @@ export class CurriculaCursoComponent implements OnChanges {
           });
           this.ruta_imagen = event.item.cCursoImagen;
         }
-
         this.visible = true;
-
         break;
 
       default:
@@ -320,21 +329,68 @@ export class CurriculaCursoComponent implements OnChanges {
   selectImage(image: any) {
     this.selectedImageId = image.id;
 
+    this.selectedImageName = image.id + ' :' + image.name;
     const data = {
       id: image.id,
       name: image.name,
       url: image.url,
     };
-    const jsonData = JSON.stringify(data);
+
     this.frmCursos.patchValue({
-      cCursoImagen: jsonData,
+      cCursoImagen: data.url,
     });
     // const ruta = this.frmCursos.value.cCursoImagen
     // alert(ruta)
   }
 
-  isSelected(image: Image): boolean {
-    return this.selectedImageId === image.id;
+  isSelected(id: number): boolean {
+    return this.selectedImageId === id;
+  }
+
+  insertarArea(item: any) {
+    const params = {
+      iCredId: Number(this.perfil.iCredId ?? null),
+      iCredEntPerfId: Number(this.perfil.iCredEntPerfId ?? null),
+      iCursoId: Number(item.iCursoId ?? null),
+      iCurrId: Number(this.iCurrId),
+      iTipoCursoId: Number(this.frmCursos.value.iTipoCursoId ?? 0),
+      cCursoNombre: item.cCursoNombre ?? null,
+      nCursoCredTeoria: parseFloat(item.nCursoCredTeoria ?? 0),
+      nCursoCredPractica: parseFloat(item.nCursoCredPractica ?? 0),
+      cCursoDescripcion: item.cCursoDescripcion ?? null,
+      nCursoTotalCreditos: parseFloat(item.nCursoTotalCreditos ?? 0),
+      cCursoPerfilDocente: item.cCursoPerfilDocente ?? null,
+      iCursoTotalHoras: Number(item.iCursoTotalHoras ?? 0),
+      iCursoEstado: Number(item.iCursoEstado ?? 0),
+      iEstado: item.iEstado ?? 1,
+      cCursoImagen: this.frmCursos.value.cCursoImagen ?? null,
+    };
+    this.query.insertarAreas(params).subscribe({
+      error: error => {
+        let message = error.error?.message || 'Error desconocido';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        message = decodeURIComponent(message);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Se actualizo correctamente',
+        });
+        if (!this.bUpdate) {
+          this.frmCursos.reset();
+        }
+        this.inicializacion();
+      },
+    });
   }
 
   accionesCursos: IActionContainer[] = [
@@ -421,38 +477,4 @@ export class CurriculaCursoComponent implements OnChanges {
       text: 'center',
     },
   ];
-
-  accionBtnCursos(event: any) {
-    this.frmCursos.reset();
-
-    switch (event.accion) {
-      // case 'assignCursosInNivelesGrados':
-      // Object.keys(
-      //     this.forms.assignCursosInNivelesGrados.controls
-      // ).forEach((field) => {
-      //     const control =
-      //         this.forms.assignCursosInNivelesGrados.get(field)
-      //     control?.markAsTouched() // Marca como tocado (touched)
-      //     control?.markAsDirty() // Marca como modificado (dirty)
-      // })
-
-      // if (this.forms.assignCursosInNivelesGrados.invalid) return
-
-      // break
-
-      default:
-        break;
-    }
-  }
-
-  cursosSave() {
-    // if (!this.frmCurso.iCurrId) {
-    //     return this.cursosService.insCursos(payload)
-    // } else {
-    //     return this.cursosService.insCursos({
-    //         ...payload,
-    //         iCursoId: formCurso.iCursoId,
-    //     })
-    // }
-  }
 }

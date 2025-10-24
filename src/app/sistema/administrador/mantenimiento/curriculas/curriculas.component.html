@@ -23,7 +23,11 @@
 
     <div class="field col-12 md:col-4">
       @if (iCurrId > 0) {
-        <app-curricula-curso [iCurrId]="iCurrId" [curriculas]="curriculas"></app-curricula-curso>
+        <app-curricula-curso
+          [iCurrId]="iCurrId"
+          [curriculas]="curriculas"
+          [caption]="caption"
+        ></app-curricula-curso>
       } @else {
         <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron áreas relacionados" />
       }

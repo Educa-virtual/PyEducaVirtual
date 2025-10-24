@@ -178,9 +178,8 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
           message: '¿Desea eliminar la competencia del área de forma permanente?',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
-            alert(item.iCompCursoId);
             // Acción para eliminar el registro
-            // this.deleteCurricula(item.iCurrId);
+            this.eliminarCursoCompetencia(item.iCompCursoId);
           },
           // reject: () => {
           //   // Mensaje de cancelación (opcional)
@@ -322,10 +321,40 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
           detail: 'Se actualizo correctamente',
         });
         this.getCompetenciasCurso(this.iCursoId);
-
         if (!this.bUpdate) {
           this.frmCursosCompetencias.reset();
         }
+      },
+    });
+  }
+
+  eliminarCursoCompetencia(id) {
+    const params = {
+      esquema: 'acad',
+      tabla: 'competencias_cursos',
+      campo: 'iCompCursoId',
+      valorId: id,
+    };
+    this.query.deleteAcademico(params).subscribe({
+      error: error => {
+        let message = error.error?.message || 'No se proceso petición';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        message = decodeURIComponent(message);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje de sistema',
+          detail: 'Eliminación exitosa',
+        });
       },
     });
   }

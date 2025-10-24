@@ -109,6 +109,7 @@ export class CurriculasComponent implements OnInit {
   messages: Message[] | undefined;
   sidebarVisible: boolean = false;
   iCurrId: number = null;
+  caption: string;
 
   private _ConstantesService = inject(ConstantesService);
   private _confirmService = inject(ConfirmationModalService);
@@ -163,17 +164,20 @@ export class CurriculasComponent implements OnInit {
         this.bEditar = false;
         this.visible = false;
         this.iCurrId = item.iCurrId;
+        this.caption = item.cCurrRsl;
         break;
 
       case 'mostrar_curricula':
         this.iCurrId = 0;
         this.bEditar = false;
         this.visible = false;
+
         this.obtenerDatosIniciales();
         break;
 
       case 'editar':
         this.iCurrId = item.iCurrId;
+        this.caption = item.cCurrRsl;
         this.titulo = 'Formulario para editar nueva currícula';
         this.titulo = 'Editar currícula';
         this.visible = true;
@@ -464,17 +468,17 @@ export class CurriculasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
     },
-    // {
-    //   type: 'text',
-    //   width: '30%',
-    //   field: 'cCurrDescripcion',
-    //   header: 'Denominación',
-    //   text_header: 'center',
-    //   text: 'left',
-    // },
     {
       type: 'text',
-      width: '60%',
+      width: '30%',
+      field: 'cCurrDescripcion',
+      header: 'Nombre',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '30%',
       field: 'cCurrRsl',
       header: 'Refencia',
       text_header: 'center',

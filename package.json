@@ -36,6 +36,7 @@
         "@ng-icons/material-icons": "^29.5.0",
         "@tinymce/tinymce-angular": "^8.0.1",
         "@zxing/ngx-scanner": "^20.0.0",
+        "angularx-qrcode": "^18.0.2",
         "chart.js": "^4.4.4",
         "chartjs-chart-wordcloud": "^4.4.4",
         "chartjs-plugin-datalabels": "^2.2.0",

@@ -394,19 +394,19 @@
 >
   <div class="flex align-items-center mt-3 mb-3">
     <div class="font-semibold">
-      Nombre Completo: {{ codigo.completo ? codigo.completo : 'No encontrado' }}
+      Nombre Completo: {{ codigo?.completo ? codigo.completo : 'No encontrado' }}
     </div>
   </div>
   <div class="flex align-items-center mb-3">
     <div class="font-semibold">
-      DNI: {{ codigo.cPersDocumento ? codigo.cPersDocumento : 'No encontrado' }}
+      DNI: {{ codigo?.cPersDocumento ? codigo.cPersDocumento : 'No encontrado' }}
     </div>
   </div>
   <div class="flex align-items-center mb-5">
     <div class="font-semibold">
       Fecha y Hora de Registro:
       {{
-        codigo.dtAsistencia ? (codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss') : 'No encontrado'
+        codigo?.dtAsistencia ? (codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss') : 'No encontrado'
       }}
     </div>
   </div>

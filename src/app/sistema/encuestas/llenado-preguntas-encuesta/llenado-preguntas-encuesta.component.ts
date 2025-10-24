@@ -10,11 +10,18 @@ import { SeccionComponent } from './seccion/seccion.component';
 import { PreguntaComponent } from './pregunta/pregunta.component';
 import { EncuestasService } from '../services/encuestas.services';
 import { SlicePipe } from '@angular/common';
+import { TutorialPreguntasComponent } from '../tutoriales/tutorial-preguntas/tutorial-preguntas.component';
 
 @Component({
   selector: 'app-llenado-preguntas-encuesta',
   standalone: true,
-  imports: [PrimengModule, FormsModule, SeccionComponent, PreguntaComponent],
+  imports: [
+    PrimengModule,
+    FormsModule,
+    SeccionComponent,
+    PreguntaComponent,
+    TutorialPreguntasComponent,
+  ],
   templateUrl: './llenado-preguntas-encuesta.component.html',
   styleUrl: './llenado-preguntas-encuesta.component.scss',
   providers: [SlicePipe],
@@ -37,6 +44,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   totalPreguntas: number = 0;
   mostrarDialogoSeccion: boolean = false;
   mostrarDialogoPregunta: boolean = false;
+  visibleDialogTutorial: boolean = false;
 
   secciones: any[] = [];
   pregunta: any;
@@ -297,5 +305,9 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
     this.router.navigate([
       `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}/ver`,
     ]);
+  }
+
+  verTutorial(visible: boolean) {
+    this.visibleDialogTutorial = visible;
   }
 }

@@ -10,7 +10,6 @@
   <ng-template pTemplate="icons" class="flex justify-content-center">
     <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
-        size="small"
         severity="secondary"
         pTooltip="Volver a encuesta"
         tooltipPosition="top"
@@ -18,6 +17,15 @@
       >
         <i class="pi pi-arrow-left"></i>
         <span class="ml-2 hidden md:inline">Volver a encuesta</span>
+      </p-button>
+      <p-button
+        labelTooltip="Tutorial"
+        tooltipPosition="top"
+        severity="secondary"
+        (click)="verTutorial(true)"
+      >
+        <i class="pi pi-question-circle"></i>
+        <span class="hidden md:inline ml-2">Tutorial</span>
       </p-button>
     </div>
   </ng-template>
@@ -204,5 +212,18 @@
     (preguntaModificada)="listarSecciones()"
   />
 </p-panel>
+
+<p-dialog
+  header="Tutorial"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogTutorial"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+>
+  <app-tutorial-preguntas (visibleDialogTutorial)="verTutorial($event)" />
+</p-dialog>
 
 <p-toast></p-toast>

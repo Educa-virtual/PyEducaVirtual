@@ -180,7 +180,7 @@ export class CurriculaCursoComponent implements OnChanges {
           }
           message = decodeURIComponent(message);
           this.messageService.add({
-            severity: 'error',
+            severity: 'warn',
             summary: 'Mensaje del sistema',
             detail: message,
           });
@@ -188,7 +188,7 @@ export class CurriculaCursoComponent implements OnChanges {
         complete: () => {
           if (this.cursos && this.cursos.length === 0) {
             this.messageService.add({
-              severity: 'warning',
+              severity: 'warn',
               summary: 'Mensaje del sistema',
               detail: 'La curricula no cuenta con áreas curriculares',
             });
@@ -239,7 +239,7 @@ export class CurriculaCursoComponent implements OnChanges {
           iCurrId: this.iCurrId,
           cCursoImagen: this.ruta_imagen,
         });
-
+        this.visible = true;
         this.bUpdate = false;
 
         break;

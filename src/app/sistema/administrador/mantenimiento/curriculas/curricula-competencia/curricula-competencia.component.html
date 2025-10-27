@@ -24,3 +24,130 @@
     </div>
   </div>
 </app-container-page>
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  (onHide)="(false)"
+  [style]="{ width: '75rem' }"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold white-space-nowrap">
+        {{ titulo }}
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p-tabView>
+      <p-tabPanel header="Información de competencias">
+        <app-container-page title="Competencias" [actions]="[]">
+          <form [formGroup]="formCompetencia" class="flex flex-column gap-3 w-full">
+            <div class="grid">
+              <div class="col-field col-12 md:col-2">
+                <span class="p-float-label">
+                  <p-inputNumber
+                    inputId="cCompetenciaNro"
+                    formControlName="cCompetenciaNro"
+                    inputStyleClass="w-full"
+                    [showButtons]="true"
+                  />
+
+                  <label for="cCompetenciaNro">N°</label>
+                </span>
+              </div>
+              <div class="field col-12 md:col-8">
+                <span class="p-float-label w-full">
+                  <input
+                    pInputText
+                    id="cCompetenciaNombre"
+                    formControlName="cCompetenciaNombre"
+                    class="w-full"
+                  />
+                  <label for="cCompetenciaNombre">Nombre</label>
+                </span>
+              </div>
+              <div class="field col-12 md:col-2">
+                <p-toggleButton
+                  styleClass="w-full"
+                  onLabel="Activo"
+                  offLabel="Inactivo"
+                  formControlName="iEstado"
+                />
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="field col-12 md:col-10">
+                <span class="p-float-label">
+                  <textarea
+                    pInputTextarea
+                    id="cCompetenciaDescripcion"
+                    class="w-full"
+                    formControlName="cCompetenciaDescripcion"
+                    rows="5"
+                  ></textarea>
+                  <label for="cCompetenciaDescripcion">Descripción</label>
+                </span>
+              </div>
+              <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                  <button
+                    pButton
+                    label="Editar"
+                    icon="pi pi-pencil"
+                    class="p-button-warning w-full"
+                    size="small"
+                    [disabled]="formCompetencia.invalid"
+                    (click)="
+                      accionBtnItem({ accion: 'actualizar_area', item: formCompetencia.value })
+                    "
+                    *ngIf="bUpdate"
+                  ></button>
+                  <button
+                    pButton
+                    label="Guardar"
+                    icon="pi pi-save"
+                    class="p-button-success w-full"
+                    size="small"
+                    (click)="accionBtnItem({ accion: 'agregar_area', item: formCompetencia.value })"
+                    *ngIf="!bUpdate"
+                    [disabled]="formCompetencia.invalid"
+                  ></button>
+                </span>
+              </div>
+            </div>
+          </form>
+        </app-container-page>
+      </p-tabPanel>
+
+      <p-tabPanel header="Competencias asignadas" *ngIf="iCompetenciaId > 0">
+        <!-- <div *ngIf="iCursoId === 0">
+          <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
+        </div>
+        <div *ngIf="iCursoId > 0">
+          <app-curricula-curso-competencias
+            [iCurrId]="iCurrId"
+            [iCursoId]="iCursoId"
+            [cursos]="cursos"
+          ></app-curricula-curso-competencias>
+        </div> -->
+      </p-tabPanel>
+    </p-tabView>
+  </ng-template>
+  <!-- PIE DEL DIALOG -->
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <button
+        pButton
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-danger"
+        size="small"
+        (click)="visible = false"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   IActionTable,
@@ -12,11 +21,15 @@ import {
   IActionContainer,
   ContainerPageComponent,
 } from '@/app/shared/container-page/container-page.component';
+import { ConstantesService } from '@/app/servicios/constantes.service';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { PrimengModule } from '@/app/primeng.module';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-curricula-competencia',
   standalone: true,
-  imports: [TablePrimengComponent, Button, NoDataComponent, ContainerPageComponent],
+  imports: [TablePrimengComponent, Button, NoDataComponent, ContainerPageComponent, PrimengModule],
   templateUrl: './curricula-competencia.component.html',
   styleUrl: './curricula-competencia.component.scss',
 })
@@ -24,43 +37,50 @@ export class CurriculaCompetenciaComponent implements OnChanges {
   @Output() asignarcompetencia = new EventEmitter();
 
   @Input() iCurrId: number = 0;
+  @Input() caption: string = '';
 
   titulo: string = 'Gestión de Competencias';
   competencias: any[];
   visible: boolean = false;
+  bUpdate = false;
+  iCompetenciaId: number;
+  perfil: any;
+
+  private _ConstantesService = inject(ConstantesService);
+  private _confirmService = inject(ConfirmationModalService);
+  private _LocalStoreService = inject(LocalStoreService);
 
   constructor(
     private fb: FormBuilder,
+    public cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private query: GeneralService
-  ) {}
+  ) {
+    this.perfil = this._LocalStoreService.getItem('dremoPerfil');
+  }
 
-  frmCursos = this.fb.group({
-    iCurrId: [''],
-    iTipoCursoId: ['', Validators.required],
-    cCursoNombre: [''],
-    nCursoCredTeoria: [''],
-    nCursoCredPractica: [''],
-    cCursoDescripcion: [''],
-    nCursoTotalCreditos: [''],
-    cCursoPerfilDocente: [''],
-    iCursoTotalHoras: [''],
-    iCursoEstado: ['', Validators.required],
-    cCursoImagen: [''],
+  formCompetencia = this.fb.group({
+    iCompetenciaId: [0],
+    iCurrId: [0, Validators.required],
+    cCompetenciaDescripcion: [''],
+    CompetenciaNombre: ['', Validators.required],
+    cCompetenciaNro: [null, Validators.required],
+    iEstado: [1],
   });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
       // Si iCurrId cambió y tiene valor válido
       this.inicializacion();
+
       // this.getTipoCurso();
       // this.getCapacidades();
     }
 
-    // if (changes['curriculas'] && changes['curriculas'].currentValue) {
-    //   // Si curriculas cambió
-    //   this.curriculas = changes['curriculas'].currentValue;
-    // }
+    if (changes['caption'] && changes['caption'].currentValue) {
+      // Si curriculas cambió
+      this.caption = changes['caption'].currentValue;
+    }
   }
 
   inicializacion() {
@@ -94,7 +114,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         complete: () => {
           if (this.competencias && this.competencias.length === 0) {
             this.messageService.add({
-              severity: 'warning',
+              severity: 'warn',
               summary: 'Mensaje del sistema',
               detail: 'La curricula no cuenta con competencias',
             });
@@ -118,14 +138,38 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         this.asignarcompetencia.emit(item);
         break;
       case 'agregar':
-        (this.titulo = 'Formulario para agregar  área curricular'), (this.visible = true);
+        this.titulo = 'Formulario para agregar  área curricular (' + this.caption + ')';
+        this.visible = true;
+        this.iCompetenciaId = 0;
+        this.bUpdate = false;
+        this.formCompetencia.reset();
+        this.formCompetencia.patchValue({
+          iCurrId: Number(this.iCurrId),
+          iEstado: 1,
+        });
         break;
 
       case 'editar':
-        this.titulo = 'Formulario para editar áreas curriculares';
-        this.frmCursos.reset();
+        this.titulo = 'Formulario para editar áreas curriculares (' + this.caption + ')';
+        this.formCompetencia.reset();
+        this.iCompetenciaId = item.iCompetenciaId;
         this.visible = true;
+        this.accionBtnItem({ accion: 'select_modalidad', item: { iNivelId: item.iNivelId } });
+        this.formCompetencia.patchValue({
+          iCompetenciaId: item.iCompetenciaId,
+          iCurrId: Number(this.iCurrId),
+          cCompetenciaDescripcion: item.cCompetenciaDescripcion,
+          CompetenciaNombre: item.CompetenciaNombre,
+          cCompetenciaNro: item.cCompetenciaNro,
+          iEstado: Number(item.iEstado) || 0,
+        });
+        this.bUpdate = true;
+        break;
 
+      case 'agregar_competencia':
+        break;
+
+      case 'actualizar_competencia':
         break;
 
       default:
@@ -133,6 +177,42 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     }
   }
 
+  insertarCompetencia(item: any) {
+    const params = {
+      iCredEntPerfId: this.perfil.iCredEntPerfId ?? null,
+      iCredId: this.perfil.iCredId ?? null,
+      iCompetenciaId: item.iCompetenciaId ?? null,
+      cCompetenciaNro: item.cCompetenciaNro ?? null,
+      iCurrId: this.iCurrId ?? null,
+      iEstado: item.iEstado ?? 0,
+    };
+    this.query.insertarCompetenciasCurso(params).subscribe({
+      error: error => {
+        let message = error.error?.message || 'Error desconocido';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        message = decodeURIComponent(message);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Se actualizo correctamente',
+        });
+        // this.getCompetenciasCurso(this.iCompetenciaId);
+        if (!this.bUpdate) {
+          this.formCompetencia.reset();
+        }
+      },
+    });
+  }
   accionesCompetencias: IActionContainer[] = [
     {
       labelTooltip: 'Agregar competencias',

@@ -34,7 +34,7 @@
     </div>
     <div class="field col-12 md:col-4">
       @if (iCurrId > 0) {
-        <app-curricula-competencia [iCurrId]="iCurrId" />
+        <app-curricula-competencia [iCurrId]="iCurrId" [caption]="caption" />
       } @else {
         <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias relacionados" />
       }

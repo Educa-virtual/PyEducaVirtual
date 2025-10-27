@@ -362,6 +362,9 @@ export class GeneralService {
   insertarAreas(data: any) {
     return this.http.post(`${baseUrl}/acad/administrador/insertarAreas`, data);
   }
+  insertarCompetencia(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/insertarCompetencia`, data);
+  }
 
   obtenerEstudiantesMatriculados(data: any) {
     return this.http.post(

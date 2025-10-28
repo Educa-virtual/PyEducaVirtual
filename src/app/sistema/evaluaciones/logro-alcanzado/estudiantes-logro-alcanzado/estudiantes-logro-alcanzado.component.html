@@ -1,0 +1,126 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl font-bold">REGISTRAR LOGROS ALCANZADOS</div>
+      <div class="flex text-sm">GRADO: {{ cGradoAbreviacion }} SECCIÓN: {{ cSeccionNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <p-button size="small" severity="success" (onClick)="listarAreas()">
+      <i class="pi pi-arrow-left"></i>
+      <span class="hidden md:inline ml-2">Ver Áreas</span>
+    </p-button>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon> Área </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cCursoNombre"
+          disabled
+          class="group-element"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-6 md:col-2">
+      <p-inputGroup>
+        <p-inputGroupAddon> Grado </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cGradoAbreviacion"
+          disabled
+          class="group-element"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-6 md:col-2">
+      <p-inputGroup>
+        <p-inputGroupAddon> Sección </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="cSeccionNombre"
+          disabled
+          class="group-element"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon> Periodo </p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iPeriodoId"
+          [options]="periodos"
+          optionLabel="cNombrePeriodo"
+          optionValue="iNumeroPeriodo"
+          placeholder="Seleccionar"
+          [style]="{ flex: '1', width: '100%' }"
+          styleClass="group-element"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+  </div>
+  <br />
+  <div>
+    <app-table-primeng
+      [data]="estudiantes"
+      [columnas]="columnsEstudiantes"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showAdvancedFilter]="false"
+      [showCaption]="false"
+      [actions]="actions"
+    />
+  </div>
+  <!-- Registrar Logro Alcanzado-->
+  <p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [(visible)]="dialogRegistrarLogroAlcanzado"
+    [style]="{ width: '70vw' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+  >
+    <ng-template pTemplate="header">
+      <div class="flex flex-column">
+        <div class="flex text-xl font-bold">{{ registroTitleModal }}</div>
+        <div class="flex text-sm">{{ registroSubTitleModal }}</div>
+      </div>
+    </ng-template>
+    <app-registrar-logro-alcanzado
+      [periodos]="periodos"
+      [competencias]="competencias"
+      [iPeriodoId]="iPeriodoId"
+      [iDetMatrId]="iDetMatrId"
+      [cCursoNombre]="cCursoNombre"
+      (registraLogroAlcanzado)="dialogRegistrarLogroAlcanzado = $event"
+    />
+  </p-dialog>
+  <p-dialog
+    [draggable]="false"
+    [maximizable]="true"
+    [header]="boletaTitleModal"
+    [(visible)]="dialogBoletaLogroAlcanzado"
+    [style]="{ width: '60rem', height: '670px' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  >
+    <app-boleta-logro
+      [selectedItem]="selectedItem"
+      (boletaLogroImprimir)="listenDialogBoleta($event)"
+    />
+  </p-dialog>
+</p-panel>
+<p-toast />
+ 

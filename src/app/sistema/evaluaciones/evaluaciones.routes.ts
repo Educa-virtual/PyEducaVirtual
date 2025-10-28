@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LogroAlcanzadoComponent } from './logro-alcanzado/logro-alcanzado.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { DOCENTE } from '@/app/servicios/seg/perfiles';
+import { EstudiantesLogroAlcanzadoComponent } from './logro-alcanzado/estudiantes-logro-alcanzado/estudiantes-logro-alcanzado.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,16 @@ const routes: Routes = [
   {
     path: 'registro-logro',
     component: LogroAlcanzadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      breadcrumb: '',
+      icon: 'pi pi-share',
+      expectedRole: [DOCENTE],
+    },
+  },
+  {
+    path: 'registro-logro/:idDocCursoId',
+    component: EstudiantesLogroAlcanzadoComponent,
     canActivate: [RoleGuard],
     data: {
       breadcrumb: '',

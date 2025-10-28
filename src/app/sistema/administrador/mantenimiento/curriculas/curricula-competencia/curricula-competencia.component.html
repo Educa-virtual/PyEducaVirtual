@@ -26,7 +26,7 @@
 </app-container-page>
 <p-dialog
   #dialog
-  [(visible)]="visible"
+  [(visible)]="visible_competencia"
   [modal]="true"
   [maximizable]="true"
   appendTo="body"
@@ -102,7 +102,10 @@
                     size="small"
                     [disabled]="formCompetencia.invalid"
                     (click)="
-                      accionBtnItem({ accion: 'actualizar_area', item: formCompetencia.value })
+                      accionBtnItem({
+                        accion: 'actualizar_competencia',
+                        item: formCompetencia.value,
+                      })
                     "
                     *ngIf="bUpdate"
                   ></button>
@@ -112,7 +115,9 @@
                     icon="pi pi-save"
                     class="p-button-success w-full"
                     size="small"
-                    (click)="accionBtnItem({ accion: 'agregar_area', item: formCompetencia.value })"
+                    (click)="
+                      accionBtnItem({ accion: 'agregar_competencia', item: formCompetencia.value })
+                    "
                     *ngIf="!bUpdate"
                     [disabled]="formCompetencia.invalid"
                   ></button>
@@ -146,7 +151,7 @@
         icon="pi pi-times"
         class="p-button-danger"
         size="small"
-        (click)="visible = false"
+        (click)="visible_competencia = false"
       ></button>
     </div>
   </ng-template>

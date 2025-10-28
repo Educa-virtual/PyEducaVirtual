@@ -41,7 +41,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
 
   titulo: string = 'Gestión de Competencias';
   competencias: any[];
-  visible: boolean = false;
+  visible_competencia: boolean = false;
   bUpdate = false;
   iCompetenciaId: number;
   perfil: any;
@@ -63,8 +63,8 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     iCompetenciaId: [0],
     iCurrId: [0, Validators.required],
     cCompetenciaDescripcion: [''],
-    CompetenciaNombre: ['', Validators.required],
-    cCompetenciaNro: [null, Validators.required],
+    cCompetenciaNombre: ['', Validators.required],
+    cCompetenciaNro: [null],
     iEstado: [1],
   });
 
@@ -139,7 +139,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         break;
       case 'agregar':
         this.titulo = 'Formulario para agregar  área curricular (' + this.caption + ')';
-        this.visible = true;
+        this.visible_competencia = true;
         this.iCompetenciaId = 0;
         this.bUpdate = false;
         this.formCompetencia.reset();
@@ -153,13 +153,13 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         this.titulo = 'Formulario para editar áreas curriculares (' + this.caption + ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
-        this.visible = true;
+        this.visible_competencia = true;
         this.accionBtnItem({ accion: 'select_modalidad', item: { iNivelId: item.iNivelId } });
         this.formCompetencia.patchValue({
           iCompetenciaId: item.iCompetenciaId,
           iCurrId: Number(this.iCurrId),
           cCompetenciaDescripcion: item.cCompetenciaDescripcion,
-          CompetenciaNombre: item.CompetenciaNombre,
+          cCompetenciaNombre: item.cCompetenciaNombre,
           cCompetenciaNro: item.cCompetenciaNro,
           iEstado: Number(item.iEstado) || 0,
         });
@@ -167,9 +167,36 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         break;
 
       case 'agregar_competencia':
+        this.bUpdate = false;
+        this.visible_competencia = false;
+
+        this.insertarCompetencia(this.formCompetencia.value);
+
         break;
 
       case 'actualizar_competencia':
+        this.bUpdate = true;
+        this.insertarCompetencia(this.formCompetencia.value);
+        break;
+
+      case 'eliminar_competencia':
+        this._confirmService.openConfirm({
+          header: 'Advertencia de eliminación permanente',
+          message: '¿Desea eliminar la competentecia de forma permanente.?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            // Acción para eliminar el registro
+            this.deleteCompetencia(item.iCompetenciaId);
+          },
+          // reject: () => {
+          //   // Mensaje de cancelación (opcional)
+          //   this.messageService.add({
+          //     severity: 'error',
+          //     summary: 'Mensaje',
+          //     detail: 'Registro cancelado',
+          //   });
+          // },
+        });
         break;
 
       default:
@@ -182,11 +209,12 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       iCredEntPerfId: this.perfil.iCredEntPerfId ?? null,
       iCredId: this.perfil.iCredId ?? null,
       iCompetenciaId: item.iCompetenciaId ?? null,
+      cCompetenciaNombre: item.cCompetenciaNombre ?? null,
       cCompetenciaNro: item.cCompetenciaNro ?? null,
       iCurrId: this.iCurrId ?? null,
       iEstado: item.iEstado ?? 0,
     };
-    this.query.insertarCompetenciasCurso(params).subscribe({
+    this.query.insertarCompetencia(params).subscribe({
       error: error => {
         let message = error.error?.message || 'Error desconocido';
         const match = message.match(/]([^\]]+?)\./);
@@ -206,13 +234,48 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           summary: 'Mensaje del sistema',
           detail: 'Se actualizo correctamente',
         });
-        // this.getCompetenciasCurso(this.iCompetenciaId);
+        this.inicializacion();
         if (!this.bUpdate) {
           this.formCompetencia.reset();
         }
       },
     });
   }
+
+  deleteCompetencia(id: number) {
+    const params = {
+      esquema: 'acad',
+      tabla: 'curriculo_competencias',
+      campo: 'iCompetenciaId',
+      valorId: id,
+    };
+    this.query.deleteAcademico(params).subscribe({
+      error: error => {
+        let message = error?.error?.message || 'Sin conexión a la bd';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        message = decodeURIComponent(message);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Se eliminó la currícula correctamente.',
+        });
+        this.visible_competencia = false;
+        //this.obtenerDatosIniciales();
+      },
+    });
+  }
+
   accionesCompetencias: IActionContainer[] = [
     {
       labelTooltip: 'Agregar competencias',
@@ -234,7 +297,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     {
       labelTooltip: 'Eliminar competencias',
       icon: 'pi pi-trash',
-      accion: 'eliminar_curricula',
+      accion: 'eliminar_competencia',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
     },

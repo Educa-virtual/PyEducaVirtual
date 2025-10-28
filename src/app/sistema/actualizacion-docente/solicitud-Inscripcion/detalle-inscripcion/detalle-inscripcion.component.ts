@@ -159,7 +159,7 @@ export class DetalleInscripcionComponent
       text: 'Agregar',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
     {
       labelTooltip: 'Regresar',

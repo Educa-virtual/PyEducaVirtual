@@ -18,6 +18,10 @@ export class LogroAlcanzadoService {
   perfil = this.store.getItem('dremoPerfil');
   iYAcadId = this.store.getItem('dremoiYAcadId');
 
+  obtenerPeriodosEvaluacionSede(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerPeriodosEvaluacionSede`, params);
+  }
+
   listarCursos(params) {
     return this.http.post(`${baseUrl}/acad/docente/docente_curso`, params);
   }
@@ -28,10 +32,6 @@ export class LogroAlcanzadoService {
 
   obtenerLogrosEstudiante(params) {
     return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerLogrosEstudiante`, params);
-  }
-
-  guardarLogro(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/guardarLogro`, params);
   }
 
   actualizarLogro(params) {

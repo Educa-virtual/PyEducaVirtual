@@ -45,7 +45,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   cSeccionNombre: string = '';
 
   // Periodo seleccionado
-  iPeriodoId: string;
+  iPeriodoId: string = '1';
 
   // Listados de datos
   areas: any[] = [];
@@ -158,29 +158,26 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   }
 
   obtenerPeriodos() {
-    const params = { iCredId: this.perfil.iCredId };
-    this.periodosService
-      .obtenerPeriodosxiYAcadIdxiSedeIdxFaseRegular(this.iYAcadId, this.perfil.iSedeId, params)
+    this.logroAlcanzadoService
+      .obtenerPeriodosEvaluacionSede({
+        iYAcadId: this.iYAcadId,
+        iSedeId: this.perfil.iSedeId,
+      })
       .subscribe({
-        next: resp => {
-          if (resp.validated) {
-            this.periodos = resp.data;
-            if (this.periodos.length > 0) {
-              this.iPeriodoId = '1';
-            }
-          }
-        },
-        complete: () => {
-          this.periodos.push({
-            cNombrePeriodo: 'Logro final',
-            cPeriodoEvalNombre: '',
-            iEstado: '0',
-            iNumeroPeriodo: Number(this.periodos?.length) + 1,
-            iPeriodoEvalAperId: '',
-          });
+        next: (response: any) => {
+          this.periodos = response.data;
         },
         error: error => {
           console.error('Error obteniendo periodos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail:
+              'No se pudo obtener la información de periodos. Redirigiendo al listado de áreas...',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/evaluaciones/registro-logro']);
+          }, 2000);
         },
       });
   }

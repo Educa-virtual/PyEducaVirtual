@@ -13,8 +13,8 @@
       <p-dropdown
         [(ngModel)]="iPeriodoId"
         [options]="periodos"
-        optionLabel="cNombrePeriodo"
-        optionValue="iNumeroPeriodo"
+        optionLabel="cPeriodoNombre"
+        optionValue="iPeriodoOrden"
         placeholder="Seleccionar"
         [disabled]="true"
         [style]="{ flex: '1', width: '100%' }"
@@ -59,6 +59,7 @@
                 />
                 <input
                   type="text"
+                  [formControl]="$any(controles_logros.at(i))?.controls['cNivelLogro']"
                   [style]="{ 'text-align': 'center', width: '45px' }"
                   pInputText
                   pattern="^(AD|A|B|C)$"
@@ -84,8 +85,36 @@
               ></textarea>
             </td>
             <td width="5%">
-              <p-button icon="pi pi-save" severity="primary" (click)="actualizarLogro(i)">
-              </p-button>
+              <p-button
+                *ngIf="
+                  !controles_logros.at(i).value.iResultadoCompId &&
+                  !controles_logros.at(i).value.bMostrarBoton
+                "
+                icon="pi pi-pencil"
+                severity="danger"
+                pTooltip="Falta registrar"
+                tooltipPosition="top"
+                disabled
+              />
+              <p-button
+                *ngIf="
+                  controles_logros.at(i).value.iResultadoCompId &&
+                  !controles_logros.at(i).value.bMostrarBoton
+                "
+                icon="pi pi-check"
+                severity="primary"
+                pTooltip="Logro registrado"
+                tooltipPosition="top"
+                disabled
+              />
+              <p-button
+                *ngIf="controles_logros.at(i).value.bMostrarBoton"
+                icon="pi pi-save"
+                severity="success"
+                pTooltip="Cambios pendientes"
+                tooltipPosition="top"
+                (click)="actualizarLogro(i)"
+              />
             </td>
           </tr>
         </ng-template>

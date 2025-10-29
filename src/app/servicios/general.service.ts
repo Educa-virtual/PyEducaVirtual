@@ -359,6 +359,10 @@ export class GeneralService {
     return this.http.post(`${baseUrl}/acad/administrador/insertarCompetenciasCurso`, data);
   }
 
+  insertarCompetenciaCapacidad(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/insertarCompetenciaCapacidad`, data);
+  }
+
   insertarAreas(data: any) {
     return this.http.post(`${baseUrl}/acad/administrador/insertarAreas`, data);
   }

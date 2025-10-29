@@ -25,11 +25,19 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competencia-capacidades/curricula-competencia-capacidades.component';
 
 @Component({
   selector: 'app-curricula-competencia',
   standalone: true,
-  imports: [TablePrimengComponent, Button, NoDataComponent, ContainerPageComponent, PrimengModule],
+  imports: [
+    TablePrimengComponent,
+    Button,
+    NoDataComponent,
+    ContainerPageComponent,
+    PrimengModule,
+    CurriculaCompetenciaCapacidadesComponent,
+  ],
   templateUrl: './curricula-competencia.component.html',
   styleUrl: './curricula-competencia.component.scss',
 })

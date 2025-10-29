@@ -128,17 +128,15 @@
         </app-container-page>
       </p-tabPanel>
 
-      <p-tabPanel header="Competencias asignadas" *ngIf="iCompetenciaId > 0">
-        <!-- <div *ngIf="iCursoId === 0">
+      <p-tabPanel header="Capacidades asignadas" *ngIf="iCompetenciaId > 0">
+        <div *ngIf="iCompetenciaId === 0">
           <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
         </div>
-        <div *ngIf="iCursoId > 0">
-          <app-curricula-curso-competencias
-            [iCurrId]="iCurrId"
-            [iCursoId]="iCursoId"
-            [cursos]="cursos"
-          ></app-curricula-curso-competencias>
-        </div> -->
+        <div *ngIf="iCompetenciaId > 0">
+          <app-curricula-competencia-capacidades
+            [iCompetenciaId]="iCompetenciaId"
+          ></app-curricula-competencia-capacidades>
+        </div>
       </p-tabPanel>
     </p-tabView>
   </ng-template>

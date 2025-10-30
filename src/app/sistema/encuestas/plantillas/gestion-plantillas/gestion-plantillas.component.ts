@@ -12,6 +12,7 @@ import { SlicePipe } from '@angular/common';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TutorialPlantillasComponent } from '../../tutoriales/tutorial-plantillas/tutorial-plantillas.component';
+import { ADMINISTRADOR_DREMO, DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-gestion-plantillas',
@@ -631,7 +632,7 @@ export class GestionPlantillasComponent implements OnInit {
         Number(rowData.iEstado) === this.ESTADO_APROBADA &&
         (Number(this.categoria?.bEsFija) === 0 ||
           (Number(this.categoria?.bEsFija) === 1 &&
-            Number(this.categoria?.iTotalEncuestasFijasSede) === 0)),
+            [ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(Number(this.perfil.iPerfilId)))),
     },
     {
       labelTooltip: 'Archivar',

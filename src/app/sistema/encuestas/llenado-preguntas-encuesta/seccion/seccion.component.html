@@ -48,6 +48,7 @@
             placeholder="Ingrese el título"
             class="group-element"
             appendTo="body"
+            maxlength="100"
             [style]="{ flex: '1', width: '100%' }"
           />
         </p-inputGroup>
@@ -61,7 +62,7 @@
             formControlName="cSeccionDescripcion"
             pInputTextarea
             placeholder="Escriba"
-            maxLength="500"
+            maxLength="255"
             [rows]="3"
             class="group-element"
             [style.minHeight]="3"

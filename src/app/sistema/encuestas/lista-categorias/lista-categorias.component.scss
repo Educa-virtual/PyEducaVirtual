@@ -135,6 +135,7 @@
   float: right !important;
   padding: 0.25rem !important;
   top: -0.25rem !important;
+  margin: 0.5rem !important;
 }
 
 :host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon a.p-button,
@@ -351,4 +352,8 @@
 
 :host ::ng-deep .p-stepper-nav {
   overflow-y: hidden !important;
+}
+
+.text-pre-wrap {
+  white-space: pre-wrap !important;
 }

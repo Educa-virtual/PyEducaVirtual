@@ -48,7 +48,7 @@ export class SeccionComponent implements OnInit, OnChanges {
         iEncuId: this.iEncuId,
         iSeccionId: [null],
         cSeccionTitulo: ['', [Validators.required, Validators.maxLength(100)]],
-        cSeccionDescripcion: [''],
+        cSeccionDescripcion: ['', Validators.maxLength(255)],
         iSeccionOrden: [null],
       });
     } catch (error) {

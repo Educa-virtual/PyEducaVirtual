@@ -60,7 +60,6 @@
               <div class="flex text-xl">
                 SECCION # {{ seccion?.iSeccionOrden }}: {{ seccion?.cSeccionTitulo }}
               </div>
-              <div class="flex text-sm">{{ seccion?.cSeccionSubtitulo }}</div>
             </div>
             <div
               *ngIf="!encuesta_bloqueada"
@@ -95,7 +94,7 @@
 
         <p-messages severity="info" class="my-0" *ngIf="seccion?.cSeccionDescripcion">
           <ng-template pTemplate>
-            {{ seccion?.cSeccionDescripcion }}
+            <span class="text-pre-wrap">{{ seccion?.cSeccionDescripcion }}</span>
           </ng-template>
         </p-messages>
 
@@ -115,12 +114,12 @@
                 <i class="pi pi-question-circle"></i>
               </a>
               <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
-                <div class="flex w-15rem">
+                <div class="flex w-15rem text-pre-wrap">
                   {{ pregunta?.cPregAdicional }}
                 </div>
               </p-overlayPanel>
               <span>{{ seccion.iSeccionOrden + '.' + pregunta?.iPregOrden + '. ' }}</span>
-              <span>{{ pregunta?.cPregContenido }}</span>
+              <span class="text-pre-wrap">{{ pregunta?.cPregContenido }}</span>
               <p-button
                 size="small"
                 severity="info"

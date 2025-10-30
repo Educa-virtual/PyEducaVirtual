@@ -97,8 +97,8 @@ export class PreguntaComponent implements OnInit, OnChanges {
         iSeccionId: [null, Validators.required],
         iTipoPregId: [null, Validators.required],
         iPregOrden: [null],
-        cPregContenido: ['', [Validators.required, Validators.maxLength(500)]],
-        cPregAdicional: [''],
+        cPregContenido: ['', [Validators.required, Validators.maxLength(255)]],
+        cPregAdicional: ['', Validators.maxLength(255)],
         alternativas: [null],
         jsonAlternativas: [null],
       });

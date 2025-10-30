@@ -60,7 +60,6 @@
               <div class="flex text-xl">
                 SECCION # {{ seccion?.iPlanSeccionOrden }}: {{ seccion?.cPlanSeccionTitulo }}
               </div>
-              <div class="flex text-sm">{{ seccion?.cPlanSeccionSubtitulo }}</div>
             </div>
             <div
               *ngIf="!plantilla_bloqueada"
@@ -95,7 +94,7 @@
 
         <p-messages severity="info" class="my-0" *ngIf="seccion?.cPlanSeccionDescripcion">
           <ng-template pTemplate>
-            {{ seccion?.cPlanSeccionDescripcion }}
+            <span class="text-pre-wrap">{{ seccion?.cPlanSeccionDescripcion }}</span>
           </ng-template>
         </p-messages>
 
@@ -115,12 +114,12 @@
                 <i class="pi pi-question-circle"></i>
               </a>
               <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
-                <div class="flex w-15rem">
+                <div class="flex w-15rem text-pre-wrap">
                   {{ pregunta?.cPlanPregAdicional }}
                 </div>
               </p-overlayPanel>
               <span>{{ seccion.iPlanSeccionOrden + '.' + pregunta?.iPlanPregOrden + '. ' }}</span>
-              <span>{{ pregunta?.cPlanPregContenido }}</span>
+              <span class="text-pre-wrap">{{ pregunta?.cPlanPregContenido }}</span>
               <p-button
                 size="small"
                 severity="info"

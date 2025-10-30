@@ -582,7 +582,9 @@ export class GestionEncuestasComponent implements OnInit {
       type: 'item',
       class: 'p-menuitem-link text-red-500',
       isVisible: (rowData: any) =>
-        Number(rowData.iEstado) === this.ESTADO_BORRADOR && Number(rowData.puede_editar) === 1,
+        Number(rowData.puede_editar) === 1 &&
+        (Number(rowData.iEstado) === this.ESTADO_BORRADOR ||
+          new Date() < new Date(rowData.dEncuInicio)),
     },
     {
       labelTooltip: 'Ver respuestas',

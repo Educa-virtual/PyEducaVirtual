@@ -215,8 +215,9 @@ export class CategoriasEncuestaComponent implements OnInit {
 
   setBtnPrimary(categoria: any): MenuItem {
     if (
-      (Boolean(+categoria.bEsFija) || Boolean(+categoria?.bEsEnlace)) &&
-      Number(this.perfil.iPerfilId) !== ESTUDIANTE
+      Number(this.perfil.iPerfilId) === ADMINISTRADOR_DREMO ||
+      ((Boolean(+categoria.bEsFija) || Boolean(+categoria?.bEsEnlace)) &&
+        Number(this.perfil.iPerfilId) !== ESTUDIANTE)
     ) {
       return {
         label: 'Gestionar',
@@ -240,7 +241,10 @@ export class CategoriasEncuestaComponent implements OnInit {
         label: 'Gestionar encuestas',
         icon: 'pi pi-cog',
         command: () => this.gestionarEncuestas(categoria?.iCateId),
-        visible: Boolean(+categoria.bEsFija) === false && Boolean(+categoria?.bEsEnlace) === false,
+        visible:
+          Number(this.perfil.iPerfilId) !== ADMINISTRADOR_DREMO &&
+          Boolean(+categoria.bEsFija) === false &&
+          Boolean(+categoria?.bEsEnlace) === false,
       },
       {
         label: 'Gestionar plantillas',

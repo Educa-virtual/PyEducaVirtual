@@ -235,7 +235,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         if (iDocenteId) {
           this.showModal = true;
           this.item = item;
-          const dtInicio = item.dtInicio ? item.dtInicio.split(' ')[0] : null;
+          const dtInicio = item.dtInicio ? new Date(item.dtInicio) : null;
           this.item['dtInicio'] = dtInicio;
           this.titulo =
             accion === 'agregar'
@@ -372,6 +372,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
       item.dtInicio = item.dtInicio ? this.formatearFecha(item.dtInicio) : null;
       (item.iDocenteId = this.iDocenteId ? this.iDocenteId : this._ConstantesService.iDocenteId),
         (item.valorBusqueda = iYearId);
+      item.iCredId = this.perfil.iCredId;
+      item.iYAcadId = this._LocalStoreService.getItem('dremoiYAcadId');
       const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update';
       const prefix = item.opcion === 'GUARDAR' ? 'carga-no-lectivas' : 'detalle-carga-no-lectivas';
       item.opcion =

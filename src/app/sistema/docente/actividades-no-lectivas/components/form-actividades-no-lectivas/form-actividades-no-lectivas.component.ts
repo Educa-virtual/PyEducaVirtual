@@ -64,13 +64,6 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
         this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras'];
       }
     }
-    // if (changes.iFalta?.currentValue) {
-    //     this.iFalta = changes.iFalta.currentValue
-
-    //     this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras'].setValue(parseFloat(this.iFalta).toFixed(2))
-    //     console.log(this.formDetalleCargaNoLectivas.value)
-
-    // }
   }
   accionBtn(elemento): void {
     const { accion } = elemento;

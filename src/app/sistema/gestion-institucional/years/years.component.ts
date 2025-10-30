@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'; //OnChanges, OnDestroy
+import { Component, inject, OnInit } from '@angular/core'; //OnChanges, OnDestroy
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -25,6 +25,7 @@ import { distribucionBloques } from './config/table/distribucion-bloque.table';
 import { DistribucionBloquesService } from './config/service/distribucion-bloques.service';
 import { DatePipe } from '@angular/common';
 import { PeriodoEvaluacionesService } from './config/service/periodoEvaluaciones.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-years',
@@ -58,6 +59,9 @@ export class YearsComponent implements OnInit {
     distribucionBloque: new FormGroup({}),
     procesarPeriodos: new FormGroup({}),
   };
+
+  private _LocalStoreService = inject(LocalStoreService);
+  perfil = this._LocalStoreService.getItem('dremoPerfil');
 
   dialogs = {
     year: {
@@ -102,6 +106,8 @@ export class YearsComponent implements OnInit {
 
       this.periodoEvaluacionesService
         .processConfigCalendario({
+          iCredEntPerfId: this.perfil.iCredEntPerfId ?? null,
+          iCredId: this.perfil.iCredId ?? null,
           iPerioEvalId: iPeriodoEvalId,
           iYAcadId: iYAcadId,
         })

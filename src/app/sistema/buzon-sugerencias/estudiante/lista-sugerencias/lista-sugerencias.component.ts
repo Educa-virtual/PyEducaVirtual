@@ -1,18 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module';
-//import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { Component, OnInit } from '@angular/core'; //inject,
-//import { MessageService } from 'primeng/api'
-//import { Router } from '@angular/router'
+import { Component, OnInit } from '@angular/core';
 import { RegistrarSugerenciaComponent } from '../registrar-sugerencia/registrar-sugerencia.component';
 import { BuzonSugerenciasEstudianteService } from '../services/buzon-sugerencias-estudiante.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { VerSugerenciaComponent } from '../ver-sugerencia/ver-sugerencia.component';
-//import { BuzonSugerenciasService } from './services/buzon-sugerencias.service'
 
 @Component({
   selector: 'app-lista-sugerencias',
@@ -41,6 +37,7 @@ export class ListaSugerenciasComponent implements OnInit {
   dataSugerencias: any[];
   selectedItem: any;
   actionsLista: IActionTable[];
+  year: any = JSON.parse(localStorage.getItem('dremoYear'));
 
   columns = [
     {
@@ -175,7 +172,7 @@ export class ListaSugerenciasComponent implements OnInit {
         }*/
 
   obtenerListaSugerencias() {
-    this.buzonSugerenciasEstudianteService.obtenerListaSugerencias().subscribe({
+    this.buzonSugerenciasEstudianteService.obtenerListaSugerencias(this.year).subscribe({
       next: (data: any) => {
         this.dataSugerencias = data.data.map((item: any) => ({
           ...item,

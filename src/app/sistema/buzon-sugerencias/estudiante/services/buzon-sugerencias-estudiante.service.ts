@@ -14,8 +14,8 @@ export class BuzonSugerenciasEstudianteService {
     return this.http.post(`${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias`, data);
   }
 
-  obtenerListaSugerencias() {
-    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias`);
+  obtenerListaSugerencias(anio: any) {
+    return this.http.get(`${this.urlBackendApi}/acad/estudiantes/buzon-sugerencias?anio=${anio}`);
   }
 
   obtenerListaArchivosSugerencia(iSugerenciaId: any) {

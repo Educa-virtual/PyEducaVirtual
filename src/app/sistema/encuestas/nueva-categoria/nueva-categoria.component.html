@@ -86,6 +86,8 @@
             invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
             maxFileSize="512000"
             showCancelButton="false"
+            showUploadButton="false"
+            (onRemove)="quitarArchivo()"
           >
           </p-fileUpload>
         </p-inputGroup>

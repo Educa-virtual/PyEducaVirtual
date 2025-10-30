@@ -122,7 +122,6 @@ export class GestionEncuestasComponent implements OnInit {
     if (this.iCateId) {
       this.verCategoria();
       this.listarEncuestas();
-      this.obtenerParametrosFija();
     }
   }
 
@@ -224,6 +223,9 @@ export class GestionEncuestasComponent implements OnInit {
           this.categoria = data.data;
           this.setBreadCrumbs();
           this.puede_generar_fija = Number(this.categoria?.bEsFija) === 1;
+          if (Number(this.categoria?.bEsFija) === 1) {
+            this.obtenerParametrosFija();
+          }
         },
         error: error => {
           console.error('Error obteniendo datos:', error);

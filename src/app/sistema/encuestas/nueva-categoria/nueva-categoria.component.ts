@@ -59,16 +59,20 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.archivoSeleccionado = null;
-    if (this.form && this.fileUpload) {
-      this.fileUpload.clear();
-      this.form.get('archivo').setValue(null);
-    }
+    this.quitarArchivo();
     if (this.iCateId && changes['visible']?.currentValue === true) {
       this.dialogTitle = 'Editar categoría';
       this.verCategoria();
     } else {
       this.dialogTitle = 'Nueva categoría';
       this.clearForm();
+    }
+  }
+
+  quitarArchivo() {
+    if (this.form && this.fileUpload) {
+      this.fileUpload.clear();
+      this.form.get('archivo').setValue(null);
     }
   }
 
@@ -204,6 +208,7 @@ export class NuevaCategoriaComponent implements OnInit, OnChanges {
     if (this.categoria && this.categoria.cCateImagenNombre) {
       this.categoria.cCateImagenNombre = null;
     }
+    this.categoria.cCateImagenUrl = null;
     this.form.get('cCateImagenNombre')?.setValue(null);
     this.archivoSeleccionado = null;
     this.form.get('archivo').setValue(null);

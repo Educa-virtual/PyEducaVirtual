@@ -26,6 +26,10 @@ import { DistribucionBloquesService } from './config/service/distribucion-bloque
 import { DatePipe } from '@angular/common';
 import { PeriodoEvaluacionesService } from './config/service/periodoEvaluaciones.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { Router } from '@angular/router';
+import { TokenStorageService } from '@/app/servicios/token.service';
+
+import { GlobalStateService } from 'src/app/servicios/global-state.service';
 
 @Component({
   selector: 'app-years',
@@ -87,11 +91,6 @@ export class YearsComponent implements OnInit {
     processData: () => {
       const iPeriodoEvalId = this.forms.procesarPeriodos.get('iPeriodoEvalId').value;
       const iYAcadId = this.forms.year.get('iYAcadId').value;
-
-      console.log('iYAcadId');
-      console.log(iYAcadId);
-      console.log('iPeriodoEvalId');
-      console.log(iPeriodoEvalId);
 
       if (!iPeriodoEvalId || !iYAcadId) {
         this.messageService.add({
@@ -159,8 +158,12 @@ export class YearsComponent implements OnInit {
     public distribucionBloquesService: DistribucionBloquesService,
     private msg: StepConfirmationService,
     public dialogConfirm: ConfirmationModalService,
+    private router: Router,
+    private tokenStorageService: TokenStorageService,
+
     public datePipe: DatePipe,
-    public periodoEvaluacionesService: PeriodoEvaluacionesService
+    public periodoEvaluacionesService: PeriodoEvaluacionesService,
+    private globalState: GlobalStateService
   ) {
     this.forms.year = this.fb.group({
       iYearId: [''],
@@ -209,5 +212,51 @@ export class YearsComponent implements OnInit {
         }));
       },
     });
+  }
+  actualizarTolbarAnio(data: any) {
+    // O eliminar todo
+    // localStorage.clear();
+    // sessionStorage.clear();
+
+    /* para leer reactivamente
+    this.globalState.years$.subscribe(years => {
+    console.log('Años disponibles:', years);
+  });
+
+  this.globalState.selectedYear$.subscribe(year => {
+    console.log('Año seleccionado:', year);
+  });
+   
+   */
+    //Se asignan los nuevos años
+    this.globalState.updateYears(data);
+
+    //Asigna el año agregado
+    const year_actual = data.find(year => year.iYearEstado === '1');
+
+    this.globalState.setSelectedYear(year_actual);
+    return;
+    //return;
+    // Mostrar el diálogo de confirmación
+    /* this.dialogConfirm.openAlert({
+      header: 'Se reiniciará  para aplicar los cambios del nuevo año',
+    
+      });
+    // Esperar 5 segundos (5000 ms)
+      setTimeout(() => {
+        window.location.reload();
+        /*   const user = localStorage.getItem('dremoToken')
+
+        const accessToken = localStorage.getItem('auth-token')
+        const refreshToken = localStorage.getItem('auth-refreshtoken')
+        if (user) {
+            this.tokenStorageService.saveUser(user.replaceAll('"', ''))
+            this.tokenStorageService.saveToken(accessToken)
+            this.tokenStorageService.saveRefreshToken(refreshToken)
+        } else {
+            localStorage.clear()
+            this.tokenStorageService.signOut()
+        }
+    }, 2000);*/
   }
 }

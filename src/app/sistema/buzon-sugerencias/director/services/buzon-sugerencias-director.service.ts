@@ -10,8 +10,8 @@ export class BuzonSugerenciasDirectorService {
 
   constructor(private http: HttpClient) {}
 
-  obtenerListaSugerencias() {
-    return this.http.get(`${this.urlBackendApi}/acad/directores/buzon-sugerencias`);
+  obtenerListaSugerencias(anio: any) {
+    return this.http.get(`${this.urlBackendApi}/acad/directores/buzon-sugerencias?anio=${anio}`);
   }
 
   responderSugerencia(iSugerenciaId: number, cRespuesta: string) {

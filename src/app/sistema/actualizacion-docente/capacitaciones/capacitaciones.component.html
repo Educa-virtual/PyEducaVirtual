@@ -1,6 +1,6 @@
 <app-toolbar-primeng title="Mis capacitaciones"></app-toolbar-primeng>
 <div class="grid">
-  <div class="col-12">
+  <div class="col-12 mb-5 cursos">
     <ng-container *ngIf="data && data.length > 0">
       @for (capacitacion of data; track capacitacion) {
         <app-card-capacitaciones

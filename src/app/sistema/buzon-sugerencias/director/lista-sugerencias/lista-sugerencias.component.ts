@@ -5,7 +5,6 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ResponderSugerenciaComponent } from '../responder-sugerencia/responder-sugerencia.component';
 import { BuzonSugerenciasDirectorService } from '../services/buzon-sugerencias-director.service';
 @Component({
@@ -26,6 +25,7 @@ export class ListaSugerenciasComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
   dataSugerencias: any[];
+  year: any = JSON.parse(localStorage.getItem('dremoYear'));
 
   columns = [
     {
@@ -110,8 +110,7 @@ export class ListaSugerenciasComponent implements OnInit {
 
   constructor(
     private buzonSugerenciasDirectorService: BuzonSugerenciasDirectorService,
-    private messageService: MessageService,
-    private confirmationModalService: ConfirmationModalService
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -123,7 +122,7 @@ export class ListaSugerenciasComponent implements OnInit {
   }
 
   obtenerListaSugerencias() {
-    this.buzonSugerenciasDirectorService.obtenerListaSugerencias().subscribe({
+    this.buzonSugerenciasDirectorService.obtenerListaSugerencias(this.year).subscribe({
       next: (data: any) => {
         this.dataSugerencias = data.data.map((item: any) => ({
           ...item,

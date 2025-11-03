@@ -19,6 +19,7 @@ export class AsistenciaApoderadoComponent {
   dataMatriculas: any[] = [];
   estudianteSeleccionado: any;
   matriculaSeleccionada: any;
+  year: any = JSON.parse(localStorage.getItem('dremoYear'));
 
   constructor(
     private messageService: MessageService,
@@ -45,21 +46,23 @@ export class AsistenciaApoderadoComponent {
   }
 
   obtenerMatriculasEstudiante() {
-    this.apoderadoService.obtenerMatriculasEstudiante(this.estudianteSeleccionado).subscribe({
-      next: (response: any) => {
-        this.dataMatriculas = response.data.map((matricula: any) => ({
-          ...matricula,
-          cMatriculaMostrar:
-            `${matricula.iYearId} - ${matricula.cGradoAbreviacion} ${matricula.cSeccionNombre} - ${matricula.cNivelTipoNombre.replace('Educación ', '')} - I.E. ${matricula.cIieeNombre}`.trim(),
-        }));
-      },
-      error: err => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener matrículas',
-          detail: err.error.message || 'Error desconocido',
-        });
-      },
-    });
+    this.apoderadoService
+      .obtenerMatriculasEstudiante(this.estudianteSeleccionado, this.year)
+      .subscribe({
+        next: (response: any) => {
+          this.dataMatriculas = response.data.map((matricula: any) => ({
+            ...matricula,
+            cMatriculaMostrar:
+              `${matricula.iYearId} - ${matricula.cGradoAbreviacion} ${matricula.cSeccionNombre} - ${matricula.cNivelTipoNombre.replace('Educación ', '')} - I.E. ${matricula.cIieeNombre}`.trim(),
+          }));
+        },
+        error: err => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al obtener matrículas',
+            detail: err.error.message || 'Error desconocido',
+          });
+        },
+      });
   }
 }

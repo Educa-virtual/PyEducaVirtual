@@ -1,0 +1,460 @@
+<br />
+
+<p-stepper class="mt-3" [(activeStep)]="active">
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-nextCallback="nextCallback"
+      let-index="index"
+      class="p-0 m-0"
+    >
+      <p>
+        En esta sección se <strong>gestiona las encuestas</strong>, cada encuesta se muestra como
+        una fila de la tabla. Las columnas indican
+        <strong>el nombre, el estado, la fecha de inicio y la fecha de finalización</strong> de la
+        encuesta. Cuando una encuesta está en <p-tag value="BORRADOR" severity="danger" /> puede
+        editar sus datos o eliminarla. Cuando está <p-tag value="APROBADA" severity="success" /> ya
+        no podrá editar sus datos pero podrá eliminarla hasta un día antes de su fecha de inicio,
+        mientras no tenga respuestas registradas.
+      </p>
+      <p>
+        La población objetivo (o los encuestados) solo pueden ver las encuestas aprobadas a partir
+        de la fecha de inicio especificada.
+      </p>
+      <p>
+        En la última columna hay un <strong>botón de acciones</strong>, al hacer clic en él
+        <strong>se despliega la lista de acciones</strong> disponibles para la encuesta
+        seleccionada. Estas acciones cambian según el estado y tipo de la encuesta.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu #menu [popup]="true" appendTo="body" class="z-0" [model]="listarAcciones(null)" />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-end">
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Visibilidad de encuestas</h3>
+      <p>
+        En esta sección puede ver las <strong>encuestas que usted ha creado</strong>, pero también
+        se listarán las <strong>encuestas creadas por otros usuarios</strong>, en las que parte de
+        la población objetivo (los encuestados) son
+        <strong>dependientes de su jurisdicción</strong> y/o en las que se le ha asignado alguno de
+        los siguientes <strong>Accesos</strong>: "Editar", "Ver respuestas" y/o "Ver resumen".
+      </p>
+      <p>
+        La población objetivo (o los encuestados) que puede incluir en sus encuestas depende de su
+        jurisdicción:
+      </p>
+      <ul>
+        <li>
+          Si es un <strong>Director</strong> puede encuestar a estudiantes, apoderados y/o docentes
+          de su I.E.
+        </li>
+        <li>
+          Si es <strong>especialista UGEL</strong> puede encuestar a directores, estudiantes,
+          apoderados y/o docentes de su UGEL.
+        </li>
+        <li>
+          Si es <strong>especialista DREMO</strong> puede encuestar a los especialistas UGEL,
+          directores, estudiantes, apoderados y/o docentes.
+        </li>
+        <li>El <strong>administrador DREMO</strong> puede encuestar a todos los anteriores.</li>
+      </ul>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Editar encuestas</h3>
+      <p>Para registrar una nueva encuesta debe presionar el botón:</p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-button size="small" severity="success" pTooltip="Nuevo" tooltipPosition="top">
+          <i class="pi pi-fw pi-plus"></i>
+          <span class="hidden md:inline ml-2">Nueva</span>
+        </p-button>
+      </div>
+      <p>
+        Será redirigido al formulario en donde debe ingresar los datos de la nueva encuesta, la
+        población objetivo y los accesos.
+      </p>
+      <p>
+        Cuando la encuesta está en estado <p-tag value="BORRADOR" severity="danger" /> puede
+        <strong>editarla</strong>, debe presionar el botón de acciones y en la lista desplegable
+        debe elegir la acción <strong>"Editar"</strong>. Para borrar la encuesta elija la acción
+        <strong>"Eliminar"</strong>.
+      </p>
+      <p>
+        Para cambiar el estado de la encuesta a <p-tag value="APROBADA" severity="success" /> debe
+        presionar el botón de acciones y seleccionar la acción <strong>"Aprobar"</strong>. Una vez
+        que la encuesta está aprobada, el botón <strong>"Editar"</strong> cambiará a
+        <strong>"Ver"</strong>.
+      </p>
+      <p>
+        Para gestionar las preguntas de la encuesta, debe presionar el botón de acciones y
+        seleccionar la acción <strong>"Ver Preguntas"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('editar')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Generar encuestas fijas</h3>
+      <p>
+        En las categorías fijas las encuestas
+        <strong>solo se pueden generar desde plantillas</strong>, usando la misma para todas las
+        encuestas.
+      </p>
+      <p>
+        El <strong>administrador DREMO puede crear encuestas generales</strong> por defecto para
+        todos los areas de la currícula nacional. El
+        <strong>director puede reemplazar las encuestas generales</strong> por encuestas
+        personalizadas solo para los estudiantes de su I.E.
+      </p>
+      <p>
+        Para reeemplazar una encuesta existente debe presionar el botón de acciones y seleccionar la
+        acción <strong>"Reemplazar"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('reemplazar')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <ul>
+        <li>
+          <strong>Encuestas de satisfacción</strong>: El director solo verá las encuestas para los
+          <strong>areas</strong> que estén configurados para su I.E.
+        </li>
+        <li>
+          <strong>Encuestas de autoevaluación</strong>: El director solo verá las encuestas para los
+          <strong>areas y los periodos académicos</strong> que estén configurados para su I.E.
+          (bimestre, trimestre, semestre, etc.).
+        </li>
+      </ul>
+
+      <p>
+        <strong>IMPORTANTE:</strong> Si no realizó la
+        <strong>configuración de areas y periodos académicos no verá las encuestas</strong>
+        generales creadas por el administrador DREMO y tampoco podrá crear sus propias encuestas
+        personalizadas.
+      </p>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Acciones adicionales</h3>
+      <p>
+        Puede duplicar una encuesta creada por usted o por otros usuarios. Para duplicar una
+        encuesta debe presionar el botón de acciones y seleccione la acción
+        <strong>"Duplicar"</strong>. También puede convertir una encuesta en una plantilla, para
+        ello debe elegir la acción <strong>"Hacer plantilla"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('adicionales')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
+      <h3>Ver respuestas</h3>
+      <p>
+        Cuando la encuesta está en estado <p-tag value="APROBADA" severity="success" /> puede
+        <strong>ver las respuestas</strong> de la encuesta, debe presionar el botón de acciones y en
+        la lista desplegable debe elegir la acción <strong>"Ver respuestas"</strong>. Si presione el
+        botón <strong>"Ver resumen"</strong> puede ver el <strong>resumen</strong> de las respuestas
+        de la encuesta, representadas mediante gráficos para cada pregunta.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('respuestas')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Salir"
+          severity="success"
+          icon="pi pi-times"
+          iconPos="right"
+          (onClick)="salir()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+</p-stepper>

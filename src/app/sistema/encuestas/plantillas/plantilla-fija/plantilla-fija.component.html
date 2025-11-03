@@ -1,0 +1,139 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Nueva plantilla fija</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex flex-wrap gap-2 justify-content-end" *ngIf="plantilla_registrada && iPlanId">
+      <p-button
+        label="Ver preguntas"
+        icon="pi pi-list-check"
+        iconPos="left"
+        size="small"
+        severity="warning"
+        pTooltip="Ver preguntas"
+        tooltipPosition="top"
+        (click)="verPreguntas()"
+      />
+    </div>
+  </ng-template>
+
+  <p-messages severity="info" class="my-0">
+    En las categorías fijas, la población objetivo y los accesos se definen automáticamente según su
+    jurisdicción y no pueden ser modificados.
+  </p-messages>
+
+  <form [formGroup]="formPlantilla">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título * </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese título"
+            formControlName="cPlanNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese subtítulo"
+            formControlName="cPlanSubtitulo"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Consideraciones generales:</p-inputGroupAddon>
+          <textarea
+            formControlName="cPlanDescripcion"
+            inputStyleClass="group-element"
+            rows="4"
+            style="resize: none"
+            pInputTextarea
+            class="group-element"
+            appendTo="body"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+    </div>
+    <p-fieldset legend="Compartir con">
+      <div class="grid">
+        <div class="col-12 md:col-4">
+          <p-inputGroup class="vertical-group" *ngIf="es_especialista_dremo">
+            <p-inputGroupAddon>
+              <p-inputSwitch formControlName="bCompartirDirectores" />
+              <span>Todos los Directores</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup class="vertical-group" *ngIf="es_especialista_dremo">
+            <p-inputGroupAddon>
+              <p-inputSwitch formControlName="bCompartirEspUgel" />
+              <span>Todos los Esp. UGEL</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup class="vertical-group" *ngIf="es_especialista_dremo">
+            <p-inputGroupAddon>
+              <p-inputSwitch formControlName="bCompartirEspDremo" />
+              <span>Todos los Esp. DREMO</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6" *ngIf="es_director">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>
+              <p-inputSwitch formControlName="bCompartirMismaIe" />
+              <span>Otros directores de mi I.E.</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6" *ngIf="es_especialista_ugel">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>
+              <p-inputSwitch formControlName="bCompartirMismaUgel" />
+              <span>Otros Esp. de mi UGEL</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+      </div>
+    </p-fieldset>
+  </form>
+  <div class="flex pt-4 justify-content-between">
+    <p-button label="Salir" severity="secondary" icon="pi pi-arrow-left" (onClick)="salir()" />
+    <p-button
+      *ngIf="puede_editar && !plantilla_registrada"
+      label="Guardar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="right"
+      (onClick)="guardarPlantilla()"
+    />
+    <p-button
+      *ngIf="puede_editar && plantilla_registrada"
+      label="Actualizar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="right"
+      (onClick)="actualizarPlantilla()"
+    />
+  </div>
+</p-panel>
+
+<p-toast></p-toast>

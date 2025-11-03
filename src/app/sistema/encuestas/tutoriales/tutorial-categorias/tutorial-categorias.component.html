@@ -1,0 +1,383 @@
+<br />
+
+<p-stepper class="mt-3" [(activeStep)]="active">
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-nextCallback="nextCallback"
+      let-index="index"
+      class="p-0 m-0"
+    >
+      <p>
+        Esta es la <strong>lista de categorías</strong>, cada categoría contiene varias encuestas
+        agrupadas según su tema, población objetivo u otro criterio.
+      </p>
+      <p>
+        Las categorías se mantienen todos los años. Pero las encuestas dentro de cada categoría
+        cambian según el <strong>año escolar seleccionado</strong>.
+      </p>
+      <p>
+        Para ver encuestas de años pasados debe seleccionar el año escolar deseado en el menú
+        superior.
+      </p>
+
+      <div class="flex pt-4 justify-content-end">
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel *ngIf="es_administrador">
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Gestionar categorías</h3>
+      <p>
+        El <strong>Administrador DREMO</strong> tiene la opción de crear, modificar y borrar
+        categorías.
+      </p>
+      <p>Para crear una <strong>nueva categoría</strong> debe presionar el botón:</p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-button size="small" severity="success" pTooltip="Nueva" tooltipPosition="top">
+          <i class="pi pi-fw pi-plus"></i>
+          <span class="hidden md:inline ml-2">Nueva</span>
+        </p-button>
+      </div>
+      <p>Se mostrará una ventana emergente para ingresar los datos de la nueva categoría.</p>
+      <p>
+        Para <strong>editar una categoría</strong> existente debe presionar la
+        <strong>flecha</strong> junto al botón de opciones. Se mostrará una
+        <strong>lista desplegable</strong>, en donde debe elegir la opción
+        <strong>"Editar categoría"</strong>. Para borrar una categoría elija la opcion
+        <strong>"Borrar categoría"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-splitButton
+          severity="primary"
+          label="Opciones"
+          size="small"
+          [model]="listarOpciones('editar')"
+          appendTo="body"
+        />
+      </div>
+      <p>
+        Tenga en cuenta que solo podrá borrar una categoría si no tiene encuestas o plantillas
+        registradas por usted o por otros usuarios.
+      </p>
+      <p>
+        <strong>IMPORTANTE:</strong> Una vez que cree una categoría, todos los usuarios podrán verla
+        y crear encuestas y plantillas.
+      </p>
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel *ngIf="es_encuestador">
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Categorías fijas</h3>
+      <p>
+        Las categorías fijas se distinguen con el ícono <i class="pi pi-fw pi-lock"></i>. Estas
+        encuestas <strong>tienen campos y accesos por defecto</strong> y la
+        <strong>población objetivo siempre son estudiantes</strong>.
+      </p>
+
+      <h4>Encuestas de satisfacción</h4>
+      <p>
+        Las encuestas de satisfacción se realizan para
+        <strong>evaluar la satisfacción de los estudiantes</strong> con los cursos y el desempeño de
+        los docentes.
+      </p>
+      <p>
+        Se genera una encuesta <strong>por cada curso</strong> y por defecto el periodo para
+        responder
+        <strong>empieza al terminar el año escolar y cierra siete días después</strong> (puede
+        modificar este periodo para cada encuesta).
+      </p>
+
+      <h4>Encuestas de autoevaluación</h4>
+      <p>
+        Las encuestas de autoevaluación se realizan para que el estudiante
+        <strong>pueda evaluar su progreso</strong> en el curso.
+      </p>
+      <p>
+        Se genera una encuesta
+        <strong>por cada curso y por cada periodo académico</strong> (bimestre, trimestre, semestre,
+        etc.).
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-splitButton
+          severity="primary"
+          size="small"
+          [model]="listarOpciones('encuestas')"
+          label="Opciones"
+          appendTo="body"
+        />
+        <p-button size="small" severity="info" label="Gestionar" />
+      </div>
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel *ngIf="es_encuestador">
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Gestionar encuestas</h3>
+      <p>
+        Los <strong>especialistas y directores</strong> tienen la opción de crear, modificar y ver
+        respuestas de las encuestas <strong>según su jurisdicción</strong>.
+      </p>
+      <p>
+        Las encuestas creadas están enlazadas al año escolar seleccionado, si cambia de año se
+        mostrarán otras encuestas.
+      </p>
+      <p>
+        Para gestionar las encuestas debe presionar la <strong>flecha</strong> junto al botón de
+        opciones. Se mostrará una <strong>lista desplegable</strong>, en donde debe elegir la opción
+        <strong>"Gestionar encuestas"</strong>. O, en el caso de las categorías fijas, presione el
+        botón <strong>"Gestionar"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-splitButton
+          severity="primary"
+          size="small"
+          [model]="listarOpciones('encuestas')"
+          label="Opciones"
+          appendTo="body"
+        />
+        <p-button size="small" severity="info" label="Gestionar" />
+      </div>
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel *ngIf="es_encuestador">
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Gestionar plantillas</h3>
+      <p>
+        Los <strong>especialistas y directores</strong> tienen la opción de crear, modificar y
+        eliminar plantillas de encuestas.
+      </p>
+      <p>
+        Las plantillas se usan para generar encuestas, pueden compartirse con otros usuarios y son
+        accesibles en todos los años escolares.
+      </p>
+      <p>
+        Para gestionar las plantillas debe presionar la <strong>flecha</strong> junto al botón de
+        opciones. Se mostrará una <strong>lista desplegable</strong>, en donde debe elegir la opción
+        <strong>"Gestionar plantillas"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-splitButton
+          severity="primary"
+          size="small"
+          label="Opciones"
+          [model]="listarOpciones('plantillas')"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
+      <h3>Responder encuestas</h3>
+      <p>Para mostrar las encuestas dentro de cada categoría debe presionar el botón:</p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-button size="small" severity="primary">
+          <span class="font-bold">Responder</span>
+          <p-badge value="1" severity="danger" />
+        </p-button>
+      </div>
+      <p>
+        Cuando tenga <strong>encuestas pendientes se mostrará un indicador</strong> como éste:
+        <p-badge value="1" severity="danger" />, ubicado dentro del botón e indicando la
+        <strong>cantidad de encuestas sin responder</strong>.
+      </p>
+      <p>
+        Cuando no haya encuestas pendientes podrá ver las demás encuestas que ya se han respondido.
+      </p>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Salir"
+          severity="success"
+          icon="pi pi-times"
+          iconPos="right"
+          (onClick)="salir()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+</p-stepper>

@@ -161,6 +161,12 @@ export const administradorDremo = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+
+      {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [
@@ -253,6 +259,11 @@ export const especialistaDremo = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
@@ -311,6 +322,11 @@ export const especialistaUgel = [
             routerLink: ['/bienestar/informe-estadistico'],
           },
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
       {
         label: 'Enlaces de ayuda',

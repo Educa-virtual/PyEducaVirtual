@@ -382,34 +382,37 @@
         periodos académicos.
       </p>
       <div class="grid">
-        <div class="col-12">
-          <p-inputGroup>
-            <p-inputGroupAddon>
-              Cursos
-              <p-badge [value]="cursos.length" severity="danger" *ngIf="cursos.length" />
-            </p-inputGroupAddon>
-            <p-dropdown
-              [options]="cursos"
-              [showClear]="false"
-              appendTo="body"
-              styleClass="group-element text-left"
-            />
-          </p-inputGroup>
-        </div>
-        <div class="col-12">
-          <p-inputGroup>
-            <p-inputGroupAddon>
-              Periodos
-              <p-badge [value]="periodos.length" severity="danger" *ngIf="periodos.length" />
-            </p-inputGroupAddon>
-            <p-dropdown
-              [options]="periodos"
-              [showClear]="false"
-              appendTo="body"
-              styleClass="group-element text-left"
-            />
-          </p-inputGroup>
-        </div>
+        @if (periodos.length > 0) {
+          @for (periodo of periodos; track $index) {
+            <div class="col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  {{ periodo['label'] }}
+                </p-inputGroupAddon>
+                <p-dropdown
+                  [options]="periodo['cursos']"
+                  [showClear]="false"
+                  appendTo="body"
+                  styleClass="group-element text-left"
+                />
+              </p-inputGroup>
+            </div>
+          }
+        } @else if (cursos.length > 0) {
+          <div class="col-12">
+            <p-inputGroup>
+              <p-inputGroupAddon> Cursos </p-inputGroupAddon>
+              <p-dropdown
+                [options]="cursos"
+                [showClear]="false"
+                appendTo="body"
+                styleClass="group-element text-left"
+              />
+            </p-inputGroup>
+          </div>
+        } @else {
+          <div class="col-12">No tiene áreas ni periodos configurados.</div>
+        }
       </div>
 
       <div class="flex justify-content-center flex-wrap gap-2">

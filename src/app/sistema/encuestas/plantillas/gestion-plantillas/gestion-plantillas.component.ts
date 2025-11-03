@@ -33,12 +33,14 @@ export class GestionPlantillasComponent implements OnInit {
   formPlantillas: FormGroup;
   formEncuestaPlantilla: FormGroup;
   formPlantilla: FormGroup;
+  formEncuestaFija: FormGroup;
 
   iCateId: number;
   categoria: any;
 
   perfil: any;
   iYAcadId: number;
+  es_director: boolean = false;
 
   selectedItem: any;
   plantillas: any[] = [];
@@ -52,6 +54,10 @@ export class GestionPlantillasComponent implements OnInit {
   visibleDialogEncuesta: boolean = false;
   visibleDialogDuplicar: boolean = false;
   visibleDialogTutorial: boolean = false;
+  visibleDialogGenerar: boolean = false;
+
+  cursos: Array<object> = [];
+  periodos: Array<object> = [];
 
   ESTADO_BORRADOR: number = this.encuestasService.ESTADO_BORRADOR;
   ESTADO_APROBADA: number = this.encuestasService.ESTADO_APROBADA;
@@ -74,6 +80,7 @@ export class GestionPlantillasComponent implements OnInit {
     });
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
+    this.es_director = [DIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -95,6 +102,11 @@ export class GestionPlantillasComponent implements OnInit {
         bCopiarPoblacion: [true],
         bCopiarAccesos: [true],
         bCopiarPreguntas: [true],
+      });
+
+      this.formEncuestaFija = this.fb.group({
+        iCursoId: [null, Validators.required],
+        iPeriodoId: [null, Validators.required],
       });
 
       this.formPlantilla = this.fb.group({
@@ -128,6 +140,9 @@ export class GestionPlantillasComponent implements OnInit {
         next: (data: any) => {
           this.categoria = data.data;
           this.setBreadCrumbs();
+          if (Number(this.categoria?.bEsFija) === 1) {
+            this.obtenerParametrosFija();
+          }
         },
         error: error => {
           console.error('Error obteniendo datos:', error);
@@ -136,6 +151,31 @@ export class GestionPlantillasComponent implements OnInit {
             summary: 'Error',
             detail: error.error.message ?? 'Ocurrió un error',
           });
+        },
+      });
+  }
+
+  obtenerParametrosFija() {
+    this.encuestasService
+      .crearEncuestaFija({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iYAcadId: this.iYAcadId,
+        iCateId: this.iCateId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          if (!data || !data.data) {
+            console.error('No se obtuvo datos');
+            return;
+          }
+          if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
+            this.cursos = this.encuestasService.getAreasFija(data.data);
+          } else if (Number(this.iCateId) === this.CATEGORIA_AUTOEVALUACION) {
+            this.periodos = this.encuestasService.getPeriodosFija(data.data);
+          }
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
         },
       });
   }
@@ -252,6 +292,10 @@ export class GestionPlantillasComponent implements OnInit {
 
   resetFormEncuesta() {
     this.formEncuestaPlantilla.reset();
+  }
+
+  resetFormEncuestaFija() {
+    this.formEncuestaFija.reset();
   }
 
   generarEncuesta() {
@@ -522,15 +566,8 @@ export class GestionPlantillasComponent implements OnInit {
         break;
       case 'generar':
         if (Number(this.categoria?.bEsFija) === 1) {
-          this.confirmService.openConfirm({
-            header: 'Generar encuesta desde plantilla',
-            message:
-              'Se generarán todas las encuestas de las áreas y periodos faltantes con un nombre, fechas, población objetivo y accesos por defecto. ¿Está seguro de generar todas las encuestas faltantes desde la plantilla seleccionada?',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-              this.generarEncuestaPlantilla(null, item);
-            },
-          });
+          this.selectedItem = item;
+          this.visibleDialogGenerar = true;
         } else {
           this.confirmService.openConfirm({
             header: 'Generar encuesta desde plantilla',

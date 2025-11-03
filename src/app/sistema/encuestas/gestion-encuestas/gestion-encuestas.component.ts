@@ -161,9 +161,21 @@ export class GestionEncuestasComponent implements OnInit {
         iYAcadId: this.iYAcadId,
         iCateId: this.iCateId,
       })
-      .subscribe((data: any) => {
-        this.cursos = JSON.parse(data.data.cursos);
-        this.periodos = JSON.parse(data.data.periodos);
+      .subscribe({
+        next: (data: any) => {
+          if (!data || !data.data) {
+            console.error('No se obtuvo datos');
+            return;
+          }
+          if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
+            this.cursos = this.encuestasService.getAreasFija(data.data);
+          } else if (Number(this.iCateId) === this.CATEGORIA_AUTOEVALUACION) {
+            this.periodos = this.encuestasService.getPeriodosFija(data.data);
+          }
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+        },
       });
   }
 

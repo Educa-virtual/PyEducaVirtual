@@ -45,6 +45,9 @@ export class EncuestasService implements OnDestroy {
 
   parametros: any;
 
+  areas_fija: Array<object>;
+  periodos_fija: Array<object>;
+
   permisos: Array<object>;
   distritos: Array<object>;
   nivel_tipos: Array<object>;
@@ -201,10 +204,6 @@ export class EncuestasService implements OnDestroy {
     return this.http.post(`${baseUrl}/enc/crearEncuestaAutoevaluacion`, data);
   }
 
-  crearEncuestaFija(data: any) {
-    return this.http.post(`${baseUrl}/enc/crearEncuestaFija`, data);
-  }
-
   listarPlantillas(data: any) {
     return this.http.post(`${baseUrl}/enc/listarPlantillas`, data);
   }
@@ -288,6 +287,40 @@ export class EncuestasService implements OnDestroy {
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */
+
+  crearEncuestaFija(data: any) {
+    return this.http.post(`${baseUrl}/enc/crearEncuestaFija`, data);
+  }
+
+  getAreasFija(data: any) {
+    if (!this.areas_fija && data) {
+      this.areas_fija = data.map(area => ({
+        value: area.iCursoId,
+        label: area.cCursoNombre,
+        disabled: Number(area.bTieneEncuesta) === 1 ? true : false,
+      }));
+      return this.areas_fija;
+    }
+    return this.areas_fija;
+  }
+
+  getPeriodosFija(data: any) {
+    if (!this.periodos_fija && data) {
+      this.periodos_fija = data.map(periodo => ({
+        value: periodo.iPeriodoId,
+        label: periodo.cPeriodoNombre,
+        cursos: periodo?.json_cursos
+          ? JSON.parse(periodo?.json_cursos).map(curso => ({
+              value: curso.iCursoId,
+              label: curso.cCursoNombre,
+              disabled: Number(curso.bTieneEncuesta) === 1 ? true : false,
+            }))
+          : [],
+      }));
+      return this.periodos_fija;
+    }
+    return this.periodos_fija;
+  }
 
   crearEncuesta(data: any) {
     if (!this.parametros) {

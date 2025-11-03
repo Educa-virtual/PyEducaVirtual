@@ -36,7 +36,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //     cursosSave,
 // } from './config/table/cursos'
 // import { Observable } from 'rxjs'
-import { CursosService } from './config/service/cursos.service';
 import { ModalidadServicioService } from './config/service/modalidadServicio.service';
 // import { FormConfig } from './config/types/forms'
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -46,7 +45,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 //     nivelesCursos,
 // } from './config/actions/table'
 // import { agregar } from './config/actions/container'
-import { NivelGradosService } from './config/service/nivelesGrados.service';
 // import { nivelesGradosColumns } from './config/table/nivelesGrados'
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
@@ -56,6 +54,10 @@ import { CalendarModule } from 'primeng/calendar';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CurriculaCursoComponent } from './curricula-curso/curricula-curso.component';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { CurriculaCompetenciaComponent } from './curricula-competencia/curricula-competencia.component';
 
 @Component({
   selector: 'app-curriculas',
@@ -83,6 +85,8 @@ import { CurriculaCursoComponent } from './curricula-curso/curricula-curso.compo
     ToggleButtonModule,
     CalendarModule,
     CurriculaCursoComponent,
+    NoDataComponent,
+    CurriculaCompetenciaComponent,
   ],
   templateUrl: './curriculas.component.html',
   styleUrl: './curriculas.component.scss',
@@ -104,15 +108,17 @@ export class CurriculasComponent implements OnInit {
   bEditar: boolean = false;
   messages: Message[] | undefined;
   sidebarVisible: boolean = false;
-  iCurrId: number = 1;
+  iCurrId: number = null;
+  caption: string;
 
   private _ConstantesService = inject(ConstantesService);
+  private _confirmService = inject(ConfirmationModalService);
   constructor(
     private fb: FormBuilder,
     public curriculasService: CurriculasService,
-    public cursosService: CursosService,
+    // public cursosService: CursosService,
     public modalidadServiciosService: ModalidadServicioService,
-    public nivelesGradosService: NivelGradosService,
+    // public nivelesGradosService: NivelGradosService,
     public cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private query: GeneralService
@@ -147,27 +153,32 @@ export class CurriculasComponent implements OnInit {
 
     switch (accion) {
       case 'nueva_curricula':
+        this.frmCurriculas.reset();
         this.iCurrId = 0;
         this.bEditar = false;
         this.visible = true;
+        this.titulo = 'Formulario para registrar nueva currícula';
         break;
 
       case 'cursos':
         this.bEditar = false;
         this.visible = false;
         this.iCurrId = item.iCurrId;
-        alert(this.iCurrId);
-
+        this.caption = item.cCurrRsl;
         break;
 
       case 'mostrar_curricula':
         this.iCurrId = 0;
         this.bEditar = false;
         this.visible = false;
+
         this.obtenerDatosIniciales();
         break;
+
       case 'editar':
-        this.iCurrId = 0;
+        this.iCurrId = item.iCurrId;
+        this.caption = item.cCurrRsl;
+        this.titulo = 'Formulario para editar nueva currícula';
         this.titulo = 'Editar currícula';
         this.visible = true;
         this.bEditar = true;
@@ -190,6 +201,26 @@ export class CurriculasComponent implements OnInit {
         });
 
         break;
+      case 'eliminar_curricula':
+        this._confirmService.openConfirm({
+          header: 'Advertencia de curriculas',
+          message: '¿Desea eliminar la curricula?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            // Acción para eliminar el registro
+            this.deleteCurricula(item.iCurrId);
+          },
+          // reject: () => {
+          //   // Mensaje de cancelación (opcional)
+          //   this.messageService.add({
+          //     severity: 'error',
+          //     summary: 'Mensaje',
+          //     detail: 'Registro cancelado',
+          //   });
+          // },
+        });
+
+        break;
     }
   }
 
@@ -201,8 +232,17 @@ export class CurriculasComponent implements OnInit {
           code: item.iModalServId,
         }));
       },
-      error: err => {
-        console.error(err);
+      error: error => {
+        let message = error?.error?.message || 'Sin conexión a la bd';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
       },
       complete: () => {},
     });
@@ -211,20 +251,25 @@ export class CurriculasComponent implements OnInit {
       next: (res: any) => {
         this.curriculas = res.data;
       },
-      error: error => {
-        this.messageService.add({
-          severity: 'danger',
-          summary: 'Mensaje del sistema',
-          detail: 'Error: No se establecio conexión. ' + error.error.message,
-        });
-      },
-      complete: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Se obtuvo registro de curriculas',
-        });
-      },
+      // error: (error) =>{
+      //   let message = error?.error?.message || 'Sin conexión a la bd';
+      //   const match = message.match(/]([^\]]+?)\./);
+      //   if (match && match[1]) {
+      //     message = match[1].trim() + '.';
+      //   }
+      //   this.messageService.add({
+      //     severity: 'error',
+      //     summary: 'Mensaje del sistema',
+      //     detail: message,
+      //   });
+      // },
+      // complete: () => {
+      //   this.messageService.add({
+      //     severity: 'success',
+      //     summary: 'Mensaje del sistema',
+      //     detail: 'Se obtuvo registro de curriculas',
+      //   });
+      // },
     });
   }
 
@@ -260,10 +305,16 @@ export class CurriculasComponent implements OnInit {
       })
       .subscribe({
         error: error => {
+          let message = error?.error?.message || 'Sin conexión a la bd';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error: No se registró la currícula. ' + (error.error?.message || ''),
+            detail: message,
           });
         },
         complete: () => {
@@ -276,6 +327,40 @@ export class CurriculasComponent implements OnInit {
           this.obtenerDatosIniciales();
         },
       });
+  }
+
+  deleteCurricula(id: number) {
+    const params = {
+      esquema: 'acad',
+      tabla: 'curriculas',
+      campo: 'iCurrId',
+      valorId: id,
+    };
+    this.query.deleteAcademico(params).subscribe({
+      error: error => {
+        let message = error?.error?.message || 'Sin conexión a la bd';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        message = decodeURIComponent(message);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Se eliminó la currícula correctamente.',
+        });
+        this.visible = false;
+        this.obtenerDatosIniciales();
+      },
+    });
   }
 
   saveCurriculas() {
@@ -310,10 +395,16 @@ export class CurriculasComponent implements OnInit {
       })
       .subscribe({
         error: error => {
+          let message = error?.error?.message || 'Sin conexión a la bd';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje del sistema',
-            detail: 'Error: No se registró la currícula. ' + (error.error?.message || ''),
+            detail: message,
           });
         },
         complete: () => {
@@ -336,35 +427,42 @@ export class CurriculasComponent implements OnInit {
       accion: 'nueva_curricula',
       class: 'p-button-primary',
     },
-    {
-      labelTooltip: 'Mostrar curriculas',
-      text: 'Mostrar curriculas',
-      icon: 'pi pi-search',
-      accion: 'mostrar_curricula',
-      class: 'p-button-warning',
-    },
+    // {
+    //   labelTooltip: 'Mostrar curriculas',
+    //   text: 'Mostrar curriculas',
+    //   icon: 'pi pi-search',
+    //   accion: 'mostrar_curricula',
+    //   class: 'p-button-warning',
+    // },
   ];
 
   accionesTablaCurricula: IActionTable[] = [
     {
-      labelTooltip: 'Editar',
+      labelTooltip: 'Editar currícula',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
     {
-      labelTooltip: 'Mostrar cursos',
+      labelTooltip: 'Mostrar áreas curriculares',
       icon: 'pi pi-book',
       accion: 'cursos',
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
     },
+    {
+      labelTooltip: 'Eliminar áreas curriculares',
+      icon: 'pi pi-trash',
+      accion: 'eliminar_curricula',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+    },
   ];
   curriculasColumns = [
     {
       type: 'item',
-      width: '5rem',
+      width: '5%',
       field: '',
       header: 'Item',
       text_header: 'center',
@@ -372,39 +470,39 @@ export class CurriculasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '30%',
       field: 'cCurrDescripcion',
       header: 'Nombre',
       text_header: 'center',
-      text: 'center',
+      text: 'left',
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '30%',
       field: 'cCurrRsl',
-      header: 'Cursos',
+      header: 'Refencia',
       text_header: 'center',
-      text: 'center',
+      text: 'left',
     },
-    {
-      type: 'text',
-      width: '5rem',
-      field: 'iCurrNroHoras',
-      header: 'Horas totales',
-      text_header: 'center',
-      text: 'center',
-    },
+    // {
+    //   type: 'text',
+    //   width: '5rem',
+    //   field: 'iCurrNroHoras',
+    //   header: 'Horas',
+    //   text_header: 'center',
+    //   text: 'center',
+    // },
     {
       type: 'estado-activo',
-      width: '5rem',
+      width: '5%',
       field: 'iEstado',
-      header: 'Estado',
+      header: '',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'actions',
-      width: '3rem',
+      width: '30%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',

@@ -202,7 +202,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
           iCompetenciaId: this.iCompetenciaId,
           cCapacidadNombre: item.cCapacidadNombre,
           cCapacidadDescripcion: item.cCapacidadDescripcion,
-          iEstado: Number(item.iEstado) || 0,
+          iEstado: Number(item.iEstado ?? 0),
         });
         this.bUpdate = true;
         break;

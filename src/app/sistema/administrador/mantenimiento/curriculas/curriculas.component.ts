@@ -127,17 +127,17 @@ export class CurriculasComponent implements OnInit {
     this.frmCurriculas = this.fb.group({
       iCurrId: [''],
       iModalServId: ['', Validators.required],
-      iCurrNotaMinima: ['', Validators.required],
-      iCurrTotalCreditos: ['', Validators.required],
-      iCurrNroHoras: ['', Validators.required],
-      cCurrPerfilEgresado: ['', Validators.required],
-      cCurrMencion: ['', Validators.required],
-      nCurrPesoProcedimiento: ['', Validators.required],
-      cCurrPesoConceptual: ['', Validators.required],
-      cCurrPesoActitudinal: ['', Validators.required],
-      bCurrEsLaVigente: [''],
-      cCurrRsl: ['', Validators.required],
-      dtCurrRsl: ['', Validators.required],
+      iCurrNotaMinima: [''],
+      iCurrTotalCreditos: [''],
+      iCurrNroHoras: [''],
+      cCurrPerfilEgresado: [''],
+      cCurrMencion: [''],
+      nCurrPesoProcedimiento: [''],
+      cCurrPesoConceptual: [''],
+      cCurrPesoActitudinal: [''],
+      bCurrEsLaVigente: [false],
+      cCurrRsl: [''],
+      dtCurrRsl: [''],
       cCurrDescripcion: ['', Validators.required],
     });
   }
@@ -182,7 +182,7 @@ export class CurriculasComponent implements OnInit {
         this.titulo = 'Editar currícula';
         this.visible = true;
         this.bEditar = true;
-
+        console.log(item);
         this.frmCurriculas.patchValue({
           iCurrId: item.iCurrId,
           iModalServId: item.iModalServId,
@@ -194,7 +194,8 @@ export class CurriculasComponent implements OnInit {
           nCurrPesoProcedimiento: item.nCurrPesoProcedimiento,
           cCurrPesoConceptual: item.cCurrPesoConceptual,
           cCurrPesoActitudinal: item.cCurrPesoActitudinal,
-          bCurrEsLaVigente: item.bCurrEsLaVigente,
+          bCurrEsLaVigente: Number(item.bCurrEsLaVigente) ?? false,
+
           cCurrRsl: item.cCurrRsl,
           dtCurrRsl: item.dtCurrRsl ? new Date(item.dtCurrRsl) : null,
           cCurrDescripcion: item.cCurrDescripcion,
@@ -289,7 +290,7 @@ export class CurriculasComponent implements OnInit {
       cCurrPesoActitudinal: parseFloat(this.frmCurriculas.value.cCurrPesoActitudinal || 0).toFixed(
         2
       ),
-      bCurrEsLaVigente: Number(this.frmCurriculas.value.bCurrEsLaVigente) || 0,
+      bCurrEsLaVigente: this.frmCurriculas.value.bCurrEsLaVigente || false,
       cCurrRsl: this.frmCurriculas.value.cCurrRsl || '',
       dtCurrRsl: this.frmCurriculas.value.dtCurrRsl
         ? new Date(this.frmCurriculas.value.dtCurrRsl)

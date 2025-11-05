@@ -212,6 +212,7 @@
                         [min]="0"
                         [max]="100"
                         class="w-full"
+                        (blur)="calcularTotalCreditos()"
                       />
                       <label for="nCursoCredTeoria">Créditos teoría</label>
                     </span>
@@ -227,6 +228,7 @@
                         [min]="0"
                         [max]="100"
                         class="w-full"
+                        (blur)="calcularTotalCreditos()"
                       />
                       <label for="nCursoCredPractica">Créditos práctica</label>
                     </span>
@@ -242,6 +244,7 @@
                         [min]="0"
                         [max]="20"
                         class="w-full"
+                        readonly
                       />
                       <label for="nCursoTotalCreditos">Total créditos</label>
                     </span>

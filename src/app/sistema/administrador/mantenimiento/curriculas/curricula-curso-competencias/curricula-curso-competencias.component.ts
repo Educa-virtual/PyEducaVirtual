@@ -167,7 +167,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
           iNivelTipoId: item.iNivelTipoId,
           iCursoId: this.iCursoId,
           iCompetenciaId: item.iCompetenciaId,
-          iEstado: Number(item.iEstado) || 0,
+          iEstado: Number(item.iEstado) ?? 0,
         });
         this.bUpdate = true;
         break;

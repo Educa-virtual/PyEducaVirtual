@@ -134,7 +134,7 @@ export class CurriculaCursoComponent implements OnChanges {
     nCursoCredTeoria: [''],
     nCursoCredPractica: [''],
     cCursoDescripcion: [''],
-    nCursoTotalCreditos: [''],
+    nCursoTotalCreditos: [0],
     cCursoPerfilDocente: [''],
     iCursoTotalHoras: [''],
     iCursoEstado: [1, Validators.required],
@@ -293,7 +293,7 @@ export class CurriculaCursoComponent implements OnChanges {
           nCursoTotalCreditos: event.item.nCursoTotalCreditos,
           cCursoPerfilDocente: event.item.cCursoPerfilDocente,
           iCursoTotalHoras: event.item.iCursoTotalHoras,
-          iCursoEstado: event.item.iCursoEstado,
+          iCursoEstado: Number(event.item.iCursoEstado ?? 0),
           iImageAleatorio: false,
         });
         this.showVistaPrevia = false;
@@ -320,7 +320,15 @@ export class CurriculaCursoComponent implements OnChanges {
     this.datosprevios = this.frmCursos.value;
   }
 
-  //
+  calcularTotalCreditos() {
+    const teoria = parseFloat(this.frmCursos.value.nCursoCredTeoria ?? '0') || 0;
+    const practica = parseFloat(this.frmCursos.value.nCursoCredPractica ?? '0') || 0;
+    const total = teoria + practica;
+    this.frmCursos.patchValue({
+      nCursoTotalCreditos: parseFloat(String(total ?? '0')) || 0,
+    });
+  }
+
   seleccionarImagen(event: any) {
     const index = event.detail.index; // Acceder al índice correcto
     this.portada[index]; // Obtiene la imagen según el índice

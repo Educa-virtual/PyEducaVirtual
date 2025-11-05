@@ -86,7 +86,10 @@
                     [min]="0"
                     [max]="100"
                     class="w-full"
-                    (blur)="validarTotalHoras()"
+                    (input)="validarTotalHoras()"
+                    [ngClass]="{
+                      'input-invalid': frmCursos.value.vValidoHora === false,
+                    }"
                   />
                   <label for="iCursoTotalHoras">Total horas</label>
                 </span>
@@ -246,6 +249,9 @@
                         [max]="20"
                         class="w-full"
                         readonly
+                        [ngClass]="{
+                          'input-invalid': frmCursos.value.vValidoCredito === false,
+                        }"
                       />
                       <label for="nCursoTotalCreditos">Total créditos</label>
                     </span>
@@ -309,3 +315,4 @@
     </div>
   </ng-template>
 </p-dialog>
+<p-toast />

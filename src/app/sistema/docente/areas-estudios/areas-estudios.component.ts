@@ -405,7 +405,8 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         const itinerarios = datos.itinerario ? JSON.parse(datos.itinerario) : [];
         this.itinerarioInterno = itinerarios[0];
         this.formato = datos.portafolio ? JSON.parse(datos.portafolio) : [];
-        this.reglamentoInterno = datos.reglamento ? datos.reglamento : null;
+        this.reglamentoInterno =
+          datos.reglamento || datos.reglamento != '' ? datos.reglamento : null;
       },
       error: err => {
         this.MessageService.add({
@@ -418,7 +419,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   descargarArchivo(archivo: any) {
-    console.log('ver #1', archivo);
     const params = {
       petition: 'post',
       group: 'acad',
@@ -438,12 +438,11 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         link.target = '_blank';
         link.click();
       },
-      error: error => {
-        console.error('Error obteniendo encuesta:', error);
+      error: () => {
         this.MessageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: error.error.message,
+          detail: 'El archivo no se Encontró',
         });
       },
     });

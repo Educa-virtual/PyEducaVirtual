@@ -8,6 +8,7 @@ import {
 } from '../../../formGroup/form-detalle-carga-no-lectivas';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
 import { NgIf } from '@angular/common';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-form-actividades-no-lectivas',
@@ -26,6 +27,14 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
   @Input() opcion: string = '';
   @Input() iFalta;
 
+  year: number;
+  perfil: any;
+
+  constructor(private _LocalStoreService: LocalStoreService) {
+    this.perfil = this._LocalStoreService.getItem('dremoPerfil');
+    this.year = this._LocalStoreService.getItem('dremoYear');
+  }
+
   typesFiles = {
     file: true,
     url: true,
@@ -36,6 +45,36 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
 
   formDetalleCargaNoLectivas: FormGroup = storeDetalleCargaNoLectivas;
   filesUrl = [];
+
+  mostrarPlanTrabajo: boolean = false;
+  nombreArchivo: any;
+
+  plan = {
+    temario: [
+      { severity: 'info', detail: 'En caso de elegir Plan de Trabajo considerar lo siguiente:' },
+    ],
+    distribucion: [
+      {
+        severity: 'info',
+        detail:
+          '- Distribución semanal: Especificar qué temas o unidades se tratarán cada semana, Incluir las fechas estimadas para cada tema.',
+      },
+    ],
+    actividades: [
+      {
+        severity: 'info',
+        detail:
+          '- Actividades de enseñanza: Definir si serán clases magistrales, prácticas, discusiones en grupo, talleres, etc.',
+      },
+    ],
+    materiales: [
+      {
+        severity: 'info',
+        detail:
+          '- Materiales y recursos: Enumerar los recursos necesarios para cada sesión, como lecturas, videos, software, herramientas de laboratorio, etc.',
+      },
+    ],
+  };
 
   ngOnChanges(changes) {
     if (changes.showModal?.currentValue) {
@@ -64,11 +103,12 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
         this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras'];
       }
     }
+
+    this.nombreArchivo = `${this.year}/${this.perfil.cIieeCodigoModular}/${this.perfil.iPersId}/actividades-gestion`;
   }
   accionBtn(elemento): void {
     const { accion } = elemento;
     const { item } = elemento;
-
     switch (accion) {
       case 'close-modal':
         this.accionBtnItem.emit({ accion, item });

@@ -63,13 +63,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
       class: 'p-button-primary',
       disabled: this.bAprobarActividad,
     },
-    // {
-    //     labelTooltip: 'Refrescar lista de metodologías',
-    //     text: 'Refrescar',
-    //     icon: 'pi pi-sync',
-    //     accion: 'refrescar',
-    //     class: 'p-button-danger',
-    // },
   ];
   actions = [
     {
@@ -176,7 +169,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
       text: 'center',
     },
     {
-      type: 'list_json_file',
+      type: 'group_json_file',
       width: '2rem',
       field: 'cDetCargaNoLectEvidencias',
       header: 'Evidencias',
@@ -386,7 +379,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
         prefix: prefix,
         ruta: ruta,
         data: item,
-        params: { skipSuccessMessage: true },
       };
       this.getInformation(params, params.ruta + '-' + params.prefix);
     } else {
@@ -509,11 +501,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
   }
 
   filtrarActividades() {
-    //console.log("revisar #1",this.selectActividad);
     const filtrar = this.data.filter(item => item.iTipoCargaNoLectId == this.selectActividad);
     this.filtrar = filtrar;
   }
-  //validar iDetCargaNoLectId
-
-  //this._GeneralService.updateCalendario(params) .subscribe()
 }

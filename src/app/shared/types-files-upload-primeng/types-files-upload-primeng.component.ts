@@ -90,8 +90,8 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
         nameFile: this.nameFile,
         params: { skipSuccessMessage: true },
       });
-
-      this._GeneralService.subirArchivo(dataFile).subscribe({
+      console.log('dataFile', dataFile);
+      this._GeneralService.subirDocumento(dataFile).subscribe({
         next: (resp: any) => {
           const data = {
             accion: 'subir-' + type + '-' + this.nameOption,

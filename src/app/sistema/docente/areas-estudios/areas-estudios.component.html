@@ -225,7 +225,7 @@
 
 <p-dialog [modal]="true" [(visible)]="visiblePortafolio" [style]="{ width: '50rem' }">
   <ng-template pTemplate="header">
-    <span class="font-bold text-xl text-white">Mi Portafolio</span>
+    <span class="font-bold text-xl text-white">MI PORTAFOLIO</span>
   </ng-template>
   <div class="grid mt-3">
     <div class="col-12">
@@ -280,7 +280,7 @@
         />
         <button
           type="button"
-          (click)="descargarArchivo(reglamentoInterno ? reglamentoInterno[0]['ruta'] : null)"
+          (click)="descargarArchivo(reglamentoInterno)"
           [disabled]="!reglamentoInterno"
           pButton
           icon="pi pi-eye"

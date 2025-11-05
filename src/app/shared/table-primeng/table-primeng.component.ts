@@ -10,6 +10,7 @@ import {
   ContentChild,
   TemplateRef,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component';
 import { IIcon } from '../icon/icon.interface';
@@ -19,6 +20,8 @@ import { IsIconTypePipe } from '../pipes/is-icon-type.pipe';
 import { Table } from 'primeng/table';
 import { SearchWordsComponent } from './search-words/search-words.component';
 import { environment } from '@/environments/environment';
+import { GeneralService } from '@/app/servicios/general.service';
+import { MessageService } from 'primeng/api';
 
 type TColumnType =
   | 'actions'
@@ -94,6 +97,10 @@ export interface IActionTable {
   ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
+  private servicioGeneral = inject(GeneralService);
+
+  constructor(private messageService: MessageService) {}
+
   backend = environment.backend;
 
   trSelected;
@@ -171,7 +178,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
   // buscador de palabras en el primeng
   @ViewChild('dt') dt!: Table;
   searchTerm: string = '';
-
   buscarPalabras(event: string) {
     //     this.searchTerm = event.trim().toLowerCase();
 
@@ -329,8 +335,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
   public columnasSeleccionadas: IColumn[] = [];
 
   loading: boolean = false;
-
-  constructor() {}
 
   ngOnInit() {
     this.columnasSeleccionadas = this.columnas;
@@ -555,6 +559,45 @@ export class TablePrimengComponent implements OnChanges, OnInit {
       case 1:
       case 4:
         window.open(this.backend + '/' + item.ruta, '_blank');
+        break;
+      case 2:
+      case 3:
+        const ruta = item.ruta.includes('http');
+        window.open(ruta ? item.ruta : 'http://' + item.ruta, '_blank');
+        break;
+    }
+  }
+
+  descargar(item) {
+    switch (Number(item.type)) {
+      case 1:
+      case 4:
+        const params = {
+          petition: 'post',
+          prefix: 'file',
+          ruta: 'descargar',
+          data: {
+            ruta: item.ruta,
+          },
+        };
+
+        this.servicioGeneral.getRecibirMultimediaGeneral(params).subscribe({
+          next: async (response: Blob) => {
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.click();
+          },
+          error: error => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          },
+        });
         break;
       case 2:
       case 3:

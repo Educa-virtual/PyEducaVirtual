@@ -78,6 +78,10 @@ export class GeneralService {
     return this.http.post(`${baseUrl}/general/subir-archivo`, data);
   }
 
+  subirDocumento(data: any) {
+    return this.http.post(`${baseUrl}/general/subir-documento`, data);
+  }
+
   generarPdf(data: any) {
     return this.http.post(`${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`, data.data, {
       responseType: 'blob',
@@ -340,6 +344,18 @@ export class GeneralService {
           `${baseUrl}/` + data.group + '/' + data.prefix + '/' + data.ruta,
           data.data
         );
+        break;
+      default:
+        break;
+    }
+    return this.url;
+  }
+  getRecibirMultimediaGeneral(data) {
+    switch (data.petition) {
+      case 'post':
+        this.url = this.http.post(`${baseUrl}/` + data.prefix + '/' + data.ruta, data.data, {
+          responseType: 'blob',
+        });
         break;
       default:
         break;

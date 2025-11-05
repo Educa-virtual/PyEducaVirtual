@@ -11,12 +11,18 @@
         <p-inputGroup>
           <p-inputGroupAddon> Tipo de Actividad </p-inputGroupAddon>
           <p-dropdown
+            #tipoActividad
             formControlName="iTipoCargaNoLectId"
             [options]="tiposCargaNoLectivas"
             optionValue="iTipoCargaNoLectId"
             optionLabel="cTipoCargaNoLectNombre"
             placeholder="Tipo de Actividad"
             [style]="{ width: '100%' }"
+            (onChange)="
+              tipoActividad.value === '6'
+                ? (mostrarPlanTrabajo = true)
+                : (mostrarPlanTrabajo = false)
+            "
           ></p-dropdown>
         </p-inputGroup>
       </div>
@@ -49,9 +55,15 @@
           ></textarea>
         </p-inputGroup>
       </div>
+      <div class="col-12" *ngIf="mostrarPlanTrabajo">
+        <p-messages [(value)]="plan.temario" [enableService]="false" [closable]="false" />
+        <p-messages [(value)]="plan.distribucion" [enableService]="false" [closable]="false" />
+        <p-messages [(value)]="plan.actividades" [enableService]="false" [closable]="false" />
+        <p-messages [(value)]="plan.materiales" [enableService]="false" [closable]="false" />
+      </div>
       <div class="col-12 mt-1">
         <app-types-files-upload-primeng
-          [nameFile]="'detalle-carga-no-lectivas'"
+          [nameFile]="nombreArchivo"
           [nameOption]="'detalle-carga-no-lectivas'"
           [typesFiles]="typesFiles"
           (actionTypesFileUpload)="accionBtn($event)"

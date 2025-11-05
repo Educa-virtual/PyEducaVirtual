@@ -465,7 +465,7 @@ export class CurriculaCursoComponent implements OnChanges {
       text: '',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 

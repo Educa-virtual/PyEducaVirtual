@@ -426,7 +426,7 @@ export class CurriculasComponent implements OnInit {
       text: 'Nueva curricula',
       icon: 'pi pi-plus',
       accion: 'nueva_curricula',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
     // {
     //   labelTooltip: 'Mostrar curriculas',

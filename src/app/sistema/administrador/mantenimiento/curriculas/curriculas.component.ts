@@ -179,7 +179,7 @@ export class CurriculasComponent implements OnInit {
         this.iCurrId = item.iCurrId;
         this.caption = item.cCurrRsl;
         this.titulo = 'Formulario para editar nueva currícula';
-        this.titulo = 'Editar currícula';
+        this.titulo = 'Formulario para editar currícula';
         this.visible = true;
         this.bEditar = true;
         console.log(item);

@@ -146,7 +146,8 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         this.asignarcompetencia.emit(item);
         break;
       case 'agregar':
-        this.titulo = 'Formulario para agregar  área curricular (' + this.caption + ')';
+        this.titulo =
+          'Formulario para agregar competencia curricular (Curricula: ' + this.caption + ')';
         this.visible_competencia = true;
         this.iCompetenciaId = 0;
         this.bUpdate = false;
@@ -159,7 +160,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
 
       case 'editar':
         this.titulo =
-          'Formulario para editarcompetencias curriculares (Curricula: ' + this.caption + ')';
+          'Formulario para editar competencia curricular (Curricula: ' + this.caption + ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
         this.visible_competencia = true;

@@ -136,11 +136,13 @@ export class CurriculaCursoComponent implements OnChanges {
     cCursoDescripcion: [''],
     nCursoTotalCreditos: [0],
     cCursoPerfilDocente: [''],
-    iCursoTotalHoras: [''],
+    iCursoTotalHoras: [0],
     iCursoEstado: [1, Validators.required],
     cCursoImagen: [''],
     iImageAleatorio: [false],
     iEstado: [1],
+    vValidoHora: [true, Validators.requiredTrue],
+    vValidoCredito: [true, Validators.requiredTrue],
   });
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -230,7 +232,7 @@ export class CurriculaCursoComponent implements OnChanges {
         break;
       case 'agregar':
         this.titulo =
-          'Formulario para agregar  área curricular' + '( Referencia: ' + this.caption + ')';
+          'Formulario para agregar área curricular' + '(Curricula: ' + this.caption + ')';
         this.frmCursos.reset();
         this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
         this.frmCursos.patchValue({
@@ -277,7 +279,7 @@ export class CurriculaCursoComponent implements OnChanges {
 
       case 'editar':
         this.titulo =
-          'Formulario para editar áreas curriculares ' + '(Curricula: ' + this.caption + ')';
+          'Formulario para editar área curricular ' + '(Curricula: ' + this.caption + ')';
         this.frmCursos.reset();
         this.iCursoId = event.item.iCursoId;
         this.bUpdate = true;
@@ -320,6 +322,44 @@ export class CurriculaCursoComponent implements OnChanges {
     this.datosprevios = this.frmCursos.value;
   }
 
+  validarTotalCreditos() {
+    const total_credito = Number(this.curriculas?.iCurrTotalCreditos ?? 0);
+    const credito = Number(this.frmCursos.value.nCursoTotalCreditos ?? 0);
+    const esValido = total_credito >= credito;
+
+    if (!esValido) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Total de créditos inválidos',
+        detail: `Loss créditos del área (${credito}) no pueden superar el total (${total_credito}) de créditos.`,
+      });
+    }
+    this.frmCursos.patchValue({
+      vValidoCredito: esValido,
+    });
+    // return esValido;
+  }
+
+  validarTotalHoras() {
+    const totalHora = Number(this.curriculas?.iCurrNroHoras ?? 0);
+    const hora = Number(this.frmCursos?.value?.iCursoTotalHoras ?? 0);
+
+    const esValido = totalHora >= hora;
+
+    if (!esValido) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Total de horas inválidas',
+        detail: `Las horas del área (${hora}) no pueden superar el total (${totalHora}) de horas.`,
+      });
+    }
+
+    this.frmCursos.patchValue({
+      vValidoHora: esValido,
+    });
+    //return esValido;
+  }
+
   calcularTotalCreditos() {
     const teoria = parseFloat(this.frmCursos.value.nCursoCredTeoria ?? '0') || 0;
     const practica = parseFloat(this.frmCursos.value.nCursoCredPractica ?? '0') || 0;
@@ -327,6 +367,8 @@ export class CurriculaCursoComponent implements OnChanges {
     this.frmCursos.patchValue({
       nCursoTotalCreditos: parseFloat(String(total ?? '0')) || 0,
     });
+
+    this.validarTotalHoras();
   }
 
   seleccionarImagen(event: any) {

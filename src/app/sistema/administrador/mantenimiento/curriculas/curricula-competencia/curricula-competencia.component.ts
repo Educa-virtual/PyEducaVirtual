@@ -158,7 +158,8 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         break;
 
       case 'editar':
-        this.titulo = 'Formulario para editar áreas curriculares (' + this.caption + ')';
+        this.titulo =
+          'Formulario para editarcompetencias curriculares (Curricula: ' + this.caption + ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
         this.visible_competencia = true;

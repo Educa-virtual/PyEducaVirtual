@@ -277,7 +277,7 @@ export class CurriculaCursoComponent implements OnChanges {
 
       case 'editar':
         this.titulo =
-          'Formulario para editar áreas curriculares ' + '( Referencia: ' + this.caption + ')';
+          'Formulario para editar áreas curriculares ' + '(Curricula: ' + this.caption + ')';
         this.frmCursos.reset();
         this.iCursoId = event.item.iCursoId;
         this.bUpdate = true;

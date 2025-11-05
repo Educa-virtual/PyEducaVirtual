@@ -296,7 +296,7 @@ export class EncuestasService implements OnDestroy {
     if (!this.areas_fija && data) {
       this.areas_fija = data.map(area => ({
         value: area.iCursoId,
-        label: area.cCursoNombre,
+        label: area.cCursoNombre + (Number(area.bTieneEncuesta) === 1 ? ' (REGISTRADO)' : ''),
         disabled: Number(area.bTieneEncuesta) === 1 ? true : false,
       }));
       return this.areas_fija;
@@ -309,10 +309,12 @@ export class EncuestasService implements OnDestroy {
       this.periodos_fija = data.map(periodo => ({
         value: periodo.iPeriodoId,
         label: periodo.cPeriodoNombre,
+        esta_vencido: Number(periodo.bPeriodoVencido) === 1,
         cursos: periodo?.json_cursos
           ? JSON.parse(periodo?.json_cursos).map(curso => ({
               value: curso.iCursoId,
-              label: curso.cCursoNombre,
+              label:
+                curso.cCursoNombre + (Number(curso.bTieneEncuesta) === 1 ? ' (REGISTRADO)' : ''),
               disabled: Number(curso.bTieneEncuesta) === 1 ? true : false,
             }))
           : [],

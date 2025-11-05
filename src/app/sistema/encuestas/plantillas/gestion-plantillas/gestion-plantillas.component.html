@@ -388,16 +388,17 @@
     <div class="grid">
       @if (periodos.length > 0) {
         @for (periodo of periodos; track $index) {
-          <div class="col-12">
+          <div class="col-12" *ngIf="controles_periodos && controles_periodos.length > 0">
             <p-inputGroup class="vertical-group">
               <p-inputGroupAddon>
-                {{ periodo['label'] }}
+                {{ periodo['label'] }} {{ periodo['esta_vencido'] ? '(VENCIDO)' : '' }}
               </p-inputGroupAddon>
               <p-multiSelect
+                *ngIf="!periodo['esta_vencido']"
                 display="chip"
                 filter="true"
                 [options]="periodo['cursos']"
-                formControlName="iCursoId"
+                [formControl]="$any(controles_periodos.at($index)).controls['iCursoId']"
                 showClear="true"
                 appendTo="body"
                 showToggleAll="true"

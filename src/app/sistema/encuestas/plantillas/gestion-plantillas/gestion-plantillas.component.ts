@@ -418,7 +418,9 @@ export class GestionPlantillasComponent implements OnInit {
       this.encuestasService.formControlJsonStringify(
         this.controles_periodos.at(index) as FormGroup,
         'jsonCursos',
-        'iCursoId'
+        'iCursoId',
+        null,
+        true
       );
     });
     this.encuestasService.formControlJsonStringify(this.formEncuestaFija, 'jsonCursos', 'iCursoId');

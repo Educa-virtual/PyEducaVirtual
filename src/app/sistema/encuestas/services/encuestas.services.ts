@@ -795,7 +795,8 @@ export class EncuestasService implements OnDestroy {
     form: FormGroup,
     formJson: string,
     formControlName: string | string[] | null,
-    groupControl: string | null = null
+    groupControl: string | null = null,
+    devolverArray: boolean = false
   ): void {
     form.get(formJson).setValue(null);
     if (!formControlName) {
@@ -823,7 +824,7 @@ export class EncuestasService implements OnDestroy {
         }
       });
     });
-    form.get(formJson).setValue(JSON.stringify(items));
+    form.get(formJson).setValue(devolverArray ? items : JSON.stringify(items));
   }
 
   formMarkAsDirty(form: FormGroup) {

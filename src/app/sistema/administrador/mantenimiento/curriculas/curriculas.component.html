@@ -62,9 +62,9 @@
 
   <form [formGroup]="frmCurriculas">
     <div class="col-12 grid">
-      <div class="col-8">
-        <span class="p-float-label">
-          <input pInputText id="name" formControlName="cCurrDescripcion" />
+      <div class="field col-12 md:col-8">
+        <span class="p-float-label w-full">
+          <input pInputText id="name" formControlName="cCurrDescripcion" class="w-full" />
 
           @if (
             frmCurriculas.get('cCurrDescripcion').dirty &&
@@ -76,10 +76,10 @@
           <label for="name">Nombre</label>
         </span>
       </div>
-      <div class="col-2">
+      <div class="field col-12 md:col-2">
         <label for="pesoActitudinal">Es la vigente</label>
       </div>
-      <div class="col-2">
+      <div class="field col-12 md:col-2">
         <p-toggleButton
           styleClass="w-full"
           onLabel="Si"
@@ -89,8 +89,8 @@
       </div>
     </div>
     <div class="col-12 grid">
-      <div class="col-6">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label w-full">
           <p-dropdown
             id="modalidad"
             styleClass="w-full"
@@ -111,16 +111,16 @@
           <label for="modalidad">Modalidad del servicio</label>
         </span>
       </div>
-      <div class="col-6">
-        <span class="p-float-label">
-          <input pInputText id="mencion" formControlName="cCurrMencion" />
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label w-full">
+          <input pInputText id="mencion" formControlName="cCurrMencion" class="w-full" />
           <label for="mencion">Mención</label>
         </span>
       </div>
     </div>
     <div class="col-12 grid">
-      <div class="col-4">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label w-full">
           <p-inputNumber
             inputId="nroHoras"
             formControlName="iCurrNroHoras"
@@ -133,8 +133,8 @@
           <label for="nroHoras">Nro Horas</label>
         </span>
       </div>
-      <div class="col-4">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label w-full">
           <p-inputNumber
             inputId="notaMinima"
             formControlName="iCurrNotaMinima"
@@ -146,8 +146,8 @@
           <label for="notaMinima">Nota mínima</label>
         </span>
       </div>
-      <div class="col-4">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label w-full">
           <p-inputNumber
             inputId="totalCreditos"
             formControlName="iCurrTotalCreditos"
@@ -162,7 +162,7 @@
     </div>
     <div class="col-12 grid">
       <div class="col-12">
-        <span class="p-float-label">
+        <span class="p-float-label w-full">
           <p-editor
             id="totalCreditos"
             formControlName="cCurrPerfilEgresado"
@@ -173,8 +173,8 @@
     </div>
 
     <div class="col-12 grid">
-      <div class="col-2">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label w-full">
           <p-inputNumber
             inputStyleClass="w-full"
             placeholder="Peso de procedimiento"
@@ -187,8 +187,8 @@
           <label for="pesoProcedimiento">P. Procedimiento</label>
         </span>
       </div>
-      <div class="col-2">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label w-full">
           <p-inputNumber
             inputId="pesoConceptual"
             placeholder="Peso conceptual"
@@ -201,8 +201,8 @@
           <label for="pesoConceptual">P. Conceptual</label>
         </span>
       </div>
-      <div class="col-2">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-2">
+        <span class="p-float-label w-full">
           <p-inputNumber
             inputId="pesoActitudinal"
             mode="decimal"
@@ -216,19 +216,26 @@
         </span>
       </div>
 
-      <div class="col-3">
-        <span class="p-float-label">
-          <input pInputText type="url" id="enlaceResolucion" formControlName="cCurrRsl" />
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label w-full">
+          <input
+            pInputText
+            type="url"
+            id="enlaceResolucion"
+            formControlName="cCurrRsl"
+            class="w-full"
+          />
           <label for="enlaceResolucion">URL de la resolución</label>
         </span>
       </div>
-      <div class="col-3">
-        <span class="p-float-label">
+      <div class="field col-12 md:col-3">
+        <span class="p-float-label w-full">
           <p-calendar
             formControlName="dtCurrRsl"
             [iconDisplay]="'input'"
             [showIcon]="true"
             placeholder="Ingrese una fecha"
+            styleClass="w-full"
           >
           </p-calendar>
           <!-- fechaResolucion -->

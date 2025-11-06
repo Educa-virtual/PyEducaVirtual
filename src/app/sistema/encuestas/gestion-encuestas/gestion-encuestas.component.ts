@@ -57,8 +57,8 @@ export class GestionEncuestasComponent implements OnInit {
 
   puede_generar_fija: boolean = false;
 
-  cursos: Array<object>;
-  periodos: Array<object>;
+  cursos: Array<object> = [];
+  periodos: Array<object> = [];
 
   constructor(
     private messageService: MessageService,

@@ -334,6 +334,12 @@ const estudiante = [
         icon: 'pi pi-qrcode',
         routerLink: ['/estudiante/codigo-qr'],
       },
+      {
+        label: 'Comunicados',
+        icon: 'pi pi-fw pi-share-alt',
+        routerLink: ['/comunicados/lista-comunicados'],
+        //routerLink: ['/comunicados/gestion-comunicados'],
+      },
     ],
   },
 ];

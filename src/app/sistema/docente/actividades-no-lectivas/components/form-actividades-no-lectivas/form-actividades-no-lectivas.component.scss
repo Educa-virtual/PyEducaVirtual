@@ -16,3 +16,9 @@
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 }
+:host ::ng-deep {
+  .p-inputgroup-addon {
+    background-color: var(--primary-700);
+    color: white;
+  }
+}

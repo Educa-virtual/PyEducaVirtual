@@ -137,10 +137,7 @@ export class ActividadNoLectivaComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           const item = data.data;
-
           this.personal_ies = item;
-
-          console.log(this.personal_ies, 'personal ies');
         },
         error: error => {
           this.messageService.add({
@@ -151,7 +148,6 @@ export class ActividadNoLectivaComponent implements OnInit {
         },
         complete: () => {
           const item = this.personal_ies;
-          console.log(item, 'personal ies completo');
           this.docentes = item.filter(persona => persona.cPersCargoNombre === 'DOCENTE'); // o la condición real para "docente"
 
           // this.getYearCalendarios(this.formCalendario.value)
@@ -159,7 +155,6 @@ export class ActividadNoLectivaComponent implements OnInit {
       });
   }
   accionBtnItem(event: any) {
-    console.log(event, 'evento acciones');
     const { accion, item } = event;
     switch (accion) {
       case 'actualizar':

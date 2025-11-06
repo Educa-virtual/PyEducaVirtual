@@ -15,9 +15,9 @@ import { ReporteProgresoService } from './services/reporte-progreso.service';
 export class ReporteProgresoComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
-  iYAcadId: number;
+  //iYAcadId: number;
   courses: any[] = [];
-
+  year: any = JSON.parse(localStorage.getItem('dremoYear'));
   dataEstudiantes: any[] = [];
   dataMatriculas: any[] = [];
   estudianteSeleccionado: any;
@@ -62,22 +62,24 @@ export class ReporteProgresoComponent implements OnInit {
   }
 
   obtenerMatriculasEstudiante() {
-    this.apoderadoService.obtenerMatriculasEstudiante(this.estudianteSeleccionado).subscribe({
-      next: (response: any) => {
-        this.dataMatriculas = response.data.map((matricula: any) => ({
-          ...matricula,
-          cMatriculaMostrar:
-            `${matricula.iYearId} - ${matricula.cGradoAbreviacion} ${matricula.cSeccionNombre} - ${matricula.cNivelTipoNombre.replace('Educación ', '')} - I.E. ${matricula.cIieeNombre}`.trim(),
-        }));
-      },
-      error: err => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener matrículas',
-          detail: err.error.message || 'Error desconocido',
-        });
-      },
-    });
+    this.apoderadoService
+      .obtenerMatriculasEstudiante(this.estudianteSeleccionado, this.year)
+      .subscribe({
+        next: (response: any) => {
+          this.dataMatriculas = response.data.map((matricula: any) => ({
+            ...matricula,
+            cMatriculaMostrar:
+              `${matricula.iYearId} - ${matricula.cGradoAbreviacion} ${matricula.cSeccionNombre} - ${matricula.cNivelTipoNombre.replace('Educación ', '')} - I.E. ${matricula.cIieeNombre}`.trim(),
+          }));
+        },
+        error: err => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al obtener matrículas',
+            detail: err.error.message || 'Error desconocido',
+          });
+        },
+      });
   }
 
   obtenerReporteAcademicoEstudiante() {

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { BulkDataImportComponent } from './bulk-data-import.component'
+import { ResumenEncuestaComponent } from './resumen-encuesta.component'
 
-describe('BulkDataImportComponent', () => {
-    let component: BulkDataImportComponent
-    let fixture: ComponentFixture<BulkDataImportComponent>
+describe('ResumenEncuestaComponent', () => {
+    let component: ResumenEncuestaComponent
+    let fixture: ComponentFixture<ResumenEncuestaComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [BulkDataImportComponent],
+            imports: [ResumenEncuestaComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(BulkDataImportComponent)
+        fixture = TestBed.createComponent(ResumenEncuestaComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

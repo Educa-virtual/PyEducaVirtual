@@ -12,7 +12,12 @@
       (keydown.enter)="seleccionado = objeto; obtenerDatos(objeto)"
     >
       <ng-container *ngIf="mostrarImagen">
-        <img [src]="objeto.cImgUrl" alt="" class="w-3rem btn" />
+        <img
+          [src]="objeto.cImgUrl"
+          alt=""
+          class="w-3rem btn"
+          (error)="objeto.cImgUrl = './assets/images/icons/no-image.png'"
+        />
       </ng-container>
 
       <div class="flex flex-column flex-grow-1">

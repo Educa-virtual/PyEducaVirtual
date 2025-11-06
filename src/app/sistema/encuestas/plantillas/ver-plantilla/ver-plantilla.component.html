@@ -1,0 +1,146 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase">
+      <div class="flex flex-column">
+        <div class="flex text-xl">VISTA PREVIA DE PLANTILLA</div>
+        <div class="flex text-sm">{{ plantilla?.cPlanNombre }}</div>
+      </div>
+    </span>
+  </ng-template>
+
+  <div class="grid p-fluid">
+    <div class="col-12 md:col-5">
+      <div class="grid p-fluid">
+        <div class="col-12">
+          <p-messages severity="info" class="my-0">
+            <ng-template pTemplate>
+              <ul class="list-none p-0 m-0">
+                <li class="flex py-3">
+                  <i class="pi pi-inbox text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Plantilla</span>
+                    <span class="m-0 text-secondary">{{ plantilla?.cCateNombre }}</span>
+                  </span>
+                </li>
+                <li class="flex py-3" *ngIf="plantilla?.cPlanSubtitulo">
+                  <i class="pi pi-plus text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Subtítulo</span>
+                    <span class="m-0 text-secondary">{{ plantilla?.cPlanSubtitulo }}</span>
+                  </span>
+                </li>
+                <li class="flex py-3" *ngIf="plantilla?.cPlanDescripcion">
+                  <i class="pi pi-align-justify text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Descripción</span>
+                    <span class="m-0 text-secondary text-justify">{{
+                      plantilla?.cPlanDescripcion
+                    }}</span>
+                  </span>
+                </li>
+                <li class="flex py-3">
+                  <i class="pi pi-user text-xl mr-3"></i>
+                  <span class="flex flex-column">
+                    <span class="font-bold mb-1">Creada por</span>
+                    <span class="m-0 text-secondary">{{ plantilla?.cCreador }}</span>
+                  </span>
+                </li>
+              </ul>
+            </ng-template>
+          </p-messages>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 md:col-7">
+      @for (seccion of secciones; track seccion.iPlanSeccionId) {
+        <p-fieldset>
+          <ng-template pTemplate="header">
+            <div class="flex flex-column">
+              <div class="flex text-xl">
+                SECCION # {{ seccion?.iPlanSeccionOrden }}: {{ seccion?.cPlanSeccionTitulo }}
+              </div>
+              <div class="flex text-sm">{{ seccion?.cPlanSeccionSubtitulo }}</div>
+            </div>
+          </ng-template>
+          <div class="grid p-fluid" *ngFor="let pregunta of seccion?.preguntas; let i = index">
+            @switch (+pregunta?.iTipoPregId) {
+              @case (TIPO_PREG_TEXTO) {
+                <div class="col-12">
+                  <app-pregunta-texto
+                    [addonLabel]="pregunta.cPlanPregContenido"
+                    [inputControl]="
+                      $any(
+                        preguntasFormArray
+                          .at(getPreguntaGlobalIndex(seccion, i))
+                          .get('cRespContenido')
+                      )
+                    "
+                    [infoAdicional]="pregunta.cPlanPregAdicional ? infoAdicional : null"
+                  />
+                  <ng-template #infoAdicional>
+                    {{ pregunta.cPlanPregAdicional }}
+                  </ng-template>
+                </div>
+              }
+              @case (TIPO_PREG_SIMPLE) {
+                <div class="col-12">
+                  <app-pregunta-opcion-simple
+                    [addonLabel]="pregunta.cPlanPregContenido"
+                    [switchControl]="
+                      $any(
+                        preguntasFormArray
+                          .at(getPreguntaGlobalIndex(seccion, i))
+                          .get('cRespContenido')
+                      )
+                    "
+                    [infoAdicional]="pregunta.cPlanPregAdicional ? infoAdicional : null"
+                    [iPregId]="pregunta?.iPlanPregId"
+                    [alternativas]="pregunta?.alternativas"
+                  />
+                  <ng-template #infoAdicional>
+                    {{ pregunta.cPlanPregAdicional }}
+                  </ng-template>
+                </div>
+              }
+              <!-- Pregunta de texto -->
+              @case (TIPO_PREG_MULTIPLE) {
+                <div class="col-12">
+                  <app-pregunta-opcion-multiple
+                    [addonLabel]="pregunta.cPlanPregContenido"
+                    [switchControl]="
+                      $any(
+                        preguntasFormArray
+                          .at(getPreguntaGlobalIndex(seccion, i))
+                          .get('cRespContenido')
+                      )
+                    "
+                    [infoAdicional]="pregunta.cPlanPregAdicional ? infoAdicional : null"
+                    [iPregId]="pregunta?.iPlanPregId"
+                    [alternativas]="pregunta?.alternativas"
+                  />
+                  <ng-template #infoAdicional>
+                    {{ pregunta.cPlanPregAdicional }}
+                  </ng-template>
+                </div>
+              }
+            }
+          </div>
+        </p-fieldset>
+        <br />
+      }
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      label="Volver a preguntas"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      (onClick)="salir()"
+    />
+  </div>
+</p-panel>
+
+<p-toast></p-toast>

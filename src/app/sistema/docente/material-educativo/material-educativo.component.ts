@@ -22,6 +22,8 @@ export class MaterialEducativoComponent implements OnInit {
   @Input() idDocCursoId: string;
   @Input() cCursoNombre: string;
   @Input() iCursosNivelGradId: string;
+  @Input() cGradoAbreviacion: string;
+  @Input() cSeccionNombre: string;
 
   ngOnInit() {
     this.obtenerMaterialEducativoDocentes();

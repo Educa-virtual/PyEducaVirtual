@@ -207,9 +207,6 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
 
       this.distribucionBloquesService.getDistribucionBloques(item.iYearId).subscribe({
         next: (res: any) => {
-          console.log('res');
-          console.log(res.data);
-
           this.distribucionBloques.table.data = res.data.map(item => {
             const tipoDistribucion = tiposDistribucion.find(
               tipo => tipo.iTipoDistribucionId == item.iTipoDistribucionId
@@ -244,9 +241,9 @@ function saveData(this: YearsComponent) {
           const isSuccess = result.Message == 'true';
 
           this.messageService.add({
-            severity: isSuccess ? 'success' : 'warn',
+            severity: 'success',
             summary: 'Año calendario',
-            detail: result.resultado,
+            detail: 'Proceso exitoso',
             life: 3000,
           });
 
@@ -256,15 +253,27 @@ function saveData(this: YearsComponent) {
       )
       .subscribe({
         next: (res: any) => {
+          this.actualizarTolbarAnio(res.data);
           this.years.table.data = res.data;
         },
         error: error => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Distribución de bloque',
-            detail: error ?? 'Ha ocurrido un error al guardar los feriados nacionales',
+            summary: 'Mensaje del sistema',
+            detail:
+              error.error.message ?? 'Ha ocurrido un error al guardar los feriados nacionales',
             life: 3000,
           });
+        },
+        complete: () => {
+          this.dialogs.year.visible = false;
+          this.dialogConfirm.openAlert({
+            header: 'Se reiniciará en 5 segundos para aplicar los cambios del nuevo año',
+          });
+          // Esperar 5 segundos (5000 ms)
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
         },
       });
   } else {

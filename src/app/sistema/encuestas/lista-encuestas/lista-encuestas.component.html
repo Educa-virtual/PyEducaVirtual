@@ -1,0 +1,86 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">Listar encuestas de categoría</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  @if (!encuestas_filtradas || encuestas_filtradas.length === 0) {
+    <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay encuestas disponibles" />
+  } @else {
+    <p-dataView [rows]="10" [paginator]="true" [value]="encuestas_filtradas">
+      <ng-template pTemplate="list" let-encuestas_filtradas>
+        <div
+          *ngFor="let encuesta of encuestas_filtradas; let first = first"
+          class="card mb-5 relative overflow-visible {{ getColorEncuesta(encuesta) }}"
+        >
+          <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
+            <div class="flex gap-4 font-normal">
+              <div class="flex flex-column my-2 align-items-start">
+                <span class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2">
+                  {{
+                    encuesta?.cEncuNombre.length > 150
+                      ? (encuesta?.cEncuNombre | slice: 0 : 150) + '...'
+                      : encuesta?.cEncuNombre
+                  }}
+                </span>
+                <div
+                  class="flex flex-column gap-2 sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                >
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-clock text-primary ml-1"></i>
+                    <span
+                      >Tiempo para editar respuestas: {{ encuesta?.cTiemDurNombre }}
+                      {{ formatearTiempoRestante(encuesta) }}</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-primary ml-1"></i>
+                    <span>Del:</span>
+                    <span>{{ encuesta?.dEncuInicio | date: 'dd/MM/yyyy' }}</span>
+                    <span>Al: {{ encuesta?.dEncuFin | date: 'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-column align-items-end justify-content-center gap-2">
+              @if (+encuesta.puede_responder === 1) {
+                <p-button
+                  label="Responder ({{ encuesta.count_respuestas }}/{{ encuesta.count_preguntas }})"
+                  icon="pi pi-pen-to-square"
+                  iconPos="left"
+                  severity="primary"
+                  (onClick)="responderEncuesta(encuesta)"
+                />
+              } @else {
+                <p-button
+                  label="Ver respuestas ({{ encuesta.count_respuestas }}/{{
+                    encuesta.count_preguntas
+                  }})"
+                  icon="pi pi-eye"
+                  iconPos="left"
+                  severity="secondary"
+                  (onClick)="verRespuestas(encuesta)"
+                />
+              }
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  }
+</p-panel>
+
+<p-toast></p-toast>

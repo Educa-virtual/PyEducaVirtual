@@ -152,7 +152,7 @@
 .banderines {
   position: fixed;
   /* o absolute si quieres que dependa de un contenedor */
-  // z-index: 100;
+  z-index: -1;
   top: 0;
   left: 0;
   width: 100%;
@@ -169,7 +169,6 @@
 .banderines_morado {
   position: fixed;
   /* o absolute si quieres que dependa de un contenedor */
-  // z-index: 100;
   top: 0;
   left: 0;
   width: 100%;
@@ -186,7 +185,6 @@
 .banderines_navidad {
   position: fixed;
   /* o absolute si quieres que dependa de un contenedor */
-  // z-index: 100;
   top: 0;
   left: 0;
   width: 100%;
@@ -224,6 +222,7 @@
 .banderines-animado {
   display: inline-block;
   animation: ondear 2s linear infinite;
+  z-index: -1;
 }
 
 .liston-moquegua {

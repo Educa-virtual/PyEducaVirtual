@@ -1,0 +1,387 @@
+<br />
+
+<p-stepper class="mt-3" [(activeStep)]="active">
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-nextCallback="nextCallback"
+      let-index="index"
+      class="p-0 m-0"
+    >
+      <p>
+        En esta sección se <strong>gestiona las plantillas</strong>, cada plantilla se muestra como
+        una fila de la tabla. Las columnas indican
+        <strong
+          >el nombre de la plantilla, el estado, el nombre del creador y la última fecha de
+          modificación
+        </strong>
+        de la plantilla. Cuando una plantilla está en
+        <p-tag value="BORRADOR" severity="danger" /> puede editar sus datos o eliminarla. Cuando
+        está <p-tag value="APROBADA" severity="success" /> ya no podrá editar sus datos ni
+        eliminarla.
+      </p>
+      <p>
+        En la última columna hay un <strong>botón de acciones</strong>, al hacer clic en él
+        <strong>se despliega la lista de acciones</strong> disponibles para la plantilla
+        seleccionada. Estas acciones cambian según el estado de la plantilla.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu #menu [popup]="true" appendTo="body" class="z-0" [model]="listarAcciones(null)" />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-end">
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Visibilidad de plantillas</h3>
+      <p>
+        En esta sección puede ver las <strong>plantillas que usted ha creado</strong>, pero también
+        se listarán las
+        <strong>plantillas creadas por otros usuarios, que han sido compartidas con usted</strong> y
+        que ya han sido <p-tag value="APROBADAS" severity="success" />. Cuando registre una nueva
+        plantilla tiene la opción de compartirla con otros usuarios según su jurisdicción:
+      </p>
+      <ul>
+        <li>
+          Los <strong>especialistas DREMO</strong> pueden compartir plantillas con otros
+          especialistas y directores.
+        </li>
+        <li>
+          Los <strong>especialistas UGEL</strong> pueden compartir plantillas con otros
+          especialistas de su misma UGEL.
+        </li>
+        <li>
+          Los <strong>directores</strong> pueden compartir plantillas con otros directores de su
+          I.E.
+        </li>
+      </ul>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Editar plantillas</h3>
+      <p>Para registrar una nueva plantilla debe presionar el botón:</p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-button size="small" severity="success" pTooltip="Nuevo" tooltipPosition="top">
+          <i class="pi pi-fw pi-plus"></i>
+          <span class="hidden md:inline ml-2">Nueva</span>
+        </p-button>
+      </div>
+      <p>
+        Será redirigido al formulario en donde debe ingresar los datos de la nueva plantilla, la
+        población objetivo y los accesos.
+      </p>
+      <p>
+        Cuando la plantilla está en estado <p-tag value="BORRADOR" severity="danger" /> puede
+        <strong>editarla</strong>, debe presionar el botón de acciones y en la lista desplegable
+        debe elegir la acción <strong>"Editar"</strong>. Para borrar la plantilla elija la acción
+        <strong>"Eliminar"</strong>.
+      </p>
+      <p>
+        Para cambiar el estado de la plantilla a <p-tag value="APROBADA" severity="success" /> debe
+        presionar el botón de acciones y seleccionar la acción <strong>"Aprobar"</strong>. Una vez
+        que la plantilla está aprobada, el botón <strong>"Editar"</strong> cambiará a
+        <strong>"Ver"</strong>.
+      </p>
+      <p>
+        Para gestionar las preguntas de la plamtilla, debe presionar el botón de acciones y
+        seleccionar la acción <strong>"Ver Preguntas"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('editar')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Acciones adicionales</h3>
+      <p>
+        Puede duplicar una plantilla creada por usted o por otros usuarios. Para duplicar una
+        plantilla debe presionar el botón de acciones y seleccione la acción
+        <strong>"Duplicar"</strong>.
+      </p>
+
+      <p>
+        La <strong>principal funcionalidad</strong> de las plantillas es usarlas para generar
+        encuestas, para ello debe elegir la acción <strong>"Hacer encuesta"</strong>.
+      </p>
+
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('adicionales')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
+      <h3>Archivar plantillas</h3>
+      <p>
+        Cuando su listado de plantillas se vuelva demasiado extenso, puede elegir
+        <strong>archivar algunas plantillas</strong> para que no se muestren en la lista principal.
+        <strong>Este cambio solo es visible para usted</strong>, es decir que los demás usuarios con
+        acceso a la plantilla seguirán visualizándola en sus listas principales.
+      </p>
+      <p>
+        Puede alternar la visibilidad de las plantillas en la lista principal pulsando la lista
+        desplegable <strong>"Estado"</strong>:
+      </p>
+      <div class="grid">
+        <div class="col-12 lg:col-6 lg:col-offset-3 align-content-center">
+          <p-inputGroup>
+            <p-inputGroupAddon> Estado </p-inputGroupAddon>
+            <p-dropdown
+              [options]="tipos_reportes_plantillas"
+              [showClear]="false"
+              appendTo="body"
+              placeholder="Seleccione"
+              styleClass="group-element"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+      <p>
+        Para archivar una plantilla debe presionar el botón de acciones y seleccionar la acción
+        <strong>"Archivar"</strong>, esto cambiará el estado de la plantilla a
+        <p-tag value="ARCHIVADA" severity="secondary" />. Para
+        <strong>desarchivar una plantilla</strong> que ha sido archivada seleccione la acción
+        <strong>"Desarchivar"</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <span>Presione este botón <i class="pi pi-arrow-right ml-2"></i></span>
+        <p-menu
+          #menu
+          [popup]="true"
+          appendTo="body"
+          class="z-0"
+          [model]="listarAcciones('respuestas')"
+        />
+        <button
+          [rounded]="true"
+          pButton
+          pRipple
+          (click)="menu.toggle($event)"
+          (keydown.space)="menu.toggle($event)"
+          class="p-1 z-0"
+          ngClass="p-button-rounded p-button-secondary p-button-text"
+          aria-label="Desplegar acciones"
+        >
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Salir"
+          severity="success"
+          icon="pi pi-times"
+          iconPos="right"
+          (onClick)="salir()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+</p-stepper>

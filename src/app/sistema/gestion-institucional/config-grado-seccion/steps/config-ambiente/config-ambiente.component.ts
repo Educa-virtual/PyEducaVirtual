@@ -349,7 +349,7 @@ export class ConfigAmbienteComponent implements OnInit {
         });
       }
 
-      console.log(item.cImagen, 'item.cImagen', this.filesUrl);
+      //console.log(item.cImagen, 'item.cImagen', this.filesUrl);
       if (item.bAmbienteEstado == 1) {
         this.form.get('bAmbienteEstado')?.setValue(1);
       } else {

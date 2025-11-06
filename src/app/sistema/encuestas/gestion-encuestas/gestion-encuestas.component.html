@@ -1,0 +1,431 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl">GESTIONAR ENCUESTAS DE CATEGORÍA</div>
+      <div class="flex text-sm">{{ categoria?.cCateNombre }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex gap-2">
+      <p-button
+        *ngIf="categoria && !+categoria?.bEsFija"
+        severity="success"
+        pTooltip="Nueva"
+        tooltipPosition="top"
+        (click)="agregarEncuesta()"
+      >
+        <i class="pi pi-fw pi-plus"></i>
+        <span class="hidden md:inline ml-2">Nueva</span>
+      </p-button>
+      <p-button
+        *ngIf="puede_generar_fija"
+        severity="success"
+        pTooltip="Generar desde plantillas"
+        tooltipPosition="top"
+        (click)="confirmarGenerarEncuestasMasivo()"
+      >
+        <i class="pi pi-fw pi-file-plus"></i>
+        <span class="hidden md:inline ml-2">Generar</span>
+      </p-button>
+      <p-button
+        labelTooltip="Tutorial"
+        tooltipPosition="top"
+        severity="secondary"
+        (click)="verTutorial(true)"
+      >
+        <i class="pi pi-question-circle"></i>
+        <span class="hidden md:inline ml-2">Tutorial</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <div class="grid p-fluid">
+    <div class="col">
+      <p-inputGroup>
+        <p-inputGroupAddon for="buscar"> Buscar </p-inputGroupAddon>
+        <input
+          #filtro
+          type="text"
+          pInputText
+          (input)="filtrarTabla()"
+          aria-label="Buscar"
+          name="buscar"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-auto align-content-center">
+      <p-button
+        severity="info"
+        pTooltip="Ver Plantillas"
+        tooltipPosition="top"
+        aria-label="Ver Plantillas"
+        (onClick)="listarPlantillas()"
+      >
+        <i class="pi pi-fw pi-arrow-right-arrow-left"></i>
+        <span class="hidden md:inline ml-2">Plantillas</span>
+      </p-button>
+    </div>
+  </div>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [data]="encuestas_filtradas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [(selectedRowData)]="selectedItem"
+    [actions]="actions"
+    [showCaption]="false"
+  >
+  </app-table-primeng>
+</p-panel>
+
+<p-dialog
+  header="Generar encuesta desde plantilla"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogDuplicar"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+  (onHide)="resetFormEncuesta()"
+>
+  <br />
+  <form [formGroup]="formEncuesta">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon> Plantilla </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            formControlName="cEncuOriginalNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese título o deje en blanco para usar la plantilla"
+            formControlName="cEncuNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese subtítulo o deje en blanco para usar la plantilla"
+            formControlName="cEncuSubtitulo"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Inicio *</p-inputGroupAddon>
+          <p-calendar
+            inputStyleClass="group-element"
+            view="date"
+            formControlName="dEncuInicio"
+            dateFormat="dd/mm/yy"
+            placeholder="Fecha de inicio"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Cierre *</p-inputGroupAddon>
+          <p-calendar
+            inputStyleClass="group-element"
+            view="date"
+            formControlName="dEncuFin"
+            dateFormat="dd/mm/yy"
+            placeholder="Fecha de cierre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iTiemDurId.toggle($event)"
+              (keypress)="iTiemDurId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <span>Tiempo edición *</span>
+          </p-inputGroupAddon>
+          <p-dropdown
+            styleClass="group-element"
+            [options]="tiempos_duracion"
+            placeholder="Seleccione tiempo"
+            formControlName="iTiemDurId"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+          <p-overlayPanel #iTiemDurId showCloseIcon="true" appendTo="body">
+            <div class="flex w-15rem">
+              El tiempo que el encuestado tendrá para editar sus respuestas una vez que las haya
+              registrado por primera vez.
+            </div>
+          </p-overlayPanel>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch
+              formControlName="bCopiarPoblacion"
+              label="Copiar población"
+            ></p-inputSwitch>
+            <span>Copiar población</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch formControlName="bCopiarAccesos" label="Copiar accesos"></p-inputSwitch>
+            <span>Copiar accesos</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch
+              formControlName="bCopiarPreguntas"
+              label="Copiar preguntas"
+            ></p-inputSwitch>
+            <span>Copiar preguntas</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-between">
+    <p-button
+      label="Salir"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      (onClick)="cerrarDialogDuplicarEncuesta()"
+    />
+    <p-button
+      label="Generar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="left"
+      (onClick)="duplicarEncuesta()"
+    />
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Generar plantilla desde encuesta"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogPlantilla"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+  (onHide)="resetFormPlantilla()"
+>
+  <br />
+  <form [formGroup]="formPlantilla">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon> Encuesta </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            formControlName="cEncuOriginalNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese título o deje en blanco para usar el de la encuesta"
+            formControlName="cPlanNombre"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Subtítulo </p-inputGroupAddon>
+          <input
+            pInputText
+            styleClass="group-element"
+            placeholder="Ingrese subtítulo o deje en blanco para usar el de la encuesta"
+            formControlName="cPlanSubtitulo"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch
+              formControlName="bCopiarPoblacion"
+              label="Copiar población"
+            ></p-inputSwitch>
+            <span>Copiar población</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch formControlName="bCopiarAccesos" label="Copiar accesos"></p-inputSwitch>
+            <span>Copiar accesos</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-inputSwitch
+              formControlName="bCopiarPreguntas"
+              label="Copiar preguntas"
+            ></p-inputSwitch>
+            <span>Copiar preguntas</span>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-between">
+    <p-button
+      label="Salir"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      (onClick)="cerrarDialogCrearPlantilla()"
+    />
+    <p-button
+      label="Generar"
+      severity="success"
+      icon="pi pi-save"
+      iconPos="left"
+      (onClick)="crearPlantilla()"
+    />
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Tutorial"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogTutorial"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+>
+  <app-tutorial-encuestas (visibleDialogTutorial)="verTutorial($event)" />
+</p-dialog>
+
+<p-confirmDialog
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [visible]="visibleDialogGenerar"
+>
+  <ng-template pTemplate="headless">
+    <div class="surface-overlay border-round text-center p-5">
+      <i class="pi pi-exclamation-triangle text-yellow-500 mb-3" style="font-size: 3.5rem"></i>
+      <span class="block mb-3 font-bold text-xl">Generar encuestas masivas</span>
+      <p>
+        Para generar encuestas de forma masiva ingrese al "Listado de plantillas", seleccione la
+        plantilla que desee utilizar y haga clic en "Hacer encuestas.
+      </p>
+      @if (es_director) {
+        <p>
+          Esta acción reeemplazará, para su I.E., las encuestas existentes registradas por el
+          Administrador que aún no han sido respondidas por sus estudiantes. Solo usted podrá editar
+          las nuevas encuestas.
+        </p>
+      }
+      <p>
+        Las encuestas se crearán para todos las áreas y/o periodos configurados. Revise que las
+        siguientes listas contengan datos, en caso contrario realice la configuración de áreas y
+        periodos académicos.
+      </p>
+      <div class="grid">
+        @if (periodos.length > 0) {
+          @for (periodo of periodos; track $index) {
+            <div class="col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  {{ periodo['label'] }}
+                </p-inputGroupAddon>
+                <p-dropdown
+                  [options]="periodo['cursos']"
+                  [showClear]="false"
+                  appendTo="body"
+                  styleClass="group-element text-left"
+                />
+              </p-inputGroup>
+            </div>
+          }
+        } @else if (cursos.length > 0) {
+          <div class="col-12">
+            <p-inputGroup>
+              <p-inputGroupAddon> Cursos </p-inputGroupAddon>
+              <p-dropdown
+                [options]="cursos"
+                [showClear]="false"
+                appendTo="body"
+                styleClass="group-element text-left"
+              />
+            </p-inputGroup>
+          </div>
+        } @else {
+          <div class="col-12">No tiene áreas ni periodos configurados.</div>
+        }
+      </div>
+
+      <div class="flex justify-content-center flex-wrap gap-2">
+        <button pButton label="Si" (click)="listarPlantillas()" class="p-button-danger"></button>
+        <button
+          pButton
+          label="No, cancelar"
+          (click)="visibleDialogGenerar = false"
+          class="p-button-outlined p-button-secondary"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
+
+<p-toast></p-toast>

@@ -12,6 +12,12 @@
   <div class="title mt-2 font-bold text-center mx-2">
     {{ capacitacion?.cCapTitulo }}
   </div>
+  <div
+    class="title mt-2 font-bold text-center mx-2"
+    *ngIf="iPerfilId === ADMINISTRADOR_DREMO || iPerfilId === PARTICIPANTE"
+  >
+    Instructor: <br />{{ capacitacion.cPersNombre || '-' }} {{ capacitacion.cPersPaterno || '-' }}
+  </div>
   <div *ngIf="iPerfilId === ADMINISTRADOR_DREMO">
     <div class="mx-4 col-12 grid">
       @if (descripcion) {

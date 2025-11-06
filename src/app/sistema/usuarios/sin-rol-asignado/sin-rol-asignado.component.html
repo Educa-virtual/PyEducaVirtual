@@ -1,53 +1,49 @@
 <p-dialog
-    [modal]="true"
-    [(visible)]="visible"
-    [style]="{ width: '650px' }"
-    [showHeader]="false"
-    [closable]="false"
-    (onHide)="visibleChange.emit(false)"
+  [modal]="true"
+  [(visible)]="visible"
+  [style]="{ width: '650px' }"
+  [showHeader]="false"
+  [closable]="false"
+  (onHide)="visibleChange.emit(false)"
 >
-    <div class="header-blue">Sin roles asignados</div>
+  <div class="header-blue">Sin roles asignados</div>
 
-    <div class="content-container">
-        <div class="info-section">
-            <!--<p class="greeting">Hola</p>-->
+  <div class="content-container">
+    <div class="info-section">
+      <!--<p class="greeting">Hola</p>-->
 
-            <!--<p class="no-roles-title">No tiene roles asignados</p>-->
+      <!--<p class="no-roles-title">No tiene roles asignados</p>-->
 
-            <p class="role-info">No tiene asignado un rol en la plataforma.</p>
+      <p class="role-info">No tiene asignado un rol en la plataforma.</p>
 
-            <p class="contact-msg">
-                Por favor, comuníquese con el administrador del sistema:
-            </p>
+      <p class="contact-msg">Por favor, comuníquese con el administrador del sistema:</p>
 
-            <div class="admin-info">
-                <p class="admin-name">Ing. Daniel Catachura Palacios</p>
-                <p class="admin-role">Especialista en Sistemas</p>
-                <P>{{ correoTitle }}</P>
-            </div>
-        </div>
-
-        <div class="image-section">
-            <img src="assets/images/icons/no-data-animate.svg" alt="No data" />
-        </div>
+      <div class="admin-info">
+        <p class="admin-name">Ing. María Ramírez Chipana 995252993</p>
+        <p class="admin-name">Ing. Nicolle Puma Zapata 916106180</p>
+        <p class="admin-role">Soporte técnico: Lunes a viernes de 8:00 am 3:30 pm</p>
+        <P>{{ correoTitle }}</P>
+      </div>
     </div>
 
-    <div class="footer-container">
-        <div class="logo-left">
-            <img src="assets/images/dremo.png" alt="DREMO" />
-        </div>
-
-        <div class="btn-center">
-            <button class="logout-btn" (click)="logout()">
-                <span class="x-icon">×</span> Salir de la sesión
-            </button>
-        </div>
-
-        <div class="logo-right">
-            <img
-                src="assets/images/logo-proyecto.png"
-                alt="Proyecto Educativo"
-            />
-        </div>
+    <div class="image-section">
+      <img src="assets/images/icons/no-data-animate.svg" alt="No data" />
     </div>
+  </div>
+
+  <div class="footer-container">
+    <div class="logo-left">
+      <img src="assets/images/dremo.png" alt="DREMO" />
+    </div>
+
+    <div class="btn-center">
+      <button class="logout-btn" (click)="logout()">
+        <span class="x-icon">×</span> Salir de la sesión
+      </button>
+    </div>
+
+    <div class="logo-right">
+      <img src="assets/images/logo-proyecto.png" alt="Proyecto Educativo" />
+    </div>
+  </div>
 </p-dialog>

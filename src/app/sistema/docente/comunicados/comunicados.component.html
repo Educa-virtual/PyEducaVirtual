@@ -1,32 +1,30 @@
 <section class="flex flex-column gap-2">
-    <div class="col-12 md:col-6 text-left p-0 m-0">
-        <span class="text-sm"> Inicio > Mis Comunicados </span>
-    </div>
-    <!-- título -->
-    <div>
-        <p-toolbar class="col-12 p-0 m-0">
-            <div class="block">
-                <h2 class="text-primary text-white font-bold block">
-                    Mis Comunicados
-                </h2>
-            </div>
-        </p-toolbar>
-    </div>
-    <!-- contenido -->
-    <p-tabView [activeIndex]="0">
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <i class="pi pi-inbox"></i>
-                <span class="ml-2">Contenido</span>
-            </ng-template>
-            <app-contenidos></app-contenidos>
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <i class="pi pi-users"></i>
-                <span class="ml-2">Crear Grupo</span>
-            </ng-template>
-            <app-grupos></app-grupos>
-        </p-tabPanel>
-    </p-tabView>
+  <div class="col-12 md:col-6 text-left p-0 m-0">
+    <span class="text-sm"> Inicio > Mis Comunicados </span>
+  </div>
+  <!-- título -->
+  <div>
+    <p-toolbar class="col-12 p-0 m-0">
+      <div class="block">
+        <h2 class="text-primary text-white font-bold block">MIS COMUNICADOS</h2>
+      </div>
+    </p-toolbar>
+  </div>
+  <!-- contenido -->
+  <p-tabView [activeIndex]="0">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <i class="pi pi-inbox"></i>
+        <span class="ml-2">Contenido</span>
+      </ng-template>
+      <app-contenidos></app-contenidos>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <i class="pi pi-users"></i>
+        <span class="ml-2">Crear Grupo</span>
+      </ng-template>
+      <app-grupos></app-grupos>
+    </p-tabPanel>
+  </p-tabView>
 </section>

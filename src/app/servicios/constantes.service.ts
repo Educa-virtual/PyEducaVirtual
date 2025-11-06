@@ -53,7 +53,7 @@ const docente = [
         routerLink: ['/aula-virtual/areas-curriculares'],
       },
       {
-        label: 'Actividades No Lectivas',
+        label: 'Actividades De Gestión',
         icon: 'pi pi-fw pi-list-check',
         routerLink: ['/docente/actividades-no-lectivas'],
       },
@@ -239,6 +239,11 @@ const docente = [
           },
         ],
       },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
     ],
   },
 ];
@@ -299,6 +304,11 @@ const estudiante = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Buzón de sugerencias',
         icon: 'pi pi-fw pi-envelope',
         routerLink: ['/buzon-sugerencias/estudiante'],
@@ -329,12 +339,11 @@ const estudiante = [
         icon: 'pi pi-external-link',
         routerLink: ['/estudiante/mesa-partes-gore'],
       },
-      /*{
-              label: 'Mesa de Partes GORE',
-              icon: 'pi pi-external-link',
-              url: 'http://sisgedo.regionmoquegua.gob.pe/mpv_grmqg/index.php', // Cambia esto por la URL externa deseada
-              target: '_blank',
-            },*/
+      {
+        label: 'Codigo QR',
+        icon: 'pi pi-qrcode',
+        routerLink: ['/estudiante/codigo-qr'],
+      },
     ],
   },
 ];
@@ -673,6 +682,11 @@ const administracion = [
             icon: 'pi pi-file-import',
             routerLink: ['/gestion-institucional/gestion-vacantes'],
           },
+          // {
+          //   label: 'Registro de deserciones',
+          //   icon: 'pi pi-file-import',
+          //   routerLink: ['/gestion-institucional/gestion-deserciones'],
+          // },
         ],
       },
 
@@ -865,6 +879,11 @@ const administracion = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
@@ -971,6 +990,11 @@ const apoderado = [
                       routerLink: ['/estudiante/reportes-academicos/resultados-ere'],
                     },*/
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
       {
         label: 'Asistencia',

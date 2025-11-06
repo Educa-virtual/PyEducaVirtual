@@ -28,34 +28,191 @@ import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricul
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
 import { YearsComponent } from './years/years.component';
-import { ADMINISTRADOR_DREMO, DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import { DIRECTOR_IE, ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { GestionarMatriculasDirectorComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas-director/gestionar-matriculas-director.component';
 import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-indicadores/reporte-indicadores.component';
+
+import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
+import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
 const routes: Routes = [
-  { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
-  { path: 'years-academicos', component: YearsComponent },
-  { path: 'configGradoSeccion', component: ConfigGradoSeccionComponent },
-  { path: 'config', component: ConfigComponent },
-  { path: 'ambiente', component: ConfigAmbienteComponent },
-  { path: 'grado', component: ConfigGradoComponent },
-  { path: 'seccion', component: ConfigSeccionComponent },
-  { path: 'plan-estudio', component: ConfigPlanEstudiosComponent },
-  { path: 'hora-docente', component: ConfigHoraDocenteComponent },
-  { path: 'asignar-grado', component: ConfigAsignarGradoComponent },
-  { path: 'resumen', component: ConfigResumenComponent },
-  { path: 'fechas-nacionales', component: ConfigFechasComponent },
-  { path: 'fechas-importantes', component: FechasImportantesComponent },
-  { path: 'IesPersonal', component: IesPersonalComponent },
-  { path: 'horario', component: HorarioComponent },
-  { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
-  { path: 'reportes-academicos', component: ReporteComponent },
-  { path: 'estadistica', component: EstadisticaComponent },
-  { path: 'gestion-traslados', component: GestionTrasladosComponent },
-  { path: 'gestion-vacantes', component: GestionVacantesComponent },
-  { path: 'Informacion-ie', component: InformacionComponent },
-  { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
+  {
+    path: 'calendarioAcademico',
+    component: CalendarioAcademicoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE, ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'years-academicos',
+    component: YearsComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE, ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'configGradoSeccion',
+    component: ConfigGradoSeccionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'config',
+    component: ConfigComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'ambiente',
+    component: ConfigAmbienteComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'grado',
+    component: ConfigGradoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'seccion',
+    component: ConfigSeccionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'plan-estudio',
+    component: ConfigPlanEstudiosComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'hora-docente',
+    component: ConfigHoraDocenteComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'asignar-grado',
+    component: ConfigAsignarGradoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'resumen',
+    component: ConfigResumenComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'fechas-nacionales',
+    component: ConfigFechasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'fechas-importantes',
+    component: FechasImportantesComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'IesPersonal',
+    component: IesPersonalComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'horario',
+    component: HorarioComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'configurar-horario',
+    component: ConfiguracionHorarioComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'reportes-academicos',
+    component: ReporteComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'estadistica',
+    component: EstadisticaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'gestion-traslados',
+    component: GestionTrasladosComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'gestion-vacantes',
+    component: GestionVacantesComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'Informacion-ie',
+    component: InformacionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'sincronizar-archivo',
+    component: SincronizarArchivoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
   //{ path: 'mantenimiento-ciclo', component: SincronizarArchivoComponent },
 
   // { path: 'horario', component: HorarioComponent },
@@ -63,11 +220,19 @@ const routes: Routes = [
   {
     path: 'apertura',
     loadChildren: () => import('./apertura/configuracion.module').then(c => c.ConfiguracionModule),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
 
   {
     path: 'horario',
     loadComponent: () => import('./horario/horario.component').then(c => c.HorarioComponent),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
 
   // {
@@ -83,6 +248,10 @@ const routes: Routes = [
       import('./gestion-traslados/traslado-externo/traslado-externo.component').then(
         c => c.TrasladoExternoComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
 
   {
@@ -91,6 +260,10 @@ const routes: Routes = [
       import('./descarga-plantillas/descarga-plantillas.component').then(
         c => c.DescargaPlantillasComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE, ADMINISTRADOR_DREMO],
+    },
   },
   {
     path: 'dashboard-indicadores',
@@ -98,6 +271,10 @@ const routes: Routes = [
       import('./dashboard-indicadores/dashboard-indicadores.component').then(
         c => c.DashboardIndicadoresComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE, ADMINISTRADOR_DREMO],
+    },
   },
 
   {
@@ -106,6 +283,10 @@ const routes: Routes = [
       import('./mantenimiento/mantenimiento-ciclo/mantenimiento-ciclo.component').then(
         c => c.MantenimientoCicloComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
   {
     path: 'traslado-interno',
@@ -113,6 +294,10 @@ const routes: Routes = [
       import('./gestion-traslados/traslado-interno/traslado-interno.component').then(
         c => c.TrasladoInternoComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
   {
     path: 'validacion-no-lectiva',
@@ -120,6 +305,10 @@ const routes: Routes = [
       import('./actividad-no-lectiva/actividad-no-lectiva.component').then(
         c => c.ActividadNoLectivaComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
   {
     path: 'configurar-horario',
@@ -127,6 +316,34 @@ const routes: Routes = [
       import('./horario/configuracion-horario/configuracion-horario.component').then(
         c => c.ConfiguracionHorarioComponent
       ),
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'gestion-matriculas',
+    component: GestionMatriculasComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'matricula-individual',
+    component: MatriculaIndividualComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+  {
+    path: 'matricula-masiva',
+    component: MatriculaMasivaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
   { path: 'gestionar-matriculas', component: GestionarMatriculasDirectorComponent },
   { path: 'matricula-individual', component: MatriculaIndividualComponent },
@@ -139,6 +356,10 @@ const routes: Routes = [
   {
     path: 'mantenimiento-usuario',
     component: MantenimientoUsuariosComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
   },
   {
     path: 'calendario-escolar',
@@ -159,6 +380,14 @@ const routes: Routes = [
       expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE],
       breadcrumb: 'Reporte de indicadores',
       icon: 'pi pi-folder-open',
+    },
+  },
+  {
+    path: 'gestion-deserciones',
+    component: GestionDesercionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
     },
   },
 ];

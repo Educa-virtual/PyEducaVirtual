@@ -15,13 +15,22 @@ import { DatosMatriculaService } from '../../services/datos-matricula.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
 import { CompartirMatriculaService } from '../../services/compartir-matricula.service';
-import { CompartirEstudianteService } from '../../services/compartir-estudiante.service';
 import { MatriculaApoderadoComponent } from '../matricula-apoderado/matricula-apoderado.component';
+import { FormDesercionComponent } from '../../gestion-desercion/form-desercion/form-desercion.component';
+import { HistorialDesercionComponent } from '../../gestion-desercion/historial-desercion/historial-desercion.component';
+import { CompartirEstudianteService } from '../../services/compartir-estudiante.service';
 
 @Component({
   selector: 'app-gestionar-matriculas',
   standalone: true,
-  imports: [PrimengModule, InputNumberModule, TablePrimengComponent, MatriculaApoderadoComponent],
+  imports: [
+    PrimengModule,
+    InputNumberModule,
+    TablePrimengComponent,
+    MatriculaApoderadoComponent,
+    FormDesercionComponent,
+    HistorialDesercionComponent,
+  ],
   templateUrl: './gestionar-matriculas.component.html',
   styleUrl: './gestionar-matriculas.component.scss',
 })
@@ -53,13 +62,21 @@ export class GestionMatriculasComponent implements OnInit {
   sexos: Array<object>;
   iCredId: number;
 
+  tipo_desercion: any[];
+  visible_desercion: boolean = false;
+  matricula: any = {};
+  grado: string = '';
+  update: boolean = false;
+  desercion: any = {};
+  activeIndex: number = 0;
+  deserciones: any[] = [];
+
   selectedItems = [];
   estudianteSeleccionado: any;
 
-  actions: IActionTable[];
-
   actionsLista: IActionTable[];
 
+  actions: IActionTable[] = [];
   columns = [
     {
       type: 'item',
@@ -159,6 +176,13 @@ export class GestionMatriculasComponent implements OnInit {
     } else {
       this.actions = [
         {
+          labelTooltip: 'Agregar deserción',
+          icon: 'pi pi-user-minus',
+          accion: 'agregar_desercion',
+          type: 'item',
+          class: 'p-button-rounded p-button-danger p-button-text',
+        },
+        {
           labelTooltip: 'Editar apoderado',
           icon: 'pi pi-user-plus',
           accion: 'asig_apoderado',
@@ -185,6 +209,7 @@ export class GestionMatriculasComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error de formulario');
     }
+    this.getTiposDesercion();
     this.searchMatriculas();
     this.searchGradoSeccionTurno();
     this.getTiposMatriculas();
@@ -259,6 +284,34 @@ export class GestionMatriculasComponent implements OnInit {
       this.estudianteSeleccionado = item;
     }
 
+    if (accion === 'actualizar') {
+      this.updDesercion(item);
+
+      //this.visible_desercion = false;
+    }
+
+    if (accion === 'registrar') {
+      this.addDesercion(item);
+      //this.visible_desercion = false;
+    }
+    if (accion === 'editar_desercion') {
+      this.desercion = {};
+      this.update = true;
+      this.caption = 'Actualizar deserción de : ' + this.matricula._cPersNomape;
+      this.desercion = item;
+    }
+
+    if (accion === 'agregar_desercion') {
+      this.caption = 'Agregar deserción de : ' + item?._cPersNomape;
+      this.c_accion = 'agregar';
+      this.matricula = item;
+      this.iEstudianteId = item?.iEstudianteId;
+      this.visible_desercion = true;
+      this.grado = item.cGradoNombre;
+      //this.getDesercionesByMatricula(item);
+      this.getDesercion(item.iMatrId);
+    }
+
     if (accion === 'editar_estudiante') {
       this.compartirEstudianteService.setiEstudianteId(item?.iEstudianteId);
       this.compartirEstudianteService.setiPersId(item?.iPersId);
@@ -318,6 +371,31 @@ export class GestionMatriculasComponent implements OnInit {
         error: error => {
           console.error('Error consultando nivel grados:', error);
         },
+      });
+  }
+
+  getDesercion(iMatrId: number) {
+    this.deserciones = [];
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          iMatrId: iMatrId,
+        }),
+        _opcion: 'getDesercionesMatriculas',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.deserciones = data.data;
+        },
+        error: error => {
+          this._MessageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar deserciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+        complete: () => {},
       });
   }
 
@@ -403,6 +481,11 @@ export class GestionMatriculasComponent implements OnInit {
       });
   }
 
+  //Maquetar tablas
+  // handleActions(actions) {
+  //   console.log(actions);
+  // }
+
   agregarMatricula() {
     this.router.navigate(['/gestion-institucional/matricula-individual']);
   }
@@ -423,6 +506,110 @@ export class GestionMatriculasComponent implements OnInit {
             summary: 'Error',
             detail: error,
           });
+        },
+      });
+  }
+
+  getTiposDesercion() {
+    this.query
+      .searchCalAcademico({
+        esquema: 'acad',
+        tabla: 'tipo_deserciones',
+        campos: '*',
+        condicion: '1=1',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.tipo_desercion = data.data;
+        },
+        error: error => {
+          this._MessageService.add({
+            severity: 'danger',
+            summary: 'Mensaje del Sistema',
+            detail: 'Error. al cargar los datos del horario: ' + error.error.message,
+          });
+        },
+      });
+  }
+
+  getDesercionesByMatricula(res: any = null) {
+    this.deserciones = [];
+    if (res?.deserciones) {
+      this.deserciones =
+        typeof res.deserciones === 'string' ? JSON.parse(res.deserciones) : res.deserciones;
+    }
+  }
+
+  addDesercion(item) {
+    const params: any = {
+      iMatrId: item.iMatrId,
+      iTipoDesercionId: item.iTipoDesercionId,
+      cMotivoDesercion: item.cMotivoDesercion,
+      dInicioDesercion: item.dInicioDesercion,
+      dFinDesercion: item.dFinDesercion,
+      iEstado: Number(item.iEstado ?? 0),
+      iSesionId: Number(this.iCredId),
+    };
+    this.query
+      .addCalAcademico({
+        json: JSON.stringify(params),
+        _opcion: 'addDesercion',
+      })
+      .subscribe({
+        error: error => {
+          this._MessageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error: ' + error.error.message,
+          });
+        },
+        complete: () => {
+          this._MessageService.add({
+            severity: 'success',
+            summary: 'Mensaje',
+            detail: 'Proceso exitoso',
+          });
+          //this.showModal = false;
+          this.getDesercion(item.iMatrId);
+          //  this.getPerfilUsuario(this.usuario)
+        },
+      });
+  }
+
+  updDesercion(item: any) {
+    const params: any = {
+      iDesercionId: item.iDesercionId,
+      iMatrId: item.iMatrId,
+      iTipoDesercionId: item.iTipoDesercionId,
+      cMotivoDesercion: item.cMotivoDesercion,
+      dInicioDesercion: item.dInicioDesercion,
+      dFinDesercion: item.dFinDesercion,
+      iEstado: Number(item.iEstado ?? 0),
+      iSesionId: Number(this.iCredId),
+    };
+    this.query
+      .updateCalAcademico({
+        json: JSON.stringify(params),
+        _opcion: 'updateDesercion',
+      })
+      .subscribe({
+        error: error => {
+          this._MessageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error : ' + error.error.message,
+          });
+        },
+        complete: () => {
+          this._MessageService.add({
+            severity: 'success',
+            summary: 'Mensaje',
+            detail: 'Proceso exitoso',
+          });
+          //this.showModal = false;
+          this.getDesercion(item.iMatrId);
+          this.desercion = null;
+          this.update = false;
         },
       });
   }

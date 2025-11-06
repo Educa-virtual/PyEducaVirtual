@@ -1,0 +1,115 @@
+<p-dialog
+  [header]="dialogTitle"
+  [(visible)]="visible"
+  (onHide)="onHide()"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <form [formGroup]="form">
+    <br />
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cCateNombre"
+            placeholder="Nombre de la categoría"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+          <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="cCateDescripcion"
+            pInputTextarea
+            placeholder="Descripción de la categoría"
+            maxLength="500"
+            [rows]="3"
+            class="group-element"
+            [style.minHeight]="3"
+            [style.maxHeight]="6"
+            [cdkAutosizeMinRows]="3 + 1.5"
+            [cdkAutosizeMaxRows]="6"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+      @if (categoria?.cCateImagenUrl) {
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Imagen</p-inputGroupAddon>
+            <div class="card" style="position: relative">
+              <img
+                height="200px"
+                [src]="categoria?.cCateImagenUrl"
+                [alt]="categoria?.cCateNombre"
+                class="block"
+              />
+              <p-button
+                label="Quitar imagen"
+                (click)="quitarImagen()"
+                icon="pi pi-times"
+                severity="danger"
+                class="btn-quitar-imagen"
+              />
+            </div>
+          </p-inputGroup>
+        </div>
+      }
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon
+            >{{ categoria?.cCateImagenNombre ? 'Cambiar' : 'Subir' }} imagen</p-inputGroupAddon
+          >
+          <p-fileUpload
+            #fileUpload
+            name="cCateImagenNombre"
+            (onSelect)="handleArchivo($event)"
+            [multiple]="false"
+            accept="image/*"
+            fileLimit="1"
+            invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
+            invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
+            invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
+            invalidFileTypeMessageDetail="el tipo de archivo permitido es: {0}."
+            invalidFileLimitMessageDetail="solo debe subir {0} archivo."
+            invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
+            maxFileSize="512000"
+            showCancelButton="false"
+            showUploadButton="false"
+            (onRemove)="quitarArchivo()"
+          >
+          </p-fileUpload>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button label="Salir" icon="pi pi-arrow-left" severity="secondary" (click)="salir()" />
+    <p-button
+      label="Guardar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="guardar()"
+      *ngIf="!categoria_registrada && form.valid"
+    />
+    <p-button
+      label="Actualizar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="actualizar()"
+      *ngIf="categoria_registrada && form.valid"
+    />
+  </div>
+</p-dialog>

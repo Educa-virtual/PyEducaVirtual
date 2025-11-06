@@ -258,12 +258,11 @@ export class CurriculaCursoComponent implements OnChanges {
         break;
 
       case 'agregar_area':
-        this.bUpdate = false;
-        this.visible = false;
         this.frmCursos.patchValue({
           iEstado: 1,
         });
         this.insertarArea(this.frmCursos.value);
+        this.bUpdate = false;
 
         break;
 
@@ -336,13 +335,14 @@ export class CurriculaCursoComponent implements OnChanges {
         summary: 'Total de créditos inválidos',
         detail: `Loss créditos del área (${credito}) no pueden superar el total (${total_credito}) de créditos.`,
       });
-    } else {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Total de créditos válidos',
-        detail: `Loss créditos del área (${credito}) son válidos dentro del total (${total_credito}) de créditos.`,
-      });
     }
+    // } else {
+    //   this.messageService.add({
+    //     severity: 'success',
+    //     summary: 'Total de créditos válidos',
+    //     detail: `Loss créditos del área (${credito}) son válidos dentro del total (${total_credito}) de créditos.`,
+    //   });
+    // }
     this.frmCursos.patchValue({
       vValidoCredito: esValido,
     });
@@ -362,12 +362,12 @@ export class CurriculaCursoComponent implements OnChanges {
         summary: 'Total de horas inválidas',
         detail: `Las horas del área (${hora}) no pueden superar el total (${totalHora}) de horas.`,
       });
-    } else {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Total de horas válidas',
-        detail: `Las horas del área (${hora}) son válidas dentro del total (${totalHora}) de horas.`,
-      });
+      // } else {
+      //   this.messageService.add({
+      //     severity: 'success',
+      //     summary: 'Total de horas válidas',
+      //     detail: `Las horas del área (${hora}) son válidas dentro del total (${totalHora}) de horas.`,
+      //   });
     }
 
     this.frmCursos.patchValue({
@@ -454,6 +454,7 @@ export class CurriculaCursoComponent implements OnChanges {
         if (!this.bUpdate) {
           this.frmCursos.reset();
         }
+        this.visible = false;
         this.inicializacion();
       },
     });

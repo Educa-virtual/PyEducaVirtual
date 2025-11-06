@@ -164,7 +164,7 @@ export class CurriculasComponent implements OnInit {
         this.bEditar = false;
         this.visible = false;
         this.iCurrId = item.iCurrId;
-        this.caption = item.cCurrRsl;
+        this.caption = item.cCurrDescripcion;
         break;
 
       case 'mostrar_curricula':
@@ -177,7 +177,7 @@ export class CurriculasComponent implements OnInit {
 
       case 'editar':
         this.iCurrId = item.iCurrId;
-        this.caption = item.cCurrRsl;
+        this.caption = item.cCurrDescripcion;
         this.titulo = 'Formulario para editar nueva currícula';
         this.titulo = 'Formulario para editar currícula';
         this.visible = true;

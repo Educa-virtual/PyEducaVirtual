@@ -64,7 +64,13 @@
     <div class="col-12 grid">
       <div class="field col-12 md:col-8">
         <span class="p-float-label w-full">
-          <input pInputText id="name" formControlName="cCurrDescripcion" class="w-full" />
+          <input
+            pInputText
+            id="name"
+            formControlName="cCurrDescripcion"
+            class="w-full"
+            maxlength="100"
+          />
 
           @if (
             frmCurriculas.get('cCurrDescripcion').dirty &&

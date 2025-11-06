@@ -82,6 +82,7 @@ export class CurriculaCursoComponent implements OnChanges {
   capacidadesCurso: any[] = [];
   titulo: string = '';
   currricula: any = {};
+  curso: any = {};
 
   perfil: any;
   filesUrl = [];
@@ -142,8 +143,8 @@ export class CurriculaCursoComponent implements OnChanges {
     cCursoImagen: [''],
     iImageAleatorio: [false],
     iEstado: [1],
-    vValidoHora: [true, Validators.requiredTrue],
-    vValidoCredito: [true, Validators.requiredTrue],
+    vValidoHora: [true],
+    vValidoCredito: [true], //, Validators.requiredTrue
   });
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -286,6 +287,7 @@ export class CurriculaCursoComponent implements OnChanges {
         this.iCursoId = event.item.iCursoId;
         this.bUpdate = true;
 
+        this.curso = event.item;
         this.frmCursos.patchValue({
           iCursoId: event.item.iCursoId,
           iCurrId: event.item.iCurrId,
@@ -325,7 +327,21 @@ export class CurriculaCursoComponent implements OnChanges {
   }
 
   validarTotalCreditos() {
-    const total_credito = Number(this.currricula?.iCurrTotalCreditos ?? 0);
+    const totalCredito = this.cursos?.reduce(
+      (acc: number, curso: any) => acc + Number(curso.nCursoTotalCreditos ?? 0),
+      0
+    );
+    let total_credito = 0;
+
+    if (this.bUpdate) {
+      total_credito =
+        Number(this.currricula?.iCurrTotalCreditos ?? 0) -
+        totalCredito +
+        Number(this.curso.nCursoTotalCreditos);
+    } else {
+      total_credito = Number(this.currricula?.iCurrTotalCreditos ?? 0) - totalCredito;
+    }
+
     const credito = Number(this.frmCursos.value.nCursoTotalCreditos ?? 0);
     const esValido = total_credito >= credito;
 
@@ -346,12 +362,26 @@ export class CurriculaCursoComponent implements OnChanges {
     this.frmCursos.patchValue({
       vValidoCredito: esValido,
     });
-    // return esValido;
+    return esValido;
   }
 
   validarTotalHoras() {
-    console.log(this.curriculas);
-    const totalHora = Number(String(this.currricula?.iCurrNroHoras ?? '0').trim());
+    const total_horas = this.cursos?.reduce(
+      (acc: number, curso: any) => acc + Number(curso.iCursoTotalHoras ?? 0),
+      0
+    );
+
+    let totalHora = 0;
+
+    if (this.bUpdate) {
+      totalHora =
+        Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) -
+        total_horas +
+        Number(this.curso.iCursoTotalHoras);
+    } else {
+      totalHora = Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) - total_horas;
+    }
+
     const hora = Number(this.frmCursos?.value?.iCursoTotalHoras ?? 0);
     console.log(this.curriculas.iCurrNroHoras);
     const esValido = totalHora >= hora;
@@ -373,7 +403,7 @@ export class CurriculaCursoComponent implements OnChanges {
     this.frmCursos.patchValue({
       vValidoHora: esValido,
     });
-    //return esValido;
+    return esValido;
   }
 
   calcularTotalCreditos() {
@@ -384,7 +414,7 @@ export class CurriculaCursoComponent implements OnChanges {
       nCursoTotalCreditos: parseFloat(String(total ?? '0')) || 0,
     });
 
-    this.validarTotalCreditos();
+    // this.validarTotalCreditos();
   }
 
   seleccionarImagen(event: any) {
@@ -414,6 +444,13 @@ export class CurriculaCursoComponent implements OnChanges {
   }
 
   insertarArea(item: any) {
+    const vHoras = this.validarTotalHoras();
+    const vCreditos = this.validarTotalCreditos();
+
+    if (vHoras === false || vCreditos === false) {
+      return;
+    }
+
     const params = {
       iCredId: Number(this.perfil.iCredId ?? null),
       iCredEntPerfId: Number(this.perfil.iCredEntPerfId ?? null),

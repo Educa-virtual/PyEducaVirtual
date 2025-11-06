@@ -32,7 +32,7 @@
   [(visible)]="visible"
   [style]="{ width: '90rem' }"
   [modal]="true"
-  [resizable]="true"
+  [resizable]="false"
   [maximizable]="true"
   [closable]="true"
   [draggable]="true"
@@ -86,7 +86,6 @@
                     [min]="0"
                     [max]="100"
                     class="w-full"
-                    (input)="validarTotalHoras()"
                     [ngClass]="{
                       'input-invalid': frmCursos.value.vValidoHora === false,
                     }"

@@ -88,9 +88,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let ev of dialogEvents; let i = index" class="event-row">
-        <td class="index-cell">{{ i + 1 }}</td>
-        <td class="time-cell">
+      <tr
+        *ngFor="let ev of dialogEvents; let i = index"
+        class="event-row"
+        [style.background-color]="ev.backgroundColor"
+      >
+        <td class="index-cell text-white">{{ i + 1 }}</td>
+        <td class="time-cell text-white">
           <ng-container *ngIf="ev.allDay; else timed">
             <div *ngIf="ev.start">{{ ev.start | date: 'dd/MMM' : undefined : 'es' }}</div>
             <div *ngIf="ev.end">- {{ ev.end | date: 'dd/MMM' : undefined : 'es' }}</div>
@@ -113,17 +117,23 @@
         </td>
 
         <td class="event-cell">
-          <div class="event-title">{{ ev.title }}</div>
-          <div *ngIf="ev.extendedProps?.['cCursoNombre']" class="event-course">
+          <div class="event-title text-white">{{ ev.title }}</div>
+          <div *ngIf="ev.extendedProps?.['cCursoNombre']" class="event-course text-white">
             -Área: {{ ev.extendedProps?.['cCursoNombre'] }}
           </div>
-          <div *ngIf="ev.extendedProps?.['cContenidoSemTitulo']" class="event-course">
+          <div *ngIf="ev.extendedProps?.['cContenidoSemTitulo']" class="event-course text-white">
             -Ses. aprendizaje: {{ ev.extendedProps?.['cContenidoSemTitulo'] }}
           </div>
-          <div *ngIf="ev.extendedProps?.['cDocenteNombre']" class="event-course">
+          <div *ngIf="ev.extendedProps?.['cDocenteNombre']" class="event-course text-white">
             -Docente: {{ ev.extendedProps?.['cDocenteNombre'] }}
           </div>
-          <div *ngIf="ev.extendedProps?.['cRVirtualUrlJoin']" class="event-course">
+          <div *ngIf="ev.extendedProps?.['grado']" class="event-course text-white">
+            -Grado: {{ ev.extendedProps?.['grado'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['seccion']" class="event-course text-white">
+            -Seccion: {{ ev.extendedProps?.['seccion'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['cRVirtualUrlJoin']" class="event-course text-white">
             -Ingresar:
             <a href="{{ ev.extendedProps?.['cRVirtualUrlJoin'] }}" target="_blank">
               {{ ev.extendedProps?.['cRVirtualUrlJoin'] }}</a

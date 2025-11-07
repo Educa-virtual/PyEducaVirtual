@@ -67,7 +67,6 @@ export class ListaComunicadosComponent implements OnInit {
           this.comunicados_filtrados = this.comunicados;
         },
         error: error => {
-          console.error('Error obteniendo lista de comunicados:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

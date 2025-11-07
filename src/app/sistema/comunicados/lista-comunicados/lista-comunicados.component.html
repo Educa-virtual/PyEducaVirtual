@@ -37,10 +37,10 @@
       <ng-template pTemplate="body" let-index="rowIndex" let-com>
         <tr [pSelectableRow]="com" [pSelectableRowIndex]="index">
           <td class="text-center">{{ index + 1 }}</td>
-          <td>{{ com.cComunicadoTitulo }}</td>
-          <td>{{ com.cComunicadoDescripcion }}</td>
-          <td>{{ com.dtComunicadoEmision | date: 'dd/MM/yyyy HH:mm' }}</td>
-          <td>{{ com.dtComunicadoHasta | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td class="text-center">{{ com.cComunicadoTitulo }}</td>
+          <td class="texto-cortado">{{ com.cComunicadoDescripcion }}</td>
+          <td class="text-center">{{ com.dtComunicadoEmision | date: 'dd/MM/yyyy' }}</td>
+          <td class="text-center">{{ com.dtComunicadoHasta | date: 'dd/MM/yyyy' }}</td>
           <td class="text-center">
             <!-- <i class="pi pi-circle-off"></i> -->
             <i class="pi pi-check-circle"></i>

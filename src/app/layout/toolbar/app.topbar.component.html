@@ -10,22 +10,13 @@
     </button>
   </div>
   <div class="topbar__notif_anio_inst_account">
+    <!-- notificaciones -->
     <button
       class="p-link display-none"
       style="color: var(--surface-menu)"
-      (click)="menu.toggle($event)"
+      (click)="op.toggle($event)"
     >
-      <i
-        class="pi pi-bell"
-        pBadge
-        style="font-size: 2rem"
-        [value]="totalNotificaciones"
-        *ngIf="totalNotificaciones !== 0; else alarma"
-      ></i>
-
-      <ng-template #alarma>
-        <i class="pi pi-bell" style="font-size: 2rem"></i>
-      </ng-template>
+      <i class="pi pi-bell" pBadge style="font-size: 2rem" [value]="totalComunicados"></i>
     </button>
     <app-anio-escolar
       class="ml-5 mr-1"
@@ -53,36 +44,22 @@
 <div class="banderines_morado banderines-animado" *ngIf="mostrarBanderinesMorado"></div>
 <div class="banderines_navidad banderines-animado" *ngIf="mostrarBanderinesNavidad"></div>
 
-<p-menu #menu [model]="items" [popup]="true" styleClass="w-29rem">
-  <ng-template pTemplate="submenuheader" let-item>
-    <div class="flex justify-content-between flex-wrap">
-      <div class="flex align-items-center justify-content-center font-bold mx-2">
-        {{ item.label }}
-      </div>
-      <!-- <div
-                class="flex align-items-center justify-content-center text-none text-primary mx-2"
-            >
-                Ver
-            </div> -->
+<p-overlayPanel #op>
+  <div class="flex flex-column gap-3 w-25rem">
+    <div>
+      <span class="font-medium text-900 block mb-2">Notificaciones</span>
+      <ul class="list-none p-0 m-0 flex flex-column gap-3">
+        <li *ngFor="let lista of comunicados" class="flex align-items-center gap-2">
+          <a [routerLink]="['/comunicados/lista-comunicados']">
+            <div><i class="pi pi-graduation-cap" style="font-size: 2rem"></i></div>
+            <div>
+              <span class="text-secondary font-bold">{{ lista.cComunicadoTitulo }}</span>
+              <div class="text-sm text-secondary">{{ lista.cComunicadoDescripcion }}</div>
+              <div class="text-sm text-primary">Hace {{ lista.distancia }}</div>
+            </div>
+          </a>
+        </li>
+      </ul>
     </div>
-  </ng-template>
-  <ng-template pTemplate="item" let-item>
-    <div pRipple class="flex align-items-center p-menuitem-link text-sm">
-      <!-- <span><ng-icon name="mat10k" /></span> -->
-      <span [class]="item.icon" style="color: #3e67a9"></span>
-      <span class="mx-3 text-none">{{
-        item.label.length > 100 ? (item.label | slice: 0 : 100) + '...' : item.label
-      }}</span>
-      <span
-        *ngIf="item.sublabel"
-        class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1"
-        >{{ item.sublabel }}</span
-      >
-    </div>
-    <!-- <div class="flex mx-2">
-            <div class="mx-2"><i [class]="item.icon"></i></div>
-            <div>{{ item.label }}</div>
-            Julio Salazar creó la tarea "Descubrimiento de América ..." Hace 1 día
-        </div> -->
-  </ng-template>
-</p-menu>
+  </div>
+</p-overlayPanel>

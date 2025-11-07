@@ -90,11 +90,15 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
       routerLink: '/',
     };
     this.breadCrumbItems = [
-      { label: 'Evaluaciones' },
-      { label: 'Logros' },
+      { label: 'Logros alcanzados' },
       {
         label: 'Listar areas',
         routerLink: `/evaluaciones/registro-logro`,
+      },
+      {
+        label: this.cCursoNombre
+          ? this.cCursoNombre + ' ' + this.cGradoAbreviacion + ' ' + this.cSeccionNombre
+          : 'Área',
       },
     ];
   }
@@ -115,6 +119,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
           this.estudiantes = data.data.json_estudiantes
             ? JSON.parse(data.data.json_estudiantes)
             : [];
+          this.setBreadCrumbs();
         },
         error: error => {
           console.error('Error obteniendo cursos:', error);

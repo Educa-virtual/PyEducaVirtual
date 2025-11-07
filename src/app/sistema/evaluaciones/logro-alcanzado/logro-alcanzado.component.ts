@@ -45,7 +45,7 @@ export class LogroAlcanzadoComponent implements OnInit {
       icon: 'pi pi-home',
       routerLink: '/',
     };
-    this.breadCrumbItems = [{ label: 'Evaluaciones' }, { label: 'Logros' }];
+    this.breadCrumbItems = [{ label: 'Logros alcanzados' }, { label: 'Listar areas' }];
   }
 
   listarCursos(mostrarTotalAlumnos: number = 2) {

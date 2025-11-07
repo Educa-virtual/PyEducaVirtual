@@ -9,7 +9,7 @@
     <div class="grid">
       <div class="col-12">
         <p-inputGroup>
-          <p-inputGroupAddon> Tipo de Actividad </p-inputGroupAddon>
+          <p-inputGroupAddon>Tipo de Actividad </p-inputGroupAddon>
           <p-dropdown
             #tipoActividad
             formControlName="iTipoCargaNoLectId"
@@ -26,9 +26,15 @@
           ></p-dropdown>
         </p-inputGroup>
       </div>
-      <div class="col-6">
+      <div class="col-12 xl:col-12 lg:col-12 md:col-12 sm:col-12">
         <p-inputGroup>
-          <p-inputGroupAddon> Fecha </p-inputGroupAddon>
+          <p-inputGroupAddon>Nombre de la Actividad</p-inputGroupAddon>
+          <input pInputText formControlName="cNombre" pInputText type="text" />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha</p-inputGroupAddon>
           <p-calendar
             appendTo="body"
             inputId="calendar-24h"
@@ -36,16 +42,15 @@
             [showTime]="true"
             hourFormat="24"
           />
-          <!-- <input formControlName="dtInicio" pInputText /> -->
         </p-inputGroup>
       </div>
-      <div class="col-6">
+      <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
         <p-inputGroup>
           <p-inputGroupAddon>Cantidad de Horas </p-inputGroupAddon>
           <input formControlName="nDetCargaNoLectHoras" pInputText type="number" min="1" />
         </p-inputGroup>
       </div>
-      <div class="col-12">
+      <div class="col-12 xl:col-12 md:col-12 sm:col-12">
         <p-inputGroup>
           <p-inputGroupAddon>Descripcion</p-inputGroupAddon>
           <textarea
@@ -56,10 +61,85 @@
         </p-inputGroup>
       </div>
       <div class="col-12" *ngIf="mostrarPlanTrabajo">
-        <p-messages [(value)]="plan.temario" [enableService]="false" [closable]="false" />
-        <p-messages [(value)]="plan.distribucion" [enableService]="false" [closable]="false" />
-        <p-messages [(value)]="plan.actividades" [enableService]="false" [closable]="false" />
-        <p-messages [(value)]="plan.materiales" [enableService]="false" [closable]="false" />
+        <div class="card informacion">
+          <div class="p-3">
+            <span class="font-bold">IMPORTANTE</span> Considerar los siguientes aspectos para la
+            formulación del plan de trabajo y adjuntar el archivo correspondiente que los detalla:
+            (de ahi los puntos que consideraste)
+          </div>
+          <div class="grid pl-3">
+            <div class="col-12">
+              <i
+                class="pi pi-info-circle"
+                tabindex="0"
+                role="button"
+                (mouseenter)="primero.toggle($event)"
+                (keydown.enter)="primero.toggle($event)"
+                (keydown.space)="primero.toggle($event)"
+              ></i>
+              Desarrollo de Competencias del Área Curricular
+              <p-overlayPanel #primero>
+                <div class="flex flex-column gap-3 w-25rem">
+                  Listado detallado de las competencias(desempeño) que se van a abordar durante su
+                  aplicacion por cada Área Curricular, dividido por unidades o módulos.
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="col-12">
+              <i
+                class="pi pi-info-circle"
+                tabindex="0"
+                role="button"
+                (mouseenter)="segundo.toggle($event)"
+                (keydown.enter)="segundo.toggle($event)"
+                (keydown.space)="segundo.toggle($event)"
+              ></i>
+              Distribución semanal
+              <p-overlayPanel #segundo>
+                <div class="flex flex-column gap-3 w-25rem">
+                  <ul>
+                    <li>Especificar qué sesiones de aprendizaje se trataran cada semana</li>
+                    <li>Incluir Fechas estimadas para cada sesión</li>
+                  </ul>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="col-12">
+              <i
+                class="pi pi-info-circle"
+                tabindex="0"
+                role="button"
+                (mouseenter)="tercero.toggle($event)"
+                (keydown.enter)="tercero.toggle($event)"
+                (keydown.space)="tercero.toggle($event)"
+              ></i>
+              Actividades de enseñanza
+              <p-overlayPanel #tercero>
+                <div class="flex flex-column gap-3 w-25rem">
+                  Definir si serán clases magistrales, prácticas, discusiones en grupo, talleres,
+                  etc.<
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="col-12">
+              <i
+                class="pi pi-info-circle"
+                tabindex="0"
+                role="button"
+                (mouseenter)="cuarto.toggle($event)"
+                (keydown.enter)="cuarto.toggle($event)"
+                (keydown.space)="cuarto.toggle($event)"
+              ></i>
+              Materiales y recursos
+              <p-overlayPanel #cuarto>
+                <div class="flex flex-column gap-3 w-25rem">
+                  Enumerar los recursos necesarios para cada sesión, como lecturas, videos,
+                  software, herramientas de laboratorio, etc.
+                </div>
+              </p-overlayPanel>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-12 mt-1">
         <app-types-files-upload-primeng
@@ -76,7 +156,10 @@
     <p-button label="Cancelar" severity="secondary" (onClick)="showModal = false" />
     <p-button
       [label]="opcion"
-      [disabled]="!formDetalleCargaNoLectivas.valid"
+      [disabled]="
+        !formDetalleCargaNoLectivas.valid &&
+        (mostrarPlanTrabajo ? (this.filesUrl.length === 0 ? true : false) : true)
+      "
       (onClick)="accionBtn({ accion: opcion, item: [] })"
     />
   </div>

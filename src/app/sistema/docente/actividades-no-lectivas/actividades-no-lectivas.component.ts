@@ -64,6 +64,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
       disabled: this.bAprobarActividad,
     },
   ];
+
+  /**
+   * @param bAprobarActividad permite visualizar las acciones del director
+   * @param accions.accion permite visualizar los botones de acciones
+   */
+
   actions = [
     {
       labelTooltip: 'Editar',
@@ -124,6 +130,14 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '10rem',
       field: 'cTipoCargaNoLectNombre',
+      header: 'Tipo de la Actividad',
+      text_header: 'justify',
+      text: 'justify',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: 'cNombre',
       header: 'Nombre de la Actividad',
       text_header: 'justify',
       text: 'justify',

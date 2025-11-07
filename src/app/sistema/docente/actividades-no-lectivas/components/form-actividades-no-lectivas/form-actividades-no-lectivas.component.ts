@@ -49,33 +49,6 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
   mostrarPlanTrabajo: boolean = false;
   nombreArchivo: any;
 
-  plan = {
-    temario: [
-      { severity: 'info', detail: 'En caso de elegir Plan de Trabajo considerar lo siguiente:' },
-    ],
-    distribucion: [
-      {
-        severity: 'info',
-        detail:
-          '- Distribución semanal: Especificar qué temas o unidades se tratarán cada semana, Incluir las fechas estimadas para cada tema.',
-      },
-    ],
-    actividades: [
-      {
-        severity: 'info',
-        detail:
-          '- Actividades de enseñanza: Definir si serán clases magistrales, prácticas, discusiones en grupo, talleres, etc.',
-      },
-    ],
-    materiales: [
-      {
-        severity: 'info',
-        detail:
-          '- Materiales y recursos: Enumerar los recursos necesarios para cada sesión, como lecturas, videos, software, herramientas de laboratorio, etc.',
-      },
-    ],
-  };
-
   ngOnChanges(changes) {
     if (changes.showModal?.currentValue) {
       this.showModal = changes.showModal.currentValue;

@@ -202,6 +202,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         if (this.selectedData['iSilaboId']) {
           this.visiblePortafolio = true;
           this.obtenerPortafolios();
+          this.obtenerSesiones();
         } else {
           this.MessageService.add({
             severity: 'error',
@@ -716,6 +717,26 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           summary: 'Error al Obtener Reglamento',
           detail: err,
         });
+      },
+    });
+  }
+  sesiones: any;
+  obtenerSesiones() {
+    const params = {
+      petition: 'post',
+      group: 'aula-virtual',
+      prefix: 'sesiones-aprendizaje',
+      ruta: 'obtenerSesiones',
+      data: {
+        idDocCursoId: this.selectedData['idDocCursoId'],
+      },
+    };
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: response => {
+        this.sesiones = response.data;
+      },
+      error: error => {
+        console.log(error);
       },
     });
   }

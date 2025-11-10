@@ -35,7 +35,23 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Turno</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iTurnoId"
+            formControlName="iTurnoId"
+            [options]="turnos"
+            optionLabel="cTurnoNombre"
+            optionValue="iTurnoId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>Nombre</p-inputGroupAddon>
           <input

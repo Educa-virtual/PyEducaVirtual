@@ -31,6 +31,8 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
   iIieeId = input<string | number>(null);
   data = input(null);
 
+  turnos: any = [];
+
   closeModal = output<void>();
   recargarLista = output<void>();
 
@@ -43,38 +45,50 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
   private _LocalStoreService = inject(LocalStoreService);
   private _ConstantesService = inject(ConstantesService);
 
-  formSedes: FormGroup = this._FormBuilder.group({
-    cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
-    cSedeDireccion: [null, Validators.required],
-    iIieeId: [null, Validators.required],
-    iServEdId: [null, Validators.required],
-    iSesionId: [1],
+  formSedes: FormGroup;
 
-    iSedeId: [],
-    iCredEntPerfId: [],
-
-    cSedeTelefono: [null, Validators.required],
-    iEstado: [null, Validators.required],
-  });
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
       const data = changes['data'].currentValue;
-      data.iEstado = Number(data.iEstado);
-      if (data?.iSedeId) {
+      if (!data) return; // evita error si data es null
+
+      data.iEstado = Number(data.iEstado ?? 0);
+
+      // Asegúrate de que el form ya esté creado
+      if (!this.formSedes) return;
+
+      if (data.iSedeId) {
         this.formSedes.patchValue(data);
 
         this.formSedes.get('iIieeId')?.clearValidators();
         this.formSedes.get('iIieeId')?.updateValueAndValidity();
       } else {
         this.formSedes.reset();
-
         this.formSedes.get('iIieeId')?.setValidators(Validators.required);
         this.formSedes.get('iIieeId')?.updateValueAndValidity();
       }
     }
   }
+
   ngOnInit() {
+    this.initForm();
     this.cargarDatosIniciales();
+    this.getTurnos();
+  }
+
+  initForm() {
+    this.formSedes = this._FormBuilder.group({
+      cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+      cSedeDireccion: [null, Validators.required],
+      iIieeId: [null, Validators.required],
+      iServEdId: [null, Validators.required],
+      iSesionId: [1],
+      iTurnoId: [0, Validators.required],
+      iSedeId: [null],
+      iCredEntPerfId: [],
+      cSedeTelefono: [null, Validators.required],
+      iEstado: [0, Validators.required],
+    });
   }
 
   cargarDatosIniciales() {
@@ -88,7 +102,17 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       },
     });
   }
+
+  getTurnos() {
+    this._GeneralService.getTurno().subscribe({
+      next: (response: any) => {
+        this.turnos = response.data;
+      },
+    });
+  }
   enviarFormulario() {
+    alert(this.isLoading());
+
     if (this.isLoading()) return;
     this.isLoading.set(true);
 

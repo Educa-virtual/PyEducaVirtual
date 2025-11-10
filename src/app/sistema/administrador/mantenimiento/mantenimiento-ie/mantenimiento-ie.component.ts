@@ -54,6 +54,10 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   showModal = signal<boolean>(false);
   showModalSedes = signal<boolean>(false);
 
+  showDialogConfirmacion: boolean = false;
+  sede: any = {};
+  periodos: any = [];
+
   isLoadingDatosIniciales = signal<boolean>(false);
 
   breadCrumbItems: MenuItem[] = [
@@ -78,13 +82,28 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     iEstado: [null],
   });
 
+  formApertura = this._FormBuilder.nonNullable.group({
+    iCredId: [this.perfil?.iCredId ?? null, Validators.required],
+    iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
+    iPerioEvalId: [0, Validators.required],
+    iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
+    // iSedeId: [0, Validators.required],
+  });
+
   accionesSedes = signal<any[]>([
+    {
+      labelTooltip: 'Aperturar calendario',
+      icon: 'pi pi-power-off',
+      accion: 'aperturar',
+      type: 'item',
+      class: 'p-button-rounded p-button-succes p-button-text',
+    },
     {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
-      class: 'p-button-rounded p-button-succes p-button-text',
+      class: 'p-button-rounded p-button-warning p-button-text',
     },
     {
       labelTooltip: 'Eliminar',
@@ -149,6 +168,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   ngOnInit() {
     this.getNivelTipos();
     this.getIntitucionEducativa();
+    this.getPeriodosEvaluacion();
   }
 
   getNivelTipos() {
@@ -276,6 +296,60 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     });
   }
 
+  generarCalendario() {
+    // Lógica para generar el calendario
+    const data = this.sede;
+
+    this._ConfirmationModalService.openConfirm({
+      header: '¿Esta seguro que quiere aperturar calendario a :  ' + data.cSedeNombre + ' ?',
+      accept: () => {
+        const params = {
+          iCredId: this.formApertura.value.iCredId ?? null,
+          iCredEntPerfId: this.formApertura.value.iCredEntPerfId ?? null,
+          iPerioEvalId: this.formApertura.value.iPerioEvalId ?? null,
+          iYAcadId: this.formApertura.value.iYAcadId ?? null,
+          iSedeId: data.iSedeId ?? null,
+        };
+
+        // Servicio para obtener los instructores
+        this._GeneralService.aperturarSede(params).subscribe({
+          next: (resp: any) => {
+            if (resp.validated) {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Acción exitosa',
+                detail: resp.message,
+              });
+              this.sedes.set([]);
+              this.obtenerSedesIe(this.institucionSeleccionada()?.iIieeId);
+            }
+          },
+          error: error => {
+            let message = error?.error?.message || 'Sin conexión a la bd';
+            const match = message.match(/]([^\]]+?)\./);
+            if (match && match[1]) {
+              message = match[1].trim() + '.';
+            }
+            message = decodeURIComponent(message);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Mensaje del sistema',
+              detail: message,
+            });
+          },
+        });
+      },
+      reject: () => {
+        // Mensaje de cancelación (opcional)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Cancelado',
+          detail: 'Acción cancelada',
+        });
+      },
+    });
+  }
+
   eliminarSede(item) {
     const data = item;
     this._ConfirmationModalService.openConfirm({
@@ -317,14 +391,38 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     });
   }
 
+  getPeriodosEvaluacion() {
+    this._GeneralService.getPeriodos().subscribe({
+      next: (data: any) => {
+        this.periodos = data.data || [];
+      },
+      error: error => {
+        this.mostrarErrores(error);
+      },
+    });
+  }
+
   accionBtn({ accion, item }: { accion: string; item?: any }): void {
     switch (accion) {
+      case 'agregar':
+        this.formMantenimiento.controls.iIieeId.setValue(this.institucionSeleccionada()?.iIieeId);
+        this.itemSelectedSede.set([]);
+        //this.sedes.set([]);
+        this.showModalSedes.set(true);
+        break;
       case 'editar':
         this.itemSelectedSede.set(item);
         this.showModalSedes.set(true);
         break;
       case 'eliminar':
         this.eliminarSede(item);
+        break;
+      case 'aperturar':
+        this.sede = item;
+        this.formApertura.get('iPerioEvalId')?.setValue(null);
+
+        this.itemSelectedSede.set(item);
+        this.showDialogConfirmacion = true;
         break;
     }
   }

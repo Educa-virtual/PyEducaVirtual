@@ -55,7 +55,10 @@
         label="Agregar"
         icon="pi pi-plus"
         [disabled]="!formMantenimiento.value.iNivelTipoId"
-        (onClick)="formMantenimiento.value.iNivelTipoId ? showModal.set(true) : null"
+        (onClick)="
+          formMantenimiento.value.iNivelTipoId ? showModal.set(true) : null;
+          isLoadingDatosIniciales.set(true)
+        "
       />
     </div>
   </form>
@@ -160,10 +163,10 @@
                     label="Agregar Sede"
                     icon="pi pi-plus"
                     (onClick)="
-                      this.formMantenimiento.controls.iIieeId.setValue(
-                        institucionSeleccionada()?.iIieeId
-                      );
-                      this.showModalSedes.set(true)
+                      accionBtn({
+                        accion: 'agregar',
+                        item: null,
+                      })
                     "
                   />
                 </div>
@@ -214,4 +217,50 @@
   (closeModal)="showModalSedes.set(false)"
   (recargarLista)="this.sedes.set([]); obtenerSedesIe(this.institucionSeleccionada()?.iIieeId)"
 ></app-form-sedes>
-<p-toast></p-toast>
+
+<p-dialog
+  header="Generar apertura de año escolar"
+  [(visible)]="showDialogConfirmacion"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '350px' }"
+>
+  <p>
+    ¿Estás seguro de que deseas aperturar el año de la institución educativa
+    {{ this.sede.cSedeNombre }}?
+  </p>
+
+  <form [formGroup]="formApertura" class="grid mt-2">
+    <div class="col-12 flex flex-column gap-2">
+      <label for="iTipoDistribucionId">Tipo de periodo de evaluación</label>
+      <p-dropdown
+        formControlName="iPerioEvalId"
+        optionLabel="cPeriodoEvalNombre"
+        appendTo="body"
+        styleClass="w-full"
+        placeholder="Seleccione un tipo de distribución de bloque"
+        optionValue="iPeriodoEvalId"
+        [options]="periodos"
+        optionLabel="cPeriodoEvalNombre"
+      />
+    </div>
+  </form>
+
+  <p-footer>
+    <p-button
+      label="Cancelar"
+      icon="pi pi-times"
+      (onClick)="showDialogConfirmacion = false"
+      severity="danger"
+    ></p-button>
+
+    <p-button
+      label="Generar"
+      icon="pi pi-check"
+      (onClick)="generarCalendario()"
+      autoFocus
+      severity="success"
+    ></p-button>
+  </p-footer>
+  <p-toast></p-toast
+></p-dialog>

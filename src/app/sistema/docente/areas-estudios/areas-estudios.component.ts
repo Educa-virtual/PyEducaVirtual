@@ -722,13 +722,14 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   }
   sesiones: any;
   obtenerSesiones() {
+    console.log('revisando #1', this.selectedData);
     const params = {
       petition: 'post',
       group: 'aula-virtual',
       prefix: 'sesiones-aprendizaje',
       ruta: 'obtenerSesiones',
       data: {
-        idDocCursoId: this.selectedData['idDocCursoId'],
+        iSilaboId: this.selectedData['iSilaboId'],
       },
     };
     this._generalService.getRecibirDatos(params).subscribe({

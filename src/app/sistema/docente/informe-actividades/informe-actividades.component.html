@@ -1,0 +1,39 @@
+<app-toolbar-primeng title="CALENDARIO"></app-toolbar-primeng>
+<div class="grid p-2">
+  <div class="col-12">
+    <p-table [value]="data">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>#</th>
+          <th>Nombre de la Ses. Act.</th>
+          <th>N. de Semana</th>
+          <th>Area Curricular</th>
+          <th>Grado</th>
+          <th>Seccion</th>
+          <th>Adj Sesiones</th>
+          <th>Informe</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-lista let-index="rowIndex">
+        <tr>
+          <td>{{ index + 1 }}</td>
+          <td>{{ lista.cContenidoSemTitulo }}</td>
+          <td>{{ lista.cContenidoSemNumero }}</td>
+          <td>{{ lista.cCursoNombre }}</td>
+          <td>{{ lista.cGradoAbreviacion }}</td>
+          <td>{{ lista.cSeccionNombre }}</td>
+          <td>
+            <p-button (click)="descargarArchivo(lista.cAdjunto)" icon="pi pi-file-pdf" />
+          </td>
+          <td>
+            <p-button
+              (click)="descargarInforme(lista.iContenidoSemId)"
+              icon="pi pi-file-pdf"
+              severity="danger"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

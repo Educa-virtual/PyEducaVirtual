@@ -69,6 +69,11 @@ const docente = [
             icon: 'pi pi-fw pi-share-alt',
             routerLink: ['/evaluaciones/registro-logro'],
           },
+          {
+            label: 'Informe de Actividades Academicas',
+            icon: 'pi pi-fw pi-briefcase',
+            routerLink: ['reporte-informe-actividades'],
+          },
         ],
       },
       /* {

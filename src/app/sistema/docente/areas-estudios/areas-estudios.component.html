@@ -225,7 +225,15 @@
 
 <p-dialog [modal]="true" [(visible)]="visiblePortafolio" [style]="{ width: '50rem' }">
   <ng-template pTemplate="header">
-    <span class="font-bold text-xl text-white">MI PORTAFOLIO</span>
+    <div class="flex flex-column">
+      <div class="flex font-bold text-xl text-white">
+        MI PORTAFOLIO - {{ selectedData['cCursoNombre'] }}
+      </div>
+      <div class="flex">
+        <span class="text-white">GRADO: {{ selectedData['cGradoAbreviacion'] }}</span>
+        <span class="text-white">SECCION: {{ selectedData['cSeccionNombre'] }}</span>
+      </div>
+    </div>
   </ng-template>
   <p-tabView>
     <p-tabPanel header="PORTAFOLIO">

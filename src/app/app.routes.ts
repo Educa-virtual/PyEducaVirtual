@@ -19,6 +19,7 @@ import { EstudiantesApoderadosComponent } from './sistema/gestion-institucional/
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { ASISTENTE_SOCIAL, DOCENTE } from '@/app/servicios/seg/perfiles';
 import { AUXILIAR } from './servicios/perfilesConstantes';
+import { InformeActividadesComponent } from './sistema/docente/informe-actividades/informe-actividades.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -105,6 +106,10 @@ export const routes: Routes = [
           icon: 'pi pi-list-check',
           expectedRole: [DOCENTE, AUXILIAR, ASISTENTE_SOCIAL],
         },
+      },
+      {
+        path: 'reporte-informe-actividades',
+        component: InformeActividadesComponent,
       },
     ],
   },

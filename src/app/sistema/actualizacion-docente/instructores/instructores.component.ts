@@ -12,6 +12,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { MessageService } from 'primeng/api';
+import { ActualizacionDocenteService } from '../actualizacion-docente.service';
 
 @Component({
   selector: 'app-instructores',
@@ -26,13 +27,16 @@ export class InstructoresComponent implements OnInit {
   private GeneralService = inject(GeneralService);
   private _confirmService = inject(ConfirmationModalService);
 
-  data: any[] = [];
+  instructores: any[] = [];
   tiposIdentificaciones: any[] = [];
   showModal: boolean = false;
   instructor; // obtene datos del instructor
   accion; //variable para las acciones en el modal
 
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private actDocService: ActualizacionDocenteService
+  ) {}
 
   public columnasTabla: IColumn[] = [
     {
@@ -60,12 +64,16 @@ export class InstructoresComponent implements OnInit {
       text: 'center',
     },
     {
-      type: 'item-innerHtml',
+      type: 'tag',
       width: '2rem',
       field: 'cEstado',
       header: 'Estado',
       text_header: 'center',
       text: 'center',
+      styles: {
+        ACTIVO: 'success',
+        INACTIVO: 'secondary',
+      },
     },
     {
       type: 'actions',
@@ -91,6 +99,23 @@ export class InstructoresComponent implements OnInit {
       accion: 'eliminar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: row => Number(row.iTotalCapacitaciones) === 0,
+    },
+    {
+      labelTooltip: 'Activar',
+      icon: 'pi pi-check',
+      accion: 'estado',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: row => Number(row.iEstado) === 10,
+    },
+    {
+      labelTooltip: 'Desactivar',
+      icon: 'pi pi-times',
+      accion: 'estado',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: row => Number(row.iEstado) === 1,
     },
   ];
   public btnAccion = [
@@ -125,6 +150,8 @@ export class InstructoresComponent implements OnInit {
       case 'eliminar':
         this.eliminarInstructor(item);
         break;
+      case 'estado':
+        this.cambiarEstadoInstructor(item);
     }
   }
   obtenerTipoIdentificaciones(): void {
@@ -143,12 +170,8 @@ export class InstructoresComponent implements OnInit {
   eliminarInstructor(item: any): void {
     const data = item;
     this._confirmService.openConfirm({
-      header:
-        '¿Esta seguro de eliminar instructor:  ' +
-        data.cPersNombre +
-        ' ' +
-        data.cPersPaterno +
-        ' ?',
+      header: '¿Esta seguro de eliminar este registro?',
+      message: `INSTRUCTOR: ${data.cPersApeNombres}`,
       accept: () => {
         const params = {
           petition: 'delete',
@@ -161,46 +184,78 @@ export class InstructoresComponent implements OnInit {
         };
         // Servicio para obtener los instructores
         this.GeneralService.getGralPrefixx(params).subscribe({
-          next: resp => {
-            if (resp.validated) {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Acción exitosa',
-                detail: resp.message,
-              });
-              this.obtenerInstructores();
-            }
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Acción exitosa',
+              detail: 'Se eliminó el registro',
+            });
+            this.obtenerInstructores();
           },
         });
       },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
-        });
+      reject: () => {},
+    });
+  }
+
+  cambiarEstadoInstructor(item) {
+    this._confirmService.openConfirm({
+      header: `¿Realmente desea cambiar el estado?`,
+      message: `Instructor: ${item.cPersApeNombres}`,
+      accept: () => {
+        this.actDocService
+          .estadoInstructor({
+            iInstId: item.iInstId,
+          })
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Acción exitosa',
+                detail: 'Se actualizó el instructor',
+              });
+              this.obtenerInstructores();
+            },
+            error: error => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error?.error?.message || 'Ocurrió un error inesperado',
+              });
+            },
+          });
       },
+      reject: () => {},
     });
   }
 
   mostrarModalGuarda() {
     this.showModal = true;
   }
+
   // metodo para obtener instructores
   obtenerInstructores() {
-    const params = {
-      petition: 'get',
-      group: 'cap',
-      prefix: 'instructores',
-      params: {
+    this.actDocService
+      .listarInstructores({
         iCredId: this._constantesService.iCredId,
-      },
-    };
-    // Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe(Data => {
-      this.data = (Data as any)['data'];
-      // console.log('Datos persona:', this.data);
-    });
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.instructores = response.data;
+          this.instructores.forEach(instructor => {
+            instructor.cDatosInstructor = `<b>Apellidos y Nombres:</b> ${instructor.cPersApeNombres}<br/>
+            <b>Correo electrónico:</b> ${instructor.cPersCorreo ? instructor.cPersCorreo : ''}<br/>
+            <b>Celular:</b> ${instructor.cPersCelular ? instructor.cPersCelular : ''}`;
+          });
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo obtener los instructores',
+          });
+        },
+      });
   }
 }

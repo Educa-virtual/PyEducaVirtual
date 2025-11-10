@@ -24,6 +24,10 @@ export class ActualizacionDocenteService implements OnDestroy {
     );
   }
 
+  buscarPersona(data: any) {
+    return this.http.post(`${baseUrl}/grl/validarPersona`, data);
+  }
+
   listarInstructores(data: any) {
     return this.http.get(`${baseUrl}/cap/instructores`, data);
   }

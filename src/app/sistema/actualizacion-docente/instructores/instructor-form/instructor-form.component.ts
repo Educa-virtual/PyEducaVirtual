@@ -9,11 +9,13 @@ import {
   inject,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { ActualizacionDocenteService } from '../../actualizacion-docente.service';
 
 @Component({
   selector: 'app-instructor-form',
@@ -22,7 +24,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './instructor-form.component.html',
   styleUrl: './instructor-form.component.scss',
 })
-export class InstructorFormComponent implements OnChanges {
+export class InstructorFormComponent implements OnChanges, OnInit {
   @Output() accionBtnItem = new EventEmitter();
 
   @Input() instructor: any = {};
@@ -34,12 +36,36 @@ export class InstructorFormComponent implements OnChanges {
   private GeneralService = inject(GeneralService);
   private _GestionUsuariosService = inject(GestionUsuariosService);
 
+  instructorForm: FormGroup;
   dropdownStyle: boolean = false;
   loading: boolean = false;
   persona: any; // variable para guardar al buscar dni
   accion: string;
 
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private fb: FormBuilder,
+    private actDocService: ActualizacionDocenteService
+  ) {}
+
+  ngOnInit(): void {
+    try {
+      this.instructorForm = this.fb.group({
+        iTipoIdentId: [null, Validators.required],
+        iInstId: [null],
+        iPersId: [null],
+        cPersDocumento: [''],
+        cPersNombre: ['', Validators.required],
+        cPersPaterno: ['', Validators.required],
+        cPersMaterno: ['', Validators.required],
+        cPersDireccion: ['', Validators.required],
+        cPersCorreo: ['', Validators.required],
+        cPersTelefono: ['', Validators.required],
+      });
+    } catch (error) {
+      console.error('Error al inicializar el formulario:', error);
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['instructor']) {
@@ -71,18 +97,6 @@ export class InstructorFormComponent implements OnChanges {
     }
   }
 
-  instructorForm: FormGroup = new FormGroup({
-    iTipoIdentId: new FormControl(null, Validators.required),
-    iInstructorId: new FormControl(null),
-    cPersDocumento: new FormControl(null),
-    cPersNombre: new FormControl(null, Validators.required),
-    cPersPaterno: new FormControl(null, Validators.required),
-    cPersMaterno: new FormControl(null, Validators.required),
-    cPersDireccion: new FormControl(null, Validators.required),
-    cPersCorreo: new FormControl(null, Validators.required),
-    cPersCelular: new FormControl(null, Validators.required),
-  });
-
   accionBtn(elemento): void {
     const { accion } = elemento;
     const { item } = elemento;
@@ -93,8 +107,9 @@ export class InstructorFormComponent implements OnChanges {
         break;
     }
   }
-  // metodo para buscar x dni
-  buscarDni() {
+
+  buscarPersona() {
+    this.messageService.clear();
     const idtipoDocumento = Number(this.instructorForm.get('iTipoIdentId')?.value);
     const dni = this.instructorForm.get('cPersDocumento')?.value;
 
@@ -132,10 +147,13 @@ export class InstructorFormComponent implements OnChanges {
                 console.log(data.data);
                 this.persona = data.data;
                 this.instructorForm.patchValue({
+                  iPersId: this.persona.iPersId,
                   cPersNombre: this.persona.cPersNombre,
                   cPersPaterno: this.persona.cPersMaterno,
                   cPersMaterno: this.persona.cPersPaterno,
                   cPersDireccion: this.persona.cPersDomicilio,
+                  cPersTelefono: this.persona.cPersTelefono,
+                  cPersCorreo: this.persona.cPersCorreo,
                 });
                 this.messageService.add({
                   severity: 'success',
@@ -204,30 +222,8 @@ export class InstructorFormComponent implements OnChanges {
   }
 
   guardarInstructor() {
-    const data = {
-      iPersId: this.persona?.iPersId || null,
-      iTipoIdentId: this.instructorForm.get('iTipoIdentId')?.value,
-      cPersDocumento: this.instructorForm.get('cPersDocumento')?.value,
-      cPersNombre: this.instructorForm.get('cPersNombre')?.value,
-      cPersPaterno: this.instructorForm.get('cPersPaterno')?.value,
-      cPersMaterno: this.instructorForm.get('cPersMaterno')?.value,
-      cPersCelular: this.instructorForm.get('cPersCelular')?.value,
-      cPersCorreo: this.instructorForm.get('cPersCorreo')?.value,
-      cPersDireccion: this.instructorForm.get('cPersDireccion')?.value,
-      iCredId: this._constantesService.iCredId,
-    };
-    const params = {
-      petition: 'post',
-      group: 'cap',
-      prefix: 'instructores',
-      data: data,
-      params: {
-        iCredId: this._constantesService.iCredId,
-      },
-    };
-    // Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe({
-      next: response => {
+    this.actDocService.guardarInstructor(this.instructorForm.value).subscribe({
+      next: (response: any) => {
         if (response.data) {
           this.messageService.add({
             severity: 'success',
@@ -250,44 +246,32 @@ export class InstructorFormComponent implements OnChanges {
 
   // Metodo para actualizar instructor
   actualizarInstructor() {
-    const id = this.instructor;
-    const docn = this.instructorForm.value;
-
-    const data = {
-      cOpcion: 'ACTUALIZAR',
-      cPersCelular: docn.cPersCelular,
-      cPersCorreo: docn.cPersCorreo,
-      cPersDireccion: docn.cPersDireccion,
-      iCredId: this._constantesService.iCredId,
-    };
-    const params = {
-      petition: 'put',
-      group: 'cap',
-      prefix: 'instructores',
-      ruta: id.iInstId,
-      data: data,
-      params: {
-        iCredId: this._constantesService.iCredId,
-      },
-    };
-    this.GeneralService.getGralPrefixx(params).subscribe({
-      next: response => {
-        if (response.data) {
+    this.actDocService
+      .actualizarInstructor({
+        cOpcion: 'ACTUALIZAR',
+        iInstId: this.instructorForm.value.iInstId,
+        cPersTelefono: this.instructorForm.value.cPersTelefono,
+        cPersCorreo: this.instructorForm.value.cPersCorreo,
+        cPersDireccion: this.instructorForm.value.cPersDireccion,
+      })
+      .subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Acción exitosa',
+              detail: 'Se actualizó el instructor',
+            });
+            this.showModal = false;
+          }
+        },
+        error: error => {
           this.messageService.add({
-            severity: 'success',
-            summary: 'Acción exitosa',
-            detail: 'Se actualizó el instructor',
+            severity: 'error',
+            summary: 'Error de validación',
+            detail: error?.error?.message || 'Ocurrió un error inesperado',
           });
-          this.showModal = false;
-        }
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error de validación',
-          detail: error?.error?.message || 'Ocurrió un error inesperado',
-        });
-      },
-    });
+        },
+      });
   }
 }

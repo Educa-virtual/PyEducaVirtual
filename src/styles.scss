@@ -45,3 +45,11 @@ p-inputGroupAddon {
     color: var(--primary-color-text) !important;
   }
 }
+
+/**
+ * Aplicar color de fondo en texto de breadcrumb
+ * para que sea visible sobre banderines decorativos
+ */
+.p-breadcrumb-list * {
+  background: #fff7 !important;
+}

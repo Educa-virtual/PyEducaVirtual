@@ -62,6 +62,10 @@ export const routes: Routes = [
         loadChildren: () => import('./sistema/usuarios/sin-rol-asignado/sin-rol-asignado.routes'),
       },
       {
+        path: 'encuestas',
+        loadChildren: () => import('./sistema/encuestas/encuestas.routes'),
+      },
+      {
         path: 'actualizacion-docente',
         loadChildren: () => import('./sistema/actualizacion-docente/actualizacion-docente.routes'),
       },

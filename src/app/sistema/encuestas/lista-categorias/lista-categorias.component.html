@@ -1,0 +1,173 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <span class="text-2xl text-uppercase">Categorías de encuestas</span>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex gap-2">
+      <p-button
+        *ngIf="puede_crear"
+        labelTooltip="Nueva"
+        tooltipPosition="top"
+        severity="success"
+        (click)="agregarCategoria()"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="hidden md:inline ml-2">Nueva</span>
+      </p-button>
+      <p-button
+        labelTooltip="Tutorial"
+        tooltipPosition="top"
+        severity="secondary"
+        (click)="verTutorial(true)"
+      >
+        <i class="pi pi-question-circle"></i>
+        <span class="hidden md:inline ml-2">Tutorial</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Buscar </p-inputGroupAddon>
+        <input #filtro type="text" pInputText (input)="filtrarTabla()" />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  @if (!categorias_filtradas || categorias_filtradas.length === 0) {
+    <app-no-data [showIcon]="'NO-DATA'" mensaje="No hay categorías disponibles" />
+  } @else {
+    <p-dataView [rows]="10" [paginator]="true" [value]="categorias_filtradas">
+      <ng-template pTemplate="list" let-categorias_filtradas>
+        <div class="categorias-grid">
+          <div *ngFor="let categoria of categorias_filtradas" class="categoria-item">
+            <article
+              class="card p-0 border-1 flex flex-column surface-border h-full post-module border-round"
+            >
+              <img
+                fetchpriority="high"
+                [src]="rutaImagenPlaceholder(categoria)"
+                [alt]="categoria?.cCateNombre"
+                class="absolute top-0 right-0 h-full opacity-20 block md:hidden z-0"
+              />
+              <div
+                class="image-container img-transition border-round-top overflow-hidden hidden md:block"
+              >
+                <img
+                  fetchpriority="high"
+                  [alt]="categoria?.cCateNombre"
+                  class="w-full h-full"
+                  [src]="rutaImagenPlaceholder(categoria)"
+                />
+              </div>
+              <div class="p-3 mb-auto z-1 relative">
+                <h3 class="text-xl p-0 m-0">
+                  <i
+                    *ngIf="+categoria?.bEsFija && es_encuestador"
+                    class="pi pi-fw pi-lock"
+                    pTooltip="Categoría fija: En estas encuestas no puede modificar la población objetivo ni accesos predeterminados"
+                    tooltipPosition="top"
+                    tabindex="0"
+                  >
+                  </i>
+                  <i
+                    *ngIf="+categoria?.bEsEnlace"
+                    class="pi pi-fw pi-link"
+                    pTooltip="Enlace hacia las encuestas de bienestar"
+                    tooltipPosition="top"
+                    tabindex="0"
+                  ></i>
+                  <span class="z-2 relative">{{ categoria?.cCateNombre | uppercase }}</span>
+                </h3>
+              </div>
+              <footer class="p-3 pt-0 flex align-items-center justify-content-between z-1 relative">
+                <a
+                  [routerLink]="
+                    '/encuestas/categorias/' + categoria?.iCateId + '/gestion-encuestas'
+                  "
+                  *ngIf="+categoria?.iCantBorradores > 0"
+                >
+                  {{ +categoria?.iCantBorradores }}
+                  {{ +categoria?.iCantBorradores === 1 ? 'borrador' : 'borradores' }}
+                </a>
+                <span *ngIf="+categoria?.iCantBorradores === 0"></span>
+                <div class="flex gap-1">
+                  @if (categoria?.btnVisibleItems > 0) {
+                    <p-splitButton
+                      class="z-2 relative"
+                      [severity]="categoria?.btnPrimary?.severity"
+                      size="small"
+                      [model]="categoria?.btnItems"
+                      (onClick)="categoria?.btnPrimary?.command()"
+                      [menuStyle]="{ 'z-index': '10', position: 'absolute' }"
+                      appendTo="body"
+                    >
+                      <ng-template pTemplate="content">
+                        <span class="font-bold">
+                          {{
+                            +categoria?.iCantSinResponder > 0
+                              ? 'Responder'
+                              : categoria?.btnPrimary?.label
+                          }}
+                        </span>
+                        <p-badge
+                          *ngIf="+categoria?.iCantSinResponder > 0"
+                          [value]="categoria?.iCantSinResponder"
+                          severity="danger"
+                        />
+                      </ng-template>
+                    </p-splitButton>
+                  } @else {
+                    <p-button
+                      class="z-2 relative"
+                      [severity]="categoria?.btnPrimary?.severity"
+                      size="small"
+                      (onClick)="categoria?.btnPrimary?.command()"
+                    >
+                      <span class="font-bold">
+                        {{
+                          +categoria?.iCantSinResponder > 0
+                            ? 'Responder'
+                            : categoria?.btnPrimary?.label
+                        }}
+                      </span>
+                      <p-badge
+                        *ngIf="+categoria?.iCantSinResponder > 0"
+                        [value]="categoria?.iCantSinResponder"
+                        severity="danger"
+                      />
+                    </p-button>
+                  }
+                </div>
+              </footer>
+            </article>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  }
+</p-panel>
+
+<app-nueva-categoria
+  [(visible)]="visibleDialogCategoria"
+  (categoriaModificada)="listarCategorias()"
+  [iCateId]="iCateId"
+></app-nueva-categoria>
+
+<p-dialog
+  header="Tutorial"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogTutorial"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+>
+  <app-tutorial-categorias (visibleDialogTutorial)="verTutorial($event)" />
+</p-dialog>
+
+<p-toast></p-toast>

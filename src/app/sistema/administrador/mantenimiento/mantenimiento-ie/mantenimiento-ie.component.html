@@ -1,0 +1,217 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<div class="grid">
+  <div class="col-12">
+    <app-toolbar-primeng [title]="title" [butons]="[]"> </app-toolbar-primeng>
+  </div>
+</div>
+<div class="card">
+  <form [formGroup]="formMantenimiento" class="grid">
+    <div class="col-12 lg:col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+        <p-dropdown
+          [options]="nivelTipos()"
+          [showClear]="true"
+          formControlName="iNivelTipoId"
+          placeholder="Seleccione un nivel"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Estado</p-inputGroupAddon>
+        <p-dropdown
+          [options]="[
+            { iEstado: 1, cEstado: 'Activo' },
+            { iEstado: 0, cEstado: 'Inactivo' },
+          ]"
+          optionValue="iEstado"
+          optionLabel="cEstado"
+          [showClear]="true"
+          formControlName="iEstado"
+          placeholder="Seleccione un estado"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col flex justify-content-end gap-2">
+      <p-button
+        pRipple
+        severity="primary"
+        label="Buscar"
+        icon="pi pi-search"
+        (onClick)="
+          obtenerInstituciones();
+          institucionSeleccionada.set(null);
+          isLoadingDatosIniciales.set(true)
+        "
+      />
+      <p-button
+        pRipple
+        severity="success"
+        label="Agregar"
+        icon="pi pi-plus"
+        [disabled]="!formMantenimiento.value.iNivelTipoId"
+        (onClick)="formMantenimiento.value.iNivelTipoId ? showModal.set(true) : null"
+      />
+    </div>
+  </form>
+  <div class="grid relative mt-4">
+    @if (institucionesxiNivelTipoId().length) {
+      <div class="tag">Lista de Instituciones Educativas</div>
+      <div class="col-12 lg:col-4 mt-3 lg:overflow-scroll">
+        <app-card-orderlist
+          [seleccionado]="institucionSeleccionada()"
+          (datoSeleccionado)="obtenerInformacionIE($event)"
+          [data]="institucionesxiNivelTipoId()"
+          [mostrarImagen]="true"
+        ></app-card-orderlist>
+      </div>
+      @if (institucionSeleccionada()?.iIieeId) {
+        <div class="col-12 lg:col-8 mt-3">
+          <app-toolbar-primeng
+            [title]="'Información de la Institución Educativa'"
+            [className]="'text-lg'"
+            [butons]="[]"
+          >
+          </app-toolbar-primeng>
+          <p-toolbar styleClass="border-0">
+            <div class="p-toolbar-group-center">
+              <p-avatar
+                [image]="
+                  institucionSeleccionada().cIieeLogo || './assets/images/icons/no-image.png'
+                "
+                styleClass="mr-2"
+                size="xlarge"
+                shape="circle"
+              />
+              <div class="flex-1 w-full">
+                <h2 class="m-0 text-xl font-semibold">
+                  {{ institucionSeleccionada().cIieeNombre || '-' }} -
+                  {{ institucionSeleccionada().cIieeCodigoModular || '-' }}
+                </h2>
+                <p class="m-0 text-sm text-color-secondary">
+                  <i class="pi pi-map-marker mr-2"></i
+                  >{{ institucionSeleccionada().cIieeDireccion || '-' }}
+                </p>
+                <p class="m-0 text-sm">
+                  <i class="pi pi-user mr-2"></i>Director(a):
+                  {{ institucionSeleccionada().cIieeDirector || '-' }}
+                </p>
+                <p class="m-0 text-sm">
+                  <i class="pi pi-envelope mr-2"></i
+                  >{{ institucionSeleccionada().cIieeEmail || '-' }}
+                </p>
+                <p class="m-0 text-sm">
+                  <i class="pi pi-phone mr-2"></i
+                  >{{ institucionSeleccionada().cIieeTelefono || '-' }}
+                </p>
+              </div>
+            </div>
+            <div class="p-toolbar-group-end">
+              <div class="flex justify-content-center align-items-center">
+                @if (institucionSeleccionada()?.iEstado) {
+                  <div class="border-1 border-green-200 border-round bg-green-50 p-2 text-center">
+                    <span class="font-bold text-green-600">ACTIVO</span>
+                  </div>
+                }
+                @if (!institucionSeleccionada()?.iEstado) {
+                  <div class="border-1 border-red-200 border-round bg-red-50 p-2 text-center">
+                    <span class="font-bold text-red-600">INACTIVO</span>
+                  </div>
+                }
+                <p-button
+                  *ngIf="institucionSeleccionada().cIieeNlat && institucionSeleccionada().cIieeNlog"
+                  icon="pi pi-map-marker"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="info"
+                  (onClick)="abrirEnMaps()"
+                />
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="warning"
+                  (onClick)="showModal.set(true); itemSelected.set(institucionSeleccionada())"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  (onClick)="eliminarIE(institucionSeleccionada())"
+                />
+              </div>
+            </div>
+          </p-toolbar>
+          <div class="grid">
+            <div class="col-12">
+              <div class="flex justify-content-between align-items-center w-full">
+                <div class="text-primary text-lg font-bold ml-2">Sedes</div>
+
+                <div class="flex gap-2">
+                  <p-button
+                    pRipple
+                    severity="success"
+                    label="Agregar Sede"
+                    icon="pi pi-plus"
+                    (onClick)="
+                      this.formMantenimiento.controls.iIieeId.setValue(
+                        institucionSeleccionada()?.iIieeId
+                      );
+                      this.showModalSedes.set(true)
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <app-table-primeng
+                [data]="sedes()"
+                [columnas]="columnasSedes()"
+                [actions]="accionesSedes()"
+                (accionBtnItem)="accionBtn($event)"
+              ></app-table-primeng>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="col-12 lg:col-7">
+          <div class="grid mt-2 flex justify-content-end ml-1">
+            <div class="col-12 alert-institucion my-1 mx-2">
+              <i class="pi pi-info-circle mr-2 text-primary"></i>
+              <span>
+                Seleccione una <strong>institución educativa</strong> para ver más información.
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="col-12">
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron resultados" />
+      </div>
+    }
+  </div>
+</div>
+<app-agregar-mantenimiento-ie
+  *ngIf="isLoadingDatosIniciales()"
+  [showModal]="showModal()"
+  [data]="itemSelected()"
+  [iNivelTipoId]="this.formMantenimiento.value.iNivelTipoId"
+  (closeModal)="showModal.set(false)"
+  (recargarLista)="this.instituciones.set([]); getIntitucionEducativa(); obtenerInstituciones()"
+></app-agregar-mantenimiento-ie>
+<app-form-sedes
+  [showModal]="showModalSedes()"
+  [data]="itemSelectedSede()"
+  [iIieeId]="this.formMantenimiento.value.iIieeId"
+  (closeModal)="showModalSedes.set(false)"
+  (recargarLista)="this.sedes.set([]); obtenerSedesIe(this.institucionSeleccionada()?.iIieeId)"
+></app-form-sedes>
+<p-toast></p-toast>

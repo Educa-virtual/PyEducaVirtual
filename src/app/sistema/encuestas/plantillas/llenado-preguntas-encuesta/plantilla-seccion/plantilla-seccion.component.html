@@ -1,0 +1,96 @@
+<p-dialog
+  header="Agregar seccion"
+  [(visible)]="visible"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (onHide)="onHide()"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <form [formGroup]="formSeccion">
+    <div class="grid mt-3">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iPlanSeccionOrden.toggle($event)"
+              (keypress)="iPlanSeccionOrden.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iPlanSeccionOrden [showCloseIcon]="true" appendTo="body">
+              Dejar en blanco para colocar al final
+            </p-overlayPanel>
+            <span>Orden</span>
+          </p-inputGroupAddon>
+          <p-inputNumber
+            formControlName="iPlanSeccionOrden"
+            [min]="1"
+            [step]="1"
+            placeholder="Indique"
+            [useGrouping]="false"
+            [showButtons]="true"
+            styleClass="group-element"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Título *</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cPlanSeccionTitulo"
+            placeholder="Ingrese el título"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+          <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="cPlanSeccionDescripcion"
+            pInputTextarea
+            placeholder="Escriba"
+            maxLength="500"
+            [rows]="3"
+            class="group-element"
+            [style.minHeight]="3"
+            [style.maxHeight]="6"
+            [cdkAutosizeMinRows]="3 + 1.5"
+            [cdkAutosizeMaxRows]="6"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <br />
+
+  <div class="flex justify-content-end gap-4">
+    <p-button label="Salir" icon="pi pi-arrow-left" severity="secondary" (click)="salir()" />
+    <p-button
+      [hidden]="seccion_registrada"
+      label="Guardar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="guardar()"
+    />
+    <p-button
+      [hidden]="!seccion_registrada"
+      label="Actualizar"
+      icon="pi pi-save"
+      severity="success"
+      (click)="actualizar()"
+    />
+  </div>
+</p-dialog>

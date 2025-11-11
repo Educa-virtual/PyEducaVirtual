@@ -52,6 +52,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
   date = new Date();
   showModal: boolean = false;
   bAprobar: boolean = false;
+  visualizar: boolean = false;
   cObservacion: any | undefined;
 
   actionsContainer = [
@@ -98,6 +99,14 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: () => this.bAprobarActividad,
+    },
+    {
+      labelTooltip: 'Ver',
+      icon: 'pi  pi-eye',
+      accion: 'visualizar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: () => this.perfil.cPerfilNombre !== 'DIRECTOR IE',
     },
   ];
 
@@ -146,7 +155,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '10rem',
       field: 'descripcion',
-      header: 'Descripcion',
+      header: 'Descripción',
       text_header: 'center',
       text: 'center',
     },
@@ -178,7 +187,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '2rem',
       field: 'cObservacion',
-      header: 'Observacion',
+      header: 'Observación',
       text_header: 'center',
       text: 'center',
     },
@@ -230,6 +239,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
     switch (accion) {
       case 'close-modal':
         this.showModal = false;
+        break;
+      case 'visualizar':
+        this.item = item;
+        console.log('revisar ', item);
+        this.visualizar = true;
+        this.bAprobar = true;
         break;
       case 'aprobar':
         this.bAprobar = true;
@@ -283,8 +298,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
       case 'list-carga-no-lectivas':
         this.data = item;
         this.data.forEach(list => {
-          const texto = list.cDescripcion ?? ''; // usa '' si es null o undefined
-          list.descripcion = texto.length > 80 ? texto.substring(0, 80) + '...' : texto;
+          const descripcion = list.cDescripcion ?? '';
+          const observacion = list.cObservacion ?? '';
+          list.descripcion =
+            descripcion.length > 80 ? descripcion.substring(0, 80) + '...' : descripcion;
+          list.cObservacion =
+            observacion.length > 80 ? observacion.substring(0, 80) + '...' : observacion;
         });
 
         this.data.forEach(i => {
@@ -378,6 +397,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         (item.valorBusqueda = iYearId);
       item.iCredId = this.perfil.iCredId;
       item.iYAcadId = this._LocalStoreService.getItem('dremoiYAcadId');
+      item.iSedeId = this._ConstantesService.iSedeId;
       const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update';
       const prefix = item.opcion === 'GUARDAR' ? 'carga-no-lectivas' : 'detalle-carga-no-lectivas';
       item.opcion =

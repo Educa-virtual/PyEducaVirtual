@@ -24,8 +24,10 @@
         <p-inputGroupAddon>Estado</p-inputGroupAddon>
         <p-dropdown
           [options]="[
-            { iEstado: 1, cEstado: 'Activo' },
-            { iEstado: 0, cEstado: 'Inactivo' },
+            { iEstado: '1', cEstado: 'Activo' },
+            { iEstado: '0', cEstado: 'Inactivo' },
+            { iEstado: '2', cEstado: 'Inactivo' },
+            { iEstado: null, cEstado: 'Inactivo' },
           ]"
           optionValue="iEstado"
           optionLabel="cEstado"
@@ -49,16 +51,14 @@
           isLoadingDatosIniciales.set(true)
         "
       />
+      <!--  -->
       <p-button
         pRipple
         severity="success"
         label="Agregar"
         icon="pi pi-plus"
         [disabled]="!formMantenimiento.value.iNivelTipoId"
-        (onClick)="
-          formMantenimiento.value.iNivelTipoId ? showModal.set(true) : null;
-          isLoadingDatosIniciales.set(true)
-        "
+        (onClick)="accionBtn({ accion: 'agregarIE', item: [] })"
       />
     </div>
   </form>
@@ -66,12 +66,12 @@
     @if (institucionesxiNivelTipoId().length) {
       <div class="tag">Lista de Instituciones Educativas</div>
       <div class="col-12 lg:col-4 mt-3 lg:overflow-scroll">
-        <app-card-orderlist
+        <app-card-orderlist-ie
           [seleccionado]="institucionSeleccionada()"
           (datoSeleccionado)="obtenerInformacionIE($event)"
           [data]="institucionesxiNivelTipoId()"
           [mostrarImagen]="true"
-        ></app-card-orderlist>
+        ></app-card-orderlist-ie>
       </div>
       @if (institucionSeleccionada()?.iIieeId) {
         <div class="col-12 lg:col-8 mt-3">
@@ -121,7 +121,11 @@
                     <span class="font-bold text-green-600">ACTIVO</span>
                   </div>
                 }
-                @if (!institucionSeleccionada()?.iEstado) {
+                @if (
+                  institucionSeleccionada()?.iEstado === 2 ||
+                  institucionSeleccionada()?.iEstado === 0 ||
+                  institucionSeleccionada()?.iEstado === null
+                ) {
                   <div class="border-1 border-red-200 border-round bg-red-50 p-2 text-center">
                     <span class="font-bold text-red-600">INACTIVO</span>
                   </div>
@@ -208,12 +212,12 @@
   [data]="itemSelected()"
   [iNivelTipoId]="this.formMantenimiento.value.iNivelTipoId"
   (closeModal)="showModal.set(false)"
-  (recargarLista)="this.instituciones.set([]); getIntitucionEducativa(); obtenerInstituciones()"
+  (recargarLista)="actionInstituciones($event)"
 ></app-agregar-mantenimiento-ie>
 <app-form-sedes
   [showModal]="showModalSedes()"
   [data]="itemSelectedSede()"
-  [iIieeId]="this.formMantenimiento.value.iIieeId"
+  [iIieeId]="this.institucionSeleccionada()?.iIieeId"
   (closeModal)="showModalSedes.set(false)"
   (recargarLista)="this.sedes.set([]); obtenerSedesIe(this.institucionSeleccionada()?.iIieeId)"
 ></app-form-sedes>
@@ -223,7 +227,8 @@
   [(visible)]="showDialogConfirmacion"
   [modal]="true"
   [closable]="false"
-  [style]="{ width: '350px' }"
+  [style]="{ width: '450px' }"
+  [maximizable]="true"
 >
   <p>
     ¿Estás seguro de que deseas aperturar el año de la institución educativa
@@ -262,5 +267,5 @@
       severity="success"
     ></p-button>
   </p-footer>
-  <p-toast></p-toast
-></p-dialog>
+  <p-toast></p-toast>
+</p-dialog>

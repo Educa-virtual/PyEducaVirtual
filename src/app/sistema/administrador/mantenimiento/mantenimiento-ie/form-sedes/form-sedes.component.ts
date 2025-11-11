@@ -50,23 +50,23 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
       const data = changes['data'].currentValue;
-      if (!data) return; // evita error si data es null
+      if (!data) return;
+
+      console.log('🔹 Valor recibido de iIieeId:', this.iIieeId());
 
       data.iEstado = Number(data.iEstado ?? 0);
 
-      // Asegúrate de que el form ya esté creado
       if (!this.formSedes) return;
 
       if (data.iSedeId) {
         this.formSedes.patchValue(data);
-
-        this.formSedes.get('iIieeId')?.clearValidators();
-        this.formSedes.get('iIieeId')?.updateValueAndValidity();
+        //this.formSedes.get('iIieeId')?.clearValidators();
+        this.formSedes.get('iIieeId')?.setValue(this.iIieeId());
       } else {
         this.formSedes.reset();
         this.formSedes.get('iIieeId')?.setValidators(Validators.required);
-        this.formSedes.get('iIieeId')?.updateValueAndValidity();
       }
+      this.formSedes.get('iIieeId')?.updateValueAndValidity();
     }
   }
 
@@ -78,16 +78,20 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
 
   initForm() {
     this.formSedes = this._FormBuilder.group({
+      iCredEntPerfId: [],
+      iCredId: [1], //iCredId: [],
+      iSedeId: [null],
+      iIieeId: [this.iIieeId(), Validators.required],
       cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
       cSedeDireccion: [null, Validators.required],
-      iIieeId: [null, Validators.required],
+      cSedeRslCreacion: [null],
+      dSedeRslCreacion: [null],
+      iEstado: [0],
       iServEdId: [null, Validators.required],
-      iSesionId: [1],
+      cSedeTelefono: [null],
       iTurnoId: [0, Validators.required],
-      iSedeId: [null],
-      iCredEntPerfId: [],
-      cSedeTelefono: [null, Validators.required],
-      iEstado: [0, Validators.required],
+      cSedeEmail: [null, [Validators.required, Validators.email]],
+      cSedeDirector: [null],
     });
   }
 
@@ -111,9 +115,8 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
     });
   }
   enviarFormulario() {
-    alert(this.isLoading());
+    //if (this.isLoading()) return;
 
-    if (this.isLoading()) return;
     this.isLoading.set(true);
 
     const perfil = this._LocalStoreService.getItem('dremoPerfil');
@@ -144,6 +147,9 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       this.isLoading.set(false);
       return;
     }
+    console.log(this.formSedes.value);
+
+    // return;
 
     this.guardarSede();
   }

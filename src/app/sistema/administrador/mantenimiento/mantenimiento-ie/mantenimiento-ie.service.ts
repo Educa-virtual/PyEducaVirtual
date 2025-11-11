@@ -26,12 +26,20 @@ export interface InstitucionEducativa {
 export interface Sede {
   iCredEntPerfId: number;
   iCredId: string;
+
   iSedeId?: number;
   iIieeId: number;
   cSedeNombre: string;
   cSedeDireccion: string;
   iServEdId: number;
   iEstado: number;
+
+  cSedeRslCreacion: string;
+  dSedeRslCreacion: Date;
+  cSedeTelefono: string;
+  iTurnoId: number;
+  cSedeEmail: string;
+  cSedeDirector: string;
 }
 
 export interface FiltrosIE {

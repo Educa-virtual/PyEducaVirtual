@@ -16,6 +16,7 @@ import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.
 import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { FormSedesComponent } from './form-sedes/form-sedes.component';
+import { CardOrderlistIeComponent } from '../../shared/card-orderlist-ie/card-orderlist-ie.component';
 
 @Component({
   selector: 'app-mantenimiento-ie',
@@ -28,6 +29,7 @@ import { FormSedesComponent } from './form-sedes/form-sedes.component';
     TablePrimengComponent,
     AgregarMantenimientoIeComponent,
     FormSedesComponent,
+    CardOrderlistIeComponent,
   ],
   templateUrl: './mantenimiento-ie.component.html',
   styleUrl: './mantenimiento-ie.component.scss',
@@ -49,7 +51,9 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
 
   nivelTipos = signal<any[]>([]);
   instituciones = signal<any[]>([]);
+
   institucionesxiNivelTipoId = signal<any[]>([]);
+
   sedes = signal<any[]>([]);
   showModal = signal<boolean>(false);
   showModalSedes = signal<boolean>(false);
@@ -59,6 +63,8 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   periodos: any = [];
 
   isLoadingDatosIniciales = signal<boolean>(false);
+
+  bUpdateInstitucion = false;
 
   breadCrumbItems: MenuItem[] = [
     {
@@ -179,6 +185,71 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
       });
   }
 
+  actionInstituciones(event: { action: string }) {
+    switch (event.action) {
+      case 'editar_iiee':
+        this.refrecarIntitucionEducativa();
+        this.bUpdateInstitucion = true;
+        break;
+      case 'agregar_iiee':
+        this.instituciones.set([]);
+        this.getIntitucionEducativa();
+        this.obtenerInstituciones();
+        this.bUpdateInstitucion = false;
+        break;
+    }
+  }
+
+  refrecarIntitucionEducativa() {
+    const where = 'iIieeId = ' + String(this.institucionSeleccionada()?.iIieeId);
+    this._GeneralService
+      .searchCalAcademico({
+        esquema: 'acad',
+        tabla: 'institucion_educativas',
+        campos: '*',
+        condicion: where,
+      })
+      .subscribe({
+        next: (data: any) => {
+          const item = data.data[0] || {};
+          this.institucionSeleccionada.set(item);
+        },
+        error: error => {
+          this.mostrarErrores(error);
+        },
+        complete: () => {
+          // this.getIntitucionEducativa();
+          const lista = this.institucionesxiNivelTipoId();
+          const seleccionado = this.institucionSeleccionada();
+
+          const actualizarInstituciones = lista.map(inst => {
+            if (inst.iIieeId === seleccionado.iIieeId) {
+              // Combina el registro anterior con los nuevos datos
+              return { ...inst, ...seleccionado };
+            }
+            return inst;
+          });
+
+          console.log(actualizarInstituciones);
+
+          // Actualiza la signal con la nueva lista
+          //this.data.set([...nuevaLista]);
+          this.institucionesxiNivelTipoId.set(null);
+          this.institucionesxiNivelTipoId.set(actualizarInstituciones);
+          this.institucionesxiNivelTipoId.set([...this.institucionesxiNivelTipoId()]);
+
+          //this.obtenerInstituciones();
+          this.institucionSeleccionada.set(null);
+          this.institucionSeleccionada.set(seleccionado);
+          // this.isLoadingDatosIniciales.set(true)
+
+          // this.itemSelected.set(null);
+
+          this.obtenerInformacionIE(seleccionado);
+        },
+      });
+  }
+
   getIntitucionEducativa() {
     this._GeneralService
       .searchCalAcademico({
@@ -221,7 +292,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
 
   obtenerInstituciones() {
     this.sedes.set([]);
-    this.institucionesxiNivelTipoId.set([]);
+    this.institucionesxiNivelTipoId.set(null);
 
     this.formMantenimiento.controls.iIieeId.setValue(null);
     this.formMantenimiento.controls.iSedeId.setValue(null);
@@ -234,12 +305,15 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
       return coincideNivel && coincideEstado;
     });
 
+    // this.institucionesxiNivelTipoId.set([...institucionesFiltradas]);
     this.institucionesxiNivelTipoId.set(institucionesFiltradas);
+    this.institucionesxiNivelTipoId.set([...this.institucionesxiNivelTipoId()]);
   }
 
   obtenerInformacionIE(evn) {
     this.institucionSeleccionada.set(evn);
     this.obtenerSedesIe(this.institucionSeleccionada()?.iIieeId);
+    //Se agrego una nueva variable
   }
 
   abrirEnMaps() {
@@ -372,6 +446,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
                 detail: resp.message,
               });
               this.sedes.set([]);
+
               this.obtenerSedesIe(this.institucionSeleccionada()?.iIieeId);
             }
           },
@@ -403,16 +478,28 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   }
 
   accionBtn({ accion, item }: { accion: string; item?: any }): void {
+    //sede
     switch (accion) {
+      case 'agregarIE':
+        this.formMantenimiento.value.iNivelTipoId ? this.showModal.set(true) : null;
+        this.isLoadingDatosIniciales.set(true);
+        this.itemSelected.set(null);
+        this.institucionSeleccionada.set(null);
+
+        break;
       case 'agregar':
         this.formMantenimiento.controls.iIieeId.setValue(this.institucionSeleccionada()?.iIieeId);
         this.itemSelectedSede.set([]);
         //this.sedes.set([]);
         this.showModalSedes.set(true);
+
+        this.institucionSeleccionada().set({});
         break;
       case 'editar':
         this.itemSelectedSede.set(item);
+        console.log(this.itemSelectedSede());
         this.showModalSedes.set(true);
+
         break;
       case 'eliminar':
         this.eliminarSede(item);
@@ -425,5 +512,12 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
         this.showDialogConfirmacion = true;
         break;
     }
+  }
+
+  actualizarItem(itemActualizado: any) {
+    const nuevaLista = this.institucionesxiNivelTipoId().map(inst =>
+      inst.iIieeId === itemActualizado.iIieeId ? itemActualizado : inst
+    );
+    this.institucionesxiNivelTipoId.set([...nuevaLista]); // 👈 Nueva referencia
   }
 }

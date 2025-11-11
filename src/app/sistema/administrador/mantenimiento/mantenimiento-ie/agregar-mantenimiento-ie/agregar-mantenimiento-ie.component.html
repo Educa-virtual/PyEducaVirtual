@@ -7,15 +7,16 @@
 >
   <form [formGroup]="formInstitucion" class="mt-3">
     <div class="grid">
-      <div class="col-12 md:col-6">
+      <div class="col-12 md:col-8">
         <p-inputGroup>
-          <p-inputGroupAddon>Código Modular</p-inputGroupAddon>
+          <p-inputGroupAddon>Código Modular (*)</p-inputGroupAddon>
           <input
             id="cIieeCodigoModular"
             type="text"
             pInputText
             placeholder="Ej: 0123456"
             formControlName="cIieeCodigoModular"
+            [ngClass]="{ 'input-invalid': esInvalido('cIieeCodigoModular') }"
           />
         </p-inputGroup>
       </div>
@@ -28,21 +29,23 @@
             type="text"
             pInputText
             class="w-full"
-            placeholder="Ej: 20123456789"
+            placeholder="Ingrese uun RUC válido"
             (input)="soloNumeros($event)"
+            [ngClass]="{ 'input-invalid': esInvalido('cIieeRUC') }"
           />
         </p-inputGroup>
       </div>
 
       <div class="col-12">
         <p-inputGroup>
-          <p-inputGroupAddon>I.E.</p-inputGroupAddon>
+          <p-inputGroupAddon>I.E. (*)</p-inputGroupAddon>
           <input
             id="cIieeNombre"
             type="text"
             pInputText
             placeholder="Ej: I.E. San Martín de Porres"
             formControlName="cIieeNombre"
+            [ngClass]="{ 'input-invalid': esInvalido('cIieeNombre') }"
           />
         </p-inputGroup>
       </div>
@@ -67,6 +70,7 @@
             pInputText
             placeholder="Ej: eland@gmail.com"
             formControlName="cIieeEmail"
+            [ngClass]="{ 'input-invalid': esInvalido('cIieeEmail') }"
           />
         </p-inputGroup>
       </div>
@@ -77,15 +81,20 @@
           <input
             id="cIieeTelefono"
             type="text"
+            inputmode="numeric"
+            maxlength="9"
+            pattern="[0-9]*"
             pInputText
             placeholder="Ej: 900010010"
             formControlName="cIieeTelefono"
+            (input)="soloNumeros($event)"
+            [ngClass]="{ 'input-invalid': esInvalido('cIieeTelefono') }"
           />
         </p-inputGroup>
       </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
-          <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+          <p-inputGroupAddon>UGEL (*)</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             id="iUgelId"
@@ -93,6 +102,8 @@
             [options]="ugeles()"
             optionLabel="cUgelNombre"
             optionValue="iUgelId"
+            [showClear]="true"
+            [filter]="true"
             placeholder="Seleccionar ..."
             [style]="{ width: '100%' }"
           >
@@ -101,7 +112,7 @@
       </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
-          <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+          <p-inputGroupAddon>Distrito (*)</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             id="iDsttId"
@@ -109,6 +120,8 @@
             [options]="distritos()"
             optionLabel="cDsttNombre"
             optionValue="iDsttId"
+            [showClear]="true"
+            [filter]="true"
             placeholder="Seleccionar ..."
             [style]="{ width: '100%' }"
           >
@@ -133,7 +146,7 @@
       </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
-          <p-inputGroupAddon>Sector</p-inputGroupAddon>
+          <p-inputGroupAddon>Sector (*)</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             id="iTipoSectorId"
@@ -150,13 +163,14 @@
 
       <div class="col-12 md:col-8">
         <p-inputGroup>
-          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
+          <p-inputGroupAddon>Dirección (*)</p-inputGroupAddon>
           <input
             id="cIieeDireccion"
             type="text"
             pInputText
             placeholder="Ej: Av. Los Olivos N° 123, San Martín"
             formControlName="cIieeDireccion"
+            [ngClass]="{ 'input-invalid': esInvalido('cIieeDireccion') }"
           />
         </p-inputGroup>
       </div>
@@ -179,6 +193,107 @@
       </div>
     </div>
   </form>
+  <div class="tag">Los parámetros con (*) son obligatorios</div>
+
+  @if (
+    formInstitucion.get('cIieeCodigoModular')?.invalid &&
+    (formInstitucion.get('cIieeCodigoModular')?.touched ||
+      formInstitucion.get('cIieeCodigoModular')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeCodigoModular')?.hasError('required')) {
+        El código modular es obligatorio. <br />
+      }
+      @if (formInstitucion.get('cIieeCodigoModular')?.hasError('minlength')) {
+        Debe tener al menos 7 caracteres.<br />
+      }
+      @if (formInstitucion.get('cIieeCodigoModular')?.hasError('maxlength')) {
+        No puede tener más de 8 caracteres.<br />
+      }
+    </small>
+  }
+  @if (
+    formInstitucion.get('cIieeNombre')?.invalid &&
+    (formInstitucion.get('cIieeNombre')?.touched || formInstitucion.get('cIieeNombre')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeNombre')?.hasError('required')) {
+        El nombre de IE es obligatorio.<br />
+      }
+    </small>
+  }
+
+  @if (
+    formInstitucion.get('cIieeDireccion')?.invalid &&
+    (formInstitucion.get('cIieeDireccion')?.touched || formInstitucion.get('cIieeDireccion')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeDireccion')?.hasError('required')) {
+        El dirección es obligatorio.<br />
+      }
+    </small>
+  }
+  @if (
+    formInstitucion.get('cIieeTelefono')?.invalid &&
+    (formInstitucion.get('cIieeTelefono')?.touched || formInstitucion.get('cIieeTelefono')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeTelefono')?.hasError('pattern')) {
+        Solo se permiten números.<br />
+      }
+    </small>
+  }
+
+  @if (
+    formInstitucion.get('cIieeNombre')?.invalid &&
+    (formInstitucion.get('cIieeNombre')?.touched || formInstitucion.get('cIieeNombre')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeNombre')?.hasError('maxlength')) {
+        No puede tener más de 200 caracteres.<br />
+      }
+    </small>
+  }
+
+  @if (
+    formInstitucion.get('cIieeRUC')?.invalid &&
+    (formInstitucion.get('cIieeRUC')?.touched || formInstitucion.get('cIieeRUC')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeRUC')?.hasError('maxlength')) {
+        No puede tener más de 11 caracteres.<br />
+      }
+      @if (formInstitucion.get('cIieeRUC')?.hasError('minlength')) {
+        No puede tener menor de 11 caracteres.<br />
+      }
+    </small>
+  }
+
+  @if (
+    formInstitucion.get('cIieeEmail')?.invalid &&
+    (formInstitucion.get('cIieeEmail')?.touched || formInstitucion.get('cIieeEmail')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('cIieeEmail')?.hasError('email')) {
+        Ingrese un correo válido<br />
+      }
+
+      @if (formInstitucion.get('cIieeEmail')?.hasError('required')) {
+        El correo es obligatorio<br />
+      }
+    </small>
+  }
+
+  @if (
+    formInstitucion.get('iUgelId')?.invalid &&
+    (formInstitucion.get('iUgelId')?.touched || formInstitucion.get('iUgelId')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formInstitucion.get('iUgelId')?.hasError('required]')) {
+        Seleccionar una Ugel<br />
+      }
+    </small>
+  }
   <div footer class="flex justify-content-end gap-2">
     <p-button
       styleClass="uppercase"
@@ -190,6 +305,7 @@
       styleClass="uppercase"
       type="submit"
       [loading]="isLoading()"
+      [disabled]="formInstitucion.invalid"
       [label]="this.formInstitucion.value.iIieeId ? 'Actualizar' : 'Guardar'"
       [severity]="this.formInstitucion.value.iIieeId ? 'warning' : 'success'"
       [loading]="isLoading()"
@@ -197,3 +313,4 @@
     ></p-button>
   </div>
 </app-modal-primeng>
+<p-toast />

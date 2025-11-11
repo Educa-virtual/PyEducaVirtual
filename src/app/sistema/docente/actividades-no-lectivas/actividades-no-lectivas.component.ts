@@ -146,7 +146,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '10rem',
       field: 'descripcion',
-      header: 'Descripcion',
+      header: 'cDescripcion',
       text_header: 'center',
       text: 'center',
     },
@@ -283,11 +283,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
       case 'list-carga-no-lectivas':
         this.data = item;
         this.data.forEach(list => {
-          if (list.cDescripcion.length > 80) {
-            list.descripcion = list.cDescripcion.substring(0, 80) + '...';
-          } else {
-            list.descripcion = list.cDescripcion;
-          }
+          const texto = list.cDescripcion ?? ''; // usa '' si es null o undefined
+          list.descripcion = texto.length > 80 ? texto.substring(0, 80) + '...' : texto;
         });
 
         this.data.forEach(i => {

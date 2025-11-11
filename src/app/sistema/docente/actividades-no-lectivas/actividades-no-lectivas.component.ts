@@ -146,7 +146,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '10rem',
       field: 'descripcion',
-      header: 'cDescripcion',
+      header: 'Descripcion',
       text_header: 'center',
       text: 'center',
     },

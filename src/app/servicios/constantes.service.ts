@@ -70,7 +70,7 @@ const docente = [
             routerLink: ['/evaluaciones/registro-logro'],
           },
           {
-            label: 'Informe de Actividades Academicas',
+            label: 'Actividades Academicas',
             icon: 'pi pi-fw pi-briefcase',
             routerLink: ['reporte-informe-actividades'],
           },

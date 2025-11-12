@@ -11,7 +11,7 @@ import { GestionUsuariosService } from '../../gestion-usuarios/services/gestion-
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
-import { CardOrderListComponent } from '@/app/shared/card-orderList/card-orderList.component';
+
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
@@ -26,7 +26,7 @@ import { catchError, map, of } from 'rxjs';
     PrimengModule,
     NoDataComponent,
     ToolbarPrimengComponent,
-    CardOrderListComponent,
+
     TablePrimengComponent,
     AgregarMantenimientoIeComponent,
     FormSedesComponent,

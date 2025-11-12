@@ -4,6 +4,9 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { MessageService } from 'primeng/api';
+import { InformesService } from './service/informes.service';
+import { firstValueFrom } from 'rxjs';
+
 @Component({
   selector: 'app-informe-actividades',
   standalone: true,
@@ -18,13 +21,19 @@ export class InformeActividadesComponent implements OnInit {
   iSedeId: number;
   iDocenteId: number;
   iYAcadId: number;
-
+  iIieeId: number;
+  iPersId: number;
   data: any; // Almacena los datos iniciales de la tabla
 
-  constructor(private messageService: MessageService) {
+  constructor(
+    private messageService: MessageService,
+    private informesService: InformesService
+  ) {
     this.iSedeId = this.servicioLocal.iSedeId;
     this.iDocenteId = this.servicioLocal.iDocenteId;
     this.iYAcadId = this.servicioLocal.iYAcadId;
+    this.iIieeId = this.servicioLocal.iIieeId;
+    this.iPersId = this.servicioLocal.iPersId;
   }
 
   ngOnInit(): void {
@@ -100,30 +109,33 @@ export class InformeActividadesComponent implements OnInit {
     });
   }
 
-  descargarInforme(index: any) {
+  async descargarInforme(item) {
     const params = {
-      petition: 'post',
-      group: 'aula-virtual',
-      prefix: 'sesiones-aprendizaje',
-      ruta: 'programacion-informacion-area',
       data: {
-        index: index,
+        iContenidoSemId: item.iContenidoSemId,
+        cContenidoSemTitulo: item.cContenidoSemTitulo,
+        cContenidoSemNumero: item.cContenidoSemNumero,
+        cCursoNombre: item.cCursoNombre,
+        cGradoAbreviacion: item.cGradoAbreviacion,
+        cSeccionNombre: item.cSeccionNombre,
+        iIieeId: this.iIieeId,
+        iYAcadId: this.iYAcadId,
+        iPersId: this.iPersId,
       },
     };
 
-    this.conexion.getRecibirDatos(params).subscribe({
-      next: response => {
-        const datos = response.data;
-        const ordenarNombre = this.ordenarNombre('cCursoNombre', datos);
-        this.data = ordenarNombre;
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.message,
-        });
-      },
-    });
+    try {
+      const response: Blob = await firstValueFrom(this.informesService.generarReportePdf(params));
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(response);
+      link.download = 'Reporte de progreso.pdf';
+      link.click();
+    } catch (err: any) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Problema al descargar el archivo',
+        detail: err?.error?.message || 'Error desconocido',
+      });
+    }
   }
 }

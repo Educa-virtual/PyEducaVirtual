@@ -1,36 +1,32 @@
-<app-toolbar-primeng title="CALENDARIO"></app-toolbar-primeng>
+<app-toolbar-primeng title="INFORME DE ACTIVIDADES"></app-toolbar-primeng>
 <div class="grid p-2">
   <div class="col-12">
     <p-table [value]="data">
       <ng-template pTemplate="header">
         <tr>
-          <th>#</th>
+          <th class="text-center">#</th>
           <th>Nombre de la Ses. Act.</th>
           <th>N. de Semana</th>
           <th>Area Curricular</th>
           <th>Grado</th>
           <th>Seccion</th>
-          <th>Adj Sesiones</th>
-          <th>Informe</th>
+          <th class="text-center">Adj. Sesiones</th>
+          <th class="text-center">Informe</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-lista let-index="rowIndex">
         <tr>
-          <td>{{ index + 1 }}</td>
+          <td class="text-center">{{ index + 1 }}</td>
           <td>{{ lista.cContenidoSemTitulo }}</td>
           <td>{{ lista.cContenidoSemNumero }}</td>
           <td>{{ lista.cCursoNombre }}</td>
           <td>{{ lista.cGradoAbreviacion }}</td>
           <td>{{ lista.cSeccionNombre }}</td>
-          <td>
+          <td class="text-center">
             <p-button (click)="descargarArchivo(lista.cAdjunto)" icon="pi pi-file-pdf" />
           </td>
-          <td>
-            <p-button
-              (click)="descargarInforme(lista.iContenidoSemId)"
-              icon="pi pi-file-pdf"
-              severity="danger"
-            />
+          <td class="text-center">
+            <p-button (click)="descargarInforme(lista)" icon="pi pi-file-pdf" severity="danger" />
           </td>
         </tr>
       </ng-template>

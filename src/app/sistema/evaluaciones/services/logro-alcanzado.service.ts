@@ -18,6 +18,23 @@ export class LogroAlcanzadoService {
   perfil = this.store.getItem('dremoPerfil');
   iYAcadId = this.store.getItem('dremoiYAcadId');
 
+  tipos_calificacion: any[] = [];
+
+  public readonly CALIFICACION_CUANTITATIVA = 1;
+  public readonly CALIFICACION_EQUIVALENTE = 2;
+
+  listarTiposCalificacion() {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/listarTiposCalificacion`, null);
+  }
+
+  obtenerEscalasCalificacion(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerEscalasCalificacion`, params);
+  }
+
+  actualizarEscalaCalificacion(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/actualizarEscalaCalificacion`, params);
+  }
+
   obtenerPeriodosEvaluacionSede(params) {
     return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerPeriodosEvaluacionSede`, params);
   }
@@ -36,6 +53,13 @@ export class LogroAlcanzadoService {
 
   actualizarLogro(params) {
     return this.http.post(`${baseUrl}/evaluaciones/logros/actualizarLogro`, params);
+  }
+
+  getTiposCalificacion() {
+    return [
+      { label: 'CALIFICACIÓN CUANTITATIVA', value: this.CALIFICACION_CUANTITATIVA },
+      { label: 'CALIFICACIÓN EQUILVALENTE NÚMERICO', value: this.CALIFICACION_EQUIVALENTE },
+    ];
   }
 
   formMarkAsDirty(form: FormGroup) {

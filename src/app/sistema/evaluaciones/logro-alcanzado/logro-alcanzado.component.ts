@@ -1,25 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
-import { CursoCardComponent } from '../../aula-virtual/sub-modulos/cursos/components/curso-card/curso-card.component';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { Router } from '@angular/router';
 import { LogroAlcanzadoService } from '../services/logro-alcanzado.service';
+import { ConfigurarLogroComponent } from './configurar-logro/configurar-logro.component';
 
 @Component({
   selector: 'app-logro-alcanzado',
   standalone: true,
-  imports: [PrimengModule, CursoCardComponent],
+  imports: [PrimengModule, ConfigurarLogroComponent],
   templateUrl: './logro-alcanzado.component.html',
   styleUrl: './logro-alcanzado.component.scss',
 })
 export class LogroAlcanzadoComponent implements OnInit {
   // Listados de datos
   areas: any[] = [];
+  curso: any;
 
   perfil: any;
   iYAcadId: number;
+  dialogConfigurarEscala: boolean = false;
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
@@ -81,6 +83,20 @@ export class LogroAlcanzadoComponent implements OnInit {
         summary: 'Mensaje del sistema',
         detail: 'No se pudo obtener la información del curso.',
       });
+    }
+  }
+
+  configurarEvaluacion(area: any) {
+    this.curso = null;
+    setTimeout(() => {
+      this.curso = area;
+      this.dialogConfigurarEscala = true;
+    }, 100);
+  }
+
+  listenDialogRegistrarLogro(event: boolean) {
+    if (event == false) {
+      this.dialogConfigurarEscala = false;
     }
   }
 }

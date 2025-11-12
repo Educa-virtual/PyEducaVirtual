@@ -88,9 +88,9 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
         controles_logros: this.fb.array([]),
       });
     } catch (e) {
-      this.crearControlesLogros([]);
       console.error('Error al inicializar el formulario:', e);
     }
+    this.crearControlesLogros([]);
 
     this.formCompetencias.get('controles_logros').valueChanges.subscribe(logros => {
       logros.forEach((logro: any, index: number) => {

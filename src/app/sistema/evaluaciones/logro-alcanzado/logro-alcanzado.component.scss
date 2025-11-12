@@ -94,9 +94,159 @@
   margin-bottom: 0 !important;
 }
 
+:host ::ng-deep .p-inputgroup.vertical-group {
+  display: block !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup {
+  display: block !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .group-element,
+:host ::ng-deep .p-inputgroup.vertical-group .group-element .p-dropdown {
+  width: 100% !important;
+  border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .group-element:last-child,
+:host ::ng-deep .p-inputgroup.vertical-group .p-calendar .group-element.p-inputtext {
+  border-top-right-radius: 0rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+  border-top-left-radius: 0rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+:host
+  ::ng-deep
+  .p-inputgroup.vertical-group
+  p-dropdown:has(+ .group-element)
+  .p-dropdown.group-element,
+:host
+  ::ng-deep
+  .p-inputgroup.vertical-group
+  p-multiselect:has(+ .group-element)
+  .p-multiselect.group-element {
+  border-radius: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon {
+  border-top-left-radius: 0.5rem !important;
+  border-bottom-left-radius: 0rem !important;
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0rem !important;
+  display: flow-root !important;
+  padding: 0rem !important;
+  border: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon:only-child {
+  border-bottom-right-radius: 0.5rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon .p-inputswitch {
+  float: right !important;
+  top: -0.25rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon button.p-button {
+  float: right !important;
+  padding: 0.25rem !important;
+  top: -0.25rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon a.p-button {
+  padding: 0 !important;
+}
+
+:host
+  ::ng-deep
+  .p-inputgroup.vertical-group
+  .p-inputgroup-addon
+  div[data-pc-name='inputgroupaddon'] {
+  padding: 1rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group button.p-inputnumber-button-up {
+  border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputnumber-input:not(:only-child) {
+  border-radius: 0 !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputnumber-input:only-child {
+  border-radius: 0 !important;
+  border-bottom-left-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-multiselect-label {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .cursos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 2rem;
   row-gap: 3rem;
+}
+
+.clash-card {
+  background: white;
+  margin: auto;
+  border-radius: 14px + 5;
+  position: relative;
+  text-align: center;
+  box-shadow: -1px 15px 30px -12px black;
+  overflow: visible;
+  transition: all 0.3s linear;
+  margin-top: 10px;
+}
+
+.clash-card__image {
+  overflow: hidden;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.clash-card__image--barbarian img {
+  width: 100%;
+
+  height: auto;
+  display: block;
+  object-fit: cover; /* mantiene proporción y recorta si es necesario */
+}
+
+.clash-card:hover,
+.hover {
+  box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
+}
+
+.clash-card:hover .img-transition img,
+.hover .img-transition img {
+  transform: scale(1.1);
+  opacity: 0.6;
+  top: -65px;
+}
+.img-transition img {
+  transition: all 0.4s linear;
+}
+
+.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  height: 44px;
+  margin: 7px 0;
 }

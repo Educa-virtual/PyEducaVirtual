@@ -6,7 +6,6 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { RegistrarLogroAlcanzadoComponent } from './../registrar-logro-alcanzado/registrar-logro-alcanzado.component';
 import { BoletaLogroComponent } from './../boleta-logro/boleta-logro.component';
-import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -64,7 +63,6 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   constructor(
     private logroAlcanzadoService: LogroAlcanzadoService,
     private messageService: MessageService,
-    private periodosService: CalendarioPeriodosEvalacionesService,
     private router: Router,
     private store: LocalStoreService,
     private route: ActivatedRoute

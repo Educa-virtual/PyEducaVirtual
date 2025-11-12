@@ -11,12 +11,54 @@
     @if (areas && areas.length > 0) {
       <div class="col-12 cursos">
         @for (area of areas; track area) {
-          <app-curso-card
-            #dv
-            [curso]="area"
-            [registro]="true"
-            (filtrarCurso)="seleccionarArea($event)"
-          ></app-curso-card>
+          <div class="clash-card">
+            <div class="clash-card__image clash-card__image--barbarian img-transition">
+              <img [src]="area?.cCursoImagenUrl" alt="Logo del curso" />
+            </div>
+            <div class="left-0 border-round-right px-2 py-1 bg-red-700 text-white font-bold w-max">
+              <span>{{
+                area?.cCursoNombre.length > 30
+                  ? (area?.cCursoNombre | slice: 0 : 30) + '...'
+                  : area?.cCursoNombre
+              }}</span>
+            </div>
+            <div *ngIf="area.bEstudiante === '1'" class="title mt-4 font-bold text-center">
+              <span>Docente: <br />{{ area.bDocente === '1' ? area.cDocente : '-' }}</span>
+            </div>
+            <div class="mx-4 mt-3 col-12 grid">
+              <div class="col-12 grid column-gap-1 align-items-center">
+                <i class="pi pi-bookmark mr-2 text-red-700"></i>
+                <span
+                  >{{ area.cGradoAbreviacion }} Grado
+                  {{ area.cSeccionNombre || area.cSeccion }}</span
+                >
+              </div>
+              <div class="col-12 grid column-gap-1 align-items-center">
+                <i class="pi pi-info-circle mr-2 text-red-700"></i>
+                <span>{{ area.cantidad }} alumnos</span>
+              </div>
+            </div>
+            <div class="flex mx-3 mt-2 pb-4 justify-content-between">
+              <p-button
+                size="small"
+                pTooltip="Configurar logros"
+                tooltipPosition="top"
+                (onClick)="configurarEvaluacion(area)"
+              >
+                <i class="pi pi-cog"></i>
+                <span class="hidden md:inline ml-2">Configurar</span>
+              </p-button>
+              <p-button
+                size="small"
+                pTooltip="Registrar logros"
+                tooltipPosition="top"
+                (onClick)="seleccionarArea(area)"
+              >
+                <span class="hidden md:inline mr-2">Registrar</span>
+                <i class="pi pi-arrow-right"></i>
+              </p-button>
+            </div>
+          </div>
         }
       </div>
     } @else {
@@ -29,5 +71,27 @@
     }
   </div>
 </p-panel>
+
+<p-dialog
+  [draggable]="false"
+  [maximizable]="true"
+  [(visible)]="dialogConfigurarEscala"
+  [style]="{ width: '70vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [modal]="true"
+  [contentStyle]="{ overflow: 'auto' }"
+  (onHide)="listenDialogRegistrarLogro(false)"
+>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl font-bold">Configurar escala de evaluación</div>
+      <div class="flex text-sm">
+        ÁREA: {{ curso?.cCursoNombre }} - GRADO: {{ curso?.cGradoAbreviacion }} - SECCIÓN:
+        {{ curso?.cSeccionNombre }}
+      </div>
+    </div>
+  </ng-template>
+  <app-configurar-logro [curso]="curso" (configuraEscala)="dialogConfigurarEscala = $event" />
+</p-dialog>
+
 <p-toast />
- 

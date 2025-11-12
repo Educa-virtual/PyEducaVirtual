@@ -118,6 +118,7 @@ export class InformeActividadesComponent implements OnInit {
         cCursoNombre: item.cCursoNombre,
         cGradoAbreviacion: item.cGradoAbreviacion,
         cSeccionNombre: item.cSeccionNombre,
+        cNumeroPeriodo: item.cNumeroPeriodo,
         iIieeId: this.iIieeId,
         iYAcadId: this.iYAcadId,
         iPersId: this.iPersId,

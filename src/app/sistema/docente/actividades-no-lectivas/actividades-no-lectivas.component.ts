@@ -154,7 +154,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
     {
       type: 'text',
       width: '10rem',
-      field: 'descripcion',
+      field: 'descripcionResumen',
       header: 'Descripción',
       text_header: 'center',
       text: 'center',
@@ -186,7 +186,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
     {
       type: 'text',
       width: '2rem',
-      field: 'cObservacion',
+      field: 'cObservacionResumen',
       header: 'Observación',
       text_header: 'center',
       text: 'center',
@@ -242,7 +242,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
         break;
       case 'visualizar':
         this.item = item;
-        console.log('revisar ', item);
         this.visualizar = true;
         this.bAprobar = true;
         break;
@@ -300,9 +299,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
         this.data.forEach(list => {
           const descripcion = list.cDescripcion ?? '';
           const observacion = list.cObservacion ?? '';
-          list.descripcion =
+          list.descripcionResumen =
             descripcion.length > 80 ? descripcion.substring(0, 80) + '...' : descripcion;
-          list.cObservacion =
+          list.cObservacionResumen =
             observacion.length > 80 ? observacion.substring(0, 80) + '...' : observacion;
         });
 

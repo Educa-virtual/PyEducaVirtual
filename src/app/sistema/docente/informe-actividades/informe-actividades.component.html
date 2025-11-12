@@ -1,16 +1,30 @@
 <app-toolbar-primeng title="INFORME DE ACTIVIDADES"></app-toolbar-primeng>
-<div class="grid p-2">
+<div class="card">
   <div class="col-12">
-    <p-table [value]="data">
+    <p-table
+      [value]="data"
+      styleClass="p-datatable-sm"
+      [rowsPerPageOptions]="[5, 10, 15, 20]"
+      [rows]="15"
+      [paginator]="true"
+    >
       <ng-template pTemplate="header">
         <tr>
           <th class="text-center">#</th>
-          <th>Nombre de la Ses. Act.</th>
-          <th>N. de Semana</th>
-          <th>Area Curricular</th>
-          <th>Grado</th>
-          <th>Seccion</th>
-          <th class="text-center">Adj. Sesiones</th>
+          <th pSortableColumn="cContenidoSemTitulo">
+            Nombre de la Ses. Act. <p-sortIcon field="cContenidoSemTitulo" />
+          </th>
+          <th pSortableColumn="cNumeroPeriodo">
+            N. de Periodo <p-sortIcon field="cNumeroPeriodo" />
+          </th>
+          <th pSortableColumn="cCursoNombre">
+            Área Curricular <p-sortIcon field="cCursoNombre" />
+          </th>
+          <th pSortableColumn="cGradoAbreviacion">
+            Grado <p-sortIcon field="cGradoAbreviacion" />
+          </th>
+          <th pSortableColumn="cSeccionNombre">Sección <p-sortIcon field="cSeccionNombre" /></th>
+          <th class="text-center">Adj. Periodo</th>
           <th class="text-center">Informe</th>
         </tr>
       </ng-template>
@@ -18,7 +32,7 @@
         <tr>
           <td class="text-center">{{ index + 1 }}</td>
           <td>{{ lista.cContenidoSemTitulo }}</td>
-          <td>{{ lista.cContenidoSemNumero }}</td>
+          <td>{{ lista.cNumeroPeriodo }}</td>
           <td>{{ lista.cCursoNombre }}</td>
           <td>{{ lista.cGradoAbreviacion }}</td>
           <td>{{ lista.cSeccionNombre }}</td>

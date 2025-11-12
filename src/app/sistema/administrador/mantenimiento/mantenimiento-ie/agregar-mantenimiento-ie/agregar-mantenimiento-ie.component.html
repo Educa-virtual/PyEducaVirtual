@@ -45,6 +45,7 @@
             pInputText
             placeholder="Ej: I.E. San Martín de Porres"
             formControlName="cIieeNombre"
+            (input)="convertirMayusculas($event)"
             [ngClass]="{ 'input-invalid': esInvalido('cIieeNombre') }"
           />
         </p-inputGroup>
@@ -58,6 +59,7 @@
             pInputText
             placeholder="Ej: Eland Miranda Valderrama"
             formControlName="cIieeDirector"
+            (input)="convertirMayusculas($event)"
           />
         </p-inputGroup>
       </div>
@@ -170,6 +172,7 @@
             pInputText
             placeholder="Ej: Av. Los Olivos N° 123, San Martín"
             formControlName="cIieeDireccion"
+            (input)="convertirMayusculas($event)"
             [ngClass]="{ 'input-invalid': esInvalido('cIieeDireccion') }"
           />
         </p-inputGroup>

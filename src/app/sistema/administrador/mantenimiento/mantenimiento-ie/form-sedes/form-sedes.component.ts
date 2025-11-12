@@ -64,7 +64,7 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
         this.formSedes.get('iIieeId')?.setValue(this.iIieeId());
       } else {
         this.formSedes.reset();
-        this.formSedes.get('iIieeId')?.setValidators(Validators.required);
+        // this.formSedes.get('iIieeId')?.setValidators(Validators.required);
       }
       this.formSedes.get('iIieeId')?.updateValueAndValidity();
     }
@@ -81,16 +81,17 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       iCredEntPerfId: [],
       iCredId: [1], //iCredId: [],
       iSedeId: [null],
-      iIieeId: [this.iIieeId(), Validators.required],
+      iIieeId: [this.iIieeId()],
+
+      iServEdId: [null, Validators.required],
+      iTurnoId: [null, Validators.required],
       cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+      cSedeEmail: [null, [Validators.required, Validators.email]],
       cSedeDireccion: [null, Validators.required],
       cSedeRslCreacion: [null],
       dSedeRslCreacion: [null],
-      iEstado: [0],
-      iServEdId: [null, Validators.required],
+      iEstado: [1],
       cSedeTelefono: [null],
-      iTurnoId: [0, Validators.required],
-      cSedeEmail: [null, [Validators.required, Validators.email]],
       cSedeDirector: [null],
     });
   }
@@ -120,7 +121,7 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
     this.isLoading.set(true);
 
     const perfil = this._LocalStoreService.getItem('dremoPerfil');
-
+    console.log('Formulario de sede a enviar:', this.formSedes.value);
     this.formSedes.patchValue({
       iIieeId: this.iIieeId(),
       iCredEntPerfId: perfil?.iCredEntPerfId,
@@ -147,10 +148,8 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       this.isLoading.set(false);
       return;
     }
-    console.log(this.formSedes.value);
 
     // return;
-
     this.guardarSede();
   }
 
@@ -183,5 +182,31 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
           this.mostrarErrores(error);
         },
       });
+  }
+  soloNumeros(event: any) {
+    const input = event.target;
+    const valor = input.value.replace(/[^0-9]/g, '');
+    input.value = valor;
+
+    const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
+    if (controlName && this.formSedes.get(controlName)) {
+      this.formSedes.get(controlName)?.setValue(valor);
+    }
+  }
+
+  convertirMayusculas(event: any) {
+    const input = event.target;
+    const valor = input.value.toUpperCase();
+    input.value = valor;
+
+    const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
+    if (controlName && this.formSedes.get(controlName)) {
+      this.formSedes.get(controlName)?.setValue(valor);
+    }
+  }
+
+  esInvalido(control: string): boolean {
+    const c = this.formSedes.get(control);
+    return !!(c && c.invalid && (c.dirty || c.touched));
   }
 }

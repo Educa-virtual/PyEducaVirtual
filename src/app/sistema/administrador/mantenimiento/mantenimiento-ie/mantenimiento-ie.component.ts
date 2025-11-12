@@ -17,6 +17,7 @@ import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agre
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { FormSedesComponent } from './form-sedes/form-sedes.component';
 import { CardOrderlistIeComponent } from '../../shared/card-orderlist-ie/card-orderlist-ie.component';
+import { catchError, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-mantenimiento-ie',
@@ -173,8 +174,8 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
 
   ngOnInit() {
     this.getNivelTipos();
-    this.getIntitucionEducativa();
     this.getPeriodosEvaluacion();
+    // this.getIntitucionEducativa();
   }
 
   getNivelTipos() {
@@ -189,6 +190,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     switch (event.action) {
       case 'editar_iiee':
         this.refrecarIntitucionEducativa();
+        this.getIntitucionEducativa();
         this.bUpdateInstitucion = true;
         break;
       case 'agregar_iiee':
@@ -202,6 +204,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
 
   refrecarIntitucionEducativa() {
     const where = 'iIieeId = ' + String(this.institucionSeleccionada()?.iIieeId);
+
     this._GeneralService
       .searchCalAcademico({
         esquema: 'acad',
@@ -230,20 +233,11 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
             return inst;
           });
 
-          console.log(actualizarInstituciones);
+          this.obtenerInstituciones();
 
-          // Actualiza la signal con la nueva lista
-          //this.data.set([...nuevaLista]);
-          this.institucionesxiNivelTipoId.set(null);
           this.institucionesxiNivelTipoId.set(actualizarInstituciones);
-          this.institucionesxiNivelTipoId.set([...this.institucionesxiNivelTipoId()]);
 
-          //this.obtenerInstituciones();
-          this.institucionSeleccionada.set(null);
           this.institucionSeleccionada.set(seleccionado);
-          // this.isLoadingDatosIniciales.set(true)
-
-          // this.itemSelected.set(null);
 
           this.obtenerInformacionIE(seleccionado);
         },
@@ -251,15 +245,15 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   }
 
   getIntitucionEducativa() {
-    this._GeneralService
+    return this._GeneralService
       .searchCalAcademico({
         esquema: 'acad',
         tabla: 'institucion_educativas',
         campos: '*',
         condicion: '1=1',
       })
-      .subscribe({
-        next: (data: any) => {
+      .pipe(
+        map((data: any) => {
           const instituciones = (data.data ?? []).map((institucion: any) => ({
             ...institucion,
             iEstado: Number(institucion.iEstado) === 2 ? 0 : institucion.iEstado,
@@ -268,12 +262,15 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
             cDescripcion: institucion.cIieeEmail || '-',
           }));
 
-          this.instituciones.set([...instituciones]);
-        },
-        error: error => {
+          // actualizamos la señal
+          this.instituciones.set(instituciones);
+          return instituciones; // ✅ devolvemos el resultado
+        }),
+        catchError(error => {
           this.mostrarErrores(error);
-        },
-      });
+          return of([]); // devolvemos un observable vacío para evitar que rompa
+        })
+      );
   }
 
   obtenerSedesIe(iIieeId) {
@@ -291,23 +288,23 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   }
 
   obtenerInstituciones() {
-    this.sedes.set([]);
-    this.institucionesxiNivelTipoId.set(null);
+    this.getIntitucionEducativa().subscribe(instituciones => {
+      //  console.log('✅ Finalizó la carga', instituciones);
+      this.sedes.set([]);
+      this.institucionesxiNivelTipoId.set(null);
+      this.formMantenimiento.controls.iIieeId.setValue(null);
+      this.formMantenimiento.controls.iSedeId.setValue(null);
 
-    this.formMantenimiento.controls.iIieeId.setValue(null);
-    this.formMantenimiento.controls.iSedeId.setValue(null);
+      const { iNivelTipoId, iEstado } = this.formMantenimiento.value;
+      const institucionesFiltradas = instituciones.filter(item => {
+        const coincideNivel = iNivelTipoId == null || Number(item.iNivelTipoId) === iNivelTipoId;
+        const coincideEstado = iEstado == null || Number(item.iEstado) === iEstado;
+        return coincideNivel && coincideEstado;
+      });
 
-    const { iNivelTipoId, iEstado } = this.formMantenimiento.value;
-
-    const institucionesFiltradas = this.instituciones().filter(item => {
-      const coincideNivel = iNivelTipoId == null || Number(item.iNivelTipoId) === iNivelTipoId;
-      const coincideEstado = iEstado == null || Number(item.iEstado) === iEstado;
-      return coincideNivel && coincideEstado;
+      //console.log('✅ Filtrado después de cargar instituciones', institucionesFiltradas);
+      this.institucionesxiNivelTipoId.set(institucionesFiltradas);
     });
-
-    // this.institucionesxiNivelTipoId.set([...institucionesFiltradas]);
-    this.institucionesxiNivelTipoId.set(institucionesFiltradas);
-    this.institucionesxiNivelTipoId.set([...this.institucionesxiNivelTipoId()]);
   }
 
   obtenerInformacionIE(evn) {

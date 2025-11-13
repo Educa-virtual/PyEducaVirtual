@@ -25,3 +25,8 @@
   text-align: left;
   width: fit-content;
 }
+
+.input-invalid {
+  border: 1px solid red !important;
+  background-color: #ffe6e6;
+}

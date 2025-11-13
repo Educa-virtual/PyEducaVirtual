@@ -286,7 +286,8 @@ export class AsistenciasComponent implements OnInit {
   }
 
   guardarAsistenciaScanner() {
-    const marcar = this.codigo.dtTurnoInicia > this.codigo.dtAsistencia ? 1 : 2;
+    const marcar = this.codigo.dtAperTurnoInicio > this.codigo.dtAsistencia ? 1 : 2;
+    console.log('verificar #1', this.codigo);
     this.codigo.iTipoAsiId = marcar;
     const enlace = {
       petition: 'post',

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
-import { FormArray, FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { LogroAlcanzadoService } from '../../services/logro-alcanzado.service';
 import { ActivatedRoute } from '@angular/router';
@@ -24,11 +24,13 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   @Input() periodos: any[] = [];
+  @Input() escalas: any[] = [];
   @Input() competencias: any = [];
   @Input() iDetMatrId: number;
   @Input() cCursoNombre: string = '';
   @Input() iPeriodoId: string = '0';
   @Input() mostrarDialog: boolean = false;
+  @Input() bTieneEscalaNumerica: boolean = false;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
 
   idDocCursoId: string;
@@ -43,31 +45,6 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   get controles_logros(): FormArray {
     return this.formCompetencias.get('controles_logros') as FormArray;
   }
-
-  conversion: any[] = [
-    {
-      iCalifId: 1,
-      logro: 'AD',
-      max: 20,
-      min: 18,
-      descripcion: 'Logro Destacado, Excelente, Muy Bueno.',
-    },
-    {
-      iCalifId: 2,
-      logro: 'A',
-      max: 17.99,
-      min: 14,
-      descripcion: 'Bueno, Satisfactorio, Logro Esperado.',
-    },
-    { iCalifId: 3, logro: 'B', max: 13.99, min: 11, descripcion: 'En Proceso, Regular.' },
-    {
-      iCalifId: 4,
-      logro: 'C',
-      max: 10.99,
-      min: 0,
-      descripcion: 'Deficiente, En Inicio, Reprobado.',
-    },
-  ];
 
   mostrarBotonFinalizar: boolean = false;
 
@@ -94,16 +71,19 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
 
     this.formCompetencias.get('controles_logros').valueChanges.subscribe(logros => {
       logros.forEach((logro: any, index: number) => {
-        if (this.logros_iniciales) {
+        const control = this.controles_logros.at(index);
+        if (this.logros_iniciales.length === 0) {
+          control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
+        } else {
           const logro_inicial: any = this.logros_iniciales.find(
             (logro_inicial: any) =>
               Number(logro_inicial?.iCompetenciaId) === Number(logro?.iCompetenciaId)
           );
-          const control = this.controles_logros.at(index);
           if (
             control &&
-            (Number(logro_inicial.iResultado) !== Number(logro.iResultado) ||
-              logro_inicial.cDescripcion !== logro.cDescripcion)
+            (Number(logro_inicial?.iResultado) !== Number(logro?.iResultado) ||
+              Number(logro_inicial?.iEscalaCalifId) !== Number(logro?.iEscalaCalifId) ||
+              logro_inicial?.cDescripcion !== logro?.cDescripcion)
           ) {
             control.patchValue({ bMostrarBoton: true }, { emitEvent: false });
           } else {
@@ -116,6 +96,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iDetMatrId'] && this.iDetMatrId) {
+      this.formCompetencias.reset();
       this.obtenerLogrosRegistrados();
     }
   }
@@ -126,24 +107,34 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
     this.competencias.map((param: any) => {
       const logro_competencia: any = logros_competencias
         ? logros_competencias.find(
-            (registro: any) => Number(registro.iCompetenciaId) === Number(param.iCompetenciaId)
+            (registro: any) => Number(registro?.iCompetenciaId) === Number(param?.iCompetenciaId)
           )
         : null;
-      const logro_periodo = JSON.parse(logro_competencia.periodos).find(
-        (periodo: any) => Number(periodo.iPeriodoId) === Number(this.iPeriodoId)
-      );
+      let logro_periodo: any = null;
+      if (logro_competencia && logro_competencia?.periodos) {
+        const periodos = JSON.parse(logro_competencia?.periodos);
+        if (Array.isArray(periodos)) {
+          logro_periodo = periodos.find(
+            (periodo: any) => Number(periodo.iPeriodoId) === Number(this.iPeriodoId)
+          );
+        } else {
+          logro_periodo = null;
+        }
+      }
       let grupo: FormGroup = null;
       grupo = this.fb.group({
         iCompetenciaId: [param.iCompetenciaId],
-        iResultadoCompId: [logro_periodo ? logro_periodo['iResultadoCompId'] : 0],
+        iResultadoCompId: [logro_periodo ? logro_periodo['iResultadoCompId'] : null],
         iPeriodoId: [this.iPeriodoId],
         iDetMatrId: [this.iDetMatrId],
-        iResultado: [logro_periodo ? logro_periodo['iResultado'] : null, Validators.required],
+        iResultado: [logro_periodo ? logro_periodo['iResultado'] : null],
+        iEscalaCalifId: [logro_periodo ? logro_periodo['iEscalaCalifId'] : null],
         cDescripcion: [logro_periodo ? logro_periodo['cDescripcion'] : null],
         cNivelLogro: [logro_periodo ? logro_periodo['cNivelLogro'] : null],
         bMostrarBoton: [false],
       });
       formArray.push(grupo);
+      console.log(grupo.value, 'grupo');
     });
     this.logros_iniciales = JSON.parse(JSON.stringify(formArray.value));
   }
@@ -185,12 +176,11 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   actualizarLogro(index: number) {
     this.messageService.clear();
     const form = this.formCompetencias.get('controles_logros').value[index];
-    if (form.iResultado === null || (form.cNivelLogro === 'C' && form.cDescripcion === '')) {
+    if (form.iResultado === null && form.iEscalaCalifId === null) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail:
-          'Debe indicar el nivel de logro y en caso sea "C" también una conclusión descriptiva.',
+        detail: 'Debe indicar el nivel de logro alcanzado.',
       });
       this.logroAlcanzadoService.formMarkAsDirty(form);
       return;
@@ -205,6 +195,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
         iResultado: form.iResultado,
         cDescripcion: form.cDescripcion,
         cNivelLogro: form.cNivelLogro,
+        iEscalaCalifId: form.iEscalaCalifId,
       })
       .subscribe({
         next: (response: any) => {

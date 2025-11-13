@@ -42,6 +42,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   cCursoNombre: string = '';
   cGradoAbreviacion: string = '';
   cSeccionNombre: string = '';
+  bTieneEscalaNumerica: boolean = false;
 
   // Periodo seleccionado
   iPeriodoId: string = '1';
@@ -51,6 +52,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   estudiantes: any[] = [];
   periodos: any[] = [];
   competencias: any[] = [];
+  escalas: any[] = [];
 
   perfil: any;
   usuario: any;
@@ -108,6 +110,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
+          this.bTieneEscalaNumerica = Number(data.data?.bTieneEscalaNumerica) === 1;
           this.cCursoNombre = data.data.cCursoNombre;
           this.cGradoAbreviacion = data.data.cGradoAbreviacion;
           this.cSeccionNombre = data.data.cSeccionNombre;
@@ -117,6 +120,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
           this.estudiantes = data.data.json_estudiantes
             ? JSON.parse(data.data.json_estudiantes)
             : [];
+          this.escalas = data.data.json_escala ? JSON.parse(data.data.json_escala) : [];
           this.setBreadCrumbs();
         },
         error: error => {

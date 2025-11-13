@@ -110,6 +110,10 @@ export const routes: Routes = [
           expectedRole: [DOCENTE, AUXILIAR, ASISTENTE_SOCIAL],
         },
       },
+      {
+        path: 'estudiantes-apoderados-asistencia',
+        component: EstudiantesApoderadosComponent,
+      },
     ],
   },
   {

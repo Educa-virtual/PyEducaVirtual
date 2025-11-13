@@ -774,6 +774,11 @@ const administracion = [
         icon: 'pi pi-download',
         routerLink: ['/gestion-institucional/descargar-plantillas'],
       },
+      {
+        label: 'Gestión de méritos',
+        icon: 'pi pi-download',
+        routerLink: ['/gestion-institucional/gestion-meritos'],
+      },
 
       // {
       //   label: 'Generar Reportes y Estadisticas',

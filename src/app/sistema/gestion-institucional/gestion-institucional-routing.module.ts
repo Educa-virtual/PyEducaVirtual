@@ -36,6 +36,7 @@ import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-ind
 
 import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
 import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
+import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -144,6 +145,15 @@ const routes: Routes = [
   {
     path: 'IesPersonal',
     component: IesPersonalComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+
+  {
+    path: 'gestion-meritos',
+    component: GestionMeritosComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [DIRECTOR_IE],

@@ -1,0 +1,175 @@
+<app-container-page
+  title="Formulario de meritos"
+  [actions]="[]"
+  (accionBtnItem)="accionBtnItemTable($event)"
+>
+  <p-toast />
+  <div class="card" style="position: relative">
+    <form [formGroup]="formMerito">
+      <div class="grid p-fluid mt-3">
+        <div class="tag">Validar identificación</div>
+        <div class="field col-12 md:col-5">
+          <span class="p-float-label">
+            <p-dropdown
+              [style]="{ width: '100%' }"
+              [options]="tipo_documento"
+              optionLabel="cTipoIdentSigla"
+              optionValue="iTipoIdentId"
+              formControlName="iTipoIdentId"
+              appendTo="body"
+            />
+            <label for="iTipoIdentId">Tipo</label>
+          </span>
+        </div>
+
+        <div class="field col-12 md:col-5" *ngIf="formMerito.get('iTipoIdentId')?.value > 0">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="cDocumento"
+              formControlName="cDocumento"
+              aria-describedby="cDocumento-help"
+            />
+            <label for="cDocumento">Documento / CE</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-2" *ngIf="formMerito.get('iTipoIdentId')?.value > 0">
+          <p-button
+            label=""
+            icon="pi pi-search"
+            (onClick)="getPersona(0)"
+            class="w-full"
+          ></p-button>
+        </div>
+
+        <div class="field col-12">
+          <p-message severity="{{ _severity }}" text="{{ mensaje }}"></p-message>
+        </div>
+      </div>
+
+      <div
+        class="grid p-fluid mt-3"
+        style="position: relative"
+        *ngIf="formMerito.get('bDocumentoVerificado')?.value"
+      >
+        <div class="tag">Registrar mérito</div>
+        <div class="field col-12">
+          <span class="p-float-label">
+            <p-dropdown
+              [style]="{ width: '100%' }"
+              [options]="tipo_merito()"
+              optionLabel="cTipoMerito"
+              optionValue="iTipoMeritoId"
+              formControlName="iTipoMeritoId"
+              appendTo="body"
+            />
+            <label for="iTipoMeritoId">Tipo de merito</label>
+          </span>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <span class="p-float-label">
+            <p-calendar
+              id="dMeritoFecha"
+              formControlName="dMeritoFecha"
+              dateFormat="dd/mm/yy"
+              showIcon="true"
+              [styleClass]="'w-full'"
+              aria-describedby="dMeritoFecha-help"
+              appendTo="body"
+            />
+
+            <label for="dMeritoFecha">Fecha de mérito</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-6">
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="[
+                { iEstado: 1, cEstado: 'Activo' },
+                { iEstado: 0, cEstado: 'Inactivo' },
+              ]"
+              optionValue="iEstado"
+              optionLabel="cEstado"
+              [showClear]="true"
+              formControlName="iEstado"
+              placeholder="Seleccione un estado"
+              styleClass="w-full"
+              appendTo="body"
+            />
+            <label for="nMeritoPuntaje">Estado</label>
+          </span>
+        </div>
+
+        <div class="field col-12">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="cMeritoDescripcion"
+              formControlName="cMeritoDescripcion"
+              aria-describedby="cMeritoDescripcion-help"
+            />
+
+            <label for="cMeritoDescripcion">Descripción</label>
+          </span>
+        </div>
+
+        <div class="field col-12">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="cMeritoRef"
+              formControlName="cMeritoRef"
+              aria-describedby="cMeritoRef-help"
+            />
+
+            <label for="cMeritoRef">Referencia</label>
+          </span>
+        </div>
+
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <p-inputNumber
+              inputStyleClass="w-full"
+              placeholder="00"
+              inputId="iMeritoPuesto"
+              [showButtons]="true"
+              formControlName="iMeritoPuesto"
+              aria-describedby="iMeritoPuesto-help"
+            />
+
+            <label for="iMeritoPuesto">Puesto</label>
+          </span>
+        </div>
+
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <p-inputNumber
+              inputId="iMeritoPuntaje"
+              formControlName="iMeritoPuntaje"
+              mode="decimal"
+              [minFractionDigits]="2"
+              [maxFractionDigits]="2"
+              [showButtons]="true"
+              placeholder="00"
+              inputStyleClass="w-full"
+              aria-describedby="iMeritoPuntaje-help"
+            >
+            </p-inputNumber>
+            <label for="iMeritoPuntaje">Puntaje</label>
+          </span>
+        </div>
+        <div class="field col-12 md:col-4">
+          <p-button
+            styleClass="uppercase"
+            type="submit"
+            [label]="this.formMerito.value.iMeritoId ? 'Actualizar' : 'Guardar'"
+            [disabled]="formMerito.invalid"
+            [severity]="this.formMerito.value.iMeritoId ? 'warning' : 'success'"
+            (onClick)="guardarMerito()"
+          ></p-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</app-container-page>

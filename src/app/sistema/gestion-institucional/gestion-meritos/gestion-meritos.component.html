@@ -1,0 +1,33 @@
+<app-container-page
+  [title]="'Registro de Meritos para el año: ' + anio_actual"
+  [actions]="acciones"
+  (accionBtnItem)="accionBtnItem($event)"
+>
+  <p-toast />
+  <div class="grid">
+    <div class="col-12 lg:col-4 mt-3">
+      <app-form-merito
+        [perfil]="perfil"
+        [data]="selecionado"
+        [dremoiYAcadId]="dremoiYAcadId"
+        [bUpdate]="bUpdate"
+        (closeModal)="accionBtnItem($event)"
+      >
+      </app-form-merito>
+    </div>
+    <div class="col-12 lg:col-8 mt-3">
+      <app-table-primeng
+        [columnas]="columns"
+        [data]="meritos()"
+        [scrollable]="true"
+        (accionBtnItem)="accionBtnItem($event)"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+        [showCaption]="false"
+      >
+      </app-table-primeng>
+    </div>
+  </div>
+</app-container-page>

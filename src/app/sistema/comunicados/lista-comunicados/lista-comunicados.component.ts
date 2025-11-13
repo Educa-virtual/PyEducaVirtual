@@ -23,6 +23,7 @@ export class ListaComunicadosComponent implements OnInit {
   iYAcadId: number;
   perfil: any;
   seleccionarLista: any;
+  bBandeja: boolean = false;
 
   comunicados: Array<any> = [];
   comunicados_filtrados: Array<any> = [];
@@ -119,5 +120,12 @@ export class ListaComunicadosComponent implements OnInit {
       }
       return 'card-regular';
     }
+  }
+
+  seleccionarBandeja($event: any) {
+    const datos = $event.data;
+    console.log('ver datos ', datos);
+
+    this.bBandeja = true;
   }
 }

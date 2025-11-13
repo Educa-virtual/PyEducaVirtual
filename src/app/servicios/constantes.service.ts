@@ -37,11 +37,11 @@ const docente = [
   {
     items: [
       inicio,
-      {
-        label: 'Comunicados',
-        icon: 'pi pi-fw pi-bell',
-        routerLink: ['/docente/comunicados'],
-      },
+      // {
+      //   label: 'Comunicados',
+      //   icon: 'pi pi-fw pi-bell',
+      //   routerLink: ['/docente/comunicados'],
+      // },
       // {
       //   label: 'Portafolio',
       //   icon: 'pi pi-fw pi-folder',
@@ -238,6 +238,11 @@ const docente = [
             routerLink: ['/bienestar/recordario-fechas'],
           },
         ],
+      },
+      {
+        label: 'Comunicados',
+        icon: 'pi pi-fw pi-share-alt',
+        routerLink: ['/comunicados/lista-comunicados'],
       },
     ],
   },

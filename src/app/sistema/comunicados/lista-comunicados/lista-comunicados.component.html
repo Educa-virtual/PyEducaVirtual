@@ -7,7 +7,7 @@
     </div>
   </ng-template>
 
-  <div class="grid">
+  <div class="grid mb-3">
     <div class="col-12">
       <p-inputGroup>
         <p-inputGroupAddon> Buscar </p-inputGroupAddon>
@@ -22,20 +22,36 @@
     <p-table
       [value]="comunicados_filtrados"
       selectionMode="single"
+      styleClass="p-datatable-sm"
       [(selection)]="seleccionarLista"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      (onRowSelect)="seleccionarBandeja($event)"
     >
       <ng-template pTemplate="header">
         <tr>
           <th class="text-center">#</th>
-          <th class="text-center">Titulo</th>
-          <th class="text-center">Descricpion</th>
-          <th class="text-center">Emision</th>
-          <th class="text-center">Finalizacion</th>
+          <th pSortableColumn="cComunicadoTitulo" class="text-center">
+            Titulo <p-sortIcon field="cComunicadoTitulo" />
+          </th>
+          <th pSortableColumn="cComunicadoDescripcion" class="text-center">
+            Descripción <p-sortIcon field="cComunicadoDescripcion" />
+          </th>
+          <th pSortableColumn="dtComunicadoEmision" class="text-center">
+            Emisión <p-sortIcon field="dtComunicadoEmision" />
+          </th>
+          <th pSortableColumn="dtComunicadoHasta" class="text-center">
+            Finalización <p-sortIcon field="dtComunicadoHasta" />
+          </th>
           <th class="text-center">Estado</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-index="rowIndex" let-com>
-        <tr [pSelectableRow]="com" [pSelectableRowIndex]="index">
+        <tr
+          [pSelectableRow]="com"
+          [pSelectableRowIndex]="index"
+          [style]="{ 'background-color': com.cColor }"
+        >
           <td class="text-center">{{ index + 1 }}</td>
           <td class="text-center">{{ com.cComunicadoTitulo }}</td>
           <td class="texto-cortado">{{ com.cComunicadoDescripcion }}</td>
@@ -81,3 +97,15 @@
 </p-panel>
 
 <p-toast></p-toast>
+
+<p-dialog
+  header="Mensaje de la Bandeja"
+  [modal]="true"
+  [(visible)]="bBandeja"
+  [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <div class="grid">
+    <div class="col-12"></div>
+  </div>
+</p-dialog>

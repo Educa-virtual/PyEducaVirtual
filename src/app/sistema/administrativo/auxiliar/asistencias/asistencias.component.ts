@@ -51,7 +51,7 @@ export class AsistenciasComponent implements OnInit {
   estado: boolean = false;
   temporal: any = [];
   archivos: any = [];
-  marcador: any;
+  marcador: Date = new Date();
   buscar: boolean = true;
   messages = [
     { severity: 'info', detail: 'Este Registro solo marca la hora de Ingreso del Alumnado' },
@@ -467,6 +467,7 @@ export class AsistenciasComponent implements OnInit {
     this.alumnos[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
     this.alumnos[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
+
   cambiarEstadoEstudiante(index: any, item: any) {
     const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
     const indice = (Number(valor) + 1) % this.tipoAsistencia.length;
@@ -475,10 +476,12 @@ export class AsistenciasComponent implements OnInit {
     this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
     this.estudiante[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
+
   camaraEncontrada() {
     this.estado = false;
     this.progreso = false;
   }
+
   seleccionarFolder(event: any, seleccionado: any, fileUpload: any) {
     const archivo = event.files[0];
     if (archivo) {
@@ -486,9 +489,11 @@ export class AsistenciasComponent implements OnInit {
       fileUpload.name = archivo.name[0];
     }
   }
+
   limpiar(fileUpload: any) {
     fileUpload.clear();
   }
+
   descargarArchivo(archivo: any) {
     const params = {
       petition: 'post',

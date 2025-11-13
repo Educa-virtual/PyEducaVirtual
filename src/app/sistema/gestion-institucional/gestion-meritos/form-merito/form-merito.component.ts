@@ -248,7 +248,7 @@ export class FormMeritoComponent implements OnInit, OnChanges {
       cMeritoDescripcion: data?.cMeritoDescripcion || '',
       iMeritoPuntaje: data?.iMeritoPuntaje || 0,
       iMeritoPuesto: data?.iMeritoPuesto || 0,
-      iEstado: data?.iEstado || 1,
+      iEstado: Number(data?.iEstado) || 1,
       cMeritoRef: data?.cMeritoRef || null,
       dMeritoFecha: data?.dMeritoFecha ? new Date(data.dMeritoFecha) : new Date(),
       iYAcadId: data?.iYAcadId || this.dremoiYAcadId,

@@ -30,6 +30,8 @@ export class ConfigurarLogroComponent implements OnInit, OnChanges {
   idDocCursoId: string;
   verInputsEscalas: boolean = false;
 
+  valor_anterior: any;
+
   CALIFICACION_CUANTITATIVA = this.logroAlcanzadoService.CALIFICACION_CUANTITATIVA;
   CALIFICACION_EQUIVALENTE = this.logroAlcanzadoService.CALIFICACION_EQUIVALENTE;
 
@@ -65,18 +67,24 @@ export class ConfigurarLogroComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['curso'] && this.curso?.idDocCursoId) {
+      this.formEscala.reset();
       this.obtenerEscalasRegistradas();
     }
   }
 
+  revisarConfigEscala(escalas_registradas: Array<object>) {
+    const escalas_configuradas = escalas_registradas.filter((escala: any) => {
+      console.log(escala.idDocCursoId, 'escala');
+      if (escala.idDocCursoId !== null) return escala;
+    });
+    if (escalas_configuradas.length > 0) {
+      this.formEscala.get('iTipoCalificacionId').patchValue(this.CALIFICACION_EQUIVALENTE);
+    } else {
+      this.formEscala.get('iTipoCalificacionId').patchValue(this.CALIFICACION_CUANTITATIVA);
+    }
+  }
+
   crearControlesEscalas(escalas_registradas: Array<object>) {
-    this.formEscala
-      .get('iTipoCalificacionId')
-      .patchValue(
-        escalas_registradas.length > 0
-          ? this.CALIFICACION_EQUIVALENTE
-          : this.CALIFICACION_CUANTITATIVA
-      );
     const formArray = this.formEscala.get('controles_escalas') as FormArray;
     formArray.clear();
     escalas_registradas.map((escala: any) => {
@@ -100,6 +108,7 @@ export class ConfigurarLogroComponent implements OnInit, OnChanges {
       })
       .subscribe({
         next: (response: any) => {
+          this.revisarConfigEscala(response.data);
           this.crearControlesEscalas(response.data);
         },
         error: error => {
@@ -145,5 +154,67 @@ export class ConfigurarLogroComponent implements OnInit, OnChanges {
           });
         },
       });
+  }
+
+  guardarValorAnterior(event) {
+    this.valor_anterior = event?.target?.value;
+  }
+
+  validarEscala(tipo: 'min' | 'max', index: number) {
+    this.messageService.clear();
+    const formArray = this.controles_escalas;
+    if (!formArray || index < 0 || index >= formArray.length) return;
+
+    const grupo = formArray.at(index) as FormGroup;
+    const valorMin = Number(grupo.get('nEscalaCalifMin')?.value ?? NaN);
+    const valorMax = Number(grupo.get('nEscalaCalifMax')?.value ?? NaN);
+    const valorAnterior = Number(
+      String(this.valor_anterior)
+        .replace(/[^0-9\-,.]/g, '')
+        .replace(',', '.')
+    );
+
+    if (tipo === 'min') {
+      if (valorMin >= valorMax) {
+        grupo.get('nEscalaCalifMin')?.setValue(valorAnterior, { emitEvent: false });
+        grupo.get('nEscalaCalifMin')?.updateValueAndValidity();
+        (grupo as FormGroup).markAsDirty();
+        this.escalas = formArray.value;
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Advertencia',
+          detail: 'El valor mínimo debe ser menor al valor máximo',
+        });
+        return;
+      }
+      if (index > 0 && !isNaN(valorMin)) {
+        const prev = formArray.at(index - 1) as FormGroup;
+        const nuevoMaxPrev = parseFloat((valorMin - 0.01).toFixed(2));
+        prev.get('nEscalaCalifMax')?.setValue(nuevoMaxPrev, { emitEvent: false });
+        prev.get('nEscalaCalifMax')?.updateValueAndValidity();
+        (prev as FormGroup).markAsDirty();
+      }
+    } else {
+      if (valorMax <= valorMin) {
+        grupo.get('nEscalaCalifMax')?.setValue(valorAnterior, { emitEvent: false });
+        grupo.get('nEscalaCalifMax')?.updateValueAndValidity();
+        (grupo as FormGroup).markAsDirty();
+        this.escalas = formArray.value;
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Advertencia',
+          detail: 'El valor máximo debe ser mayor al valor mínimo',
+        });
+        return;
+      }
+      if (index < formArray.length - 1 && !isNaN(valorMax)) {
+        const next = formArray.at(index + 1) as FormGroup;
+        const nuevoMinNext = parseFloat((valorMax + 0.01).toFixed(2));
+        next.get('nEscalaCalifMin')?.setValue(nuevoMinNext, { emitEvent: false });
+        next.get('nEscalaCalifMin')?.updateValueAndValidity();
+        (next as FormGroup).markAsDirty();
+      }
+    }
+    this.escalas = formArray.value;
   }
 }

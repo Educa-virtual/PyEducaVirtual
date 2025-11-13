@@ -23,11 +23,15 @@
           <p-inputNumber
             [formControl]="$any(controles_escalas.at($index))?.controls['nEscalaCalifMin']"
             [min]="0"
-            [step]="1"
+            [max]="9999999"
+            mode="decimal"
+            [maxFractionDigits]="2"
             [useGrouping]="false"
             [showButtons]="false"
             [required]="true"
             class="group-element"
+            (onFocus)="guardarValorAnterior($index)"
+            (onBlur)="validarEscala('min', $index)"
           />
         </p-inputGroup>
       </div>
@@ -37,11 +41,15 @@
           <p-inputNumber
             [formControl]="$any(controles_escalas.at($index))?.controls['nEscalaCalifMax']"
             [min]="0"
-            [step]="1"
+            [max]="9999999"
+            mode="decimal"
+            [maxFractionDigits]="2"
             [useGrouping]="false"
             [showButtons]="false"
             [required]="true"
             class="group-element"
+            (onFocus)="guardarValorAnterior($event)"
+            (onBlur)="validarEscala('max', $index)"
           />
         </p-inputGroup>
       </div>

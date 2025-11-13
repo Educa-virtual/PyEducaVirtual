@@ -326,4 +326,9 @@ export class FormMeritoComponent implements OnInit, OnChanges {
     // Aquí iría tu llamada al servicio o lógica de guardado
     // this._GeneralService.saveMerito(payload).subscribe({...})
   }
+
+  esInvalido(control: string): boolean {
+    const c = this.formMerito.get(control);
+    return !!(c && c.invalid && (c.dirty || c.touched));
+  }
 }

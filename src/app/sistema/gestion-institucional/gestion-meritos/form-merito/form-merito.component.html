@@ -18,7 +18,7 @@
               formControlName="iTipoIdentId"
               appendTo="body"
             />
-            <label for="iTipoIdentId">Tipo</label>
+            <label for="iTipoIdentId">Tipo (*)</label>
           </span>
         </div>
 
@@ -29,8 +29,9 @@
               id="cDocumento"
               formControlName="cDocumento"
               aria-describedby="cDocumento-help"
+              [ngClass]="{ 'input-invalid': esInvalido('cDocumento') }"
             />
-            <label for="cDocumento">Documento / CE</label>
+            <label for="cDocumento">Documento / CE (*)</label>
           </span>
         </div>
         <div class="field col-12 md:col-2" *ngIf="formMerito.get('iTipoIdentId')?.value > 0">
@@ -52,7 +53,7 @@
         style="position: relative"
         *ngIf="formMerito.get('bDocumentoVerificado')?.value"
       >
-        <div class="tag">Registrar mérito</div>
+        <div class="tag">Registrar tipo de mérito(*)</div>
         <div class="field col-12">
           <span class="p-float-label">
             <p-dropdown
@@ -62,8 +63,9 @@
               optionValue="iTipoMeritoId"
               formControlName="iTipoMeritoId"
               appendTo="body"
+              [ngClass]="{ 'input-invalid': esInvalido('iTipoMeritoId') }"
             />
-            <label for="iTipoMeritoId">Tipo de merito</label>
+            <label for="iTipoMeritoId">Tipo de merito(*)</label>
           </span>
         </div>
 
@@ -79,7 +81,7 @@
               appendTo="body"
             />
 
-            <label for="dMeritoFecha">Fecha de mérito</label>
+            <label for="dMeritoFecha">Fecha de mérito(*)</label>
           </span>
         </div>
         <div class="field col-12 md:col-6">
@@ -97,7 +99,7 @@
               styleClass="w-full"
               appendTo="body"
             />
-            <label for="nMeritoPuntaje">Estado</label>
+            <label for="nMeritoPuntaje">Estado(*)</label>
           </span>
         </div>
 
@@ -108,9 +110,10 @@
               id="cMeritoDescripcion"
               formControlName="cMeritoDescripcion"
               aria-describedby="cMeritoDescripcion-help"
+              [ngClass]="{ 'input-invalid': esInvalido('cMeritoDescripcion') }"
             />
 
-            <label for="cMeritoDescripcion">Descripción</label>
+            <label for="cMeritoDescripcion">Descripción (*)</label>
           </span>
         </div>
 
@@ -121,6 +124,7 @@
               id="cMeritoRef"
               formControlName="cMeritoRef"
               aria-describedby="cMeritoRef-help"
+              [ngClass]="{ 'input-invalid': esInvalido('cMeritoRef') }"
             />
 
             <label for="cMeritoRef">Referencia</label>
@@ -136,6 +140,7 @@
               [showButtons]="true"
               formControlName="iMeritoPuesto"
               aria-describedby="iMeritoPuesto-help"
+              [ngClass]="{ 'input-invalid': esInvalido('iMeritoPuesto') }"
             />
 
             <label for="iMeritoPuesto">Puesto</label>
@@ -154,6 +159,7 @@
               placeholder="00"
               inputStyleClass="w-full"
               aria-describedby="iMeritoPuntaje-help"
+              [ngClass]="{ 'input-invalid': esInvalido('iMeritoPuesto') }"
             >
             </p-inputNumber>
             <label for="iMeritoPuntaje">Puntaje</label>
@@ -171,5 +177,6 @@
         </div>
       </div>
     </form>
+    <div class="tag2">Los parámetros en (*) son obligatorios</div>
   </div>
 </app-container-page>

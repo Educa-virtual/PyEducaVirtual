@@ -53,7 +53,13 @@ export const MAPEO_COLUMNAS = {
 export const CAMPOS_INDICADOR = {
   [indicadorMatriculas]: ['En proceso', 'Definitivo', 'Traslado', 'Abandono'],
   [indicadorDeserciones]: ['Otro', 'Definitiva', 'Temporal'],
-  [indicadorFaltasTardanzas]: ['Asistencia', 'Tardanza', 'Inasistencia'],
+  [indicadorFaltasTardanzas]: [
+    'Tardanza',
+    'Inasistencia',
+    'Inasistencia justificada',
+    'Tardanza justificada',
+    'Sin registro',
+  ],
   [indicadorDesempeno]: ['Excelente', 'Bueno', 'Regular'],
   [indicadorBajoRendimiento]: ['Deficiente'],
   [indicadorVacantes]: ['NEE', 'Regular'],

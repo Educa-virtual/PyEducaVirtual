@@ -8,7 +8,7 @@ export const indicadorVacantes = 'indicadorVacantes';
 export const reportes = [
   { key: 'resumen-matriculados', titulo: 'REPORTE DE MATRICULADOS', color: '#e30052' },
   { key: 'resumen-deserciones', titulo: 'REPORTE DE DESERCIONES', color: '#e53935' },
-  { key: 'resumen-asistencia', titulo: 'REPORTE DE ASISTENCIA', color: '#1e88e5' },
+  { key: 'resumen-asistencia', titulo: 'REPORTE DE FALTAS Y TARDANZAS', color: '#1e88e5' },
   { key: 'resumen-desempenio', titulo: 'REPORTE DE DESEMPEÑO', color: '#43a047' },
   { key: 'resumen-bajo-rendimiento', titulo: 'REPORTE DE BAJO RENDIMIENTO', color: '#fbc02d' },
   { key: 'resumen-vacantes', titulo: 'REPORTE DE VACANTES', color: '#8e24aa' },
@@ -107,6 +107,32 @@ export const columnaInasistencia = {
   text: 'center',
 };
 
+export const InasistenciaJustificada = {
+  type: 'text',
+  width: '3rem',
+  field: 'Inasistencia justificada',
+  header: 'Inasistencia justificada',
+  text_header: 'center',
+  text: 'center',
+};
+
+export const TardanzaJustificada = {
+  type: 'text',
+  width: '3rem',
+  field: 'Tardanza justificada',
+  header: 'Tardanza justificada',
+  text_header: 'center',
+  text: 'center',
+};
+export const sinRegistro = {
+  type: 'text',
+  width: '3rem',
+  field: 'Sin registro',
+  header: 'Sin registro',
+  text_header: 'center',
+  text: 'center',
+};
+
 export const columnaExcelente = {
   type: 'text',
   width: '3rem',
@@ -200,9 +226,12 @@ export const columnasIndicadorAsistencia = [
   columnaDetalle,
   columnaPorcentaje,
   columnaCantidad,
-  columnaAsistencia,
+  // columnaAsistencia,
   columnaTardanza,
   columnaInasistencia,
+  InasistenciaJustificada,
+  TardanzaJustificada,
+  sinRegistro,
 ];
 
 export const columnasIndicadorDesempeno = [

@@ -24,6 +24,8 @@ import {
 import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.service';
 import { CAMPOS_INDICADOR, COLORES_BASE, MAPEO_COLUMNAS } from './indicadores-mapeos';
 
+import * as XLSX from 'xlsx-js-style';
+
 @Component({
   selector: 'app-reporte-indicadores',
   standalone: true,
@@ -56,6 +58,8 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   grados = signal<any[]>([]);
   secciones = signal<any[]>([]);
 
+  _export: string = '';
+
   selectTab = signal<number>(0);
   tabSeleccionado = signal<string>('resumen-matriculados');
 
@@ -66,6 +70,8 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   chartOptionsBar = signal<any>(null);
 
   columnasTabla = signal<any[]>([]);
+
+  detalle = signal<any[]>([]); //Detalle de los indicadores
 
   data = signal<any[]>([]);
   tabs = signal<any[]>([
@@ -82,7 +88,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       opcion: indicadorDeserciones,
     },
     {
-      title: 'Asistencia',
+      title: 'Faltas y tardanzas',
       icon: 'pi pi-calendar',
       tab: 'resumen-asistencia',
       opcion: indicadorFaltasTardanzas,
@@ -148,6 +154,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
 
   obtenerResultadosxIndicador() {
     const opcion = this.obtenerOpcion();
+    const _opcion = String(opcion + 'Detalle');
     if (this.formIndicadores.value.iIieeId && !this.formIndicadores.value.iSedeId) {
       this.messageService.add({
         severity: 'error',
@@ -181,8 +188,38 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
               detail: 'Error. No se proceso petición ' + error,
             });
           },
+          complete: () => {
+            this.obtenerDetalle(_opcion);
+          },
         });
     }
+  }
+
+  obtenerDetalle(_opcion: string) {
+    this._export = 'rpt' + _opcion + '.xls';
+    this._GeneralService
+      .searchCalendario({
+        json: JSON.stringify(this.formIndicadores.value),
+        _opcion: _opcion,
+      })
+      .subscribe({
+        next: (resp: any) => {
+          this.detalle.set(resp.data);
+        },
+        error: error => {
+          let message = error?.error?.message || 'Sin conexión a la bd';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: message,
+          });
+        },
+      });
   }
 
   obtenerColumnasTabla() {
@@ -275,10 +312,16 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
           );
         },
         error: error => {
+          let message = error?.error?.message || 'Sin conexión a la bd';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
           this.messageService.add({
             severity: 'error',
-            summary: 'Problema al obtener sedes',
-            detail: error,
+            summary: 'Mensaje del sistema',
+            detail: message,
           });
         },
       });
@@ -475,5 +518,20 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
     const { iIieeId, iSedeId } = this.formIndicadores.value;
 
     return this.isAdminDremo() ? !!(iIieeId && iSedeId) : !!iSedeId;
+  }
+
+  generarExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(this.data());
+    // Crear un libro de trabajo y añadir la hoja
+    const worksheet2 = XLSX.utils.json_to_sheet(this.detalle());
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+
+    //Agregar en otra hoja
+    XLSX.utils.book_append_sheet(workbook, worksheet2, 'Detalle');
+
+    // Exportar el archivo Excel
+    const titulo = this._export;
+    XLSX.writeFile(workbook, titulo);
   }
 }

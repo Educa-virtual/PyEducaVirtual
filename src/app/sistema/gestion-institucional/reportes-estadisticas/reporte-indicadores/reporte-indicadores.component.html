@@ -92,13 +92,14 @@
         icon="pi pi-search"
         (onClick)="obtenerResultadosxIndicador()"
       />
-      <!-- <p-button
+      <p-button
         pRipple
         severity="success"
         label="Exportar"
         icon="pi pi-fw pi-print"
-        [disabled]="true"
-      /> -->
+        [disabled]="data().length === 0"
+        (click)="generarExcel()"
+      />
     </div>
     <app-tabs-primeng
       class="col-12"

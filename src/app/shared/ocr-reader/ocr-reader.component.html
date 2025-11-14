@@ -1,0 +1,25 @@
+<p-card header="Lector OCR">
+  <div class="flex flex-column gap-3">
+    <!-- Subir Imagen -->
+    <p-fileUpload
+      mode="basic"
+      name="file"
+      accept="image/*"
+      chooseLabel="Seleccionar Imagen"
+      (onSelect)="onFileSelect($event)"
+      auto="true"
+    >
+    </p-fileUpload>
+
+    <!-- Vista previa -->
+    <img *ngIf="imageSrc" [src]="imageSrc" alt="preview" class="w-full border-1 border-round" />
+
+    <!-- Barra de progreso -->
+    <p-progressBar *ngIf="progress > 0 && progress < 100" [value]="progress"> </p-progressBar>
+
+    <!-- Resultado OCR -->
+    <p-panel header="Texto Detectado" *ngIf="ocrText">
+      <pre>{{ ocrText }}</pre>
+    </p-panel>
+  </div>
+</p-card>

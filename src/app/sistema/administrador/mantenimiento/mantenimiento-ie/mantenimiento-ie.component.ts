@@ -112,13 +112,13 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar',
-      icon: 'pi pi-trash',
-      accion: 'eliminar',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ]);
 
   public columnasSedes = signal<any[]>([
@@ -295,10 +295,27 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
       this.formMantenimiento.controls.iIieeId.setValue(null);
       this.formMantenimiento.controls.iSedeId.setValue(null);
 
+      console.log(instituciones, 'instituciones');
+
       const { iNivelTipoId, iEstado } = this.formMantenimiento.value;
       const institucionesFiltradas = instituciones.filter(item => {
         const coincideNivel = iNivelTipoId == null || Number(item.iNivelTipoId) === iNivelTipoId;
-        const coincideEstado = iEstado == null || Number(item.iEstado) === iEstado;
+        //Nueva condicion para filtrar
+        const estadoFiltro = iEstado != null ? Number(iEstado) : null;
+
+        const coincideEstado =
+          estadoFiltro == null
+            ? true
+            : estadoFiltro === 1
+              ? Number(item.iEstado) === 1
+              : Number(item.iEstado) !== 1;
+
+        //Validar formulario
+        const estado = this.formMantenimiento.value.iEstado;
+        this.formMantenimiento.patchValue({
+          iEstado: estado === '1' ? '1' : '0',
+        });
+
         return coincideNivel && coincideEstado;
       });
 

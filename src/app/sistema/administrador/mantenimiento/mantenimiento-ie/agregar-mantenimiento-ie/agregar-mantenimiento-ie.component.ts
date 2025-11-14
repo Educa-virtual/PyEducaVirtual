@@ -200,13 +200,30 @@ export class AgregarMantenimientoIeComponent
           } else {
             this.mostrarMensajeToast({
               severity: 'error',
-              summary: 'Error',
+              summary: 'Mensaje del sistema',
               detail: response.mensaje || 'Error al crear la institución',
             });
           }
         },
         error: error => {
-          this.mostrarErrores(error);
+          let message = error?.error?.message || 'Sin conexión a la bd';
+
+          // 1. Eliminar TODO lo que esté entre corchetes [ ... ]
+          message = message.replace(/\[[^\]]*\]/g, '');
+          // 2. Eliminar la palabra "SQLSTATE:" si aparece
+          message = message.replace(/SQLSTATE:/gi, '');
+          // 3. Eliminar "Mensaje del sistema" si aparece en el mensaje recibido
+          message = message.replace(/Mensaje del sistema/gi, '');
+          // 4. Cortar todo lo que venga después de un paréntesis "(" (Connection, SQL, etc.)
+          message = message.split('(')[0];
+          // 5. Recortar espacios sobrantes
+          message = message.replace(/\s+/g, ' ').trim();
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: message,
+          });
         },
       });
   }

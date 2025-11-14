@@ -26,8 +26,6 @@
           [options]="[
             { iEstado: '1', cEstado: 'Activo' },
             { iEstado: '0', cEstado: 'Inactivo' },
-            { iEstado: '2', cEstado: 'Inactivo' },
-            { iEstado: null, cEstado: 'Inactivo' },
           ]"
           optionValue="iEstado"
           optionLabel="cEstado"
@@ -143,13 +141,8 @@
                   severity="warning"
                   (onClick)="showModal.set(true); itemSelected.set(institucionSeleccionada())"
                 />
-                <p-button
-                  icon="pi pi-trash"
-                  [rounded]="true"
-                  [text]="true"
-                  severity="danger"
-                  (onClick)="eliminarIE(institucionSeleccionada())"
-                />
+                <!-- <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+              (onClick)="eliminarIE(institucionSeleccionada())" /> -->
               </div>
             </div>
           </p-toolbar>
@@ -265,5 +258,4 @@
       severity="success"
     ></p-button>
   </p-footer>
-  <p-toast></p-toast>
 </p-dialog>

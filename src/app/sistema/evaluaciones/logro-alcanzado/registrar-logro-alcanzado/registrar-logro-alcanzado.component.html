@@ -53,6 +53,7 @@
                 placeholder="Seleccionar"
                 [style]="{ flex: '1', width: '100%' }"
                 styleClass="group-element"
+                (onBlur)="validarCambios(i)"
               />
             </td>
             <td width="15%" *ngIf="bTieneEscalaNumerica">
@@ -67,6 +68,7 @@
                   [max]="20"
                   [minFractionDigits]="2"
                   [maxFractionDigits]="2"
+                  (onBlur)="obtenerLogroEquivalente(i)"
                 />
                 <input
                   type="text"
@@ -74,7 +76,7 @@
                   [style]="{ 'text-align': 'center', width: '45px' }"
                   pInputText
                   pattern="^(AD|A|B|C)$"
-                  [disabled]="true"
+                  [readOnly]="true"
                   maxlength="2"
                 />
               </div>
@@ -93,39 +95,54 @@
                 [style.maxHeight]="4"
                 cdkAutosizeMinRows="2.5"
                 cdkAutosizeMaxRows="4"
+                (blur)="validarCambios(i)"
               ></textarea>
             </td>
-            <td width="5%">
-              <p-button
-                *ngIf="
-                  !controles_logros.at(i).value.iResultadoCompId &&
-                  !controles_logros.at(i).value.bMostrarBoton
-                "
-                icon="pi pi-pencil"
-                severity="danger"
-                pTooltip="Falta registrar"
-                tooltipPosition="top"
-                disabled
-              />
-              <p-button
-                *ngIf="
-                  controles_logros.at(i).value.iResultadoCompId &&
-                  !controles_logros.at(i).value.bMostrarBoton
-                "
-                icon="pi pi-check"
-                severity="primary"
-                pTooltip="Logro registrado"
-                tooltipPosition="top"
-                disabled
-              />
-              <p-button
-                *ngIf="controles_logros.at(i).value.bMostrarBoton"
-                icon="pi pi-save"
-                severity="success"
-                pTooltip="Cambios pendientes"
-                tooltipPosition="top"
-                (click)="actualizarLogro(i)"
-              />
+            <td width="10%">
+              <div class="flex gap-1">
+                <p-button
+                  size="small"
+                  [disabled]="!controles_logros.at(i).value.bMostrarBoton"
+                  icon="pi pi-undo"
+                  severity="secondary"
+                  pTooltip="Deshacer cambios"
+                  tooltipPosition="top"
+                  (click)="restaurarInicial(i)"
+                />
+                <p-button
+                  size="small"
+                  *ngIf="
+                    !controles_logros.at(i).value.iResultadoCompId &&
+                    !controles_logros.at(i).value.bMostrarBoton
+                  "
+                  icon="pi pi-pencil"
+                  severity="danger"
+                  pTooltip="Falta registrar"
+                  tooltipPosition="top"
+                  disabled
+                />
+                <p-button
+                  size="small"
+                  *ngIf="
+                    controles_logros.at(i).value.iResultadoCompId &&
+                    !controles_logros.at(i).value.bMostrarBoton
+                  "
+                  icon="pi pi-check"
+                  severity="primary"
+                  pTooltip="Logro registrado"
+                  tooltipPosition="top"
+                  disabled
+                />
+                <p-button
+                  size="small"
+                  *ngIf="controles_logros.at(i).value.bMostrarBoton"
+                  icon="pi pi-save"
+                  severity="success"
+                  pTooltip="Cambios pendientes"
+                  tooltipPosition="top"
+                  (click)="actualizarLogro(i)"
+                />
+              </div>
             </td>
           </tr>
         </ng-template>

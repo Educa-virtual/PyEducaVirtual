@@ -74,7 +74,6 @@ export class ConfigurarLogroComponent implements OnInit, OnChanges {
 
   revisarConfigEscala(escalas_registradas: Array<object>) {
     const escalas_configuradas = escalas_registradas.filter((escala: any) => {
-      console.log(escala.idDocCursoId, 'escala');
       if (escala.idDocCursoId !== null) return escala;
     });
     if (escalas_configuradas.length > 0) {

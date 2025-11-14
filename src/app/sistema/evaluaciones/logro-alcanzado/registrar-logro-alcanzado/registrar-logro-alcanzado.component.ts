@@ -68,34 +68,40 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
       console.error('Error al inicializar el formulario:', e);
     }
     this.crearControlesLogros([]);
+  }
 
-    this.formCompetencias.get('controles_logros').valueChanges.subscribe(logros => {
-      logros.forEach((logro: any, index: number) => {
-        const control = this.controles_logros.at(index);
-        if (this.logros_iniciales.length === 0) {
-          control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
-        } else {
-          const logro_inicial: any = this.logros_iniciales.find(
-            (logro_inicial: any) =>
-              Number(logro_inicial?.iCompetenciaId) === Number(logro?.iCompetenciaId)
-          );
-          if (
-            control &&
-            (Number(logro_inicial?.iResultado) !== Number(logro?.iResultado) ||
-              Number(logro_inicial?.iEscalaCalifId) !== Number(logro?.iEscalaCalifId) ||
-              logro_inicial?.cDescripcion !== logro?.cDescripcion)
-          ) {
-            control.patchValue({ bMostrarBoton: true }, { emitEvent: false });
-          } else {
-            control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
-          }
-        }
-      });
-    });
+  validarCambios(index: number) {
+    const control = this.controles_logros.at(index);
+    const logro = control.value;
+    if (this.logros_iniciales.length === 0) {
+      control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
+    } else {
+      const logro_inicial: any = this.logros_iniciales.find(
+        (logro_inicial: any) =>
+          Number(logro_inicial?.iCompetenciaId) === Number(logro?.iCompetenciaId)
+      );
+      if (
+        control &&
+        (Number(logro_inicial?.iResultado) !== Number(logro?.iResultado) ||
+          Number(logro_inicial?.iEscalaCalifId) !== Number(logro?.iEscalaCalifId) ||
+          String(logro_inicial?.cDescripcion ?? '') !== String(logro?.cDescripcion ?? ''))
+      ) {
+        console.log('HUBO cambio');
+        console.log(logro_inicial, 'inicial');
+        console.log(logro, 'actual');
+        control.patchValue({ bMostrarBoton: true }, { emitEvent: false });
+      } else {
+        console.log('SIN cambio');
+        console.log(logro_inicial?.cDescripcion, 'inicial');
+        console.log(logro?.cDescripcion, 'actual');
+        control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iDetMatrId'] && this.iDetMatrId) {
+      this.logros_iniciales = [];
       this.formCompetencias.reset();
       this.obtenerLogrosRegistrados();
     }
@@ -129,12 +135,11 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
         iDetMatrId: [this.iDetMatrId],
         iResultado: [logro_periodo ? logro_periodo['iResultado'] : null],
         iEscalaCalifId: [logro_periodo ? logro_periodo['iEscalaCalifId'] : null],
-        cDescripcion: [logro_periodo ? logro_periodo['cDescripcion'] : null],
+        cDescripcion: [logro_periodo ? logro_periodo['cDescripcion'] : ''],
         cNivelLogro: [logro_periodo ? logro_periodo['cNivelLogro'] : null],
         bMostrarBoton: [false],
       });
       formArray.push(grupo);
-      console.log(grupo.value, 'grupo');
     });
     this.logros_iniciales = JSON.parse(JSON.stringify(formArray.value));
   }
@@ -205,13 +210,19 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
             detail: 'Logro guardado exitosamente.',
           });
           // Actualizar logros_iniciales con datos actualizados
-          this.logros_iniciales.forEach((logro: any, index: number) => {
-            if (Number(logro.iCompetenciaId) === Number(form.iCompetenciaId)) {
-              logro.iResultado = form.iResultado;
-              logro.cDescripcion = form.cDescripcion;
-              logro.iResultadoCompId = form.iResultadoCompId ?? response.data.iResultadoCompId;
+          this.logros_iniciales.forEach((logro_inicial: any, index: number) => {
+            if (Number(logro_inicial.iCompetenciaId) === Number(form.iCompetenciaId)) {
+              logro_inicial.iResultado = form.iResultado;
+              logro_inicial.iEscalaCalifId = form.iEscalaCalifId;
+              logro_inicial.cDescripcion = form.cDescripcion;
+              logro_inicial.iResultadoCompId =
+                form.iResultadoCompId ?? response.data.iResultadoCompId;
               this.controles_logros.at(index).patchValue(
                 {
+                  iResultado: logro_inicial.iResultado,
+                  iEscalaCalifId: logro_inicial.iEscalaCalifId,
+                  cDescripcion: logro_inicial.cDescripcion,
+                  iResultadoCompId: logro_inicial.iResultadoCompId,
                   bMostrarBoton: false,
                 },
                 { emitEvent: false }
@@ -227,5 +238,47 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
           });
         },
       });
+  }
+
+  obtenerLogroEquivalente(index) {
+    const formArray = this.formCompetencias.get('controles_logros') as FormArray;
+    const logro = formArray.at(index).value as FormGroup;
+    const control = this.controles_logros.at(index);
+    this.escalas.map((escala: any) => {
+      if (!logro['iResultado'] || logro['iResultado'] === null) {
+        control.patchValue(
+          { iEscalaCalifId: null, cNivelLogro: null, iResultado: null },
+          { emitEvent: false }
+        );
+      } else {
+        if (
+          Number(logro['iResultado']) >= Number(escala.nEscalaCalifMin) &&
+          Number(logro['iResultado']) <= Number(escala.nEscalaCalifMax)
+        ) {
+          control.patchValue(
+            { iEscalaCalifId: escala.iEscalaCalifId, cNivelLogro: escala.cEscalaCalifLetra },
+            { emitEvent: false }
+          );
+        }
+      }
+    });
+    this.validarCambios(index);
+  }
+
+  restaurarInicial(index) {
+    const logro = this.controles_logros.at(index).value;
+    const logro_inicial = this.logros_iniciales.find(
+      (logro_inicial: any) =>
+        Number(logro_inicial?.iCompetenciaId) === Number(logro?.iCompetenciaId)
+    );
+    this.controles_logros.at(index).patchValue(
+      {
+        iResultado: logro_inicial.iResultado,
+        iEscalaCalifId: logro_inicial.iEscalaCalifId,
+        cDescripcion: logro_inicial.cDescripcion,
+        bMostrarBoton: false,
+      },
+      { emitEvent: false }
+    );
   }
 }

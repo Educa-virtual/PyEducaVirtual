@@ -3,7 +3,7 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-xl font-bold">LISTAR COMUNICADOS</div>
+      <div class="flex text-xl font-bold">BANDEJA DE COMUNICADOS</div>
     </div>
   </ng-template>
 
@@ -26,24 +26,28 @@
       [(selection)]="seleccionarLista"
       [rows]="10"
       [rowsPerPageOptions]="[10, 25, 50]"
+      [paginator]="true"
       (onRowSelect)="seleccionarBandeja($event)"
     >
       <ng-template pTemplate="header">
         <tr>
-          <th class="text-center">#</th>
-          <th pSortableColumn="cComunicadoTitulo" class="text-center">
+          <th class="text-center" width="5%">#</th>
+          <th pSortableColumn="emisor" class="text-center" width="15%">
+            Emisor <p-sortIcon field="emisor" />
+          </th>
+          <th pSortableColumn="cComunicadoTitulo" class="text-center" width="20%">
             Titulo <p-sortIcon field="cComunicadoTitulo" />
           </th>
-          <th pSortableColumn="cComunicadoDescripcion" class="text-center">
+          <th pSortableColumn="cComunicadoDescripcion" class="text-center" width="30%">
             Descripción <p-sortIcon field="cComunicadoDescripcion" />
           </th>
-          <th pSortableColumn="dtComunicadoEmision" class="text-center">
-            Emisión <p-sortIcon field="dtComunicadoEmision" />
+          <th pSortableColumn="dtComunicadoEmision" class="text-center" width="10%">
+            Publicación <p-sortIcon field="dtComunicadoEmision" />
           </th>
-          <th pSortableColumn="dtComunicadoHasta" class="text-center">
+          <th pSortableColumn="dtComunicadoHasta" class="text-center" width="10%">
             Finalización <p-sortIcon field="dtComunicadoHasta" />
           </th>
-          <th class="text-center">Estado</th>
+          <th class="text-center" width="10%">Estado</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-index="rowIndex" let-com>
@@ -52,47 +56,23 @@
           [pSelectableRowIndex]="index"
           [style]="{ 'background-color': com.cColor }"
         >
-          <td class="text-center">{{ index + 1 }}</td>
-          <td class="text-center">{{ com.cComunicadoTitulo }}</td>
-          <td class="texto-cortado">{{ com.cComunicadoDescripcion }}</td>
-          <td class="text-center">{{ com.dtComunicadoEmision | date: 'dd/MM/yyyy' }}</td>
-          <td class="text-center">{{ com.dtComunicadoHasta | date: 'dd/MM/yyyy' }}</td>
-          <td class="text-center">
+          <td class="text-center" width="5%">{{ index + 1 }}</td>
+          <td class="text-center" width="15%">{{ com.emisor | slice: 0 : 15 }}...</td>
+          <td class="text-center" width="20%">{{ com.cComunicadoTitulo | slice: 0 : 25 }}...</td>
+          <td class="text-center" width="30%">
+            {{ com.cComunicadoDescripcion | slice: 0 : 50 }}...
+          </td>
+          <td class="text-center" width="10%">
+            {{ com.dtComunicadoEmision | date: 'dd/MM/yyyy' }}
+          </td>
+          <td class="text-center" width="10%">{{ com.dtComunicadoHasta | date: 'dd/MM/yyyy' }}</td>
+          <td class="text-center" width="10%">
             <!-- <i class="pi pi-circle-off"></i> -->
             <i class="pi pi-check-circle"></i>
           </td>
         </tr>
       </ng-template>
     </p-table>
-    <!-- <p-dataView [rows]="10" [paginator]="true" [value]="comunicados_filtrados"> -->
-    <!-- <ng-template pTemplate="list" let-comunicados_filtrados>
-        <div
-          *ngFor="let comunicado of comunicados_filtrados; let first = first"
-          class="card mb-5 relative overflow-visible {{ getColorComunicado(comunicado) }}"
-        >
-          <div class="flex flex-wrap w-full justify-content-between gap-0 m-0">
-            <div class="flex gap-4 font-normal">
-              <div class="flex flex-column my-2 align-items-start">
-                <span class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2">
-                  {{ comunicado?.cComunicadoTitulo }}
-                </span>
-                <div
-                  class="flex flex-column gap-2 sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
-                >
-                  <div class="flex items-center gap-1">
-                    <i class="pi pi-calendar text-primary ml-1"></i>
-                    <span>Del:</span>
-                    <span>{{ comunicado?.dtComunicadoEmision | date: 'dd/MM/yyyy HH:mm' }}</span>
-                    <span>Al: {{ comunicado?.dtComunicadoHasta | date: 'dd/MM/yyyy HH:mm' }}</span>
-                  </div>
-                </div>
-                <p>{{ comunicado?.cComunicadoDescripcion }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-    </p-dataView> -->
   }
 </p-panel>
 
@@ -102,10 +82,22 @@
   header="Mensaje de la Bandeja"
   [modal]="true"
   [(visible)]="bBandeja"
-  [style]="{ width: '50rem' }"
+  [style]="{ width: '75rem' }"
   [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 >
   <div class="grid">
-    <div class="col-12"></div>
+    <div class="col-12 mt-3">
+      <div class="text-xl font-bold">{{ mensaje.cComunicadoTitulo?.toUpperCase() }}</div>
+      <div class="text-sm font-bold text-500">Emisor: {{ mensaje.emisor }}</div>
+      <div class="text-sm font-bold text-500">
+        Publicado: {{ mensaje.dtComunicadoEmision | date: 'dd/MM/yyyy' }} - Finalización:
+        {{ mensaje.dtComunicadoEmision | date: 'dd/MM/yyyy' }}
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card surface-50">
+        {{ mensaje.cComunicadoDescripcion }}
+      </div>
+    </div>
   </div>
 </p-dialog>

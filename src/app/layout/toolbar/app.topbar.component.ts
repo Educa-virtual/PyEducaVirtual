@@ -87,8 +87,7 @@ export class AppTopBarComponent implements OnInit {
     this.selectedPerfil = perfil ? perfil : perfil_data;
 
     if (user.iDocenteId) {
-      // this.notificacionDocente(user.iDocenteId)
-      console.log(1);
+      this.notificacionDocente();
     }
     if (user.iEstudianteId) {
       this.notificacionEstudiante();
@@ -117,7 +116,7 @@ export class AppTopBarComponent implements OnInit {
         this.notificacionEstudiante();
         break;
       case DOCENTE:
-        this.notificacionDocente(user.iDocenteId);
+        this.notificacionDocente();
         break;
     }
   }
@@ -226,19 +225,21 @@ export class AppTopBarComponent implements OnInit {
         break;
     }
   }
-  notificacionDocente(iDocenteId) {
-    const params = {
-      petition: 'post',
-      group: 'aula-virtual',
-      prefix: 'notificacion_docente',
-      ruta: 'mostrar_notificacion',
-      data: {
-        iDocenteId: iDocenteId,
-        iYAcadId: this._ConstantesService.iYAcadId,
-        iSedeId: this._ConstantesService.iSedeId,
-      },
-    };
-    this.getInformation(params, params.prefix);
+  notificacionDocente() {
+    this.comunicadosService
+      .listarComunicados({
+        iYAcadId: this.iYAcadId,
+        iTipoUsuario: this.USUARIO_RECIPIENTE,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.comunicados = data.data;
+          this.totalComunicados = this.comunicados.length;
+        },
+        error: error => {
+          console.error('Error obteniendo lista de comunicados:', error);
+        },
+      });
   }
 
   comunicados: any;
@@ -251,12 +252,6 @@ export class AppTopBarComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          data.data.forEach(i => {
-            i.cComunicadoDescripcion =
-              i.cComunicadoDescripcion.length > 100
-                ? i.cComunicadoDescripcion.substring(0, 100) + '...'
-                : i.cComunicadoDescripcion;
-          });
           this.comunicados = data.data;
           this.totalComunicados = this.comunicados.length;
         },

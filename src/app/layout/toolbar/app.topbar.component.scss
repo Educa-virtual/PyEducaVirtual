@@ -242,3 +242,17 @@
   background-size: auto 40px;
   /* ajusta si necesitas que la altura se adapte */
 }
+.hover-comunicado {
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.hover-comunicado:hover {
+  background: #f2f2f2;
+  transform: translateX(4px);
+}

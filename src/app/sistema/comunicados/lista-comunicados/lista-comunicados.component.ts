@@ -122,10 +122,11 @@ export class ListaComunicadosComponent implements OnInit {
     }
   }
 
+  mensaje: any = {};
+
   seleccionarBandeja($event: any) {
     const datos = $event.data;
-    console.log('ver datos ', datos);
-
+    this.mensaje = datos;
     this.bBandeja = true;
   }
 }

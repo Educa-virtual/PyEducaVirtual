@@ -354,7 +354,13 @@
   background-color: var(--surface-hovered-background) !important;
 }
 .texto-cortado {
-  max-width: 700px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+.texto-emisor {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

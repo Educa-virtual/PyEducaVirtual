@@ -48,13 +48,22 @@
   <div class="flex flex-column gap-3 w-25rem">
     <div>
       <span class="font-medium text-900 block mb-2">Notificaciones</span>
-      <ul class="list-none p-0 m-0 flex flex-column gap-3">
-        <li *ngFor="let lista of comunicados" class="flex align-items-center gap-2">
-          <a [routerLink]="['/comunicados/lista-comunicados']">
-            <div><i class="pi pi-graduation-cap" style="font-size: 2rem"></i></div>
+      <ul class="list-none p-0 m-0 flex flex-column gap-2">
+        <li *ngFor="let lista of comunicados">
+          <a
+            [routerLink]="['/comunicados/lista-comunicados']"
+            class="flex align-items-center gap-2 hover-comunicado"
+          >
+            <div style="width: 32px">
+              <i class="pi pi-graduation-cap" style="font-size: 2rem"></i>
+            </div>
             <div>
-              <span class="text-secondary font-bold">{{ lista.cComunicadoTitulo }}</span>
-              <div class="text-sm text-secondary">{{ lista.cComunicadoDescripcion }}</div>
+              <span class="text-secondary font-bold"
+                >{{ lista.cComunicadoTitulo | slice: 0 : 30 }}...</span
+              >
+              <div class="text-sm text-secondary">
+                {{ lista.cComunicadoDescripcion | slice: 0 : 50 }}...
+              </div>
               <div class="text-sm text-primary">Hace {{ lista.distancia }}</div>
             </div>
           </a>

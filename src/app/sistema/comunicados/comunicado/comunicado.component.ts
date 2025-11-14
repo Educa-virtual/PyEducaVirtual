@@ -12,16 +12,34 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { SlicePipe } from '@angular/common';
 import { ComunicadosService } from '../services/comunicados.services';
-
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 @Component({
   selector: 'app-comunicado',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent],
+  imports: [PrimengModule, TablePrimengComponent, EditorComponent],
   templateUrl: './comunicado.component.html',
   styleUrl: './comunicado.component.scss',
-  providers: [SlicePipe],
+  providers: [SlicePipe, { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
 })
 export class ComunicadoComponent implements OnInit {
+  initEnunciado: EditorComponent['init'] = {
+    base_url: '/tinymce',
+    suffix: '.min',
+    selector: 'textarea',
+    menubar: false,
+    placeholder: 'Escribe aqui...',
+    plugins: 'lists image table autoresize',
+    toolbar:
+      'undo redo | bold italic underline strikethrough | ' +
+      'alignleft aligncenter alignright alignjustify | bullist numlist',
+    editable_root: true,
+    paste_as_text: true,
+    branding: false,
+    statusbar: false,
+    autoresize_bottom_margin: 10,
+    automatic_uploads: true,
+  };
+
   active: number = 0;
   comunicado: any = null;
   iComunicadoId: number;

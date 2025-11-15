@@ -151,7 +151,13 @@ export class CalendarioComponent implements OnInit {
 
   filterActividad(valor: any) {
     this.events
-      .filter(evento => evento.grupo == valor.checkbox.grupo)
+      .filter(
+        evento =>
+          evento.grupo == valor.checkbox.grupo ||
+          (evento.idcurso == valor.checkbox.idcurso &&
+            evento.idgrado == valor.checkbox.idgrado &&
+            evento.idseccion == valor.checkbox.idseccion)
+      )
       .forEach(lista => {
         lista.mostrar = valor.checkbox.mostrar ? true : false;
         lista.display = lista.mostrar ? 'block' : 'none';

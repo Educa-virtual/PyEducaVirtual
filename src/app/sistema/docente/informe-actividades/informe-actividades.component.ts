@@ -129,7 +129,7 @@ export class InformeActividadesComponent implements OnInit {
       const response: Blob = await firstValueFrom(this.informesService.generarReportePdf(params));
       const link = document.createElement('a');
       link.href = URL.createObjectURL(response);
-      link.download = 'Reporte de progreso.pdf';
+      link.download = `Reporte_actividades_${item.cCursoNombre}_${item.cGradoAbreviacion}_${item.cSeccionNombre}.pdf`;
       link.click();
     } catch (err: any) {
       this.messageService.add({

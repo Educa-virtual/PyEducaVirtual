@@ -89,6 +89,7 @@ export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit
     },
     moreLinkClick: this.handleMoreLinkClick.bind(this),
     eventClick: this.handleEventClick.bind(this),
+    eventTextColor: 'black',
     eventDidMount: info => {
       info.el.style.cursor = 'pointer';
       info.el.setAttribute('title', info.event.title || '');

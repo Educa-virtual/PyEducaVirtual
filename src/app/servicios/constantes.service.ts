@@ -69,6 +69,11 @@ const docente = [
             icon: 'pi pi-fw pi-share-alt',
             routerLink: ['/evaluaciones/registro-logro'],
           },
+          {
+            label: 'Actividades Academicas',
+            icon: 'pi pi-fw pi-briefcase',
+            routerLink: ['reporte-informe-actividades'],
+          },
         ],
       },
       /* {
@@ -1090,7 +1095,13 @@ const asistente_social = [
   {
     label: 'Estudiantes y apoderados',
     icon: 'pi pi-user',
-    routerLink: ['estudiantes-apoderados'],
+    items: [
+      {
+        label: 'Estudiantes y apoderados',
+        icon: 'pi pi-user',
+        routerLink: ['estudiantes-apoderados'],
+      },
+    ],
   },
 ];
 

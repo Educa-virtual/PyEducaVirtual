@@ -8,6 +8,7 @@ import {
 } from '../../../formGroup/form-detalle-carga-no-lectivas';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
 import { NgIf } from '@angular/common';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-form-actividades-no-lectivas',
@@ -26,6 +27,14 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
   @Input() opcion: string = '';
   @Input() iFalta;
 
+  year: number;
+  perfil: any;
+
+  constructor(private _LocalStoreService: LocalStoreService) {
+    this.perfil = this._LocalStoreService.getItem('dremoPerfil');
+    this.year = this._LocalStoreService.getItem('dremoYear');
+  }
+
   typesFiles = {
     file: true,
     url: true,
@@ -36,6 +45,9 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
 
   formDetalleCargaNoLectivas: FormGroup = storeDetalleCargaNoLectivas;
   filesUrl = [];
+
+  mostrarPlanTrabajo: boolean = false;
+  nombreArchivo: any;
 
   ngOnChanges(changes) {
     if (changes.showModal?.currentValue) {
@@ -64,18 +76,12 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
         this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras'];
       }
     }
-    // if (changes.iFalta?.currentValue) {
-    //     this.iFalta = changes.iFalta.currentValue
 
-    //     this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras'].setValue(parseFloat(this.iFalta).toFixed(2))
-    //     console.log(this.formDetalleCargaNoLectivas.value)
-
-    // }
+    this.nombreArchivo = `${this.year}/${this.perfil.cIieeCodigoModular}/${this.perfil.iPersId}/actividades-gestion`;
   }
   accionBtn(elemento): void {
     const { accion } = elemento;
     const { item } = elemento;
-
     switch (accion) {
       case 'close-modal':
         this.accionBtnItem.emit({ accion, item });

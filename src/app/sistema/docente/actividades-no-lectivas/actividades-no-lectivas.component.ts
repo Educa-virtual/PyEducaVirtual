@@ -52,6 +52,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
   date = new Date();
   showModal: boolean = false;
   bAprobar: boolean = false;
+  visualizar: boolean = false;
   cObservacion: any | undefined;
 
   actionsContainer = [
@@ -63,14 +64,13 @@ export class ActividadesNoLectivasComponent implements OnInit {
       class: 'p-button-primary',
       disabled: this.bAprobarActividad,
     },
-    // {
-    //     labelTooltip: 'Refrescar lista de metodologías',
-    //     text: 'Refrescar',
-    //     icon: 'pi pi-sync',
-    //     accion: 'refrescar',
-    //     class: 'p-button-danger',
-    // },
   ];
+
+  /**
+   * @param bAprobarActividad permite visualizar las acciones del director
+   * @param accions.accion permite visualizar los botones de acciones
+   */
+
   actions = [
     {
       labelTooltip: 'Editar',
@@ -99,6 +99,14 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: () => this.bAprobarActividad,
+    },
+    {
+      labelTooltip: 'Ver',
+      icon: 'pi  pi-eye',
+      accion: 'visualizar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: () => this.perfil.cPerfilNombre !== 'DIRECTOR IE',
     },
   ];
 
@@ -131,6 +139,14 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '10rem',
       field: 'cTipoCargaNoLectNombre',
+      header: 'Tipo de la Actividad',
+      text_header: 'justify',
+      text: 'justify',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: 'cNombre',
       header: 'Nombre de la Actividad',
       text_header: 'justify',
       text: 'justify',
@@ -138,8 +154,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
     {
       type: 'text',
       width: '10rem',
-      field: 'descripcion',
-      header: 'Descripcion',
+      field: 'descripcionResumen',
+      header: 'Descripción',
       text_header: 'center',
       text: 'center',
     },
@@ -170,13 +186,13 @@ export class ActividadesNoLectivasComponent implements OnInit {
     {
       type: 'text',
       width: '2rem',
-      field: 'cObservacion',
-      header: 'Observacion',
+      field: 'cObservacionResumen',
+      header: 'Observación',
       text_header: 'center',
       text: 'center',
     },
     {
-      type: 'list_json_file',
+      type: 'group_json_file',
       width: '2rem',
       field: 'cDetCargaNoLectEvidencias',
       header: 'Evidencias',
@@ -224,6 +240,11 @@ export class ActividadesNoLectivasComponent implements OnInit {
       case 'close-modal':
         this.showModal = false;
         break;
+      case 'visualizar':
+        this.item = item;
+        this.visualizar = true;
+        this.bAprobar = true;
+        break;
       case 'aprobar':
         this.bAprobar = true;
         this.item = item;
@@ -235,7 +256,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         if (iDocenteId) {
           this.showModal = true;
           this.item = item;
-          const dtInicio = item.dtInicio ? item.dtInicio.split(' ')[0] : null;
+          const dtInicio = item.dtInicio ? new Date(item.dtInicio) : null;
           this.item['dtInicio'] = dtInicio;
           this.titulo =
             accion === 'agregar'
@@ -276,11 +297,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
       case 'list-carga-no-lectivas':
         this.data = item;
         this.data.forEach(list => {
-          if (list.cDescripcion.length > 80) {
-            list.descripcion = list.cDescripcion.substring(0, 80) + '...';
-          } else {
-            list.descripcion = list.cDescripcion;
-          }
+          const descripcion = list.cDescripcion ?? '';
+          const observacion = list.cObservacion ?? '';
+          list.descripcionResumen =
+            descripcion.length > 80 ? descripcion.substring(0, 80) + '...' : descripcion;
+          list.cObservacionResumen =
+            observacion.length > 80 ? observacion.substring(0, 80) + '...' : observacion;
         });
 
         this.data.forEach(i => {
@@ -372,6 +394,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
       item.dtInicio = item.dtInicio ? this.formatearFecha(item.dtInicio) : null;
       (item.iDocenteId = this.iDocenteId ? this.iDocenteId : this._ConstantesService.iDocenteId),
         (item.valorBusqueda = iYearId);
+      item.iCredId = this.perfil.iCredId;
+      item.iYAcadId = this._LocalStoreService.getItem('dremoiYAcadId');
+      item.iSedeId = this._ConstantesService.iSedeId;
       const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update';
       const prefix = item.opcion === 'GUARDAR' ? 'carga-no-lectivas' : 'detalle-carga-no-lectivas';
       item.opcion =
@@ -384,7 +409,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
         prefix: prefix,
         ruta: ruta,
         data: item,
-        params: { skipSuccessMessage: true },
       };
       this.getInformation(params, params.ruta + '-' + params.prefix);
     } else {
@@ -507,11 +531,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
   }
 
   filtrarActividades() {
-    //console.log("revisar #1",this.selectActividad);
     const filtrar = this.data.filter(item => item.iTipoCargaNoLectId == this.selectActividad);
     this.filtrar = filtrar;
   }
-  //validar iDetCargaNoLectId
-
-  //this._GeneralService.updateCalendario(params) .subscribe()
 }

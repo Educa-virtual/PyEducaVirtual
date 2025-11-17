@@ -12,6 +12,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { MessageService } from 'primeng/api';
+import { ActualizacionDocenteService } from '../actualizacion-docente.service';
 
 @Component({
   selector: 'app-instructores',
@@ -26,13 +27,156 @@ export class InstructoresComponent implements OnInit {
   private GeneralService = inject(GeneralService);
   private _confirmService = inject(ConfirmationModalService);
 
-  data: any[] = [];
+  instructores: any[] = [];
   tiposIdentificaciones: any[] = [];
   showModal: boolean = false;
   instructor; // obtene datos del instructor
   accion; //variable para las acciones en el modal
 
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private actDocService: ActualizacionDocenteService
+  ) {}
+
+  ngOnInit(): void {
+    this.obtenerTipoIdentificaciones();
+    this.obtenerInstructores();
+  }
+
+  obtenerTipoIdentificaciones(): void {
+    const params = {
+      iCredId: this._constantesService.iCredId,
+    };
+    this._TiposIdentificacionesService.obtenerTipoIdentificaciones(params).subscribe({
+      next: (response: any) => {
+        this.tiposIdentificaciones = response.data;
+      },
+      error: error => {
+        console.error('Error al obtener tipos de identificaciones:', error);
+      },
+    });
+  }
+
+  eliminarInstructor(item: any): void {
+    const data = item;
+    this._confirmService.openConfirm({
+      header: '¿Esta seguro de eliminar este registro?',
+      message: `INSTRUCTOR: ${data.cPersApeNombres}`,
+      accept: () => {
+        this.actDocService
+          .borrarInstructor({
+            iInstId: data.iInstId,
+          })
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Acción exitosa',
+                detail: 'Se eliminó el registro',
+              });
+              this.obtenerInstructores();
+            },
+            error: error => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error?.error?.message || 'Ocurrió un error inesperado',
+              });
+            },
+          });
+      },
+      reject: () => {},
+    });
+  }
+
+  cambiarEstadoInstructor(item) {
+    this._confirmService.openConfirm({
+      header: `¿Realmente desea cambiar el estado?`,
+      message: `Instructor: ${item.cPersApeNombres}`,
+      accept: () => {
+        this.actDocService
+          .estadoInstructor({
+            iInstId: item.iInstId,
+          })
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Acción exitosa',
+                detail: 'Se actualizó el instructor',
+              });
+              this.obtenerInstructores();
+            },
+            error: error => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error?.error?.message || 'Ocurrió un error inesperado',
+              });
+            },
+          });
+      },
+      reject: () => {},
+    });
+  }
+
+  mostrarModalGuarda() {
+    this.showModal = true;
+  }
+
+  obtenerInstructores() {
+    this.actDocService.listarInstructores({}).subscribe({
+      next: (response: any) => {
+        this.instructores = response.data;
+        this.instructores.forEach(instructor => {
+          instructor.cDatosInstructor = `<b>Apellidos y Nombres:</b> ${instructor.cPersApeNombres}<br/>
+            <b>Correo electrónico:</b> ${instructor.cPersCorreo ? instructor.cPersCorreo : ''}<br/>
+            <b>Celular:</b> ${instructor.cPersTelefono ? instructor.cPersTelefono : ''}`;
+        });
+      },
+      error: error => {
+        console.error('Error obteniendo datos:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo obtener los instructores',
+        });
+      },
+    });
+  }
+
+  public btnAccion = [
+    {
+      label: 'Nuevo Instructor',
+      icon: 'pi pi-plus',
+      class: 'p-button-success',
+      action: () => this.accionBnt({ accion: 'guardar' }),
+    },
+  ];
+
+  accionBnt({ accion, item }: { accion: string; item?: any }): void {
+    switch (accion) {
+      case 'close-modal':
+        this.showModal = false;
+        this.obtenerInstructores();
+        break;
+      case 'guardar':
+        this.accion = accion;
+        this.showModal = true;
+        break;
+      case 'editar':
+        this.accion = accion;
+        console.log(item);
+        this.instructor = item;
+        this.showModal = true;
+        break;
+      case 'eliminar':
+        this.eliminarInstructor(item);
+        break;
+      case 'estado':
+        this.cambiarEstadoInstructor(item);
+    }
+  }
 
   public columnasTabla: IColumn[] = [
     {
@@ -60,12 +204,16 @@ export class InstructoresComponent implements OnInit {
       text: 'center',
     },
     {
-      type: 'item-innerHtml',
+      type: 'tag',
       width: '2rem',
       field: 'cEstado',
       header: 'Estado',
       text_header: 'center',
       text: 'center',
+      styles: {
+        ACTIVO: 'success',
+        INACTIVO: 'secondary',
+      },
     },
     {
       type: 'actions',
@@ -91,116 +239,23 @@ export class InstructoresComponent implements OnInit {
       accion: 'eliminar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: row => Number(row.iTotalCapacitaciones) === 0,
     },
-  ];
-  public btnAccion = [
     {
-      label: 'Nuevo Instructor',
-      icon: 'pi pi-plus',
-      class: 'p-button-success',
-      action: () => this.accionBnt({ accion: 'guardar' }),
+      labelTooltip: 'Activar',
+      icon: 'pi pi-check',
+      accion: 'estado',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: row => Number(row.iEstado) === 10,
+    },
+    {
+      labelTooltip: 'Desactivar',
+      icon: 'pi pi-times',
+      accion: 'estado',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: row => Number(row.iEstado) === 1,
     },
   ];
-
-  ngOnInit(): void {
-    this.obtenerTipoIdentificaciones();
-    this.obtenerInstructores();
-  }
-  accionBnt({ accion, item }: { accion: string; item?: any }): void {
-    switch (accion) {
-      case 'close-modal':
-        this.showModal = false;
-        this.obtenerInstructores();
-        break;
-      case 'guardar':
-        this.accion = accion;
-        this.showModal = true;
-        break;
-      case 'editar':
-        this.accion = accion;
-        console.log(item);
-        this.instructor = item;
-        this.showModal = true;
-        break;
-      case 'eliminar':
-        this.eliminarInstructor(item);
-        break;
-    }
-  }
-  obtenerTipoIdentificaciones(): void {
-    const params = {
-      iCredId: this._constantesService.iCredId,
-    };
-    this._TiposIdentificacionesService.obtenerTipoIdentificaciones(params).subscribe({
-      next: (response: any) => {
-        this.tiposIdentificaciones = response.data;
-      },
-      error: error => {
-        console.error('Error al obtener tipos de identificaciones:', error);
-      },
-    });
-  }
-  eliminarInstructor(item: any): void {
-    const data = item;
-    this._confirmService.openConfirm({
-      header:
-        '¿Esta seguro de eliminar instructor:  ' +
-        data.cPersNombre +
-        ' ' +
-        data.cPersPaterno +
-        ' ?',
-      accept: () => {
-        const params = {
-          petition: 'delete',
-          group: 'cap',
-          prefix: 'instructores',
-          ruta: data.iInstId,
-          params: {
-            iCredId: this._constantesService.iCredId,
-          },
-        };
-        // Servicio para obtener los instructores
-        this.GeneralService.getGralPrefixx(params).subscribe({
-          next: resp => {
-            if (resp.validated) {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Acción exitosa',
-                detail: resp.message,
-              });
-              this.obtenerInstructores();
-            }
-          },
-        });
-      },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
-        });
-      },
-    });
-  }
-
-  mostrarModalGuarda() {
-    this.showModal = true;
-  }
-  // metodo para obtener instructores
-  obtenerInstructores() {
-    const params = {
-      petition: 'get',
-      group: 'cap',
-      prefix: 'instructores',
-      params: {
-        iCredId: this._constantesService.iCredId,
-      },
-    };
-    // Servicio para obtener los instructores
-    this.GeneralService.getGralPrefixx(params).subscribe(Data => {
-      this.data = (Data as any)['data'];
-      // console.log('Datos persona:', this.data);
-    });
-  }
 }

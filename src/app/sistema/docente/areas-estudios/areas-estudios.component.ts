@@ -202,6 +202,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         if (this.selectedData['iSilaboId']) {
           this.visiblePortafolio = true;
           this.obtenerPortafolios();
+          this.obtenerSesiones();
         } else {
           this.MessageService.add({
             severity: 'error',
@@ -405,7 +406,8 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         const itinerarios = datos.itinerario ? JSON.parse(datos.itinerario) : [];
         this.itinerarioInterno = itinerarios[0];
         this.formato = datos.portafolio ? JSON.parse(datos.portafolio) : [];
-        this.reglamentoInterno = datos.reglamento ? datos.reglamento : null;
+        this.reglamentoInterno =
+          datos.reglamento || datos.reglamento != '' ? datos.reglamento : null;
       },
       error: err => {
         this.MessageService.add({
@@ -418,7 +420,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   descargarArchivo(archivo: any) {
-    console.log('ver #1', archivo);
     const params = {
       petition: 'post',
       group: 'acad',
@@ -438,12 +439,11 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         link.target = '_blank';
         link.click();
       },
-      error: error => {
-        console.error('Error obteniendo encuesta:', error);
+      error: () => {
         this.MessageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: error.error.message,
+          detail: 'El archivo no se Encontró',
         });
       },
     });
@@ -717,6 +717,27 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
           summary: 'Error al Obtener Reglamento',
           detail: err,
         });
+      },
+    });
+  }
+  sesiones: any;
+  obtenerSesiones() {
+    console.log('revisando #1', this.selectedData);
+    const params = {
+      petition: 'post',
+      group: 'aula-virtual',
+      prefix: 'sesiones-aprendizaje',
+      ruta: 'obtenerSesiones',
+      data: {
+        iSilaboId: this.selectedData['iSilaboId'],
+      },
+    };
+    this._generalService.getRecibirDatos(params).subscribe({
+      next: response => {
+        this.sesiones = response.data;
+      },
+      error: error => {
+        console.log(error);
       },
     });
   }

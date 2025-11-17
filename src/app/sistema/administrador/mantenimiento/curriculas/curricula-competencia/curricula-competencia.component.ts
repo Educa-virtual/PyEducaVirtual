@@ -178,8 +178,6 @@ export class CurriculaCompetenciaComponent implements OnChanges {
 
       case 'agregar_competencia':
         this.bUpdate = false;
-        this.visible_competencia = false;
-
         this.insertarCompetencia(this.formCompetencia.value);
 
         break;
@@ -244,10 +242,12 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           summary: 'Mensaje del sistema',
           detail: 'Se actualizo correctamente',
         });
-        this.inicializacion();
+        //this.inicializacion();
         if (!this.bUpdate) {
           this.formCompetencia.reset();
+          this.visible_competencia = false;
         }
+        this.inicializacion();
       },
     });
   }
@@ -281,7 +281,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           detail: 'Se eliminó la currícula correctamente.',
         });
         this.visible_competencia = false;
-        //this.obtenerDatosIniciales();
+        // this.obtenerDatosIniciales();
       },
     });
   }

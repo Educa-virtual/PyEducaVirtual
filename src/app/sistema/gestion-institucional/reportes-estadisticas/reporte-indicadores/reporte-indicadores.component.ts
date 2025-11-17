@@ -12,6 +12,7 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { GestionUsuariosService } from '@/app/sistema/administrador/gestion-usuarios/services/gestion-usuarios.service';
+
 import {
   indicadorBajoRendimiento,
   indicadorDesempeno,
@@ -25,6 +26,9 @@ import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.
 import { CAMPOS_INDICADOR, COLORES_BASE, MAPEO_COLUMNAS } from './indicadores-mapeos';
 
 import * as XLSX from 'xlsx-js-style';
+
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart, ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-reporte-indicadores',
@@ -57,6 +61,8 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   gradosSecciones = signal<any[]>([]);
   grados = signal<any[]>([]);
   secciones = signal<any[]>([]);
+
+  _total: number = 0;
 
   _export: string = '';
 
@@ -145,6 +151,10 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         this.selectTab.set(index !== -1 ? index : 0);
       }
     });
+
+    setInterval(() => {
+      this.fechaActual = new Date();
+    }, 1000); // Actualiza cada 1 segundo
   }
 
   obtenerOpcion() {
@@ -180,6 +190,11 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
             this.data.set(data);
             this.generarGraficoDinamicoPie();
             this.generarGraficoDinamicoBar();
+
+            const totaltotal = data.reduce((acc: number, item: any) => {
+              return acc + Number(item.Cantidad);
+            }, 0);
+            this._total = totaltotal;
           },
           error: error => {
             this.messageService.add({
@@ -422,6 +437,29 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         tooltip: {
           callbacks: { label: (ctx: any) => `${ctx.label}: ${ctx.raw}%` },
         },
+        responsive: true,
+        maintainAspectRatio: false,
+
+        // 👇👇 ETIQUETAS CON FONDO TIPO BADGE
+        datalabels: {
+          color: '#000',
+          anchor: 'center',
+          align: 'top',
+          padding: 6,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: '#000',
+          backgroundColor: '#FFF',
+          // backgroundColor: (ctx) => {
+          //   // color de fondo derivado de la barra
+          //   return ctx.dataset.backgroundColor;
+          // },
+          font: {
+            weight: 'bold',
+            size: 11,
+          },
+          formatter: value => value + '%',
+        },
       },
     });
   }
@@ -448,7 +486,31 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       plugins: {
         legend: { position: 'bottom', labels: { color: '#495057' } },
         tooltip: {
+          enabled: true, // 🔥 asegura que esté activado
+          mode: 'nearest',
+          intersect: false,
           callbacks: { label: (ctx: any) => `${ctx.dataset.label}: ${ctx.raw}` },
+        },
+
+        // 👇👇 ETIQUETAS CON FONDO TIPO BADGE
+        datalabels: {
+          color: '#000',
+          // anchor: 'center',
+          // align: 'top',
+          // padding: 6,
+          // borderRadius: 10,
+          // borderWidth: 2,
+          // borderColor: '#000',
+          backgroundColor: '#FFF',
+          // // backgroundColor: (ctx) => {
+          // //   // color de fondo derivado de la barra
+          // //   return ctx.dataset.backgroundColor;
+          // // },
+          font: {
+            weight: 'bold',
+            size: 11,
+          },
+          formatter: value => value,
         },
       },
       scales: {
@@ -456,7 +518,83 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         x: { ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
       },
     });
+    // Registrar el plugin
+    Chart.register(ChartDataLabels);
   }
+
+  //plugin personalizado para total
+  centerTextPlugin = {
+    id: 'centerTextBar',
+    afterDraw: (chart: any) => {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+
+      const label = `Total: ${this._total}`;
+      ctx.save();
+      ctx.font = 'bold 14px sans-serif';
+
+      // Ancho dinámico según el texto
+      const textWidth = ctx.measureText(label).width;
+      const paddingX = 12;
+      //const paddingY = 6;
+
+      // 📌 Posición: superior derecha del chart
+      const x = chartArea.right - paddingX;
+      const y = chartArea.top + 40;
+
+      const boxWidth = textWidth + paddingX * 2;
+      const boxHeight = 28;
+      const radius = 10;
+
+      // 🎨 Fondo (badge)
+      ctx.fillStyle = '#007bff'; // azul tipo PrimeNG (puedes cambiar)
+      ctx.strokeStyle = '#0056b3';
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.roundRect(
+        x - boxWidth, // inicio
+        y - boxHeight, // posición vertical
+        boxWidth,
+        boxHeight,
+        radius
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      // ✨ Texto dentro del badge
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x - paddingX, y - boxHeight / 2);
+
+      ctx.restore();
+    },
+  };
+  ///
+
+  chartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { stacked: false },
+      y: { beginAtZero: true, ticks: { precision: 0 } },
+    },
+    plugins: {
+      title: {
+        display: false,
+      },
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        offset: -6,
+        color: '#000',
+      },
+    },
+  };
 
   piePlugin = [
     {
@@ -534,4 +672,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
     const titulo = this._export;
     XLSX.writeFile(workbook, titulo);
   }
+
+  //colocar hora en tiempo real
+  fechaActual: Date = new Date();
 }

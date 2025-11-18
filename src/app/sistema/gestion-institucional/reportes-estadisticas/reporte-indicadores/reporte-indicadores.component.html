@@ -115,10 +115,10 @@
       @for (reporte of reportes(); track reporte.key) {
         @if (tabSeleccionado() === reporte.key) {
           <div class="col-12">
+            <div class="tag2" [style.backgroundColor]="reporte.color">
+              {{ reporte.titulo }}
+            </div>
             <div class="grid relative my-3">
-              <samp class="tag" [style.backgroundColor]="reporte.color">
-                {{ reporte.titulo }}
-              </samp>
               @if (showGrafica()) {
                 <div class="col-12 lg:col-6 mt-4">
                   <p-chart
@@ -126,8 +126,8 @@
                     [data]="chartDataPie()"
                     [options]="chartOptionsPie()"
                     [plugins]="piePlugin"
-                    [plugins]="[centerTextPlugin]"
-                    height=" 300px"
+                    height="300px"
+                    class="pie-90"
                   />
                 </div>
                 <div class="col-12 lg:col-6 mt-4">

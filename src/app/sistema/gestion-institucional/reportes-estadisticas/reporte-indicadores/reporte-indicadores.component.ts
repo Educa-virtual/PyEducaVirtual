@@ -27,8 +27,7 @@ import { CAMPOS_INDICADOR, COLORES_BASE, MAPEO_COLUMNAS } from './indicadores-ma
 
 import * as XLSX from 'xlsx-js-style';
 
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Chart, ChartOptions } from 'chart.js';
+import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-reporte-indicadores',
@@ -441,26 +440,30 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         maintainAspectRatio: false,
 
         // 👇👇 ETIQUETAS CON FONDO TIPO BADGE
-        datalabels: {
-          color: '#000',
-          anchor: 'center',
-          align: 'top',
-          padding: 6,
-          borderRadius: 10,
-          borderWidth: 2,
-          borderColor: '#000',
-          backgroundColor: '#FFF',
-          // backgroundColor: (ctx) => {
-          //   // color de fondo derivado de la barra
-          //   return ctx.dataset.backgroundColor;
-          // },
-          font: {
-            weight: 'bold',
-            size: 11,
-          },
-          formatter: value => value + '%',
-        },
+        // datalabels: {
+        //   color: '#000',
+        //   anchor: 'center',
+        //   align: 'top',
+        //   padding: 6,
+        //   borderRadius: 10,
+        //   borderWidth: 2,
+        //   borderColor: '#000',
+        //   backgroundColor: '#FFF',
+        //   // backgroundColor: (ctx) => {
+        //   //   // color de fondo derivado de la barra
+        //   //   return ctx.dataset.backgroundColor;
+        //   // },
+        //   font: {
+        //     weight: 'bold',
+        //     size: 11,
+        //   },
+        //   formatter: value => value + '%',
+        // },
       },
+      layout: {
+        padding: 0,
+      },
+      radius: '90%', // 👈 ACHICA SOLO EL GRÁFICO, NO EL CANVAS
     });
   }
 
@@ -493,25 +496,25 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         },
 
         // 👇👇 ETIQUETAS CON FONDO TIPO BADGE
-        datalabels: {
-          color: '#000',
-          // anchor: 'center',
-          // align: 'top',
-          // padding: 6,
-          // borderRadius: 10,
-          // borderWidth: 2,
-          // borderColor: '#000',
-          backgroundColor: '#FFF',
-          // // backgroundColor: (ctx) => {
-          // //   // color de fondo derivado de la barra
-          // //   return ctx.dataset.backgroundColor;
-          // // },
-          font: {
-            weight: 'bold',
-            size: 11,
-          },
-          formatter: value => value,
-        },
+        // datalabels: {
+        //   color: '#000',
+        //   // anchor: 'center',
+        //   // align: 'top',
+        //   // padding: 6,
+        //   // borderRadius: 10,
+        //   // borderWidth: 2,
+        //   // borderColor: '#000',
+        //   backgroundColor: '#FFF',
+        //   // // backgroundColor: (ctx) => {
+        //   // //   // color de fondo derivado de la barra
+        //   // //   return ctx.dataset.backgroundColor;
+        //   // // },
+        //   font: {
+        //     weight: 'bold',
+        //     size: 11,
+        //   },
+        //   formatter: value => value,
+        // },
       },
       scales: {
         y: { beginAtZero: true, ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
@@ -519,7 +522,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       },
     });
     // Registrar el plugin
-    Chart.register(ChartDataLabels);
+    // Chart.register(ChartDataLabels);
   }
 
   //plugin personalizado para total

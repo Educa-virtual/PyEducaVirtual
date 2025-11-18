@@ -149,19 +149,50 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
+  filterFestividad(valor: any) {
+    this.events.filter(evento => {
+      const grupo = evento.grupo == valor.checkbox.grupo;
+      if (grupo) {
+        evento.mostrar = valor.checkbox.mostrar ? true : false;
+        evento.display = evento.mostrar ? 'block' : 'none';
+      }
+    });
+
+    this.events = [...this.events];
+  }
+
   filterActividad(valor: any) {
-    this.events
-      .filter(
-        evento =>
-          evento.grupo == valor.checkbox.grupo ||
-          (evento.idcurso == valor.checkbox.idcurso &&
-            evento.idgrado == valor.checkbox.idgrado &&
-            evento.idseccion == valor.checkbox.idseccion)
-      )
-      .forEach(lista => {
-        lista.mostrar = valor.checkbox.mostrar ? true : false;
-        lista.display = lista.mostrar ? 'block' : 'none';
-      });
+    this.events.filter(evento => {
+      const grupo = evento.grupo == valor.checkbox.grupo;
+      if (grupo) {
+        const curricula =
+          this.curricula.find(
+            lista =>
+              lista.idcurso == evento.idcurso &&
+              lista.idgrado == evento.idgrado &&
+              lista.idseccion == evento.idseccion
+          ) || {};
+        if (curricula.mostrar) {
+          evento.mostrar = valor.checkbox.mostrar ? true : false;
+          evento.display = evento.mostrar ? 'block' : 'none';
+        }
+      }
+    });
+
+    this.events = [...this.events];
+  }
+  filterCurricula(valor: any) {
+    this.events.filter(evento => {
+      const grupo = evento.grupo == valor.checkbox.grupo;
+      const salon =
+        evento.idcurso == valor.checkbox.idcurso &&
+        evento.idgrado == valor.checkbox.idgrado &&
+        evento.idseccion == valor.checkbox.idseccion;
+      if (grupo || salon) {
+        evento.mostrar = valor.checkbox.mostrar ? true : false;
+        evento.display = evento.mostrar ? 'block' : 'none';
+      }
+    });
 
     this.events = [...this.events];
   }

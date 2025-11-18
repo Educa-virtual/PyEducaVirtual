@@ -49,6 +49,7 @@
             class="group-element"
             appendTo="body"
             [style]="{ flex: '1', width: '100%' }"
+            maxLength="100"
           />
         </p-inputGroup>
       </div>
@@ -61,7 +62,7 @@
             formControlName="cPlanSeccionDescripcion"
             pInputTextarea
             placeholder="Escriba"
-            maxLength="500"
+            maxLength="255"
             [rows]="3"
             class="group-element"
             [style.minHeight]="3"

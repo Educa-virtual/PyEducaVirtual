@@ -97,8 +97,8 @@ export class PlantillaPreguntaComponent implements OnInit, OnChanges {
         iPlanSeccionId: [null, Validators.required],
         iTipoPregId: [null, Validators.required],
         iPlanPregOrden: [null],
-        cPlanPregContenido: ['', [Validators.required, Validators.maxLength(500)]],
-        cPlanPregAdicional: [''],
+        cPlanPregContenido: ['', [Validators.required, Validators.maxLength(255)]],
+        cPlanPregAdicional: ['', Validators.maxLength(255)],
         alternativas: [null],
         jsonAlternativas: [null],
       });

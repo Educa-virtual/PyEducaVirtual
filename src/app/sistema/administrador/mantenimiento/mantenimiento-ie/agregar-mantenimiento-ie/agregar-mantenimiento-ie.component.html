@@ -1,0 +1,199 @@
+<app-modal-primeng
+  [title]="(this.formInstitucion.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Institución Educativa'"
+  [showModal]="showModal()"
+  class="uppercase"
+  [width]="'50rem'"
+  (accionBtnItem)="closeModal.emit()"
+>
+  <form [formGroup]="formInstitucion" class="mt-3">
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Código Modular</p-inputGroupAddon>
+          <input
+            id="cIieeCodigoModular"
+            type="text"
+            pInputText
+            placeholder="Ej: 0123456"
+            formControlName="cIieeCodigoModular"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>RUC</p-inputGroupAddon>
+          <input
+            id="cIieeRUC"
+            formControlName="cIieeRUC"
+            type="text"
+            pInputText
+            class="w-full"
+            placeholder="Ej: 20123456789"
+            (input)="soloNumeros($event)"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>I.E.</p-inputGroupAddon>
+          <input
+            id="cIieeNombre"
+            type="text"
+            pInputText
+            placeholder="Ej: I.E. San Martín de Porres"
+            formControlName="cIieeNombre"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Director(a)</p-inputGroupAddon>
+          <input
+            id="cIieeDirector"
+            type="text"
+            pInputText
+            placeholder="Ej: Eland Miranda Valderrama"
+            formControlName="cIieeDirector"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-7">
+        <p-inputGroup>
+          <p-inputGroupAddon><i class="pi pi-at"></i></p-inputGroupAddon>
+          <input
+            id="cIieeEmail"
+            type="text"
+            pInputText
+            placeholder="Ej: eland@gmail.com"
+            formControlName="cIieeEmail"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 md:col-5">
+        <p-inputGroup>
+          <p-inputGroupAddon><i class="pi pi-phone"></i></p-inputGroupAddon>
+          <input
+            id="cIieeTelefono"
+            type="text"
+            pInputText
+            placeholder="Ej: 900010010"
+            formControlName="cIieeTelefono"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iUgelId"
+            formControlName="iUgelId"
+            [options]="ugeles()"
+            optionLabel="cUgelNombre"
+            optionValue="iUgelId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iDsttId"
+            formControlName="iDsttId"
+            [options]="distritos()"
+            optionLabel="cDsttNombre"
+            optionValue="iDsttId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Zona</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iZonaId"
+            formControlName="iZonaId"
+            [options]="zonas()"
+            optionLabel="cZonaNombre"
+            optionValue="iZonaId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sector</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iTipoSectorId"
+            formControlName="iTipoSectorId"
+            [options]="sectores()"
+            optionLabel="cTipoSectorNombre"
+            optionValue="iTipoSectorId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 md:col-8">
+        <p-inputGroup>
+          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
+          <input
+            id="cIieeDireccion"
+            type="text"
+            pInputText
+            placeholder="Ej: Av. Los Olivos N° 123, San Martín"
+            formControlName="cIieeDireccion"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4 align-content-center">
+        <div class="flex align-items-center justify-content-between">
+          <label for="iEstado" class="pr-1">Estado:</label>
+          <div class="flex align-items-center gap-2">
+            <p-inputSwitch
+              formControlName="iEstado"
+              [trueValue]="1"
+              [falseValue]="0"
+            ></p-inputSwitch>
+            <span
+              [ngClass]="formInstitucion.value.iEstado === 1 ? 'text-green-500' : 'text-red-500'"
+            >
+              {{ formInstitucion.value.iEstado === 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div footer class="flex justify-content-end gap-2">
+    <p-button
+      styleClass="uppercase"
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="closeModal.emit()"
+    />
+    <p-button
+      styleClass="uppercase"
+      type="submit"
+      [loading]="isLoading()"
+      [label]="this.formInstitucion.value.iIieeId ? 'Actualizar' : 'Guardar'"
+      [severity]="this.formInstitucion.value.iIieeId ? 'warning' : 'success'"
+      [loading]="isLoading()"
+      (onClick)="enviarFormulario()"
+    ></p-button>
+  </div>
+</app-modal-primeng>

@@ -1,121 +1,104 @@
 <p-dialog
-    #dialogBancoPreguntas
-    header="Asignar horas de inicio y fin a las áreas de ERE:  {{
-        evaluacion?.cEvaluacionNombre
-    }} "
-    [modal]="true"
-    [(visible)]="visible"
-    [position]="'top'"
-    [maximizable]="true"
-    [style]="{ width: '90%' }"
+  #dialogBancoPreguntas
+  header="Asignar horas de inicio y fin a las áreas de ERE:  {{ evaluacion?.cEvaluacionNombre }} "
+  [modal]="true"
+  [(visible)]="visible"
+  [position]="'top'"
+  [maximizable]="true"
+  [style]="{ width: '90%' }"
 >
-    <!--<div>Agregar hora de Publicación de las Areas Curriculares</div>-->
-    <div class="container" [formGroup]="formAreas">
-        <div formArrayName="inputAreas">
-            <div *ngIf="uniqueCNivel.length > 0; else noData">
-                <div *ngFor="let nivel of uniqueCNivel">
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ nivel }}</h3>
-                            <!--{{ nivel.cNivelTipoNombre }}-->
-                        </div>
-                        <div class="card-body">
-                            <p-accordion [activeIndex]="0">
-                                <div
-                                    *ngFor="
-                                        let area of filteredInputAreas(nivel);
-                                        let i = index
-                                    "
-                                    [formGroupName]="i"
-                                >
-                                    <p-accordionTab
-                                        header="{{
-                                            area.get('cCursoNombre')?.value
-                                        }} - {{
-                                            area.get('cGradoAbreviacion')?.value
-                                        }} (Fecha de eval.:
-                                    {{
-                                            area.get('dtExamenFechaInicio')
-                                                ?.value | date: 'dd/MM/yy'
-                                        }})"
-                                    >
-                                        <div class="grid col">
-                                            <div class="col-3">
-                                                <p-inputGroup>
-                                                    <p-inputGroupAddon
-                                                        >Hora de
-                                                        inicio</p-inputGroupAddon
-                                                    >
-                                                    <p-calendar
-                                                        formControlName="horaInicio"
-                                                        [timeOnly]="true"
-                                                        [hourFormat]="'24'"
-                                                        [showIcon]="true"
-                                                        placeholder="Formato 24 horas"
-                                                        [appendTo]="'body'"
-                                                        styleClass="w-full"
-                                                        class="calendar"
-                                                    ></p-calendar>
-                                                </p-inputGroup>
-                                            </div>
-                                            <div class="col-3">
-                                                <p-inputGroup>
-                                                    <p-inputGroupAddon
-                                                        >Hora de
-                                                        fin</p-inputGroupAddon
-                                                    >
-                                                    <p-calendar
-                                                        formControlName="horaFin"
-                                                        [timeOnly]="true"
-                                                        [hourFormat]="'24'"
-                                                        [showIcon]="true"
-                                                        placeholder="Formato 24 horas"
-                                                        [appendTo]="'body'"
-                                                        styleClass="w-full"
-                                                        class="calendar"
-                                                    ></p-calendar>
-                                                </p-inputGroup>
-                                            </div>
-                                        </div>
-                                    </p-accordionTab>
-                                </div>
-                            </p-accordion>
-                        </div>
-                    </div>
-                </div>
+  <!--<div>Agregar hora de Publicación de las Areas Curriculares</div>-->
+  <div class="container" [formGroup]="formAreas">
+    <div formArrayName="inputAreas">
+      <div *ngIf="uniqueCNivel.length > 0; else noData">
+        <div *ngFor="let nivel of uniqueCNivel">
+          <div class="card mt-3">
+            <div class="card-header">
+              <h3 class="card-title">{{ nivel }}</h3>
+              <!--{{ nivel.cNivelTipoNombre }}-->
             </div>
+            <div class="card-body">
+              <p-accordion [activeIndex]="0">
+                <div
+                  *ngFor="let area of filteredInputAreas(nivel); let i = index"
+                  [formGroupName]="i"
+                >
+                  <p-accordionTab
+                    header="{{ area.get('cCursoNombre')?.value }} - {{
+                      area.get('cGradoAbreviacion')?.value
+                    }} (Fecha: {{ area.get('dtExamenFechaInicio')?.value | date: 'dd/MM/yy' }})"
+                  >
+                    <div class="grid">
+                      <div class="col-12 md:col-6 lg:col-4">
+                        <div class="field">
+                          <span class="block mb-2 font-semibold">Hora de inicio</span>
+                          <p-calendar
+                            formControlName="horaInicio"
+                            [timeOnly]="true"
+                            [hourFormat]="'24'"
+                            [showIcon]="true"
+                            placeholder="Formato 24 horas"
+                            [appendTo]="'body'"
+                            styleClass="w-full"
+                            class="w-full"
+                          ></p-calendar>
+                        </div>
+                      </div>
+                      <div class="col-12 md:col-6 lg:col-4">
+                        <div class="field">
+                          <span class="block mb-2 font-semibold">Hora de fin</span>
+                          <p-calendar
+                            formControlName="horaFin"
+                            [timeOnly]="true"
+                            [hourFormat]="'24'"
+                            [showIcon]="true"
+                            placeholder="Formato 24 horas"
+                            [appendTo]="'body'"
+                            styleClass="w-full"
+                            class="w-full"
+                          ></p-calendar>
+                        </div>
+                      </div>
+                    </div>
+                  </p-accordionTab>
+                </div>
+              </p-accordion>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <ng-template #noData>
-        <br />
-        <p>No hay áreas disponibles para mostrar.</p>
-    </ng-template>
+  <ng-template #noData>
+    <br />
+    <p>No hay áreas disponibles para mostrar.</p>
+  </ng-template>
 
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-end gap-2 pt-3">
-            <button
-                pButton
-                pRipple
-                label="Cancelar"
-                icon="pi pi-times"
-                class="align-items-start p-button-secondary"
-                type="button"
-                size="small"
-                (click)="visible = false"
-            ></button>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2 pt-3">
+      <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="align-items-start p-button-secondary"
+        type="button"
+        size="small"
+        (click)="visible = false"
+      ></button>
 
-            <button
-                *ngIf="uniqueCNivel.length > 0"
-                pButton
-                pRipple
-                label="Guardar"
-                icon="pi pi-check"
-                class="p-button-primary"
-                type="button"
-                size="small"
-                (click)="registrarHoras()"
-            ></button>
-        </div>
-    </ng-template>
+      <button
+        *ngIf="uniqueCNivel.length > 0"
+        pButton
+        pRipple
+        label="Guardar"
+        icon="pi pi-check"
+        class="p-button-primary"
+        type="button"
+        size="small"
+        (click)="registrarHoras()"
+      ></button>
+    </div>
+  </ng-template>
 </p-dialog>

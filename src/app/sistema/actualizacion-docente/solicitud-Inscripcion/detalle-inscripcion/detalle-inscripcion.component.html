@@ -6,7 +6,6 @@
   <app-table-primeng
     [columnas]="columnasTabla"
     [data]="alumnos"
-    [showCaption]="false"
     [actions]="accionesTabla"
     (accionBtnItem)="accionBnt($event)"
   ></app-table-primeng>
@@ -64,6 +63,7 @@
   [(visible)]="showModalInscripcion"
   [modal]="true"
   [style]="{ width: '45rem' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
 >
   <p-messages [(value)]="tituloCurso" [enableService]="false" [closable]="false" />
 
@@ -194,10 +194,10 @@
           placeholder="Seleccionar Institución"
           [filter]="true"
           optionValue="iIieeId"
-          optionLabel="cIieeNombre"
+          optionLabel="cNombre"
           [appendTo]="'body'"
           styleClass="w-full"
-          formControlName="cIieeNombre"
+          formControlName="iIieeId"
         ></p-dropdown>
       </p-inputGroup>
     </div>

@@ -48,11 +48,16 @@ export const administradorDremo = [
       },
       {
         label: 'Mantenimiento IE',
-        icon: 'pi pi-config',
+        icon: 'pi pi-sitemap',
         items: [
           {
+            label: 'Administrar IE',
+            icon: 'pi pi-tablet',
+            routerLink: ['/administrador/mantenimiento-ie'],
+          },
+          {
             label: 'Curricula',
-            icon: 'pi pi-star',
+            icon: 'pi pi-folder',
             routerLink: ['/administrador/mantenimiento-curricula'],
           },
         ],
@@ -156,6 +161,12 @@ export const administradorDremo = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+
+      {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [
@@ -248,6 +259,11 @@ export const especialistaDremo = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
@@ -306,6 +322,11 @@ export const especialistaUgel = [
             routerLink: ['/bienestar/informe-estadistico'],
           },
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
       {
         label: 'Enlaces de ayuda',

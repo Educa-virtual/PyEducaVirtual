@@ -1,0 +1,102 @@
+<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
+<app-container-page
+  title="Lista de capacidades"
+  [actions]="actionsContainer"
+  (accionBtnItem)="accionBtnItem($event)"
+>
+  <div class="grid">
+    <div class="col-12 md:col-4">
+      <form [formGroup]="formCapacidades" class="flex flex-column gap-3 w-full">
+        <!-- Nombre -->
+        <div class="col-12">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="cCapacidadNombre"
+              class="w-full"
+              formControlName="cCapacidadNombre"
+            />
+            <label for="cCapacidadNombre">Nombre</label>
+          </span>
+        </div>
+
+        <!-- Descripción -->
+        <div class="col-12">
+          <span class="p-float-label">
+            <textarea
+              pInputTextarea
+              id="cCapacidadDescripcion"
+              class="w-full"
+              formControlName="cCapacidadDescripcion"
+              rows="5"
+            ></textarea>
+            <label for="cCapacidadDescripcion">Descripción</label>
+          </span>
+        </div>
+
+        <!-- Estado -->
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="flex align-items-center">
+              <p-toggleButton
+                formControlName="iEstado"
+                onLabel="Activo"
+                offLabel="Inactivo"
+                class="w-full"
+              ></p-toggleButton>
+            </div>
+          </div>
+
+          <!-- Botones -->
+          <div class="col-12 md:col-6 flex gap-2">
+            <button
+              *ngIf="bUpdate"
+              pButton
+              label="Editar"
+              icon="pi pi-pencil"
+              class="p-button-warning w-full"
+              size="small"
+              [disabled]="formCapacidades.invalid"
+              (click)="
+                accionBtnItem({ accion: 'actualizar_capacidad', item: formCapacidades.value })
+              "
+            ></button>
+
+            <button
+              *ngIf="!bUpdate"
+              pButton
+              label="Guardar"
+              icon="pi pi-save"
+              class="p-button-success w-full"
+              size="small"
+              [disabled]="formCapacidades.invalid"
+              (click)="accionBtnItem({ accion: 'guardar_capacidad', item: formCapacidades.value })"
+            ></button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-12 md:col-8">
+      <div class="grid">
+        <div class="col-12 mt-3">
+          @if (capacidades.length > 0) {
+            <app-table-primeng
+              class="w-full"
+              [columnas]="columns"
+              [data]="capacidades"
+              [actions]="actions"
+              (accionBtnItem)="accionBtnItem($event)"
+              [showAdvancedFilter]="true"
+              [showCaption]="false"
+            />
+          } @else {
+            <app-no-data
+              [showIcon]="'NO-DATA'"
+              mensaje="No se encontraron áreas curriculares asignadas"
+            />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</app-container-page>

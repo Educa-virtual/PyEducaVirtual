@@ -78,6 +78,10 @@ export class GeneralService {
     return this.http.post(`${baseUrl}/general/subir-archivo`, data);
   }
 
+  subirDocumento(data: any) {
+    return this.http.post(`${baseUrl}/general/subir-documento`, data);
+  }
+
   generarPdf(data: any) {
     return this.http.post(`${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`, data.data, {
       responseType: 'blob',
@@ -89,6 +93,41 @@ export class GeneralService {
     return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
       esquema: 'grl',
       tabla: 'dias',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+
+  getDistritos() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'grl',
+      tabla: 'distritos',
+      campos: '*',
+      condicion: 'iPrvnId in (147,148,149)',
+    });
+  }
+
+  getZonas() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'acad',
+      tabla: 'zonas',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+  getTipoSector() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'grl',
+      tabla: 'tipos_sectores',
+      campos: '*',
+      condicion: '1 = 1',
+    });
+  }
+
+  getUgeles() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'acad',
+      tabla: 'ugeles',
       campos: '*',
       condicion: '1 = 1',
     });
@@ -313,6 +352,31 @@ export class GeneralService {
   insertarCurriculaCusros(data: any) {
     return this.http.post(`${baseUrl}/administrador/addCurriculas`, data);
   }
+  insertarIntituciones(data: any) {
+    return this.http.post(`${baseUrl}/administrador/insertarIntituciones`, data);
+  }
+  insertarSedes(data: any) {
+    return this.http.post(`${baseUrl}/administrador/insertarSedes`, data);
+  }
+
+  insertarCompetenciasCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/insertarCompetenciasCurso`, data);
+  }
+
+  insertarCompetenciaCapacidad(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/insertarCompetenciaCapacidad`, data);
+  }
+
+  aperturarSede(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/aperturarSede`, data);
+  }
+
+  insertarAreas(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/insertarAreas`, data);
+  }
+  insertarCompetencia(data: any) {
+    return this.http.post(`${baseUrl}/acad/administrador/insertarCompetencia`, data);
+  }
 
   obtenerEstudiantesMatriculados(data: any) {
     return this.http.post(
@@ -340,6 +404,18 @@ export class GeneralService {
           `${baseUrl}/` + data.group + '/' + data.prefix + '/' + data.ruta,
           data.data
         );
+        break;
+      default:
+        break;
+    }
+    return this.url;
+  }
+  getRecibirMultimediaGeneral(data) {
+    switch (data.petition) {
+      case 'post':
+        this.url = this.http.post(`${baseUrl}/` + data.prefix + '/' + data.ruta, data.data, {
+          responseType: 'blob',
+        });
         break;
       default:
         break;
@@ -378,5 +454,14 @@ export class GeneralService {
 
   subirSvgPizarra(data: any) {
     return this.http.post(`${baseUrl}/general/subir-svg-pizarra`, data);
+  }
+
+  getServicioEducativos() {
+    return this.http.post(`${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, {
+      esquema: 'acad',
+      tabla: 'servicio_educativos',
+      campos: '*',
+      condicion: '1 = 1',
+    });
   }
 }

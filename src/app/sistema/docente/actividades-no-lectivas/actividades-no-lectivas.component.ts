@@ -36,6 +36,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
   //private _LocalStoreService = inject(LocalStoreService)
   private _MessageService = inject(MessageService);
 
+  selectActividad: any;
+
   constructor(private _LocalStoreService: LocalStoreService) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
   }
@@ -49,6 +51,10 @@ export class ActividadesNoLectivasComponent implements OnInit {
   ];
   date = new Date();
   showModal: boolean = false;
+  bAprobar: boolean = false;
+  visualizar: boolean = false;
+  cObservacion: any | undefined;
+
   actionsContainer = [
     {
       labelTooltip: 'Agregar',
@@ -58,14 +64,13 @@ export class ActividadesNoLectivasComponent implements OnInit {
       class: 'p-button-primary',
       disabled: this.bAprobarActividad,
     },
-    // {
-    //     labelTooltip: 'Refrescar lista de metodologías',
-    //     text: 'Refrescar',
-    //     icon: 'pi pi-sync',
-    //     accion: 'refrescar',
-    //     class: 'p-button-danger',
-    // },
   ];
+
+  /**
+   * @param bAprobarActividad permite visualizar las acciones del director
+   * @param accions.accion permite visualizar los botones de acciones
+   */
+
   actions = [
     {
       labelTooltip: 'Editar',
@@ -95,9 +100,19 @@ export class ActividadesNoLectivasComponent implements OnInit {
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: () => this.bAprobarActividad,
     },
+    {
+      labelTooltip: 'Ver',
+      icon: 'pi  pi-eye',
+      accion: 'visualizar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: () => this.perfil.cPerfilNombre !== 'DIRECTOR IE',
+    },
   ];
 
+  observar: any;
   data = [];
+  filtrar = [];
   tiposCargaNoLectivas = [];
   item: { iDetCargaNoLectId?: number } = {};
   titulo: string = '';
@@ -124,6 +139,14 @@ export class ActividadesNoLectivasComponent implements OnInit {
       type: 'text',
       width: '10rem',
       field: 'cTipoCargaNoLectNombre',
+      header: 'Tipo de la Actividad',
+      text_header: 'justify',
+      text: 'justify',
+    },
+    {
+      type: 'text',
+      width: '10rem',
+      field: 'cNombre',
       header: 'Nombre de la Actividad',
       text_header: 'justify',
       text: 'justify',
@@ -131,8 +154,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
     {
       type: 'text',
       width: '10rem',
-      field: 'descripcion',
-      header: 'Descripcion',
+      field: 'descripcionResumen',
+      header: 'Descripción',
       text_header: 'center',
       text: 'center',
     },
@@ -161,7 +184,15 @@ export class ActividadesNoLectivasComponent implements OnInit {
       text: 'center',
     },
     {
-      type: 'list_json_file',
+      type: 'text',
+      width: '2rem',
+      field: 'cObservacionResumen',
+      header: 'Observación',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'group_json_file',
       width: '2rem',
       field: 'cDetCargaNoLectEvidencias',
       header: 'Evidencias',
@@ -209,26 +240,28 @@ export class ActividadesNoLectivasComponent implements OnInit {
       case 'close-modal':
         this.showModal = false;
         break;
-
-      case 'aprobar':
-        // this.showModalAprobarActividad = true
+      case 'visualizar':
         this.item = item;
-        this.bAprobacion = item.iEstado === 1 ? true : false;
-        this.cambioAprobacion();
-        // const perfil = this.perfil.cPerfilNombre === 'DOCENTE'
-        // const iCredId = this.perfil.iCredId
+        this.visualizar = true;
+        this.bAprobar = true;
         break;
-
+      case 'aprobar':
+        this.bAprobar = true;
+        this.item = item;
+        this.cObservacion = item.cObservacion;
+        break;
       case 'agregar':
       case 'actualizar':
         const iDocenteId = this._ConstantesService.iDocenteId;
         if (iDocenteId) {
           this.showModal = true;
           this.item = item;
-          const dtInicio = item.dtInicio ? item.dtInicio.split(' ')[0] : null;
+          const dtInicio = item.dtInicio ? new Date(item.dtInicio) : null;
           this.item['dtInicio'] = dtInicio;
           this.titulo =
-            accion === 'agregar' ? 'AGREGAR CARGA NO LECTIVA' : 'ACTUALIZAR CARGA NO LECTIVA';
+            accion === 'agregar'
+              ? 'AGREGAR ACTIVIDADES DE GESTION'
+              : 'ACTUALIZAR ACTIVIDADES DE GESTION';
           this.opcion = accion === 'agregar' ? 'GUARDAR' : 'ACTUALIZAR';
         } else {
           this._MessageService.add({
@@ -264,11 +297,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
       case 'list-carga-no-lectivas':
         this.data = item;
         this.data.forEach(list => {
-          if (list.cDescripcion.length > 80) {
-            list.descripcion = list.cDescripcion.substring(0, 80) + '...';
-          } else {
-            list.descripcion = list.cDescripcion;
-          }
+          const descripcion = list.cDescripcion ?? '';
+          const observacion = list.cObservacion ?? '';
+          list.descripcionResumen =
+            descripcion.length > 80 ? descripcion.substring(0, 80) + '...' : descripcion;
+          list.cObservacionResumen =
+            observacion.length > 80 ? observacion.substring(0, 80) + '...' : observacion;
         });
 
         this.data.forEach(i => {
@@ -276,6 +310,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
             ? JSON.parse(i.cDetCargaNoLectEvidencias)
             : [];
         });
+
+        this.filtrar = this.data;
         break;
       case 'list-tipos-carga-no-lectivas':
         this.tiposCargaNoLectivas = item;
@@ -358,6 +394,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
       item.dtInicio = item.dtInicio ? this.formatearFecha(item.dtInicio) : null;
       (item.iDocenteId = this.iDocenteId ? this.iDocenteId : this._ConstantesService.iDocenteId),
         (item.valorBusqueda = iYearId);
+      item.iCredId = this.perfil.iCredId;
+      item.iYAcadId = this._LocalStoreService.getItem('dremoiYAcadId');
+      item.iSedeId = this._ConstantesService.iSedeId;
       const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update';
       const prefix = item.opcion === 'GUARDAR' ? 'carga-no-lectivas' : 'detalle-carga-no-lectivas';
       item.opcion =
@@ -370,7 +409,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
         prefix: prefix,
         ruta: ruta,
         data: item,
-        params: { skipSuccessMessage: true },
       };
       this.getInformation(params, params.ruta + '-' + params.prefix);
     } else {
@@ -422,6 +460,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
   }
 
   cambioAprobacion() {
+    this.item['cObservacion'] = this.cObservacion;
+    this.bAprobacion = this.item['iEstado'] == 1 ? true : false;
+
     this._confirmService.openConfirm({
       header: 'Advertencia de actividades no lectivas',
       message: 'Desea aprobar la actividad no lectiva?',
@@ -449,11 +490,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
 
   aprobarActividad(iEstado) {
     const iDetCargaNoLectId = this.item.iDetCargaNoLectId;
+    const cObservacion = this.item['cObservacion'];
     this.showModalAprobarActividad = false;
 
-    //const iEstado =  event.checked ? 1 : 0;
     const params = {
       iDetCargaNoLectId: Number(iDetCargaNoLectId),
+      cObservacion: cObservacion,
       iEstado: iEstado,
       iSesionId: Number(this.perfil.iCredId),
     };
@@ -470,6 +512,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
             summary: 'Mensaje de sistema',
             detail: 'Error. No se proceso petición ' + error.message,
           });
+          this.cObservacion = undefined;
+          this.bAprobar = false;
         },
         complete: () => {
           this._MessageService.add({
@@ -480,11 +524,14 @@ export class ActividadesNoLectivasComponent implements OnInit {
 
           this.obtenerCargaNoLectivas();
           this.obtenerCargaNoLectivasxTiposDedicaciones();
+          this.cObservacion = undefined;
+          this.bAprobar = false;
         },
       });
   }
 
-  //validar iDetCargaNoLectId
-
-  //this._GeneralService.updateCalendario(params) .subscribe()
+  filtrarActividades() {
+    const filtrar = this.data.filter(item => item.iTipoCargaNoLectId == this.selectActividad);
+    this.filtrar = filtrar;
+  }
 }

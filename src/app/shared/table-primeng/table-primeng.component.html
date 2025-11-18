@@ -372,6 +372,61 @@
                 }
               </div>
             }
+            @if (col.type === 'dropdown-actions') {
+              <div [style.text-align]="col.text">
+                <!-- <p-toast /> -->
+                <p-menu #menu [popup]="true" appendTo="body" class="z-0">
+                  <ng-template pTemplate="start">
+                    <div class="p-menu-list" class="z-0">
+                      @for (action of actions; track $index) {
+                        @if (
+                          action.type === 'item' && action.isVisible
+                            ? action.isVisible(rowData)
+                            : true
+                        ) {
+                          <div class="p-menuitem" aria-label="menuitem">
+                            <div class="p-menuitem-content">
+                              <a
+                                pRipple
+                                (click)="accionBtn(action.accion, rowData)"
+                                (keydown.space)="accionBtn(action.accion, rowData)"
+                                style="width: 100%; text-align: left"
+                                [class]="action.class"
+                                tabindex="0"
+                              >
+                                @if (action.icon | isIconType) {
+                                  <app-icon
+                                    [name]="action.icon.name"
+                                    [color]="action.class"
+                                    [size]="action.icon.color"
+                                    class="p-menuitem-icon"
+                                  ></app-icon>
+                                } @else {
+                                  <i class="{{ action.icon }}"></i>
+                                }
+                                <span class="p-menuitem-text ml-2">{{ action.labelTooltip }}</span>
+                              </a>
+                            </div>
+                          </div>
+                        }
+                      }
+                    </div>
+                  </ng-template>
+                </p-menu>
+                <button
+                  [rounded]="true"
+                  pButton
+                  pRipple
+                  (click)="menu.toggle($event)"
+                  (keydown.space)="menu.toggle($event)"
+                  class="p-1 z-0"
+                  ngClass="p-button-rounded p-button-secondary p-button-text"
+                  aria-label="Desplegar acciones"
+                >
+                  <i class="pi pi-ellipsis-v"></i>
+                </button>
+              </div>
+            }
             @if (col.type === 'estado') {
               <p-tag
                 [severity]="rowData[col.field] ? 'success' : 'danger'"
@@ -399,6 +454,68 @@
                   ></i>
                 }
               </div>
+            }
+            @if (col.type === 'group_json_file') {
+              @if (rowData[col.field].length) {
+                <div class="flex">
+                  @for (item of rowData[col.field]; track $index) {
+                    <div>
+                      <p-button
+                        [text]="true"
+                        severity="secondary"
+                        class="p-col-12"
+                        (onClick)="descargar(item)"
+                      >
+                        @switch (item.type) {
+                          @case (1) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-upload"
+                              style="color: #333437"
+                            ></i>
+                          }
+                          @case (2) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-link"
+                              style="color: #333437"
+                            ></i>
+                          }
+                          @case (3) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-youtube"
+                              style="color: #c4302b"
+                            ></i>
+                          }
+                          @case (4) {
+                            <i
+                              [pTooltip]="item.name"
+                              tooltipPosition="top"
+                              class="pi pi-folder"
+                              style="color: #ffd04b"
+                            ></i>
+                          }
+                          @case (5) {
+                            <p-image
+                              [src]="backend + '/storage/' + item.ruta"
+                              alt="Imagen no disponible"
+                              width="15"
+                              [preview]="true"
+                              (onImageError)="updateUrl(item)"
+                            />
+                          }
+                        }
+                      </p-button>
+                    </div>
+                  }
+                </div>
+              } @else {
+                -
+              }
             }
             @if (col.type === 'list_json_file') {
               @if (rowData[col.field].length) {

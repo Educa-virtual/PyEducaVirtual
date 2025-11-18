@@ -53,7 +53,7 @@ const docente = [
         routerLink: ['/aula-virtual/areas-curriculares'],
       },
       {
-        label: 'Actividades No Lectivas',
+        label: 'Actividades De Gestión',
         icon: 'pi pi-fw pi-list-check',
         routerLink: ['/docente/actividades-no-lectivas'],
       },
@@ -68,6 +68,11 @@ const docente = [
             label: 'Logros Alcanzados',
             icon: 'pi pi-fw pi-share-alt',
             routerLink: ['/evaluaciones/registro-logro'],
+          },
+          {
+            label: 'Actividades Academicas',
+            icon: 'pi pi-fw pi-briefcase',
+            routerLink: ['reporte-informe-actividades'],
           },
         ],
       },
@@ -244,6 +249,11 @@ const docente = [
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['/comunicados/lista-comunicados'],
       },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
     ],
   },
 ];
@@ -302,6 +312,11 @@ const estudiante = [
             routerLink: ['/bienestar/recordario-fechas'],
           },
         ],
+      },
+      {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
       },
       {
         label: 'Buzón de sugerencias',
@@ -880,6 +895,11 @@ const administracion = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],
@@ -988,6 +1008,11 @@ const apoderado = [
         ],
       },
       {
+        label: 'Encuestas',
+        icon: 'pi pi-list-check',
+        routerLink: ['./encuestas/categorias'],
+      },
+      {
         label: 'Asistencia',
         icon: 'pi pi-clock',
         routerLink: ['apoderado/asistencia'],
@@ -1081,7 +1106,13 @@ const asistente_social = [
   {
     label: 'Estudiantes y apoderados',
     icon: 'pi pi-user',
-    routerLink: ['estudiantes-apoderados'],
+    items: [
+      {
+        label: 'Estudiantes y apoderados',
+        icon: 'pi pi-user',
+        routerLink: ['estudiantes-apoderados'],
+      },
+    ],
   },
 ];
 

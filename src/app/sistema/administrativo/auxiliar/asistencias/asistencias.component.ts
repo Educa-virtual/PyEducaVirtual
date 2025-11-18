@@ -51,7 +51,7 @@ export class AsistenciasComponent implements OnInit {
   estado: boolean = false;
   temporal: any = [];
   archivos: any = [];
-  marcador: any;
+  marcador: Date = new Date();
   buscar: boolean = true;
   messages = [
     { severity: 'info', detail: 'Este Registro solo marca la hora de Ingreso del Alumnado' },
@@ -286,7 +286,8 @@ export class AsistenciasComponent implements OnInit {
   }
 
   guardarAsistenciaScanner() {
-    const marcar = this.codigo.dtTurnoInicia > this.codigo.dtAsistencia ? 1 : 2;
+    const marcar = this.codigo.dtAperTurnoInicio > this.codigo.dtAsistencia ? 1 : 2;
+    console.log('verificar #1', this.codigo);
     this.codigo.iTipoAsiId = marcar;
     const enlace = {
       petition: 'post',
@@ -312,7 +313,7 @@ export class AsistenciasComponent implements OnInit {
         const idAsistencia = parseInt(data.data[0]);
         const verificar = this.temporal.find(item => item.idAsistencia == idAsistencia);
         if (verificar) {
-          this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+          this.mensajeSuccess('Mensaje del sistema', 'Éxito al guardar asistencia');
         } else {
           this.mensajeSuccess('Mensaje del sistema', 'Ya fue registrado el alumno');
         }
@@ -365,7 +366,7 @@ export class AsistenciasComponent implements OnInit {
     this.servicioGeneral.getMultipleMedia(enlace).subscribe({
       next: () => {
         this.buscarGrupo();
-        this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+        this.mensajeSuccess('Mensaje del sistema', 'Éxito al guardar asistencia');
       },
       error: () => {
         this.buscarGrupo();
@@ -399,7 +400,7 @@ export class AsistenciasComponent implements OnInit {
 
     this.servicioGeneral.getRecibirDatos(enlace).subscribe({
       next: () => {
-        this.mensajeSuccess('Mensaje del sistema', 'Existo al guardar asistencia');
+        this.mensajeSuccess('Mensaje del sistema', 'Éxito al guardar asistencia');
         this.buscarCodigo();
       },
       error: () => {
@@ -467,6 +468,7 @@ export class AsistenciasComponent implements OnInit {
     this.alumnos[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
     this.alumnos[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
+
   cambiarEstadoEstudiante(index: any, item: any) {
     const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
     const indice = (Number(valor) + 1) % this.tipoAsistencia.length;
@@ -475,10 +477,12 @@ export class AsistenciasComponent implements OnInit {
     this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
     this.estudiante[index].bgColor = this.tipoAsistencia[indice].bgColor;
   }
+
   camaraEncontrada() {
     this.estado = false;
     this.progreso = false;
   }
+
   seleccionarFolder(event: any, seleccionado: any, fileUpload: any) {
     const archivo = event.files[0];
     if (archivo) {
@@ -486,9 +490,11 @@ export class AsistenciasComponent implements OnInit {
       fileUpload.name = archivo.name[0];
     }
   }
+
   limpiar(fileUpload: any) {
     fileUpload.clear();
   }
+
   descargarArchivo(archivo: any) {
     const params = {
       petition: 'post',

@@ -1,0 +1,337 @@
+<br />
+
+<p-stepper class="mt-3" [(activeStep)]="active">
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-nextCallback="nextCallback"
+      let-index="index"
+      class="p-0 m-0"
+    >
+      <p>
+        En esta sección se <strong>gestionan las preguntas</strong>, miestras el registro esté en
+        estado <p-tag value="BORRADOR" severity="danger" /> puede editar las preguntas o
+        eliminarlas. Cuando está <p-tag value="APROBADA" severity="success" /> ya no podrá editar
+        sus datos ni eliminarla.
+      </p>
+      <p>
+        <strong>Las preguntas se agrupan en secciones</strong>, cada sección tiene un título, un
+        orden y opcionalmente una descripción. Entonces para crear una nueva pregunta primero debe
+        crear una sección, después podrá agregar preguntas a la sección.
+      </p>
+      <p>
+        Las <strong>secciones se muestran como paneles desplegables</strong>, para alternar entre
+        abrir y cerrar el panel presione su cabecera.
+      </p>
+      <p-accordion styleClass="w-full" [multiple]="true">
+        <p-accordionTab iconPos="start" [selected]="true">
+          <ng-template pTemplate="header">
+            <span class="flex align-items-center justify-content-start w-full">
+              <div class="flex flex-column">
+                <div class="flex text-xl">SECCION # 1: TITULO DE SECCIÓN</div>
+              </div>
+            </span>
+          </ng-template>
+          <p-messages severity="info" class="my-0">
+            <ng-template pTemplate> DESCRIPCIÓN DE SECCIÓN </ng-template>
+          </p-messages>
+        </p-accordionTab>
+      </p-accordion>
+
+      <div class="flex pt-4 justify-content-end">
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Agregar secciones</h3>
+      <p>
+        Para agregar una nueva sección, presione el botón <strong>"Agregar sección"</strong> en la
+        parte superior derecha de la pantalla. Se mostrará una ventana emergente donde debe ingresar
+        el <strong>título de la sección y opcionalmente una descripción</strong>. Puede indicar el
+        orden de la sección o si lo desea,
+        <strong>dejarlo en blanco para que se coloque al final de la lista</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-button severity="primary" pTooltip="Agregar sección" tooltipPosition="top">
+          <i class="pi pi-plus mr-2"></i>
+          <span class="font-bold hidden md:inline">Agregar sección</span>
+          <span class="font-bold inline md:hidden">Sección</span>
+        </p-button>
+      </div>
+      <p>
+        Para editar una sección, ubique la cabecera de la sección y presione el botón
+        <strong>"Editar"</strong>. Para borrarla presione el botón <strong>"Eliminar"</strong>.
+      </p>
+      <p-accordion styleClass="w-full" [multiple]="true">
+        <p-accordionTab iconPos="start" [selected]="true">
+          <ng-template pTemplate="header">
+            <span class="flex align-items-center justify-content-start w-full">
+              <div class="flex flex-column">
+                <div class="flex text-xl">SECCION # 1: TITULO DE SECCIÓN</div>
+              </div>
+              <div
+                class="flex gap-1 ml-auto"
+                tabindex="0"
+                (click)="$event.stopPropagation()"
+                (keydown.enter)="$event.stopPropagation()"
+              >
+                <p-button
+                  size="small"
+                  severity="warning"
+                  pTooltip="Editar sección"
+                  tooltipPosition="top"
+                >
+                  <i class="pi pi-pencil"></i>
+                  <span class="ml-2 font-bold hidden md:inline">Editar</span>
+                </p-button>
+                <p-button
+                  size="small"
+                  severity="danger"
+                  pTooltip="Eliminar sección"
+                  tooltipPosition="top"
+                >
+                  <i class="pi pi-trash"></i>
+                  <span class="ml-2 font-bold hidden md:inline">Eliminar</span>
+                </p-button>
+              </div>
+            </span>
+          </ng-template>
+        </p-accordionTab>
+      </p-accordion>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template
+      pTemplate="content"
+      let-prevCallback="prevCallback"
+      let-nextCallback="nextCallback"
+      let-index="index"
+    >
+      <h3>Agregar preguntas</h3>
+      <p>
+        Para agregar una nueva pregunta, despliegue el panel de la sección, y dentro de ella
+        presione el botón <strong>"Agregar pregunta"</strong>, se mostrará una ventana emergente
+        donde debe ingresar el
+        <strong>contenido de la pregunta, indicar el tipo de pregunta y sus alternativas</strong>.
+        Puede indicar el orden de la pregunta o si lo desea,
+        <strong>dejarlo en blanco para que se coloque al final de la lista</strong>.
+      </p>
+      <div class="flex gap-2 justify-content-center mb-2">
+        <p-button severity="primary" size="small" pTooltip="Agregar pregunta" tooltipPosition="top">
+          <i class="pi pi-plus mr-2"></i>
+          <span class="font-bold hidden md:inline">Agregar pregunta</span>
+          <span class="font-bold inline md:hidden">Pregunta</span>
+        </p-button>
+      </div>
+      <p>
+        Para editar una pregunta, ubíquese dentro del recuadro de la pregunta y presione el botón
+        <strong>"Editar"</strong>. Para borrarla presione el botón <strong>"Eliminar"</strong>.
+      </p>
+      <p-inputGroup class="vertical-group">
+        <p-inputGroupAddon>
+          <a
+            role="button"
+            class="p-button p-button-secondary mr-2"
+            (click)="panel.toggle($event)"
+            (keypress)="panel.toggle($event)"
+            tabindex="0"
+            pTooltip="Información Adicional"
+            tooltipPosition="top"
+          >
+            <i class="pi pi-question-circle"></i>
+          </a>
+          <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+            <div class="flex w-15rem">INFORMACIÓN ADICIONAL DE LA PREGUNTA</div>
+          </p-overlayPanel>
+          <span>1.1. CONTENIDO DE PREGUNTA</span>
+          <p-button
+            size="small"
+            severity="info"
+            disabled="true"
+            pTooltip="OPCIÓN MÚLTIPLE"
+            tooltipPosition="top"
+          >
+            <i class="pi pi-check-square"></i>
+            <span class="hidden md:inline ml-2">OPCIÓN MÚLTIPLE</span>
+          </p-button>
+        </p-inputGroupAddon>
+        <div class="text-panel">
+          <div class="flex justify-content-start flex-wrap gap-2 m-2">
+            <p-chip label="ALTERNATIVA 1" />
+            <p-chip label="ALTERNATIVA 2" />
+            <p-chip label="ALTERNATIVA 3" />
+          </div>
+          <div class="flex justify-content-start">
+            <p-button
+              severity="success"
+              icon="pi pi-pen-to-square"
+              label="Editar"
+              size="small"
+              class="m-2"
+              pTooltip="Editar pregunta"
+              tooltipPosition="top"
+            />
+            <p-button
+              severity="danger"
+              icon="pi pi-trash"
+              label="Eliminar"
+              size="small"
+              class="m-2"
+              pTooltip="Eliminar pregunta"
+              tooltipPosition="top"
+            />
+          </div>
+        </div>
+      </p-inputGroup>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Continuar"
+          severity="success"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          (onClick)="nextCallback.emit()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+  <p-stepperPanel>
+    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+      <button
+        class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+        (click)="onClick.emit()"
+      >
+        <span
+          class="border-round border-2 w-1rem h-1rem"
+          [ngClass]="{
+            'bg-primary border-primary': index <= active,
+            'surface-border': index > active,
+          }"
+        >
+        </span>
+      </button>
+    </ng-template>
+    <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
+      <h3>Información adicional</h3>
+      <p>
+        En la parte superior derecha de la pantalla se muestra la
+        <strong>cantidad de preguntas registradas</strong>. Esta cantidad se actualiza
+        automáticamente cada vez que se agregan o eliminan preguntas.
+      </p>
+      <div class="flex justify-content-center flex-wrap gap-2 mb-2">
+        <div class="card p-1">
+          <span class="font-semibold hidden md:inline">Total de </span>
+          <span class="font-semibold">Preguntas: </span>
+          <p-badge [value]="10" severity="primary" badgeSize="large" />
+        </div>
+      </div>
+      <p>
+        Durante la edición de preguntas, puede ver una <strong>vista previa</strong> de como se
+        verán las preguntas para el encuestado. Para ver la vista previa, presione el botón
+        <strong>"Vista previa"</strong> ubicado en la parte inferior derecha de la pantalla.
+      </p>
+      <div class="flex justify-content-center flex-wrap gap-2">
+        <p-button severity="secondary" size="small" pTooltip="Vista previa" tooltipPosition="top">
+          <i class="pi pi-eye mr-2"></i>
+          <span class="font-bold">Vista previa</span>
+        </p-button>
+      </div>
+
+      <div class="flex pt-4 justify-content-between">
+        <p-button
+          label="Regresar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          (onClick)="prevCallback.emit()"
+        />
+        <p-button
+          label="Salir"
+          severity="success"
+          icon="pi pi-times"
+          iconPos="right"
+          (onClick)="salir()"
+        />
+      </div>
+    </ng-template>
+  </p-stepperPanel>
+</p-stepper>

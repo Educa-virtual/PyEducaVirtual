@@ -225,185 +225,233 @@
 
 <p-dialog [modal]="true" [(visible)]="visiblePortafolio" [style]="{ width: '50rem' }">
   <ng-template pTemplate="header">
-    <span class="font-bold text-xl text-white">Mi Portafolio</span>
+    <div class="flex flex-column">
+      <div class="flex font-bold text-xl text-white">
+        MI PORTAFOLIO - {{ selectedData['cCursoNombre'] }}
+      </div>
+      <div class="flex">
+        <span class="text-white">GRADO: {{ selectedData['cGradoAbreviacion'] }}</span>
+        <span class="text-white">SECCION: {{ selectedData['cSeccionNombre'] }}</span>
+      </div>
+    </div>
   </ng-template>
-  <div class="grid mt-3">
-    <div class="col-12">
-      <div class="font-bold p-1">Itinerario</div>
-      <p-inputGroup>
-        <p-inputGroupAddon>
-          <i class="pi pi-link"></i>
-        </p-inputGroupAddon>
-        <input
-          type="text"
-          pInputText
-          [placeholder]="itinerarioInterno ? itinerarioInterno.name : 'Nombre del Itinerario'"
-          disabled
-          class="w-full p-inputtext-sm opacity-100"
-          pInputText
-        />
-        <button
-          pButton
-          pRipple
-          type="button"
-          severity="primary"
-          class="p-button-primary btn-file-image"
-        >
-          <i class="pi pi-upload"></i>
-          <input #itinerario type="file" (change)="guardarItinerario(itinerario)" accept=".pdf " />
-        </button>
-        <button
-          type="button"
-          (click)="descargarArchivo(itinerarioInterno.ruta)"
-          [disabled]="!itinerarioInterno || itinerarioInterno.length === 0"
-          pButton
-          icon="pi pi-eye"
-          class="p-button-info"
-        >
-          &nbsp;
-        </button>
-      </p-inputGroup>
-    </div>
-    <div class="col-12">
-      <div class="font-bold p-1">Reglamento Interno</div>
-      <p-inputGroup>
-        <p-inputGroupAddon>
-          <i class="pi pi-link"></i>
-        </p-inputGroupAddon>
-        <input
-          type="text"
-          pInputText
-          placeholder="Reglamento Interno"
-          disabled
-          class="w-full p-inputtext-sm opacity-100"
-          pInputText
-        />
-        <button
-          type="button"
-          (click)="descargarArchivo(reglamentoInterno ? reglamentoInterno[0]['ruta'] : null)"
-          [disabled]="!reglamentoInterno"
-          pButton
-          icon="pi pi-eye"
-          class="p-button-info"
-        >
-          &nbsp;
-        </button>
-      </p-inputGroup>
-    </div>
-    <div class="col-12">
-      <div class="font-bold p-1">Ficha de Actividades de Aprendizaje</div>
-      <p-inputGroup>
-        <p-inputGroupAddon>
-          <i class="pi pi-link"></i>
-        </p-inputGroupAddon>
-        <input
-          type="text"
-          pInputText
-          [placeholder]="formato && formato[0] ? formato[0]['name'] : 'Nombre del Itinerario'"
-          disabled
-          class="w-full p-inputtext-sm opacity-100"
-          pInputText
-        />
-        <button
-          pButton
-          pRipple
-          type="button"
-          severity="primary"
-          class="p-button-primary btn-file-image"
-        >
-          <i class="pi pi-upload"></i
-          ><input #actividad type="file" (change)="guardarActividades(actividad)" accept=".pdf" />
-        </button>
-        <button
-          type="button"
-          (click)="descargarArchivo(formato && formato.length > 0 ? formato[0]['ruta'] : null)"
-          [disabled]="!formato"
-          pButton
-          icon="pi pi-eye"
-          class="p-button-info"
-        >
-          &nbsp;
-        </button>
-      </p-inputGroup>
-    </div>
-    <div class="col-12">
-      <div class="font-bold p-1">Cuaderno de Campo</div>
-      <p-inputGroup>
-        <p-inputGroupAddon>
-          <i class="pi pi-link"></i>
-        </p-inputGroupAddon>
-        <input
-          type="text"
-          pInputText
-          [placeholder]="formato && formato[1] ? formato[1]['name'] : 'Nombre del Itinerario'"
-          disabled
-          class="w-full p-inputtext-sm opacity-100"
-          pInputText
-        />
-        <button
-          pButton
-          pRipple
-          type="button"
-          severity="primary"
-          class="p-button-primary btn-file-image"
-        >
-          <i class="pi pi-upload"></i
-          ><input type="file" #cuaderno (change)="guardarCuaderno(cuaderno)" accept=".pdf" />
-        </button>
-        <button
-          type="button"
-          (click)="descargarArchivo(formato && formato.length > 0 ? formato[1]['ruta'] : null)"
-          [disabled]="!formato"
-          pButton
-          icon="pi pi-eye"
-          class="p-button-info"
-        >
-          &nbsp;
-        </button>
-      </p-inputGroup>
-    </div>
-    <div class="col-12">
-      <div class="font-bold p-1">Instrumentos de Evaluación</div>
-      <p-inputGroup>
-        <p-inputGroupAddon>
-          <i class="pi pi-link"></i>
-        </p-inputGroupAddon>
-        <input
-          type="text"
-          pInputText
-          [placeholder]="formato && formato[2] ? formato[2]['name'] : 'Nombre del Itinerario'"
-          disabled
-          class="w-full p-inputtext-sm opacity-100"
-          pInputText
-        />
-        <button
-          pButton
-          pRipple
-          type="button"
-          severity="primary"
-          class="p-button-primary btn-file-image"
-        >
-          <i class="pi pi-upload"></i>
-          <input
-            #instrumentos
-            type="file"
-            (change)="guardarInstrumentos(instrumentos)"
-            accept=".pdf"
-          />
-        </button>
-        <button
-          type="button"
-          (click)="descargarArchivo(formato && formato.length > 0 ? formato[2]['ruta'] : null)"
-          [disabled]="!formato"
-          pButton
-          icon="pi pi-eye"
-          class="p-button-info"
-        >
-          &nbsp;
-        </button>
-      </p-inputGroup>
-    </div>
-  </div>
+  <p-tabView>
+    <p-tabPanel header="PORTAFOLIO">
+      <div class="grid mt-3">
+        <div class="col-12">
+          <div class="font-bold p-1">Itinerario</div>
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              [placeholder]="itinerarioInterno ? itinerarioInterno.name : 'Nombre del Itinerario'"
+              disabled
+              class="w-full p-inputtext-sm opacity-100"
+              pInputText
+            />
+            <button
+              pButton
+              pRipple
+              type="button"
+              severity="primary"
+              class="p-button-primary btn-file-image"
+            >
+              <i class="pi pi-upload"></i>
+              <input
+                #itinerario
+                type="file"
+                (change)="guardarItinerario(itinerario)"
+                accept=".pdf "
+              />
+            </button>
+            <button
+              type="button"
+              (click)="descargarArchivo(itinerarioInterno.ruta)"
+              [disabled]="!itinerarioInterno || itinerarioInterno.length === 0"
+              pButton
+              icon="pi pi-eye"
+              class="p-button-info"
+            >
+              &nbsp;
+            </button>
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <div class="font-bold p-1">Reglamento Interno</div>
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              placeholder="Reglamento Interno"
+              disabled
+              class="w-full p-inputtext-sm opacity-100"
+              pInputText
+            />
+            <button
+              type="button"
+              (click)="descargarArchivo(reglamentoInterno)"
+              [disabled]="!reglamentoInterno"
+              pButton
+              icon="pi pi-eye"
+              class="p-button-info"
+            >
+              &nbsp;
+            </button>
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <div class="font-bold p-1">Ficha de Actividades de Aprendizaje</div>
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              [placeholder]="formato && formato[0] ? formato[0]['name'] : 'Nombre del Itinerario'"
+              disabled
+              class="w-full p-inputtext-sm opacity-100"
+              pInputText
+            />
+            <button
+              pButton
+              pRipple
+              type="button"
+              severity="primary"
+              class="p-button-primary btn-file-image"
+            >
+              <i class="pi pi-upload"></i
+              ><input
+                #actividad
+                type="file"
+                (change)="guardarActividades(actividad)"
+                accept=".pdf"
+              />
+            </button>
+            <button
+              type="button"
+              (click)="descargarArchivo(formato && formato.length > 0 ? formato[0]['ruta'] : null)"
+              [disabled]="!formato"
+              pButton
+              icon="pi pi-eye"
+              class="p-button-info"
+            >
+              &nbsp;
+            </button>
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <div class="font-bold p-1">Cuaderno de Campo</div>
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              [placeholder]="formato && formato[1] ? formato[1]['name'] : 'Nombre del Itinerario'"
+              disabled
+              class="w-full p-inputtext-sm opacity-100"
+              pInputText
+            />
+            <button
+              pButton
+              pRipple
+              type="button"
+              severity="primary"
+              class="p-button-primary btn-file-image"
+            >
+              <i class="pi pi-upload"></i
+              ><input type="file" #cuaderno (change)="guardarCuaderno(cuaderno)" accept=".pdf" />
+            </button>
+            <button
+              type="button"
+              (click)="descargarArchivo(formato && formato.length > 0 ? formato[1]['ruta'] : null)"
+              [disabled]="!formato"
+              pButton
+              icon="pi pi-eye"
+              class="p-button-info"
+            >
+              &nbsp;
+            </button>
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <div class="font-bold p-1">Instrumentos de Evaluación</div>
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-link"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              [placeholder]="formato && formato[2] ? formato[2]['name'] : 'Nombre del Itinerario'"
+              disabled
+              class="w-full p-inputtext-sm opacity-100"
+              pInputText
+            />
+            <button
+              pButton
+              pRipple
+              type="button"
+              severity="primary"
+              class="p-button-primary btn-file-image"
+            >
+              <i class="pi pi-upload"></i>
+              <input
+                #instrumentos
+                type="file"
+                (change)="guardarInstrumentos(instrumentos)"
+                accept=".pdf"
+              />
+            </button>
+            <button
+              type="button"
+              (click)="descargarArchivo(formato && formato.length > 0 ? formato[2]['ruta'] : null)"
+              [disabled]="!formato"
+              pButton
+              icon="pi pi-eye"
+              class="p-button-info"
+            >
+              &nbsp;
+            </button>
+          </p-inputGroup>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="SESIONES DE APRENDIZAJE">
+      <p-table [value]="sesiones">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Sesion</th>
+            <th class="text-center">Documento</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-lista let-index="rowIndex">
+          <tr>
+            <td class="text-center">{{ index + 1 }}</td>
+            <td>{{ lista.cContenidoSemTitulo }}</td>
+            <td class="text-center">
+              <p-button
+                label="Ver"
+                icon="pi pi-file-pdf"
+                severity="danger"
+                size="small"
+                (click)="descargarArchivo(lista.cAdjunto)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+  </p-tabView>
 </p-dialog>
 
 <p-toast />

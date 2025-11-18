@@ -66,7 +66,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
     } else {
       /* Si tiene opciones de menos de 10 caracteres, usar gráfico vertical */
       const opcion_max_length = this.data_chart
-        .map((item: any) => item.opcion.length)
+        .map((item: any) => item.opcion?.length || item.alternativa?.length)
         .reduce((a: any, b: any) => (a > b ? a : b));
       if (opcion_max_length < 10) {
         this.formChart?.get('iTipoGrafico').setValue(this.GRAFICO_BARRA_VERTICAL);
@@ -162,7 +162,7 @@ export class MultiChartComponent implements OnInit, OnChanges {
   formatearDataPrimeChart(resumen: any) {
     const documentStyle = getComputedStyle(document.documentElement);
 
-    const opciones = resumen.map((item: any) => item.opcion);
+    const opciones = resumen.map((item: any) => item.opcion || item.alternativa);
     const cantidad = resumen.map((item: any) => item.cantidad);
 
     this.total_cantidad = resumen.reduce((a: any, b: any) => a + b.cantidad, 0);

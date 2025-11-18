@@ -88,7 +88,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let ev of dialogEvents; let i = index" class="event-row">
+      <tr
+        *ngFor="let ev of dialogEvents; let i = index"
+        class="event-row"
+        [style.background-color]="ev.backgroundColor"
+      >
         <td class="index-cell">{{ i + 1 }}</td>
         <td class="time-cell">
           <ng-container *ngIf="ev.allDay; else timed">
@@ -122,6 +126,12 @@
           </div>
           <div *ngIf="ev.extendedProps?.['cDocenteNombre']" class="event-course">
             -Docente: {{ ev.extendedProps?.['cDocenteNombre'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['grado']" class="event-course">
+            -Grado: {{ ev.extendedProps?.['grado'] }}
+          </div>
+          <div *ngIf="ev.extendedProps?.['seccion']" class="event-course">
+            -Seccion: {{ ev.extendedProps?.['seccion'] }}
           </div>
           <div *ngIf="ev.extendedProps?.['cRVirtualUrlJoin']" class="event-course">
             -Ingresar:

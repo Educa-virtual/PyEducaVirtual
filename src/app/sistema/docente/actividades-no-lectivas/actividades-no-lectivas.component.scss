@@ -2,3 +2,7 @@
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
+:host ::ng-deep .p-dropdown {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}

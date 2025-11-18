@@ -356,10 +356,14 @@
   <app-tutorial-encuestas (visibleDialogTutorial)="verTutorial($event)" />
 </p-dialog>
 
-<p-confirmDialog
+<p-dialog
   [style]="{ width: '50vw' }"
   [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
   [visible]="visibleDialogGenerar"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
 >
   <ng-template pTemplate="headless">
     <div class="surface-overlay border-round text-center p-5">
@@ -377,46 +381,18 @@
         </p>
       }
       <p>
-        Las encuestas se crearán para todos las áreas y/o periodos configurados. Revise que las
-        siguientes listas contengan datos, en caso contrario realice la configuración de áreas y
-        periodos académicos.
+        Las encuestas se crearán para todos las áreas y/o periodos configurados. Al generar las
+        encuestas de forma masiva debe asegurarse de que las listas contengan datos, en caso
+        contrario deberá realizar la configuración de áreas y periodos académicos.
       </p>
-      <div class="grid">
-        @if (periodos.length > 0) {
-          @for (periodo of periodos; track $index) {
-            <div class="col-12">
-              <p-inputGroup>
-                <p-inputGroupAddon>
-                  {{ periodo['label'] }}
-                </p-inputGroupAddon>
-                <p-dropdown
-                  [options]="periodo['cursos']"
-                  [showClear]="false"
-                  appendTo="body"
-                  styleClass="group-element text-left"
-                />
-              </p-inputGroup>
-            </div>
-          }
-        } @else if (cursos.length > 0) {
-          <div class="col-12">
-            <p-inputGroup>
-              <p-inputGroupAddon> Cursos </p-inputGroupAddon>
-              <p-dropdown
-                [options]="cursos"
-                [showClear]="false"
-                appendTo="body"
-                styleClass="group-element text-left"
-              />
-            </p-inputGroup>
-          </div>
-        } @else {
-          <div class="col-12">No tiene áreas ni periodos configurados.</div>
-        }
-      </div>
 
       <div class="flex justify-content-center flex-wrap gap-2">
-        <button pButton label="Si" (click)="listarPlantillas()" class="p-button-danger"></button>
+        <button
+          pButton
+          label="Si, ir a Plantillas"
+          (click)="listarPlantillas()"
+          class="p-button-danger"
+        ></button>
         <button
           pButton
           label="No, cancelar"
@@ -426,6 +402,6 @@
       </div>
     </div>
   </ng-template>
-</p-confirmDialog>
+</p-dialog>
 
 <p-toast></p-toast>

@@ -293,13 +293,12 @@ export class EncuestasService implements OnDestroy {
   }
 
   getAreasFija(data: any) {
-    if (!this.areas_fija && data) {
+    if (data) {
       this.areas_fija = data.map(area => ({
         value: area.iCursoId,
         label: area.cCursoNombre + (Number(area.bTieneEncuesta) === 1 ? ' (REGISTRADO)' : ''),
         disabled: Number(area.bTieneEncuesta) === 1 ? true : false,
       }));
-      return this.areas_fija;
     }
     return this.areas_fija;
   }

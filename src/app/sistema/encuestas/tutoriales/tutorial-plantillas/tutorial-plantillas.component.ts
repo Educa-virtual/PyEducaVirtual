@@ -63,7 +63,7 @@ export class TutorialPlantillasComponent implements OnInit {
         icon: 'pi pi-folder',
       },
       {
-        id: 'desarchivar',
+        id: 'archivar',
         label: 'Desarchivar',
         icon: 'pi pi-folder-open',
       },

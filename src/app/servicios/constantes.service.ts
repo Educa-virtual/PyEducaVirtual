@@ -1095,7 +1095,13 @@ const asistente_social = [
   {
     label: 'Estudiantes y apoderados',
     icon: 'pi pi-user',
-    routerLink: ['estudiantes-apoderados'],
+    items: [
+      {
+        label: 'Estudiantes y apoderados',
+        icon: 'pi pi-user',
+        routerLink: ['estudiantes-apoderados'],
+      },
+    ],
   },
 ];
 

@@ -13,7 +13,8 @@
               [actions]="accionesTablaCurricula"
               [data]="curriculas"
               (accionBtnItem)="accionBtnItem($event)"
-              [searchPlaceholder]="'Buscar por refencia...'"
+              [searchPlaceholder]="'Buscar por nombre...'"
+              [showAdvancedFilter]="true"
             >
             </app-table-primeng>
           </div>
@@ -67,7 +68,7 @@
           <input
             pInputText
             id="name"
-            formControlName="cCurrDescripcion"
+            formControlName="cCurrDescripcion(*)"
             class="w-full"
             maxlength="100"
           />
@@ -114,7 +115,7 @@
           ) {
             <small class="text-red-500"> Debe seleccionar una opción. </small>
           }
-          <label for="modalidad">Modalidad del servicio</label>
+          <label for="modalidad">Modalidad del servicio(*)</label>
         </span>
       </div>
       <div class="field col-12 md:col-6">

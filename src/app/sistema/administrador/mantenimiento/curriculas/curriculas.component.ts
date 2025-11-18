@@ -452,13 +452,13 @@ export class CurriculasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar áreas curriculares',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_curricula',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar áreas curriculares',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_curricula',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
   curriculasColumns = [
     {

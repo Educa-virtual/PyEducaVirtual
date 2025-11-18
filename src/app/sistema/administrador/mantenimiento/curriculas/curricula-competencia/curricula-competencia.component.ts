@@ -304,13 +304,13 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar competencias',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_competencia',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar competencias',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_competencia',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
   competenciasColumns = [
     {

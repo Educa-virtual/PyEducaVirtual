@@ -279,7 +279,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
       text: 'Agregar capacidades',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 }

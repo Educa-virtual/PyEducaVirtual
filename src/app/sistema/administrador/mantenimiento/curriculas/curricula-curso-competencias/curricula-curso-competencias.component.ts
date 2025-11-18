@@ -426,13 +426,13 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar competencias',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_competencia',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar competencias',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_competencia',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
 
   actionsContainer = [
@@ -441,7 +441,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       text: 'Agregar competencia',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 }

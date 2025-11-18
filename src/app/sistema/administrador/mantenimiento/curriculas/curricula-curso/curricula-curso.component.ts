@@ -264,6 +264,7 @@ export class CurriculaCursoComponent implements OnChanges {
         });
         this.insertarArea(this.frmCursos.value);
         this.bUpdate = false;
+        this.iCursoId = 0;
 
         break;
 
@@ -522,13 +523,13 @@ export class CurriculaCursoComponent implements OnChanges {
     //   type: 'item',
     //   class: 'p-button-rounded p-button-primary p-button-text',
     // },
-    {
-      labelTooltip: 'Eliminar área curricular',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_area',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar área curricular',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_area',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
 
   cursosColumns = [

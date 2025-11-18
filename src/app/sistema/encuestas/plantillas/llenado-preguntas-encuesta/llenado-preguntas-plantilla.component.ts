@@ -157,9 +157,7 @@ export class LlenadoPreguntasPlantillaComponent implements OnInit {
   }
 
   salir() {
-    this.router.navigate([
-      `/encuestas/categorias/${this.iCateId}/gestion-plantillas/${this.iPlanId}`,
-    ]);
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-plantillas`]);
   }
 
   calcularTotalPreguntas() {

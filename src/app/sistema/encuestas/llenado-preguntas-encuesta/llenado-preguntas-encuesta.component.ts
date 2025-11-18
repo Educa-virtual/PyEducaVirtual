@@ -151,9 +151,7 @@ export class LlenadoPreguntasEncuestaComponent implements OnInit {
   }
 
   salir() {
-    this.router.navigate([
-      `/encuestas/categorias/${this.iCateId}/gestion-encuestas/${this.iEncuId}`,
-    ]);
+    this.router.navigate([`/encuestas/categorias/${this.iCateId}/gestion-encuestas`]);
   }
 
   calcularTotalPreguntas() {

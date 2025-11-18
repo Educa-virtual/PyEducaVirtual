@@ -428,7 +428,12 @@
           </p-inputGroup>
         </div>
       } @else {
-        <div class="col-12">No tiene áreas ni periodos configurados.</div>
+        <div class="col-12 text-center">
+          <p-message
+            severity="error"
+            text="No tiene áreas ni periodos configurados. Debe configurarlos para poder registrar las encuestas."
+          />
+        </div>
       }
     </div>
 

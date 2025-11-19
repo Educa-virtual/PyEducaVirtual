@@ -254,7 +254,7 @@ export class CurriculasComponent implements OnInit {
 
         this.curriculas = this.curriculas.map(e => ({
           ...e,
-          cCurrRslShort: e.cCurrRsl ? e.cCurrRsl.substring(0, 20) + '...' : '',
+          cCurrRslShort: e.cCurrRsl ? e.cCurrRsl.substring(0, 20) : '',
         }));
       },
       // error: (error) =>{

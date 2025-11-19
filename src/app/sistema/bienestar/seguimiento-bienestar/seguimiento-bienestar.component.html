@@ -9,7 +9,7 @@
       <button
         size="small"
         pButton
-        pTooltip="Registrar encuesta"
+        pTooltip="Registrar seguimiento"
         tooltipPosition="top"
         (click)="agregarSeguimiento()"
         severity="success"
@@ -244,18 +244,7 @@
             />
           </p-inputGroup>
         </div>
-        @if (seguimiento_bloqueado) {
-          <div class="col-12">
-            <p-inputGroup styleClass="vertical-group">
-              <p-inputGroupAddon>
-                <a href="#" class="underline text-white" (click)="descargarSeguimiento()">
-                  <i class="pi pi-fw pi-download mr-2"></i>
-                  <span>Descargar Archivo Adjunto</span>
-                </a>
-              </p-inputGroupAddon>
-            </p-inputGroup>
-          </div>
-        } @else {
+        @if (!seguimiento_bloqueado) {
           <div class="col-12">
             <p-inputGroup styleClass="vertical-group">
               <p-inputGroupAddon>

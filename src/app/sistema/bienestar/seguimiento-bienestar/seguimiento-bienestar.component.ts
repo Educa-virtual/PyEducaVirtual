@@ -579,8 +579,7 @@ export class SeguimientoBienestarComponent implements OnInit {
 
   descargarSeguimiento(item: any = null) {
     if (!item) {
-      item.iSeguimId = this.formSeguimiento.value.iSeguimId;
-      item.cSeguimArchivo = this.formSeguimiento.value.cSeguimArchivo;
+      item = this.formSeguimiento.value;
     }
     this.datosSeguimiento
       .descargarSeguimiento({

@@ -116,9 +116,11 @@
         @if (tabSeleccionado() === reporte.key) {
           <div class="col-12">
             <div class="tag2" [style.backgroundColor]="reporte.color">
-              {{ reporte.titulo }} (Total de estudiantes: {{ _total }})
+              {{ reporte.titulo }}
             </div>
+
             <div class="grid relative my-3">
+              <div class="tag">(Total de estudiantes: {{ _total }})</div>
               @if (showGrafica()) {
                 <div class="col-12 lg:col-6 mt-4">
                   <p-chart

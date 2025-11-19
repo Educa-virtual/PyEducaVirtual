@@ -649,13 +649,13 @@ export class ConfigAmbienteComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar',
-      icon: 'pi pi-trash',
-      accion: 'eliminar',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
 
   columns = [

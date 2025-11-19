@@ -68,7 +68,7 @@
           <input
             pInputText
             id="name"
-            formControlName="cCurrDescripcion(*)"
+            formControlName="cCurrDescripcion"
             class="w-full"
             maxlength="100"
           />
@@ -80,7 +80,7 @@
           ) {
             <small class="text-red-500"> Este campo es obligatorio. </small>
           }
-          <label for="name">Nombre</label>
+          <label for="name">Nombre (*)</label>
         </span>
       </div>
       <div class="field col-12 md:col-2">
@@ -251,6 +251,8 @@
       </div>
     </div>
   </form>
+
+  <div class="tag2">Los parámetros en (*) son obligatorios</div>
   <!-- <p-button
                     styleClass="w-full"
                     icon="pi pi-plus"

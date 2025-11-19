@@ -95,7 +95,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       iCompCursoId: [''],
       iNivelId: [0],
       iNivelTipoId: [0, Validators.required],
-      iCursoId: ['', Validators.required],
+      iCursoId: [''],
       iCompetenciaId: ['', Validators.required],
       iEstado: [1],
     });

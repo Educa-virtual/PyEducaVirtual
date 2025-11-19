@@ -21,7 +21,7 @@
               appendTo="body"
               optionLabel="cNivelNombre"
             />
-            <label for="iNivelId">Modalidad</label>
+            <label for="iNivelId">Modalidad(*)</label>
           </span>
         </div>
         <div class="col-12" *ngIf="this.frmCursosCompetencias.value.iNivelId > 0">
@@ -36,7 +36,7 @@
               appendTo="body"
               optionLabel="cNivelTipoNombre"
             />
-            <label for="iNivelTipoId">Nivel</label>
+            <label for="iNivelTipoId">Nivel(*)</label>
           </span>
         </div>
         <!-- <div class="col-12">
@@ -59,7 +59,7 @@
               appendTo="body"
               filter="true"
             />
-            <label for="iCompetenciaId">Competencia</label>
+            <label for="iCompetenciaId">Competencia (*)</label>
           </span>
         </div>
         <div class="col-12">
@@ -77,6 +77,7 @@
                 class="p-button-success"
                 size="small"
                 (click)="accionBtnItem({ accion: 'guardar', item: frmCursosCompetencias.value })"
+                [disabled]="frmCursosCompetencias.invalid"
               ></button>
 
               <button
@@ -86,12 +87,14 @@
                 icon="pi pi-pencil"
                 class="p-button-warning"
                 size="small"
+                [disabled]="frmCursosCompetencias.invalid"
                 (click)="accionBtnItem({ accion: 'actualizar', item: frmCursosCompetencias.value })"
               ></button>
             </div>
           </div>
         </div>
       </form>
+      <div class="tag2">Los parámetros en (*) son obligatorios</div>
     </div>
     <div class="col-12 md:col-8">
       <div class="grid">

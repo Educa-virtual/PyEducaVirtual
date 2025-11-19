@@ -251,6 +251,11 @@ export class CurriculasComponent implements OnInit {
     this.curriculasService.getCurriculas().subscribe({
       next: (res: any) => {
         this.curriculas = res.data;
+
+        this.curriculas = this.curriculas.map(e => ({
+          ...e,
+          cCurrRslShort: e.cCurrRsl ? e.cCurrRsl.substring(0, 20) + '...' : '',
+        }));
       },
       // error: (error) =>{
       //   let message = error?.error?.message || 'Sin conexión a la bd';
@@ -480,7 +485,7 @@ export class CurriculasComponent implements OnInit {
     {
       type: 'text',
       width: '30%',
-      field: 'cCurrRsl',
+      field: 'cCurrRslShort',
       header: 'Refencia',
       text_header: 'center',
       text: 'left',

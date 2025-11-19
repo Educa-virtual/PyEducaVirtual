@@ -13,6 +13,7 @@ import { SlicePipe } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import {
+  ADMINISTRADOR_DREMO,
   APODERADO,
   DIRECTOR_IE,
   DOCENTE,
@@ -87,7 +88,7 @@ export class RespuestasEncuestaComponent implements OnInit {
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
-    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL, ADMINISTRADOR_DREMO].includes(
       Number(this.perfil.iPerfilId)
     );
     this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);
@@ -96,6 +97,7 @@ export class RespuestasEncuestaComponent implements OnInit {
       this.iCateId = params.params.iCateId || 0;
     });
     this.setBreadCrumbs();
+    console.log(this.es_especialista, 'es_especialista');
   }
 
   ngOnInit(): void {
@@ -324,6 +326,7 @@ export class RespuestasEncuestaComponent implements OnInit {
           if (data.data) {
             this.encuesta = data.data;
             this.cEncuNombre = this.encuesta.cEncuNombre;
+            this.setBreadCrumbs();
           }
         },
         error: error => {

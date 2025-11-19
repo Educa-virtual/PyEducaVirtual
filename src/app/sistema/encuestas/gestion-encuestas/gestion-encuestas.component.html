@@ -404,4 +404,50 @@
   </ng-template>
 </p-dialog>
 
+<p-dialog
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [(visible)]="visibleDialogInfo"
+  modal="modal"
+  [draggable]="false"
+  [blockScroll]="true"
+  [resizable]="false"
+  [closable]="true"
+  header="Datos adicionales de la encuesta"
+>
+  <br />
+  <table [cellSpacing]="5">
+    <tr>
+      <th width="20%" class="text-right">ENCUESTA:</th>
+      <td width="80%">{{ encuesta?.cEncuNombre }}</td>
+    </tr>
+    <tr>
+      <th class="text-right">CREADA POR:</th>
+      <td>{{ encuesta?.cCreadorCompleto }}</td>
+    </tr>
+    <tr>
+      <th class="text-right">CREADA EN:</th>
+      <td>{{ encuesta?.dtCreado | date: 'dd/MM/yyyy HH:mm' }}</td>
+    </tr>
+    @if (encuesta?.cOrigenTipo && encuesta?.cOrigenTipo !== '') {
+      <tr>
+        <th class="text-right">CREADA DESDE:</th>
+        <td>
+          <strong>{{ encuesta?.cOrigenTipo }}</strong> ({{ encuesta?.cOrigenNombre }})
+        </td>
+      </tr>
+    }
+  </table>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      label="Salir"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      (click)="visibleDialogInfo = false"
+    />
+  </div>
+</p-dialog>
+
 <p-toast></p-toast>

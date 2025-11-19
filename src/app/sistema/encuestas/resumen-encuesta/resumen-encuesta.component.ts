@@ -17,6 +17,7 @@ import { EncuestasService } from '../services/encuestas.services';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ActivatedRoute } from '@angular/router';
 import {
+  ADMINISTRADOR_DREMO,
   APODERADO,
   DIRECTOR_IE,
   DOCENTE,
@@ -106,7 +107,7 @@ export class ResumenEncuestaComponent implements OnInit, AfterViewInit {
     private slicePipe: SlicePipe
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
-    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+    this.es_especialista = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL, ADMINISTRADOR_DREMO].includes(
       Number(this.perfil.iPerfilId)
     );
     this.es_especialista_ugel = ESPECIALISTA_UGEL === Number(this.perfil.iPerfilId);

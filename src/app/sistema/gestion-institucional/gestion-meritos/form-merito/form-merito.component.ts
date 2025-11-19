@@ -53,7 +53,7 @@ export class FormMeritoComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['perfil']) {
       this.perfil = changes['perfil']?.currentValue;
-      console.log(this.perfil, ' perfil ');
+
       this.initi();
       this.formMerito.patchValue({
         iSesionId: Number(this.perfil.iCredId),
@@ -71,6 +71,9 @@ export class FormMeritoComponent implements OnInit, OnChanges {
         this.validarDatos(this.data);
       } else {
         this.formMerito.reset();
+        this.mensaje =
+          'Para buscar el documento, debe ingresar el tipo de documento y el número de documento.';
+        this._severity = 'info';
       }
     }
     if (changes['bUpdate']) {
@@ -79,6 +82,9 @@ export class FormMeritoComponent implements OnInit, OnChanges {
         this.validarDatos(this.data);
       } else {
         this.formMerito.reset();
+        this.mensaje =
+          'Para buscar el documento, debe ingresar el tipo de documento y el número de documento.';
+        this._severity = 'info';
       }
     }
     if (changes['dremoiYAcadId']) {
@@ -278,7 +284,6 @@ export class FormMeritoComponent implements OnInit, OnChanges {
     });
 
     const payload = this.formMerito.value;
-    console.log('Datos a guardar:', payload);
 
     if (this.formMerito.invalid) {
       // 🔹 Marcar todos los controles como "tocados" para mostrar los errores en la vista

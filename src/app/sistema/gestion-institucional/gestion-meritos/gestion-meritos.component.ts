@@ -102,6 +102,51 @@ export class GestionMeritosComponent implements OnInit {
       this.bUpdate = false;
       this.bUpdate = true;
     }
+    if (event.accion === 'eliminar_merito') {
+      this.bUpdate = false;
+      this._confirmService.openConfirm({
+        header: 'Advertencia de eliminación permanente',
+        message: '¿Desea eliminar el mérito de forma permanente.?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          // Acción para eliminar el registro
+          this.eliminarMerito(event.item.iMeritoId);
+        },
+      });
+    }
+  }
+
+  eliminarMerito(id: number) {
+    const params = {
+      esquema: 'acad',
+      tabla: 'meritos',
+      campo: 'iMeritoId',
+      valorId: id,
+    };
+    this.query.deleteAcademico(params).subscribe({
+      error: error => {
+        let message = error?.error?.message || 'Sin conexión a la bd';
+        const match = message.match(/]([^\]]+?)\./);
+        if (match && match[1]) {
+          message = match[1].trim() + '.';
+        }
+        message = decodeURIComponent(message);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del sistema',
+          detail: message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del sistema',
+          detail: 'Se eliminó el mérito correctamente.',
+        });
+        this.getMeritos();
+      },
+    });
   }
 
   actions: IActionTable[] = [
@@ -111,6 +156,16 @@ export class GestionMeritosComponent implements OnInit {
       accion: 'editar_merito',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
+      // isVisible: rowData => {
+      //   return rowData.iEstado !== '1'; // Mostrar solo si el estado es 1 (activo)
+      // },
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar_merito',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
       // isVisible: rowData => {
       //   return rowData.iEstado !== '1'; // Mostrar solo si el estado es 1 (activo)
       // },
@@ -148,7 +203,7 @@ export class GestionMeritosComponent implements OnInit {
       type: 'text',
       width: '15%',
       field: 'cPersDocumento',
-      header: 'Dni / CE',
+      header: 'Documento',
       text_header: 'center',
       text: 'left',
     },

@@ -31,7 +31,7 @@
               aria-describedby="cDocumento-help"
               [ngClass]="{ 'input-invalid': esInvalido('cDocumento') }"
             />
-            <label for="cDocumento">Documento / CE (*)</label>
+            <label for="cDocumento">Documento (*)</label>
           </span>
         </div>
         <div class="field col-12 md:col-2" *ngIf="formMerito.get('iTipoIdentId')?.value > 0">
@@ -140,6 +140,7 @@
               [showButtons]="true"
               formControlName="iMeritoPuesto"
               aria-describedby="iMeritoPuesto-help"
+              [min]="0"
               [ngClass]="{ 'input-invalid': esInvalido('iMeritoPuesto') }"
             />
 
@@ -157,6 +158,7 @@
               [maxFractionDigits]="2"
               [showButtons]="true"
               placeholder="00"
+              [min]="0"
               inputStyleClass="w-full"
               aria-describedby="iMeritoPuntaje-help"
               [ngClass]="{ 'input-invalid': esInvalido('iMeritoPuesto') }"

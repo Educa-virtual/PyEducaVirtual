@@ -8,7 +8,7 @@ import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { SlicePipe } from '@angular/common';
+import { formatDate, SlicePipe } from '@angular/common';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TutorialPlantillasComponent } from '../../tutoriales/tutorial-plantillas/tutorial-plantillas.component';
@@ -231,10 +231,12 @@ export class GestionPlantillasComponent implements OnInit {
         return plantilla;
       if (plantilla.cCreador && plantilla.cCreador.toLowerCase().includes(filtro.toLowerCase()))
         return plantilla;
-      if (
-        plantilla?.dtUltimaModificacion &&
-        plantilla.dtUltimaModificacion.toString().includes(filtro)
-      )
+      const dtUltimaModificacion = formatDate(
+        plantilla.dtUltimaModificacion,
+        'dd/MM/yyyy',
+        'es-PE'
+      );
+      if (plantilla?.dtUltimaModificacion && dtUltimaModificacion.toString().includes(filtro))
         return null;
     });
   }

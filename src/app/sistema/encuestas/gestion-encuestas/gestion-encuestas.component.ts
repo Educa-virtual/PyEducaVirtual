@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { SlicePipe } from '@angular/common';
+import { formatDate, SlicePipe } from '@angular/common';
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TutorialEncuestasComponent } from '../tutoriales/tutorial-encuestas/tutorial-encuestas.component';
@@ -287,9 +287,15 @@ export class GestionEncuestasComponent implements OnInit {
         encuesta.cTiemDurNombre.toLowerCase().includes(filtro.toLowerCase())
       )
         return encuesta;
-      if (encuesta.dEncuInicio && encuesta.dEncuInicio.toLowerCase().includes(filtro.toLowerCase()))
+      const dEncuInicio = formatDate(encuesta.dEncuInicio, 'dd/MM/yyyy', 'es-PE');
+      if (encuesta.dEncuInicio && dEncuInicio.includes(filtro)) return encuesta;
+      const dEncuFin = formatDate(encuesta.dEncuFin, 'dd/MM/yyyy', 'es-PE');
+      if (encuesta.dEncuFin && dEncuFin.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
-      if (encuesta.dEncuFin && encuesta.dEncuFin.toLowerCase().includes(filtro.toLowerCase()))
+      if (
+        encuesta.cCreadorAbreviado &&
+        encuesta.cCreadorAbreviado.toLowerCase().includes(filtro.toLowerCase())
+      )
         return encuesta;
       return null;
     });

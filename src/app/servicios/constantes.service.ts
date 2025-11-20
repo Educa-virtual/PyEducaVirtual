@@ -634,18 +634,18 @@ const administracion = [
           },
 
           {
-            label: 'Gestión de horarios y asignaciones',
+            label: 'Gestión de horarios',
             icon: 'pi pi-calendar',
             items: [
               {
-                label: 'Configuracion de horarios',
-                icon: 'pi pi-calendar-clock',
-                routerLink: ['/horario/configurar-horario'],
-              },
-              {
-                label: 'Registro de horarios',
+                label: 'Configurar horarios',
                 icon: 'pi pi-calendar-times',
                 routerLink: ['/horario/horario'],
+              },
+              {
+                label: 'Asignar horarios',
+                icon: 'pi pi-calendar-clock',
+                routerLink: ['/horario/configurar-horario'],
               },
             ],
           },
@@ -757,15 +757,15 @@ const administracion = [
             routerLink: ['/gestion-institucional/reportes-academicos'],
           },
           {
-            label: 'Reporte de Asistencia',
+            label: 'Reporte de asistencia',
             icon: 'pi pi-chart-bar',
             routerLink: ['reporte-asistencia-auxiliar'],
           },
-          {
-            label: 'Estadisticas y ranking de mérito',
-            icon: 'pi pi-chart-scatter',
-            routerLink: ['/gestion-institucional/estadistica'],
-          },
+          // {
+          //   label: 'Estadisticas y ranking de mérito',
+          //   icon: 'pi pi-chart-scatter',
+          //   routerLink: ['/gestion-institucional/estadistica'],
+          // },
         ],
         //ConfigGradoSeccion
       },

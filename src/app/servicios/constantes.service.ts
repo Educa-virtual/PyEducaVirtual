@@ -612,7 +612,7 @@ const administracion = [
           //   routerLink: ['/gestion-institucional/apertura'],
           // },
           {
-            label: 'Gestion de Ambientes y Grados',
+            label: 'Gestión de Ambientes y Grados',
             icon: 'pi pi-building-columns',
             routerLink: ['/gestion-institucional/configGradoSeccion'],
           },
@@ -628,7 +628,7 @@ const administracion = [
           },
 
           {
-            label: 'Validación de horas',
+            label: 'Actividades de gestión',
             icon: 'pi pi-fw pi-check',
             routerLink: ['/gestion-institucional/validacion-no-lectiva'],
           },

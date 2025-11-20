@@ -92,11 +92,11 @@ export class ActividadNoLectivaComponent implements OnInit {
 
   actions = [
     {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-pencil',
+      labelTooltip: 'Aprobar plan',
+      icon: 'pi pi-check',
       accion: 'actualizar',
       type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
+      class: 'p-button-rounded p-button-success p-button-text',
     },
   ];
 

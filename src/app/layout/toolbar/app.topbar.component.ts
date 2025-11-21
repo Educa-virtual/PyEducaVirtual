@@ -234,10 +234,13 @@ export class AppTopBarComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.comunicados = data.data;
+          this.comunicados.forEach(lista => {
+            lista.cComunicadoDescripcion = this.filtrarHtml(lista.cComunicadoDescripcion);
+          });
           this.totalComunicados = this.comunicados.length;
         },
         error: error => {
-          console.error('Error obteniendo lista de comunicados:', error);
+          console.warn('Error obteniendo lista de comunicados:', error);
         },
       });
   }
@@ -253,6 +256,9 @@ export class AppTopBarComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.comunicados = data.data;
+          this.comunicados.forEach(lista => {
+            lista.cComunicadoDescripcion = this.filtrarHtml(lista.cComunicadoDescripcion);
+          });
           this.totalComunicados = this.comunicados.length;
         },
         error: error => {
@@ -260,6 +266,12 @@ export class AppTopBarComponent implements OnInit {
         },
       });
   }
+
+  filtrarHtml(datos: string): string {
+    const doc = new DOMParser().parseFromString(datos, 'text/html');
+    return doc.body.textContent || '';
+  }
+
   getInformation(params, accion) {
     this._GeneralService.getGralPrefix(params).subscribe({
       next: response => {

@@ -60,7 +60,7 @@
           <td class="text-center" width="15%">{{ com.emisor | slice: 0 : 15 }}...</td>
           <td class="text-center" width="20%">{{ com.cComunicadoTitulo | slice: 0 : 25 }}...</td>
           <td class="text-center" width="30%">
-            {{ com.cComunicadoDescripcion | slice: 0 : 50 }}...
+            {{ filtrarHtml(com.cComunicadoDescripcion) | slice: 0 : 50 }}...
           </td>
           <td class="text-center" width="10%">
             {{ com.dtComunicadoEmision | date: 'dd/MM/yyyy' }}
@@ -95,8 +95,25 @@
       </div>
     </div>
     <div class="col-12">
-      <div class="card surface-50">
-        {{ mensaje.cComunicadoDescripcion }}
+      <div class="card surface-50" [innerHTML]="mensaje.cComunicadoDescripcion"></div>
+    </div>
+    <div class="col-12" *ngIf="mensaje.cAdjunto !== null">
+      <div class="flex flex-wrap">
+        <div
+          class="flex align-items-center justify-content-center m-1"
+          style="width: 200px"
+          *ngFor="let adjunto of mensaje.cAdjunto"
+        >
+          <p-button
+            label="{{ adjunto.name }}"
+            icon="pi pi-download"
+            class="p-button-rounded p-button-text"
+            size="small"
+            [text]="true"
+            [raised]="true"
+            (click)="descargarArchivo(adjunto.file)"
+          />
+        </div>
       </div>
     </div>
   </div>

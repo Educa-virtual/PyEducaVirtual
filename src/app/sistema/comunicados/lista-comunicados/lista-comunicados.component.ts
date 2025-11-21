@@ -66,6 +66,11 @@ export class ListaComunicadosComponent implements OnInit {
         next: (data: any) => {
           this.comunicados = data.data;
           this.comunicados_filtrados = this.comunicados;
+          this.comunicados_filtrados.forEach(lista => {
+            if (lista.cAdjunto) {
+              lista.cAdjunto = JSON.parse(lista.cAdjunto);
+            }
+          });
         },
         error: error => {
           this.messageService.add({
@@ -75,6 +80,11 @@ export class ListaComunicadosComponent implements OnInit {
           });
         },
       });
+  }
+
+  filtrarHtml(datos: string): string {
+    const doc = new DOMParser().parseFromString(datos, 'text/html');
+    return doc.body.textContent || '';
   }
 
   filtrarTabla() {
@@ -128,5 +138,29 @@ export class ListaComunicadosComponent implements OnInit {
     const datos = $event.data;
     this.mensaje = datos;
     this.bBandeja = true;
+  }
+
+  descargarArchivo(archivo: string) {
+    const documento = {
+      archivo: archivo,
+    };
+
+    this.comunicadosService.descargarDocumento(documento).subscribe({
+      next: (response: Blob) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = archivo;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Problema al descargar el archivo',
+          detail: error.message,
+        });
+      },
+    });
   }
 }

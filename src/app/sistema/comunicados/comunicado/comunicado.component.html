@@ -55,17 +55,16 @@
                 <div class="mt-2">
                   <editor [init]="initEnunciado" formControlName="cComunicadoDescripcion"></editor>
                 </div>
-                <!-- <p-inputGroupAddon>Descripción:</p-inputGroupAddon>
-                <textarea
-                  formControlName="cComunicadoDescripcion"
-                  inputStyleClass="group-element"
-                  rows="4"
-                  style="resize: none"
-                  pInputTextarea
-                  class="group-element"
-                  appendTo="body"
-                ></textarea> -->
               </p-inputGroup>
+            </div>
+            <div class="col-12">
+              <app-subir-documento
+                [nameFile]="enviarDatos"
+                [nameOption]="'Comunicados'"
+                [typesFiles]="typesFiles"
+                (actionTypesFileUpload)="accionBtn($event)"
+                [filesUrl]="adjuntar"
+              ></app-subir-documento>
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>

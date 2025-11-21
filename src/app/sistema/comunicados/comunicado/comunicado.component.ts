@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { DIRECTOR_IE, ESPECIALISTA_UGEL, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
@@ -13,10 +13,11 @@ import {
 import { SlicePipe } from '@angular/common';
 import { ComunicadosService } from '../services/comunicados.services';
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SubirDocumentoComponent } from './subir-documento/subir-documento.component';
 @Component({
   selector: 'app-comunicado',
   standalone: true,
-  imports: [PrimengModule, TablePrimengComponent, EditorComponent],
+  imports: [PrimengModule, TablePrimengComponent, EditorComponent, SubirDocumentoComponent],
   templateUrl: './comunicado.component.html',
   styleUrl: './comunicado.component.scss',
   providers: [SlicePipe, { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
@@ -39,6 +40,56 @@ export class ComunicadoComponent implements OnInit {
     autoresize_bottom_margin: 10,
     automatic_uploads: true,
   };
+
+  @Input() opcion: string = '';
+  @Output() accionBtnItem = new EventEmitter();
+
+  typesFiles = {
+    file: true,
+    url: true,
+    youtube: false,
+    repository: false,
+    image: true,
+  };
+
+  adjuntar = [];
+  enviarDatos: any;
+
+  accionBtn(elemento): void {
+    const archivo = elemento.item;
+
+    const guardarMultimedia: Record<string, () => void> = {
+      documento: () => {
+        this.adjuntar.push({
+          type: 1,
+          file: archivo.file,
+          name: archivo.name,
+          extension: archivo.extension,
+        });
+      },
+      imagen: () => {
+        this.adjuntar.push({
+          type: 2,
+          file: archivo.file,
+          name: archivo.name,
+          extension: archivo.extension,
+        });
+      },
+      enlace: () => {
+        this.adjuntar.push({
+          type: 3,
+          name: archivo.ruta,
+        });
+      },
+    };
+
+    const ejecutar = guardarMultimedia[archivo.tipo];
+    ejecutar();
+
+    this.formComunicado.patchValue({
+      cComunicadoAdjunto: this.adjuntar,
+    });
+  }
 
   active: number = 0;
   comunicado: any = null;
@@ -82,6 +133,8 @@ export class ComunicadoComponent implements OnInit {
   longitud_documento: number = 8;
   formato_documento: string = '99999999';
 
+  dremoYear: any;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -93,6 +146,7 @@ export class ComunicadoComponent implements OnInit {
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
+    this.dremoYear = this.store.getItem('dremoYear');
     this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
     this.es_especialista_ugel = [ESPECIALISTA_UGEL].includes(Number(this.perfil.iPerfilId));
     this.route.paramMap.subscribe((params: any) => {
@@ -102,6 +156,12 @@ export class ComunicadoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.enviarDatos = {
+      years: this.dremoYear,
+      cIieeCodigoModular: this.perfil.cIieeCodigoModular,
+      iPersId: this.perfil.iPersId,
+    };
+
     try {
       this.formComunicado = this.fb.group({
         iComunicadoId: [0],
@@ -109,6 +169,7 @@ export class ComunicadoComponent implements OnInit {
         iPrioridadId: [null, Validators.required],
         cComunicadoTitulo: ['', [Validators.required, Validators.maxLength(150)]],
         cComunicadoDescripcion: [''],
+        cComunicadoAdjunto: [null],
         dtComunicadoEmision: ['', Validators.required],
         dtComunicadoHasta: ['', Validators.required],
         iYAcadId: [this.iYAcadId],
@@ -380,6 +441,11 @@ export class ComunicadoComponent implements OnInit {
   guardarComunicado() {
     this.formComunicado.get('iYAcadId')?.setValue(this.iYAcadId);
     this.formComunicado.get('iCredEntPerfId')?.setValue(this.perfil.iCredEntPerfId);
+    const cComunicadoAdjunto = this.formComunicado.get('cComunicadoAdjunto')?.value;
+    const cAdjunto = JSON.stringify(cComunicadoAdjunto);
+    this.formComunicado.patchValue({
+      cComunicadoAdjunto: cAdjunto,
+    });
 
     this.messageService.clear();
     if (this.formComunicado.invalid) {

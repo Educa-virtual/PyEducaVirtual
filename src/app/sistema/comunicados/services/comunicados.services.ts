@@ -48,6 +48,16 @@ export class ComunicadosService implements OnDestroy {
    * CONEXIONES A LA API
    */
 
+  descargarDocumento(data: any) {
+    return this.http.post(`${baseUrl}/com/descargarDocumento`, data, {
+      responseType: 'blob',
+    });
+  }
+
+  subirDocumento(data: any) {
+    return this.http.post(`${baseUrl}/com/subirDocumento`, data);
+  }
+
   listarComunicados(data: any) {
     return this.http.post(`${baseUrl}/com/listarComunicados`, data);
   }

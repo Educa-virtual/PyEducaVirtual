@@ -55,6 +55,7 @@ export class ComunicadoComponent implements OnInit {
   adjuntar = [];
   enviarDatos: any;
 
+  // permite subir imagenes y documentos
   accionBtn(elemento): void {
     const archivo = elemento.item;
 
@@ -402,6 +403,15 @@ export class ComunicadoComponent implements OnInit {
     }
     this.formComunicado.reset();
     this.formComunicado.patchValue(data);
+    if (data.cAdjunto) {
+      try {
+        this.adjuntar = JSON.parse(data.cAdjunto);
+      } catch (e) {
+        this.adjuntar = [];
+      }
+    } else {
+      this.adjuntar = [];
+    }
     this.comunicadosService.formatearFormControl(
       this.formComunicado,
       'iTipoComId',
@@ -489,7 +499,11 @@ export class ComunicadoComponent implements OnInit {
 
   actualizarComunicado() {
     this.formComunicado.get('iYAcadId')?.setValue(this.iYAcadId);
-
+    const cComunicadoAdjunto = this.formComunicado.get('cComunicadoAdjunto')?.value;
+    const cAdjunto = JSON.stringify(cComunicadoAdjunto);
+    this.formComunicado.patchValue({
+      cComunicadoAdjunto: cAdjunto,
+    });
     this.messageService.clear();
     if (this.formComunicado.invalid) {
       this.messageService.add({

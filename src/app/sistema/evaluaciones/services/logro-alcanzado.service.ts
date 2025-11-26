@@ -23,6 +23,14 @@ export class LogroAlcanzadoService {
   public readonly CALIFICACION_CUANTITATIVA = 1;
   public readonly CALIFICACION_EQUIVALENTE = 2;
 
+  public readonly REPORTE_BOLETAS = 1;
+  public readonly REPORTE_EXCEL = 2;
+  public readonly REPORTE_FORMATO_SIAGIE = 3;
+
+  obtenerTiposCalificacion() {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerTiposCalificacion`, null);
+  }
+
   listarTiposCalificacion() {
     return this.http.post(`${baseUrl}/evaluaciones/logros/listarTiposCalificacion`, null);
   }
@@ -53,6 +61,24 @@ export class LogroAlcanzadoService {
 
   actualizarLogro(params) {
     return this.http.post(`${baseUrl}/evaluaciones/logros/actualizarLogro`, params);
+  }
+
+  exportarBoletas(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/exportarBoletas`, params, {
+      responseType: 'blob',
+    });
+  }
+
+  exportarExcel(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/exportarExcel`, params, {
+      responseType: 'blob',
+    });
+  }
+
+  exportarFormatoSiagie(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/logros/exportarFormatoSiagie`, params, {
+      responseType: 'blob',
+    });
   }
 
   getTiposCalificacion() {

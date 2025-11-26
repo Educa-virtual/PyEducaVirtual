@@ -59,6 +59,10 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   iYAcadId: number;
   iCredId: number;
 
+  REPORTE_BOLETAS = this.logroAlcanzadoService.REPORTE_BOLETAS;
+  REPORTE_EXCEL = this.logroAlcanzadoService.REPORTE_EXCEL;
+  REPORTE_FORMATO_SIAGIE = this.logroAlcanzadoService.REPORTE_FORMATO_SIAGIE;
+
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
@@ -193,6 +197,105 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
     this.router.navigate(['/evaluaciones/registro-logro']);
   }
 
+  exportar(tipo: number) {
+    switch (tipo) {
+      case this.REPORTE_BOLETAS:
+        this.exportarBoletas();
+        break;
+      case this.REPORTE_EXCEL:
+        this.exportarExcel();
+        break;
+      case this.REPORTE_FORMATO_SIAGIE:
+        this.exportarFormatoSiagie();
+        break;
+    }
+  }
+
+  exportarBoletas() {
+    this.logroAlcanzadoService
+      .exportarBoletas({
+        idDocCursoId: this.idDocCursoId,
+      })
+      .subscribe({
+        next: (response: any) => {
+          const blob = new Blob([response], {
+            type: 'application/pdf',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.click();
+        },
+        error: error => {
+          console.error('Error al exportar boletas:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ocurrió un error',
+            detail: error.message ?? 'No se pudo exportar las boletas.',
+          });
+        },
+      });
+  }
+
+  exportarExcel() {
+    this.logroAlcanzadoService
+      .exportarExcel({
+        idDocCursoId: this.idDocCursoId,
+      })
+      .subscribe({
+        next: (response: any) => {
+          const blob = new Blob([response], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          const nombre = `${this.cCursoNombre}-${this.cGradoAbreviacion}-${this.cSeccionNombre}`;
+          link.download = `registro-notas-${nombre}.xlsx`;
+          link.target = '_blank';
+          link.click();
+        },
+        error: error => {
+          console.error('Error al exportar Excel:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ocurrió un error',
+            detail: error.message ?? 'No se pudo exportar el archivo Excel.',
+          });
+        },
+      });
+  }
+
+  exportarFormatoSiagie() {
+    this.logroAlcanzadoService
+      .exportarFormatoSiagie({
+        idDocCursoId: this.idDocCursoId,
+        iPeriodoId: this.iPeriodoId,
+      })
+      .subscribe({
+        next: (response: any) => {
+          const blob = new Blob([response], {
+            type: 'application/vnd.ms-excel',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: error => {
+          console.error('Error al exportar formato SIAGIE:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ocurrió un error',
+            detail: error.message ?? 'No se pudo exportar el formato SIAGIE.',
+          });
+        },
+      });
+  }
+
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'Resistrar':
@@ -254,6 +357,30 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
       header: 'Acciones',
       text_header: 'right',
       text: 'right',
+    },
+  ];
+
+  btn_exportar: Array<MenuItem> = [
+    {
+      label: 'Boletas (Todos los periodos)',
+      icon: 'pi pi-fw pi-file-pdf',
+      command: () => {
+        this.exportar(this.REPORTE_BOLETAS);
+      },
+    },
+    {
+      label: 'Resumen en Excel (Todos los periodos)',
+      icon: 'pi pi-fw pi-file-excel',
+      command: () => {
+        this.exportar(this.REPORTE_EXCEL);
+      },
+    },
+    {
+      label: 'Formato SIAGIE en Excel (Periodo seleccionado)',
+      icon: 'pi pi-fw pi-file-export',
+      command: () => {
+        this.exportar(this.REPORTE_FORMATO_SIAGIE);
+      },
     },
   ];
 }

@@ -86,14 +86,8 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
           Number(logro_inicial?.iEscalaCalifId) !== Number(logro?.iEscalaCalifId) ||
           String(logro_inicial?.cDescripcion ?? '') !== String(logro?.cDescripcion ?? ''))
       ) {
-        console.log('HUBO cambio');
-        console.log(logro_inicial, 'inicial');
-        console.log(logro, 'actual');
         control.patchValue({ bMostrarBoton: true }, { emitEvent: false });
       } else {
-        console.log('SIN cambio');
-        console.log(logro_inicial?.cDescripcion, 'inicial');
-        console.log(logro?.cDescripcion, 'actual');
         control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
       }
     }

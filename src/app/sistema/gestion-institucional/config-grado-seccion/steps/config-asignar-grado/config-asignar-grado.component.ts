@@ -620,13 +620,13 @@ export class ConfigAsignarGradoComponent implements OnInit {
     //     accion: 'agregar',
     //     class: 'p-button-primary',
     // },
-    {
-      labelTooltip: 'Exportar PDF',
-      text: 'Reporte',
-      icon: 'pi pi-file-pdf',
-      accion: 'agregar',
-      class: 'p-button-danger',
-    },
+    // {
+    //   labelTooltip: 'Exportar PDF',
+    //   text: 'Reporte',
+    //   icon: 'pi pi-file-pdf',
+    //   accion: 'agregar',
+    //   class: 'p-button-danger',
+    // },
   ];
 
   selectedItems = [];

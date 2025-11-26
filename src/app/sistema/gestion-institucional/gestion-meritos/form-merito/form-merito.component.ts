@@ -324,6 +324,7 @@ export class FormMeritoComponent implements OnInit, OnChanges {
           });
 
           const param = { accion: 'merito', item: [] };
+
           this.closeModal.emit(param);
         },
       });

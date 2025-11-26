@@ -94,6 +94,8 @@ export class GestionMeritosComponent implements OnInit {
       this.bUpdate = false;
     }
     if (event.accion === 'merito') {
+      this.selecionado = {};
+      this.bUpdate = false;
       this.getMeritos();
     }
     if (event.accion === 'editar_merito') {
@@ -174,7 +176,7 @@ export class GestionMeritosComponent implements OnInit {
 
   acciones: IActionContainer[] = [
     {
-      labelTooltip: 'Agregar merito',
+      labelTooltip: 'Agregar mérito',
       text: 'Nuevo merito',
       icon: 'pi pi-plus',
       accion: 'nuevo_merito',

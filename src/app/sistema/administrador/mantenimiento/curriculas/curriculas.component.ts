@@ -204,8 +204,8 @@ export class CurriculasComponent implements OnInit {
         break;
       case 'eliminar_curricula':
         this._confirmService.openConfirm({
-          header: 'Advertencia de curriculas',
-          message: '¿Desea eliminar la curricula?',
+          header: 'Advertencia de currículas',
+          message: '¿Desea eliminar la currícula?',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
             // Acción para eliminar el registro
@@ -427,8 +427,8 @@ export class CurriculasComponent implements OnInit {
 
   accionesCurricula: IActionContainer[] = [
     {
-      labelTooltip: 'Agregar curricula',
-      text: 'Nueva curricula',
+      labelTooltip: 'Agregar currícula',
+      text: 'Nueva currícula',
       icon: 'pi pi-plus',
       accion: 'nueva_curricula',
       class: 'p-button-success',

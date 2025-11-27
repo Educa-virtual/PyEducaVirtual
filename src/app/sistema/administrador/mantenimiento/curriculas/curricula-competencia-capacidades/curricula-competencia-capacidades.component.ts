@@ -185,6 +185,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
       case 'agregar':
         this.formCapacidades.reset();
         this.formCapacidades.patchValue({
+          iCompetenciaId: this.iCompetenciaId,
           iEstado: 1,
         });
         this.bUpdate = false;

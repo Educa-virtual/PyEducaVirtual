@@ -177,7 +177,7 @@ export class GestionMeritosComponent implements OnInit {
   acciones: IActionContainer[] = [
     {
       labelTooltip: 'Agregar mérito',
-      text: 'Nuevo merito',
+      text: 'Nuevo mérito',
       icon: 'pi pi-plus',
       accion: 'nuevo_merito',
       class: 'p-button-success',
@@ -221,7 +221,7 @@ export class GestionMeritosComponent implements OnInit {
       type: 'text',
       width: '20%',
       field: 'cMeritoDescripcion',
-      header: 'descripción',
+      header: 'Descripción',
       text_header: 'center',
       text: 'left',
     },

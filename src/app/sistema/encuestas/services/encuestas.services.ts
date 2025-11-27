@@ -304,7 +304,7 @@ export class EncuestasService implements OnDestroy {
   }
 
   getPeriodosFija(data: any) {
-    if (!this.periodos_fija && data) {
+    if (data) {
       this.periodos_fija = data.map(periodo => ({
         value: periodo.iPeriodoId,
         label: periodo.cPeriodoNombre,

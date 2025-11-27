@@ -8,7 +8,7 @@
     <div class="col-12 md:col-4">
       <form [formGroup]="frmCursosCompetencias" class="flex flex-column gap-3 w-full">
         <!-- iCompCursoId iNivelTipoId  iCursoId iCompetenciaId-->
-        <div class="col-12">
+        <div class="col-12" Class="w-full">
           <span class="p-float-label">
             <p-dropdown
               [options]="modalidad"
@@ -18,13 +18,12 @@
               placeholder="Seleccione una modalidad"
               styleClass="w-full"
               (onChange)="accionBtnItem({ accion: 'select_modalidad', item: [] })"
-              appendTo="body"
               optionLabel="cNivelNombre"
             />
             <label for="iNivelId">Modalidad(*)</label>
           </span>
         </div>
-        <div class="col-12" *ngIf="this.frmCursosCompetencias.value.iNivelId > 0">
+        <div class="col-12" Class="w-full" *ngIf="this.frmCursosCompetencias.value.iNivelId > 0">
           <span class="p-float-label">
             <p-dropdown
               [options]="nivel_tipo_actual"
@@ -33,7 +32,6 @@
               optionValue="iNivelTipoId"
               placeholder="Seleccione un nivel"
               styleClass="w-full"
-              appendTo="body"
               optionLabel="cNivelTipoNombre"
             />
             <label for="iNivelTipoId">Nivel(*)</label>
@@ -54,12 +52,13 @@
               formControlName="iCompetenciaId"
               optionLabel="competencia"
               optionValue="iCompetenciaId"
-              placeholder="Seleccione un competencia"
+              placeholder="Seleccione una competencia"
               styleClass="w-full"
-              appendTo="body"
               filter="true"
-            />
-            <label for="iCompetenciaId">Competencia (*)</label>
+              appendTo="self"
+            >
+            </p-dropdown>
+            <label for=" iCompetenciaId">Competencia (*)</label>
           </span>
         </div>
         <div class="col-12">
@@ -112,7 +111,7 @@
           } @else {
             <app-no-data
               [showIcon]="'NO-DATA'"
-              mensaje="No se encontraron áreas curriculares asignadas"
+              mensaje="No se encontraron competencias asignadas"
             />
           }
         </div>

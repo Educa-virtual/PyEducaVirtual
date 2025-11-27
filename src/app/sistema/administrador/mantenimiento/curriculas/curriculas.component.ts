@@ -486,7 +486,7 @@ export class CurriculasComponent implements OnInit {
       type: 'text',
       width: '30%',
       field: 'cCurrRslShort',
-      header: 'Refencia',
+      header: 'Referencia',
       text_header: 'center',
       text: 'left',
     },

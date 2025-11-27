@@ -30,14 +30,13 @@
 <p-dialog
   header="{{ titulo }}"
   [(visible)]="visible"
-  [style]="{ width: '90rem' }"
+  [style]="{ width: '100vw' }"
   [modal]="true"
   [resizable]="false"
   [maximizable]="true"
   [closable]="true"
-  [draggable]="true"
+  [draggable]="false"
   appendTo="body"
-  [breakpoints]="{ '1199px': '75vw', '575px': '95vw' }"
 >
   <!-- CONTENIDO DEL DIALOG -->
   <ng-template pTemplate="content">

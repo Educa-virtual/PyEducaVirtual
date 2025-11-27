@@ -168,6 +168,10 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
         this.inicializacion();
         if (!this.bUpdate) {
           this.formCapacidades.reset();
+          //se agrego para cuando se guarda un registro
+          this.formCapacidades.patchValue({
+            iCompetenciaId: this.iCompetenciaId,
+          });
         }
       },
     });

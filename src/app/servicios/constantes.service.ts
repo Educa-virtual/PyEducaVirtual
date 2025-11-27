@@ -69,6 +69,11 @@ const docente = [
             icon: 'pi pi-fw pi-share-alt',
             routerLink: ['/evaluaciones/registro-logro'],
           },
+          {
+            label: 'Actividades Academicas',
+            icon: 'pi pi-fw pi-briefcase',
+            routerLink: ['reporte-informe-actividades'],
+          },
         ],
       },
       /* {
@@ -612,7 +617,7 @@ const administracion = [
           //   routerLink: ['/gestion-institucional/apertura'],
           // },
           {
-            label: 'Gestion de Ambientes y Grados',
+            label: 'Gestión de Ambientes y Grados',
             icon: 'pi pi-building-columns',
             routerLink: ['/gestion-institucional/configGradoSeccion'],
           },
@@ -628,24 +633,24 @@ const administracion = [
           },
 
           {
-            label: 'Validación de horas',
+            label: 'Actividades de gestión',
             icon: 'pi pi-fw pi-check',
             routerLink: ['/gestion-institucional/validacion-no-lectiva'],
           },
 
           {
-            label: 'Gestión de horarios y asignaciones',
+            label: 'Gestión de horarios',
             icon: 'pi pi-calendar',
             items: [
               {
-                label: 'Configuracion de horarios',
-                icon: 'pi pi-calendar-clock',
-                routerLink: ['/horario/configurar-horario'],
-              },
-              {
-                label: 'Registro de horarios',
+                label: 'Configurar horarios',
                 icon: 'pi pi-calendar-times',
                 routerLink: ['/horario/horario'],
+              },
+              {
+                label: 'Asignar horarios',
+                icon: 'pi pi-calendar-clock',
+                routerLink: ['/horario/configurar-horario'],
               },
             ],
           },
@@ -757,15 +762,15 @@ const administracion = [
             routerLink: ['/gestion-institucional/reportes-academicos'],
           },
           {
-            label: 'Reporte de Asistencia',
+            label: 'Reporte de asistencia',
             icon: 'pi pi-chart-bar',
             routerLink: ['reporte-asistencia-auxiliar'],
           },
-          {
-            label: 'Estadisticas y ranking de mérito',
-            icon: 'pi pi-chart-scatter',
-            routerLink: ['/gestion-institucional/estadistica'],
-          },
+          // {
+          //   label: 'Estadisticas y ranking de mérito',
+          //   icon: 'pi pi-chart-scatter',
+          //   routerLink: ['/gestion-institucional/estadistica'],
+          // },
         ],
         //ConfigGradoSeccion
       },
@@ -1095,7 +1100,13 @@ const asistente_social = [
   {
     label: 'Estudiantes y apoderados',
     icon: 'pi pi-user',
-    routerLink: ['estudiantes-apoderados'],
+    items: [
+      {
+        label: 'Estudiantes y apoderados',
+        icon: 'pi pi-user',
+        routerLink: ['estudiantes-apoderados'],
+      },
+    ],
   },
 ];
 

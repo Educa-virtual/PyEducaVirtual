@@ -313,7 +313,7 @@
       </p-tabPanel>
       <p-tabPanel header="Registrar por QR">
         <div class="grid">
-          <div class="col-12 lg:col-6">
+          <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
             <zxing-scanner
               *ngIf="scanner"
               [torch]="false"
@@ -323,62 +323,68 @@
             </zxing-scanner>
             <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
           </div>
-          <div class="col-12 lg:col-6 card grid">
-            <div class="col-12">
-              <p-messages [(value)]="messages" [enableService]="false" [closable]="false" />
+          <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12 card">
+            <div class="grid">
+              <div class="col-12">
+                <p-messages [(value)]="messages" [enableService]="false" [closable]="false" />
+              </div>
+              <div class="col-12">
+                <p-calendar
+                  appendTo="body"
+                  styleClass="w-full"
+                  inputId="calendar-24h"
+                  [(ngModel)]="marcador"
+                  [showIcon]="true"
+                  [showTime]="true"
+                />
+              </div>
+              <div class="col-12 xl:col-6">
+                <p-button
+                  [disabled]="scanner"
+                  class="expandir"
+                  severity="success"
+                  label="Registrar"
+                  icon="pi pi-qrcode"
+                  (click)="scanner = true; progreso = true; estado = true"
+                ></p-button>
+              </div>
+              <div class="col-12 xl:col-6">
+                <p-button
+                  class="expandir"
+                  severity="primary"
+                  label="Cerrar Registro"
+                  icon="pi pi-lock"
+                  (click)="scanner = false; progreso = false; estado = false"
+                ></p-button>
+              </div>
+              <div class="col-12">
+                <p-table
+                  [value]="temporal"
+                  [paginator]="true"
+                  [rows]="50"
+                  [rowsPerPageOptions]="[5, 10, 20, 50]"
+                  class="w-full"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="text-center" style="width: 5%">#</th>
+                      <th class="text-center" style="width: 60%">Apellidos y Nombres</th>
+                      <th class="text-center" style="width: 35%">Fecha y Hora</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-temporal let-rowIndex="rowIndex">
+                    <tr>
+                      <td>{{ rowIndex + 1 }}</td>
+                      <td>{{ temporal.completo }}</td>
+                      <td class="hidden md:table-cell">
+                        {{ temporal.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+                      </td>
+                      <td></td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
             </div>
-            <div class="col-12">
-              <p-calendar
-                appendTo="body"
-                styleClass="w-full"
-                inputId="calendar-24h"
-                [(ngModel)]="marcador"
-                [showIcon]="true"
-                [showTime]="true"
-              />
-            </div>
-            <div class="col-12 xl:col-6">
-              <p-button
-                class="expandir"
-                severity="success"
-                label="Registrar"
-                icon="pi pi-qrcode"
-                (click)="scanner = true; progreso = true; estado = true"
-              ></p-button>
-            </div>
-            <div class="col-12 xl:col-6">
-              <p-button
-                class="expandir"
-                severity="primary"
-                label="Cerrar Registro"
-                icon="pi pi-lock"
-                (click)="scanner = false; progreso = false; estado = false"
-              ></p-button>
-            </div>
-            <p-table
-              [value]="temporal"
-              [paginator]="true"
-              [rows]="50"
-              [rowsPerPageOptions]="[5, 10, 20, 50]"
-            >
-              <ng-template pTemplate="header">
-                <tr>
-                  <th class="text-center" style="width: 5%">#</th>
-                  <th class="text-center" style="width: 60%">Apellidos y Nombres</th>
-                  <th class="text-center" style="width: 35%">Fecha y Hora</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-temporal let-rowIndex="rowIndex">
-                <tr>
-                  <td>{{ rowIndex + 1 }}</td>
-                  <td>{{ temporal.completo }}</td>
-                  <td class="hidden md:table-cell">
-                    {{ temporal.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
-                  </td>
-                  <td></td>
-                </tr>
-              </ng-template>
-            </p-table>
           </div>
         </div>
       </p-tabPanel>

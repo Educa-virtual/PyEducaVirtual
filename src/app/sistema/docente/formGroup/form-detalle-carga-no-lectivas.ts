@@ -5,6 +5,7 @@ export const storeDetalleCargaNoLectivas: any = new FormGroup({
   opcion: new FormControl('', Validators.required),
   valorBusqueda: new FormControl(''),
 
+  cNombre: new FormControl(''),
   iDetCargaNoLectId: new FormControl(''),
   iCargaNoLectivaId: new FormControl(''),
   iTipoCargaNoLectId: new FormControl('', Validators.required),
@@ -19,6 +20,7 @@ export const updateDetalleCargaNoLectivas: any = new FormGroup({
   opcion: new FormControl('', Validators.required),
   valorBusqueda: new FormControl(''),
 
+  cNombre: new FormControl(''),
   iDetCargaNoLectId: new FormControl('', Validators.required),
   iCargaNoLectivaId: new FormControl(''),
   iTipoCargaNoLectId: new FormControl(''),

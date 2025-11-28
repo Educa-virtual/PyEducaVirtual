@@ -196,14 +196,13 @@ export class SesionAprendizajeFormComponent extends MostrarErrorComponent implem
     this.showPdf = true;
     if (!this.rutaRelativa) {
       this.rutaRelativa = this.documentos.data;
-      const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
+      const baseURL = environment.backend + '/storage/'; // cambia por tu URL real si estás en producción
       const url = baseURL + this.rutaRelativa;
 
       this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     } else {
-      const baseURL = environment.backend + '/'; // cambia por tu URL real si estás en producción
+      const baseURL = environment.backend + '/storage/'; // cambia por tu URL real si estás en producción
       const url = baseURL + this.rutaRelativa;
-
       this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
   }

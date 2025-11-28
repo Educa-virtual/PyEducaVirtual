@@ -1,156 +1,136 @@
 <app-modal-primeng
-    [title]="accion"
-    [showModal]="showModal"
-    (accionBtnItem)="accionBtn($event)"
-    width="35rem"
-    *ngIf="instructorForm"
+  [title]="accion"
+  [showModal]="showModal"
+  (accionBtnItem)="accionBtn($event)"
+  width="75%"
+  *ngIf="instructorForm"
 >
-    <form [formGroup]="instructorForm" class="grid mt-4">
-        <div class="col-12">
-            <div class="custom-flex-group">
-                <p-dropdown
-                    [options]="tiposIdentificaciones"
-                    placeholder="Sele..."
-                    optionValue="iTipoIdentId"
-                    optionLabel="cTipoIdentSigla"
-                    [appendTo]="'body'"
-                    styleClass="w-full"
-                    [readonly]="action === 'editar'"
-                    formControlName="iTipoIdentId"
-                    tabindex="-1"
-                ></p-dropdown>
-                <input
-                    id="dni"
-                    type="text"
-                    re
-                    formControlName="cPersDocumento"
-                    [readonly]="action === 'editar'"
-                    pInputText
-                    class="flex-input"
-                    placeholder="Ingresar número"
-                />
-                <button
-                    pButton
-                    type="button"
-                    icon="pi pi-search"
-                    label="Buscar"
-                    [disabled]="action === 'editar'"
-                    (click)="buscarDni()"
-                ></button>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <p-divider></p-divider>
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-address-book"></i>
-                </p-inputGroupAddon>
-                <input
-                    id="name"
-                    type="text"
-                    pInputText
-                    placeholder="Nombre del Instructor"
-                    formControlName="cPersNombre"
-                    readonly
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-address-book"></i>
-                </p-inputGroupAddon>
-                <input
-                    id="name"
-                    type="text"
-                    pInputText
-                    placeholder="Apellido Paterno"
-                    formControlName="cPersPaterno"
-                    readonly
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-address-book"></i>
-                </p-inputGroupAddon>
-                <input
-                    id="name"
-                    type="text"
-                    pInputText
-                    placeholder="Apellido Materno"
-                    formControlName="cPersMaterno"
-                    readonly
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-home"></i>
-                </p-inputGroupAddon>
-                <input
-                    id="name"
-                    type="text"
-                    pInputText
-                    placeholder="Dirección"
-                    formControlName="cPersDireccion"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-7">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-at"></i>
-                </p-inputGroupAddon>
-                <input
-                    id="name"
-                    type="text"
-                    pInputText
-                    placeholder="Correo Electrónico"
-                    formControlName="cPersCorreo"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-5">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-phone"></i>
-                </p-inputGroupAddon>
-                <input
-                    id="name"
-                    type="text"
-                    pInputText
-                    placeholder="Celular"
-                    formControlName="cPersCelular"
-                />
-            </p-inputGroup>
-        </div>
-    </form>
-    <div footer class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+  <form [formGroup]="instructorForm" class="grid mt-4">
+    <div class="col-12">
+      <div class="custom-flex-group">
+        <p-dropdown
+          [options]="tiposIdentificaciones"
+          placeholder="Seleccione..."
+          optionValue="iTipoIdentId"
+          optionLabel="cTipoIdentSigla"
+          [appendTo]="'body'"
+          styleClass="w-full"
+          [readonly]="action === 'editar'"
+          formControlName="iTipoIdentId"
+          tabindex="-1"
+        ></p-dropdown>
+        <input
+          id="dni"
+          type="text"
+          re
+          formControlName="cPersDocumento"
+          [readonly]="action === 'editar'"
+          pInputText
+          class="flex-input"
+          placeholder="Ingresar número"
         />
         <button
-            type="submit"
-            icon="pi pi-check"
-            size="small"
-            pButton
-            [label]="
-                action === 'editar' ? 'Editar Instructor' : 'Guardar Instructor'
-            "
-            [class]="
-                action === 'editar' ? 'p-button-warning' : 'p-button-success'
-            "
-            (click)="
-                action === 'editar'
-                    ? actualizarInstructor()
-                    : guardarInstructor()
-            "
+          pButton
+          type="button"
+          icon="pi pi-search"
+          label="Buscar"
+          [disabled]="action === 'editar'"
+          (click)="buscarPersona()"
         ></button>
+      </div>
     </div>
+
+    <div class="col-12">
+      <p-divider></p-divider>
+      <p-inputGroup>
+        <p-inputGroupAddon> Nombres </p-inputGroupAddon>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          placeholder="Nombres del Instructor"
+          formControlName="cPersNombre"
+          readonly
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Apellido Paterno </p-inputGroupAddon>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          placeholder="Apellido Paterno"
+          formControlName="cPersPaterno"
+          readonly
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Apellido Materno </p-inputGroupAddon>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          placeholder="Apellido Materno"
+          formControlName="cPersMaterno"
+          readonly
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon> Dirección </p-inputGroupAddon>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          placeholder="Dirección"
+          formControlName="cPersDireccion"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Correo </p-inputGroupAddon>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          placeholder="Correo Electrónico"
+          formControlName="cPersCorreo"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon> Celular </p-inputGroupAddon>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          placeholder="Celular"
+          formControlName="cPersTelefono"
+        />
+      </p-inputGroup>
+    </div>
+  </form>
+  <div footer class="flex justify-content-end gap-2">
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+    />
+    <button
+      type="submit"
+      icon="pi pi-check"
+      size="small"
+      pButton
+      [label]="action === 'editar' ? 'Editar Instructor' : 'Guardar Instructor'"
+      [class]="action === 'editar' ? 'p-button-warning' : 'p-button-success'"
+      (click)="action === 'editar' ? actualizarInstructor() : guardarInstructor()"
+    ></button>
+  </div>
 </app-modal-primeng>

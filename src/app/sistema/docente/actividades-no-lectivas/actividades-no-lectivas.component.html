@@ -63,12 +63,76 @@
   [style]="{ width: '60rem' }"
 >
   <div class="flex align-items-center gap-3 mb-5 mt-5">
-    <p-inputGroup>
-      <p-inputGroupAddon>Observaciones de la actividad</p-inputGroupAddon>
-      <textarea class="w-full" pInputTextarea [(ngModel)]="cObservacion"></textarea>
-    </p-inputGroup>
+    <div class="grid">
+      <div class="col-12 xl:col-12 lg:col-12 md:col-12 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Tipo de Actividad </p-inputGroupAddon>
+          <p-dropdown
+            [(ngModel)]="item['iTipoCargaNoLectId']"
+            [options]="tiposCargaNoLectivas"
+            optionValue="iTipoCargaNoLectId"
+            optionLabel="cTipoCargaNoLectNombre"
+            placeholder="Tipo de Actividad"
+            [style]="{ width: '100%' }"
+            [disabled]="true"
+          ></p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 xl:col-12 lg:col-12 md:col-12 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre de la Actividad</p-inputGroupAddon>
+          <input pInputText [value]="item['cNombre']" type="text" [disabled]="true" />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 xl:col-12 md:col-12 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Descripcion</p-inputGroupAddon>
+          <textarea
+            [value]="item['cDescripcion']"
+            pInputTextarea
+            placeholder="Ingresa tu descripcion"
+            [disabled]="true"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha</p-inputGroupAddon>
+          <input
+            pInputText
+            [value]="item['dtInicio'] | date: 'yyyy-MM-dd HH:mm'"
+            type="text"
+            [disabled]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Cantidad de Horas</p-inputGroupAddon>
+          <input
+            pInputText
+            [value]="item['nDetCargaNoLectHoras']"
+            type="number"
+            min="1"
+            [disabled]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Observaciones de la actividad</p-inputGroupAddon>
+          <textarea
+            class="w-full"
+            pInputTextarea
+            [(ngModel)]="cObservacion"
+            [value]="item['cObservacion']"
+            [disabled]="visualizar"
+          ></textarea>
+        </p-inputGroup>
+      </div>
+    </div>
   </div>
-  <div class="flex justify-content-end gap-2">
+  <div class="flex justify-content-end gap-2" *ngIf="!visualizar">
     <p-button label="Cancel" severity="secondary" (onClick)="bAprobar = false" />
     <p-button label="Guardar" severity="success" (onClick)="cambioAprobacion()" />
   </div>

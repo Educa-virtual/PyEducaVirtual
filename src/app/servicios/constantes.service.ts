@@ -288,6 +288,11 @@ const estudiante = [
         routerLink: ['/estudiante/asistencia'],
       },
       {
+        label: 'Méritos y ranking',
+        icon: 'pi pi-star',
+        routerLink: ['/estudiante/merito-estudiante'],
+      },
+      {
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [

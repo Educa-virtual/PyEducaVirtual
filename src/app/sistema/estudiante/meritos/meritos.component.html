@@ -1,0 +1,20 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<app-container-page [title]="'Mis méritos'" [actions]="[]">
+  <div class="col-12">
+    @if (meritos().length > 0) {
+      <app-table-primeng
+        [columnas]="columns"
+        [data]="meritos()"
+        [scrollable]="true"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="[]"
+        [showAdvancedFilter]="true"
+        [showCaption]="false"
+      >
+      </app-table-primeng>
+    } @else {
+      <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron méritos registrados" />
+    }
+  </div>
+</app-container-page>

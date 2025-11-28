@@ -36,10 +36,10 @@ export class CalendarioComponent implements OnInit {
       routerLink: '/',
     };
     this.breadCrumbItems = [
-      {
-        label: 'Calendario institucional',
-      },
+      { label: 'Módulo Estudiante' },
+      { label: 'Calendario institucional', active: true },
     ];
+
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.obtenerDiasFestivos();
     this.obtenerCalendarioAcademico();

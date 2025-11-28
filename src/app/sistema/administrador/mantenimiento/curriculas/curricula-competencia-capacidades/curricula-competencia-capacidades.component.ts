@@ -168,6 +168,10 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
         this.inicializacion();
         if (!this.bUpdate) {
           this.formCapacidades.reset();
+          //se agrego para cuando se guarda un registro
+          this.formCapacidades.patchValue({
+            iCompetenciaId: this.iCompetenciaId,
+          });
         }
       },
     });
@@ -181,6 +185,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
       case 'agregar':
         this.formCapacidades.reset();
         this.formCapacidades.patchValue({
+          iCompetenciaId: this.iCompetenciaId,
           iEstado: 1,
         });
         this.bUpdate = false;
@@ -202,7 +207,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
           iCompetenciaId: this.iCompetenciaId,
           cCapacidadNombre: item.cCapacidadNombre,
           cCapacidadDescripcion: item.cCapacidadDescripcion,
-          iEstado: Number(item.iEstado) || 0,
+          iEstado: Number(item.iEstado ?? 0),
         });
         this.bUpdate = true;
         break;
@@ -279,7 +284,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
       text: 'Agregar capacidades',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 }

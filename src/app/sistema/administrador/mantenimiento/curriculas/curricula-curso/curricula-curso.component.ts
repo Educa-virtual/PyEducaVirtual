@@ -81,6 +81,8 @@ export class CurriculaCursoComponent implements OnChanges {
   iCursoId: number = 0;
   capacidadesCurso: any[] = [];
   titulo: string = '';
+  currricula: any = {};
+  curso: any = {};
 
   perfil: any;
   filesUrl = [];
@@ -134,13 +136,15 @@ export class CurriculaCursoComponent implements OnChanges {
     nCursoCredTeoria: [''],
     nCursoCredPractica: [''],
     cCursoDescripcion: [''],
-    nCursoTotalCreditos: [''],
+    nCursoTotalCreditos: [0],
     cCursoPerfilDocente: [''],
-    iCursoTotalHoras: [''],
+    iCursoTotalHoras: [0],
     iCursoEstado: [1, Validators.required],
     cCursoImagen: [''],
     iImageAleatorio: [false],
     iEstado: [1],
+    vValidoHora: [true],
+    vValidoCredito: [true], //, Validators.requiredTrue
   });
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -154,6 +158,8 @@ export class CurriculaCursoComponent implements OnChanges {
     if (changes['curriculas'] && changes['curriculas'].currentValue) {
       // Si curriculas cambió
       this.curriculas = changes['curriculas'].currentValue;
+
+      this.currricula = this.curriculas.find((c: any) => c.iCurrId === this.iCurrId) || {};
     }
   }
 
@@ -230,7 +236,7 @@ export class CurriculaCursoComponent implements OnChanges {
         break;
       case 'agregar':
         this.titulo =
-          'Formulario para agregar  área curricular' + '( Referencia: ' + this.caption + ')';
+          'Formulario para agregar área curricular' + '(Curricula: ' + this.caption + ')';
         this.frmCursos.reset();
         this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
         this.frmCursos.patchValue({
@@ -253,12 +259,12 @@ export class CurriculaCursoComponent implements OnChanges {
         break;
 
       case 'agregar_area':
-        this.bUpdate = false;
-        this.visible = false;
         this.frmCursos.patchValue({
           iEstado: 1,
         });
         this.insertarArea(this.frmCursos.value);
+        this.bUpdate = false;
+        this.iCursoId = 0;
 
         break;
 
@@ -277,11 +283,12 @@ export class CurriculaCursoComponent implements OnChanges {
 
       case 'editar':
         this.titulo =
-          'Formulario para editar áreas curriculares ' + '( Referencia: ' + this.caption + ')';
+          'Formulario para editar área curricular ' + '(Curricula: ' + this.caption + ')';
         this.frmCursos.reset();
         this.iCursoId = event.item.iCursoId;
         this.bUpdate = true;
 
+        this.curso = event.item;
         this.frmCursos.patchValue({
           iCursoId: event.item.iCursoId,
           iCurrId: event.item.iCurrId,
@@ -293,7 +300,7 @@ export class CurriculaCursoComponent implements OnChanges {
           nCursoTotalCreditos: event.item.nCursoTotalCreditos,
           cCursoPerfilDocente: event.item.cCursoPerfilDocente,
           iCursoTotalHoras: event.item.iCursoTotalHoras,
-          iCursoEstado: event.item.iCursoEstado,
+          iCursoEstado: Number(event.item.iCursoEstado ?? 0),
           iImageAleatorio: false,
         });
         this.showVistaPrevia = false;
@@ -320,7 +327,97 @@ export class CurriculaCursoComponent implements OnChanges {
     this.datosprevios = this.frmCursos.value;
   }
 
-  //
+  validarTotalCreditos() {
+    const totalCredito = this.cursos?.reduce(
+      (acc: number, curso: any) => acc + Number(curso.nCursoTotalCreditos ?? 0),
+      0
+    );
+    let total_credito = 0;
+
+    if (this.bUpdate) {
+      total_credito =
+        Number(this.currricula?.iCurrTotalCreditos ?? 0) -
+        totalCredito +
+        Number(this.curso.nCursoTotalCreditos);
+    } else {
+      total_credito = Number(this.currricula?.iCurrTotalCreditos ?? 0) - totalCredito;
+    }
+
+    const credito = Number(this.frmCursos.value.nCursoTotalCreditos ?? 0);
+    const esValido = total_credito >= credito;
+
+    if (!esValido) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Total de créditos inválidos',
+        detail: `Loss créditos del área (${credito}) no pueden superar el total (${total_credito}) de créditos.`,
+      });
+    }
+    // } else {
+    //   this.messageService.add({
+    //     severity: 'success',
+    //     summary: 'Total de créditos válidos',
+    //     detail: `Loss créditos del área (${credito}) son válidos dentro del total (${total_credito}) de créditos.`,
+    //   });
+    // }
+    this.frmCursos.patchValue({
+      vValidoCredito: esValido,
+    });
+    return esValido;
+  }
+
+  validarTotalHoras() {
+    const total_horas = this.cursos?.reduce(
+      (acc: number, curso: any) => acc + Number(curso.iCursoTotalHoras ?? 0),
+      0
+    );
+
+    let totalHora = 0;
+
+    if (this.bUpdate) {
+      totalHora =
+        Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) -
+        total_horas +
+        Number(this.curso.iCursoTotalHoras);
+    } else {
+      totalHora = Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) - total_horas;
+    }
+
+    const hora = Number(this.frmCursos?.value?.iCursoTotalHoras ?? 0);
+    console.log(this.curriculas.iCurrNroHoras);
+    const esValido = totalHora >= hora;
+
+    if (!esValido) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Total de horas inválidas',
+        detail: `Las horas del área (${hora}) no pueden superar el total (${totalHora}) de horas.`,
+      });
+      // } else {
+      //   this.messageService.add({
+      //     severity: 'success',
+      //     summary: 'Total de horas válidas',
+      //     detail: `Las horas del área (${hora}) son válidas dentro del total (${totalHora}) de horas.`,
+      //   });
+    }
+
+    this.frmCursos.patchValue({
+      vValidoHora: esValido,
+    });
+    return esValido;
+  }
+
+  calcularTotalCreditos() {
+    const teoria = parseFloat(this.frmCursos.value.nCursoCredTeoria ?? '0') || 0;
+    const practica = parseFloat(this.frmCursos.value.nCursoCredPractica ?? '0') || 0;
+    const total = teoria + practica;
+    this.frmCursos.patchValue({
+      nCursoTotalCreditos: parseFloat(String(total ?? '0')) || 0,
+    });
+
+    // this.validarTotalCreditos();
+  }
+
   seleccionarImagen(event: any) {
     const index = event.detail.index; // Acceder al índice correcto
     this.portada[index]; // Obtiene la imagen según el índice
@@ -348,6 +445,13 @@ export class CurriculaCursoComponent implements OnChanges {
   }
 
   insertarArea(item: any) {
+    const vHoras = this.validarTotalHoras();
+    const vCreditos = this.validarTotalCreditos();
+
+    if (vHoras === false || vCreditos === false) {
+      return;
+    }
+
     const params = {
       iCredId: Number(this.perfil.iCredId ?? null),
       iCredEntPerfId: Number(this.perfil.iCredEntPerfId ?? null),
@@ -388,6 +492,7 @@ export class CurriculaCursoComponent implements OnChanges {
         if (!this.bUpdate) {
           this.frmCursos.reset();
         }
+        this.visible = false;
         this.inicializacion();
       },
     });
@@ -399,7 +504,7 @@ export class CurriculaCursoComponent implements OnChanges {
       text: '',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 
@@ -418,13 +523,13 @@ export class CurriculaCursoComponent implements OnChanges {
     //   type: 'item',
     //   class: 'p-button-rounded p-button-primary p-button-text',
     // },
-    {
-      labelTooltip: 'Eliminar área curricular',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_area',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar área curricular',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_area',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
 
   cursosColumns = [

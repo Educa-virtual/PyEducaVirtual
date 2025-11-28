@@ -31,6 +31,8 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
   iIieeId = input<string | number>(null);
   data = input(null);
 
+  turnos: any = [];
+
   closeModal = output<void>();
   recargarLista = output<void>();
 
@@ -43,38 +45,55 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
   private _LocalStoreService = inject(LocalStoreService);
   private _ConstantesService = inject(ConstantesService);
 
-  formSedes: FormGroup = this._FormBuilder.group({
-    cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
-    cSedeDireccion: [null, Validators.required],
-    iIieeId: [null, Validators.required],
-    iServEdId: [null, Validators.required],
-    iSesionId: [1],
+  formSedes: FormGroup;
 
-    iSedeId: [],
-    iCredEntPerfId: [],
-
-    cSedeTelefono: [null, Validators.required],
-    iEstado: [null, Validators.required],
-  });
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
       const data = changes['data'].currentValue;
-      data.iEstado = Number(data.iEstado);
-      if (data?.iSedeId) {
-        this.formSedes.patchValue(data);
+      if (!data) return;
 
-        this.formSedes.get('iIieeId')?.clearValidators();
-        this.formSedes.get('iIieeId')?.updateValueAndValidity();
+      console.log('🔹 Valor recibido de iIieeId:', this.iIieeId());
+
+      data.iEstado = Number(data.iEstado ?? 0);
+
+      if (!this.formSedes) return;
+
+      if (data.iSedeId) {
+        this.formSedes.patchValue(data);
+        //this.formSedes.get('iIieeId')?.clearValidators();
+        this.formSedes.get('iIieeId')?.setValue(this.iIieeId());
       } else {
         this.formSedes.reset();
-
-        this.formSedes.get('iIieeId')?.setValidators(Validators.required);
-        this.formSedes.get('iIieeId')?.updateValueAndValidity();
+        // this.formSedes.get('iIieeId')?.setValidators(Validators.required);
       }
+      this.formSedes.get('iIieeId')?.updateValueAndValidity();
     }
   }
+
   ngOnInit() {
+    this.initForm();
     this.cargarDatosIniciales();
+    this.getTurnos();
+  }
+
+  initForm() {
+    this.formSedes = this._FormBuilder.group({
+      iCredEntPerfId: [],
+      iCredId: [1], //iCredId: [],
+      iSedeId: [null],
+      iIieeId: [this.iIieeId()],
+
+      iServEdId: [null, Validators.required],
+      iTurnoId: [null, Validators.required],
+      cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+      cSedeEmail: [null, [Validators.required, Validators.email]],
+      cSedeDireccion: [null, Validators.required],
+      cSedeRslCreacion: [null],
+      dSedeRslCreacion: [null],
+      iEstado: [1],
+      cSedeTelefono: [null],
+      cSedeDirector: [null],
+    });
   }
 
   cargarDatosIniciales() {
@@ -88,12 +107,21 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       },
     });
   }
+
+  getTurnos() {
+    this._GeneralService.getTurno().subscribe({
+      next: (response: any) => {
+        this.turnos = response.data;
+      },
+    });
+  }
   enviarFormulario() {
-    if (this.isLoading()) return;
+    //if (this.isLoading()) return;
+
     this.isLoading.set(true);
 
     const perfil = this._LocalStoreService.getItem('dremoPerfil');
-
+    console.log('Formulario de sede a enviar:', this.formSedes.value);
     this.formSedes.patchValue({
       iIieeId: this.iIieeId(),
       iCredEntPerfId: perfil?.iCredEntPerfId,
@@ -121,6 +149,7 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
       return;
     }
 
+    // return;
     this.guardarSede();
   }
 
@@ -153,5 +182,31 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
           this.mostrarErrores(error);
         },
       });
+  }
+  soloNumeros(event: any) {
+    const input = event.target;
+    const valor = input.value.replace(/[^0-9]/g, '');
+    input.value = valor;
+
+    const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
+    if (controlName && this.formSedes.get(controlName)) {
+      this.formSedes.get(controlName)?.setValue(valor);
+    }
+  }
+
+  convertirMayusculas(event: any) {
+    const input = event.target;
+    const valor = input.value.toUpperCase();
+    input.value = valor;
+
+    const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
+    if (controlName && this.formSedes.get(controlName)) {
+      this.formSedes.get(controlName)?.setValue(valor);
+    }
+  }
+
+  esInvalido(control: string): boolean {
+    const c = this.formSedes.get(control);
+    return !!(c && c.invalid && (c.dirty || c.touched));
   }
 }

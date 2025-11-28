@@ -8,11 +8,12 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { BanIcon } from 'primeng/icons/ban';
 
 @Component({
   selector: 'app-meritos',
   standalone: true,
-  imports: [TablePrimengComponent, NoDataComponent, ContainerPageComponent, PrimengModule],
+  imports: [TablePrimengComponent, NoDataComponent, ContainerPageComponent, PrimengModule, BanIcon],
   templateUrl: './meritos.component.html',
   styleUrl: './meritos.component.scss',
 })
@@ -27,10 +28,19 @@ export class MeritosComponent implements OnInit {
   meritos = signal<any[]>([]);
   selectedItems = [];
 
+  meritosAgrupados: any[] = [];
+
   breadCrumbItems = [{ label: 'Módulo Estudiante' }, { label: 'Méritos', active: true }];
   breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
 
   messages: Message[] | undefined;
+
+  //variables de cambio
+
+  text: string = 'Ver como lista';
+
+  layout: string = 'grid'; // vista por defecto
+  options = ['list', 'grid'];
 
   constructor(
     private messageService: MessageService,
@@ -52,14 +62,15 @@ export class MeritosComponent implements OnInit {
     this.query
       .searchCalendario({
         json: JSON.stringify({
-          iPersId: this.perfil.iPersId,
+          // iPersId: this.perfil.iPersId,
+          iSedeId: this.perfil.iSedeId,
+          iYAcadId: this.dremoiYAcadId,
         }),
-        _opcion: 'getMeritoxiPersId',
+        _opcion: 'getMeritos', // getMeritoxiPersId
       })
       .subscribe({
         next: (data: any) => {
           this.meritos.set(data.data);
-          console.log(this.meritos(), 'this.meritos');
         },
         error: error => {
           this.messageService.add({
@@ -68,7 +79,55 @@ export class MeritosComponent implements OnInit {
             detail: 'Error. al cargar los los neritos: ' + error.error.message,
           });
         },
+        complete: () => {
+          this.agruparMeritos();
+        },
       });
+  }
+
+  agruparMeritos() {
+    let m: any;
+    //    const data = this.meritos();
+    /*
+    const grupos = data.reduce((acc: any, m: any) => {
+      const tipo = m.cTipoMerito || 'Sin tipo';
+  
+      if (!acc[tipo]) {
+        acc[tipo] = [];
+      }
+      acc[tipo].push(m);
+      return acc;
+    }, {});
+  
+    this.meritosAgrupados = Object.keys(grupos).map(tipo => ({
+      tipo,
+      items: grupos[tipo]
+    }));*/
+    const lista = this.meritos() || [];
+
+    const grupos: any = {};
+
+    for (m of lista) {
+      if (!grupos[m.cTipoMerito]) {
+        grupos[m.cTipoMerito] = [];
+      }
+      grupos[m.cTipoMerito].push(m);
+    }
+
+    this.meritosAgrupados = Object.keys(grupos).map(key => ({
+      tipo: key,
+      items: grupos[key],
+    }));
+  }
+
+  onLayoutChange() {
+    if (this.layout === 'grid') {
+      //this.layout = 'list';
+      this.text = 'Ver como cuadrícula';
+    } else {
+      //this.layout = 'grid';
+      this.text = 'Ver como lista';
+    }
   }
 
   columns: IColumn[] = [

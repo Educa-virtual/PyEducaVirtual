@@ -66,7 +66,7 @@ export class MeritosComponent implements OnInit {
           iSedeId: this.perfil.iSedeId,
           iYAcadId: this.dremoiYAcadId,
         }),
-        _opcion: 'getMeritos', // getMeritoxiPersId
+        _opcion: 'getMeritoxiPersId', //'getMeritos', // getMeritoxiPersId
       })
       .subscribe({
         next: (data: any) => {

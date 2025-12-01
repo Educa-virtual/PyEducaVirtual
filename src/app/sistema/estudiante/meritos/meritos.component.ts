@@ -62,9 +62,9 @@ export class MeritosComponent implements OnInit {
     this.query
       .searchCalendario({
         json: JSON.stringify({
-          // iPersId: this.perfil.iPersId,
-          iSedeId: this.perfil.iSedeId,
-          iYAcadId: this.dremoiYAcadId,
+          iPersId: this.perfil.iPersId,
+          // iSedeId: this.perfil.iSedeId,
+          //  iYAcadId: this.dremoiYAcadId,
         }),
         _opcion: 'getMeritoxiPersId', //'getMeritos', // getMeritoxiPersId
       })

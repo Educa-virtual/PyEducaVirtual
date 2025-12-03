@@ -225,13 +225,13 @@ export class LogroAlcanzadoComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-primary p-button-text',
     },
-    {
-      labelTooltip: 'Imprimir Boleta',
-      icon: 'pi pi-print',
-      accion: 'Imprimir',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Imprimir Boleta',
+    //   icon: 'pi pi-print',
+    //   accion: 'Imprimir',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-success p-button-text',
+    // },
   ];
   /*
   obtenerGradoSeccion() {

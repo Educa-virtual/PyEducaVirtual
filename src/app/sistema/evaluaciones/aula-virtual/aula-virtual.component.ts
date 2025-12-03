@@ -16,13 +16,12 @@ import { GeneralService } from '@/app/servicios/general.service';
   styleUrl: './aula-virtual.component.scss',
 })
 export class AulaVirtualComponent extends MostrarErrorComponent implements OnChanges {
-  @Input() iDetMatrId: any;
-  @Input() iPeriodo: number;
+  @Input() contenidoSemanas: any;
+  @Input() detalleActividades: any[] = [];
+  @Input() competencia: string;
 
-  contenidoSemanas: any;
   actividadSeleccionado: any;
   semanaSeleccionado: any;
-  detalleActividades: any[] = [];
 
   evaluacion: any[] = [];
   foro: any[] = [];
@@ -32,15 +31,15 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
 
   ngOnChanges(changes) {
     // Si el valor de 'showModalEvaluacion' cambia, se actualiza y se obtiene el tipo de evaluaciones
-    if (changes.iDetMatrId?.currentValue) {
-      this.iDetMatrId = changes.iDetMatrId.currentValue;
-    }
-    if (changes.iPeriodo?.currentValue) {
-      this.iPeriodo = changes.iPeriodo.currentValue;
-    }
+    if (changes.contenidoSemanas?.currentValue) {
+      this.contenidoSemanas = changes.contenidoSemanas.currentValue;
 
-    if (this.iDetMatrId > 0 && this.iPeriodo > 0) {
+      console.log(this.contenidoSemanas, 'this.contenidoSemanas');
+    }
+    if (changes.detalleActividades?.currentValue) {
+      this.detalleActividades = changes.detalleActividades.currentValue;
       this.buscarResultados();
+      console.log(this.detalleActividades, 'this.detalleActividades');
     }
   }
 
@@ -73,6 +72,30 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
         return [];
     }
   }
+
+  cambiarSemana() {
+    if (!this.semanaSeleccionado || this.semanaSeleccionado === 0) {
+      this.buscarResultados();
+      return;
+    }
+    // const semana = this.contenidoSemanas.find(
+    //   semana => semana.iProgActId === semanaId
+    // );
+
+    const jTarea = this.detalleActividades[0].tarea.filter(
+      tarea => tarea.iContenidoSemId === this.semanaSeleccionado
+    );
+    this.tarea = JSON.parse(jTarea);
+
+    const jForo = this.detalleActividades[0].foro.filter(
+      foro => foro.iContenidoSemId === this.semanaSeleccionado
+    );
+    this.foro = JSON.parse(jForo);
+    const jEvaluacion = this.detalleActividades[0].evaluacion.filter(
+      evaluacion => evaluacion.iContenidoSemId === this.semanaSeleccionado
+    );
+    this.evaluacion = JSON.parse(jEvaluacion);
+  }
   obtenerStyleActividad() {
     const colores = {
       [TAREA]: '--green-500',
@@ -84,39 +107,8 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
   }
 
   buscarResultados() {
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          iDetMatrId: this.iDetMatrId,
-          iPeriodo: Number(this.iPeriodo),
-        }),
-        _opcion: 'competenciaXiDetMatrId',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.evaluacion = data.data.evaluacion ?? [];
-          this.foro = data.data.foro ?? [];
-          this.tarea = data.data.tarea ?? [];
-
-          // 1. Unimos los 3 arreglos en uno solo
-          const combinado = [...this.evaluacion, ...this.foro, ...this.tarea];
-
-          // 2. Eliminamos duplicados por iContenidoSemId
-          this.contenidoSemanas = combinado.filter(
-            (item, index, self) =>
-              index === self.findIndex(t => t.iContenidoSemId === item.iContenidoSemId)
-          );
-
-          this.detalleActividades = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            summary: 'Mensaje de sistema',
-            detail: 'Error al cargar secciones de IE.' + error.error.message,
-            life: 3000,
-            severity: 'error',
-          });
-        },
-      });
+    this.evaluacion = JSON.parse(this.detalleActividades[0].evaluacion ?? []);
+    this.foro = JSON.parse(this.detalleActividades[0].foro ?? []);
+    this.tarea = JSON.parse(this.detalleActividades[0].tarea ?? []);
   }
 }

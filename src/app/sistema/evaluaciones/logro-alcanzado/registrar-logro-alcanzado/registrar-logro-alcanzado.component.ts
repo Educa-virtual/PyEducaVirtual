@@ -16,6 +16,7 @@ import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/servi
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
 import { AulaVirtualComponent } from '../../aula-virtual/aula-virtual.component';
+import { GeneralService } from '@/app/servicios/general.service';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
@@ -39,6 +40,11 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   //periodo array
 
   cargarPeriodo: boolean = true;
+
+  detalleActividades: any[] = []; // agregados para aula virtual
+  contenidoSemanas: any[] = []; // agregados para aula virtual
+  tituloCompetencia: string = '';
+
   area_nombre: string = ''; // Variable para almacenar el área del curso seleccionado
   conversion: any[] = [
     // tabla de conversion
@@ -88,6 +94,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   cDetMatrConclusionDescPromedio: string = ''; // Variable para almacenar el periodo seleccionado
 
   private _confirmService = inject(ConfirmationModalService);
+  public query = inject(GeneralService);
   constructor(
     private messageService: MessageService,
     private calendarioPeriodosService: CalendarioPeriodosEvalacionesService,
@@ -353,153 +360,62 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
     });
   }
 
+  buscarResultados(competencia: any) {
+    this.obteneSemanasxiPeriodoEvalAperId(competencia);
+    console.log(competencia, 'competencia seleccionada');
+    this.tituloCompetencia = competencia.cCompetenciaNombre;
+
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          iDetMatrId: this.iDetMatrId,
+          iPeriodo: Number(this.iPeriodoId),
+          iCompetenciaId: Number(competencia.iCompetenciaId),
+        }),
+        _opcion: 'competenciaXiDetMatrId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.detalleActividades = data.data;
+        },
+        error: error => {
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+        // complete: () => {
+        //   this.obteneSemanasxiPeriodoEvalAperId()
+        // }
+      });
+  }
+
+  obteneSemanasxiPeriodoEvalAperId(competencia: any) {
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          iDetMatrId: this.iDetMatrId,
+          iPeriodo: Number(this.iPeriodoId),
+          iCompetenciaId: Number(competencia.iCompetenciaId),
+        }),
+        _opcion: 'obteneSemanasxiPeriodoEvalAperId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.contenidoSemanas = data.data;
+        },
+        error: error => {
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+      });
+  }
+
   //this.iDetMatrId
 }
-
-/*
-  convertirLogro(campo: string, periodo: string): void {
-    const mensaje = 'Este registro se guardará automáticamente: ' + campo + ': ' + this[campo];
-
-    this._confirmService.openConfiSave({
-      message: mensaje,
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        if (periodo === this.iPeriodoId) {
-          switch (campo) {
-            case 'nCalifIdPeriodo1':
-              this.getLogroPorValor(this.nCalifIdPeriodo1, periodo);
-              break;
-            case 'nCalifIdPeriodo2':
-              this.getLogroPorValor(this.nCalifIdPeriodo2, periodo);
-              break;
-            case 'nCalifIdPeriodo3':
-              this.getLogroPorValor(this.nCalifIdPeriodo3, periodo);
-              break;
-            case 'nCalifIdPeriodo4':
-              this.getLogroPorValor(this.nCalifIdPeriodo4, periodo);
-              break;
-            case 'nPromedio':
-              this.getLogroPorValor(this.nPromedio, '5');
-              break;
-            default:
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Por favor, complete todos los campos requeridos.',
-                life: 3000,
-              });
-              break;
-          }
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Los periodos no coinciden.',
-            life: 3000,
-          });
-        }
-      },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail: 'Acción cancelada',
-        });
-      },
-    });
-  }
-*/
-/*  
-validarLogro(opcion: string) {
-    let camposRequeridos = [];
-    let json: any = {};
-    let rango: any = {};
-    const val = opcion === '5' ? '5' : this.iPeriodoId; // Valor para el promedio
-
-    switch (val) {
-      case '1':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc1, this.iCalifIdPeriodo1];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc1: this.cDetMatrConclusionDesc1,
-          iEscalaCalifIdPeriodo1: rango.iCalifId,
-          nDetMatrPeriodo1: this.nCalifIdPeriodo1,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '2':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc2, this.iCalifIdPeriodo2];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc2: this.cDetMatrConclusionDesc2,
-          iEscalaCalifIdPeriodo2: rango.iCalifId,
-          nDetMatrPeriodo2: this.nCalifIdPeriodo2,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '3':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc3, this.iCalifIdPeriodo3];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc3: this.cDetMatrConclusionDesc3,
-          iEscalaCalifIdPeriodo3: rango.iCalifId,
-          nDetMatrPeriodo3: this.nCalifIdPeriodo3,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '4':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc4, this.iCalifIdPeriodo4];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc4: this.cDetMatrConclusionDesc4,
-          iEscalaCalifIdPeriodo4: rango.iCalifId,
-          nDetMatrPeriodo4: this.nCalifIdPeriodo4,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '5':
-        rango = this.conversion.find(item => (item.logro = this.iPromedio));
-        camposRequeridos = [this.cDetMatrConclusionDescPromedio, this.iPromedio];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDescPromedio: this.cDetMatrConclusionDescPromedio,
-          iEscalaCalifIdPromedio: rango.iCalifId,
-          nPromedio: this.nPromedio,
-          opcion: Number(opcion),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      default:
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'El periodo seleccionado no es válido.',
-          life: 3000,
-        });
-        break;
-    }
-
-    const camposVacios = camposRequeridos.filter(campo => !campo);
-
-    if (camposVacios.length > 0) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Por favor, complete todos los campos requeridos.',
-        life: 3000,
-      });
-    } else {
-      console.log('Campos completos:', camposRequeridos, json);
-    }
-  }
-*/

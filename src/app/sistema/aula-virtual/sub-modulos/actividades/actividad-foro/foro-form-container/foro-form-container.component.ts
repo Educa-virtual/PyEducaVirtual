@@ -14,11 +14,12 @@ import { FORO } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { finalize } from 'rxjs';
+import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 
 @Component({
   selector: 'app-foro-form-container',
   standalone: true,
-  imports: [PrimengModule, TypesFilesUploadPrimengComponent],
+  imports: [PrimengModule, TypesFilesUploadPrimengComponent, TablePrimengComponent],
   templateUrl: './foro-form-container.component.html',
   styleUrl: './foro-form-container.component.scss',
 })
@@ -46,6 +47,7 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _DialogConfig = inject(DynamicDialogConfig);
 
+  public query = inject(GeneralService);
   tareas = [];
 
   categorias: any[] = [];
@@ -71,13 +73,18 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
     iDocenteId: ['', Validators.required],
+    bCompetencia: [false],
   });
 
   action: string = 'GUARDAR';
   perfil: any;
   data: any;
 
+  competencias = []; // agregado
+  selectedItems = []; // agregado
+
   ngOnInit(): void {
+    this.buscarCompetencias(this._DialogConfig.data.idDocCursoId); // agregado
     this.mostrarCategorias();
     this.contenidoSemana = this._DialogConfig.data.contenidoSemana;
     this.idDocCursoId = this._DialogConfig.data.idDocCursoId;
@@ -162,6 +169,8 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
       return;
     }
 
+    const ids = this.selectedItems.map(x => Number(x.iCompetenciaId));
+
     const data = {
       ...this.foroForm.value,
       dtForoInicio: this.foroForm.value.dtForoInicio
@@ -171,6 +180,8 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
       dtForoFin: this.foroForm.value.dtForoFin
         ? this.pipe.transform(this.foroForm.value.dtForoFin, 'dd/MM/yyyy HH:mm:ss')
         : null,
+
+      jCompetencias: JSON.stringify(ids),
     };
 
     if (this.action === 'GUARDAR') {
@@ -256,6 +267,18 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
           iForoId: data.iForoId,
           iForoCatId: data.iForoCatId,
         });
+
+        console.log(data, 'data de foro');
+        //se agrego validacion de competencias si ya existen
+        const idsCompetencias = data.jCompetencias
+          ? JSON.parse(data.jCompetencias).map((x: any) => Number(x))
+          : [];
+
+        this.selectedItems = this.competencias.filter(x =>
+          idsCompetencias.includes(Number(x.iCompetenciaId))
+        );
+
+        console.log(this.selectedItems, 'this.selectedItems');
         this.filesUrl = data.cForoUrl ? JSON.parse(data.cForoUrl) : [];
         break;
     }
@@ -309,4 +332,58 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
         },
       });
   }
+
+  setSelectedItems(event) {
+    this.selectedItems = event;
+  }
+  buscarCompetencias(idDocCursoId: number) {
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          idDocCursoId: idDocCursoId,
+        }),
+        _opcion: 'competenciaXidDocCursoId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.competencias = data.data;
+          this.selectedItems = data.data;
+        },
+        error: error => {
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+      });
+  }
+
+  columns: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'item',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '90%',
+      field: 'cCompetenciaNombre',
+      header: 'Competencia',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'checkbox',
+      width: '5%',
+      field: 'checked',
+      header: ' ',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
 }

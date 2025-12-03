@@ -15,11 +15,12 @@ import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calen
 import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/services/datos-matricula.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
+import { AulaVirtualComponent } from '../../aula-virtual/aula-virtual.component';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
   standalone: true,
-  imports: [PrimengModule, FormsModule],
+  imports: [PrimengModule, FormsModule, AulaVirtualComponent],
   templateUrl: './registrar-logro-alcanzado.component.html',
   styleUrl: './registrar-logro-alcanzado.component.scss',
   providers: [MessageService],
@@ -66,7 +67,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   ];
 
   mostrarBotonFinalizar: boolean = false;
-
+  iDetMatrId: number = 0; // Variable para almacenar el periodo seleccionado
   //variables
   nCalifIdPeriodo1: number = 0; // Variable para almacenar el periodo seleccionado
   nCalifIdPeriodo2: number = 0; // Variable para almacenar el periodo seleccionado
@@ -112,7 +113,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
     if (changes['competencias']) {
       if (Array.isArray(this.competencias) && this.competencias.length > 0) {
         this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
-
+        this.iDetMatrId = this.competencias[0].iDetMatrId ?? 0;
         // this.messageService.add({
         //   severity: 'warn',
         //   summary: 'Mensaje del sistema',
@@ -351,6 +352,8 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       },
     });
   }
+
+  //this.iDetMatrId
 }
 
 /*

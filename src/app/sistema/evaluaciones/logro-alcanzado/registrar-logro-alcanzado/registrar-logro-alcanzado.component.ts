@@ -40,6 +40,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   //periodo array
 
   cargarPeriodo: boolean = true;
+  public bHabilitado: boolean = false;
 
   detalleActividades: any[] = []; // agregados para aula virtual
   contenidoSemanas: any[] = []; // agregados para aula virtual
@@ -107,13 +108,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // if (changes['selectedItem']) {
     //   if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
-
-    //     this.messageService.add({
-    //       severity: 'warn',
-    //       summary: 'Mensaje del sistema',
-    //       detail: 'Se detecto cambios en información del estudiante',
-    //       life: 3000,
-    //     });
+    //     this.limpiarVariables();
     //   }
     //   // this.filtrarArea();
     // }
@@ -121,12 +116,35 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       if (Array.isArray(this.competencias) && this.competencias.length > 0) {
         this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
         this.iDetMatrId = this.competencias[0].iDetMatrId ?? 0;
-        // this.messageService.add({
-        //   severity: 'warn',
-        //   summary: 'Mensaje del sistema',
-        //   detail: 'Se detecto cambios en información del competencias',
-        //   life: 3000,
-        // });
+      }
+    }
+    if (changes['selectedItem']) {
+      if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
+        this.limpiarVariables();
+      }
+      // this.filtrarArea();
+    }
+    // if (changes['periodos']) {
+    //   if (Array.isArray(this.periodos) && this.periodos.length > 0) {
+
+    //     console.log(this.periodos, 'periodos cambiados');
+    //   }
+    //   // this.filtrarArea();
+    // }
+    if (changes['iPeriodoId']) {
+      if (Number(this.iPeriodoId) > 0) {
+        const seleccionadoPeriodo = this.periodos.find(
+          p => Number(p.iNumeroPeriodo) === Number(this.iPeriodoId)
+        );
+
+        if (!seleccionadoPeriodo) {
+          console.warn('No se encontró información del período');
+          return;
+        }
+
+        this.bHabilitado = seleccionadoPeriodo.bHabilitado === '1';
+
+        this.limpiarVariables();
       }
     }
   }
@@ -161,28 +179,28 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   }
 
   // BUSCADOR DE PAOLO EN FRONT
-  buscarLogrosDelEstudiante(iMatriculaId: number) {
-    this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({
-      next: (response: any) => {
-        if (response.validated && response.data) {
-          console.log('Logros encontrados:', response.data);
-          // Mapea la respuesta a tus arrays de competencias
-          // Ejemplo: this.competenciasMatematica = response.data.matematica;
-        } else {
-          console.warn('No se encontraron logros para este estudiante.');
-        }
-      },
-      error: error => {
-        console.error('Error al buscar logros:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo obtener la información de logros.',
-          life: 3000,
-        });
-      },
-    });
-  }
+  // buscarLogrosDelEstudiante(iMatriculaId: number) {
+  //   this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({
+  //     next: (response: any) => {
+  //       if (response.validated && response.data) {
+  //         console.log('Logros encontrados:', response.data);
+  //         // Mapea la respuesta a tus arrays de competencias
+  //         // Ejemplo: this.competenciasMatematica = response.data.matematica;
+  //       } else {
+  //         console.warn('No se encontraron logros para este estudiante.');
+  //       }
+  //     },
+  //     error: error => {
+  //       console.error('Error al buscar logros:', error);
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: 'No se pudo obtener la información de logros.',
+  //         life: 3000,
+  //       });
+  //     },
+  //   });
+  // }
 
   insertarResultadoXcompetencias(json: any, iCredId: number, option: string) {
     this.ApiEvaluacionesService.insertarResultadoXcompetencias({
@@ -362,7 +380,8 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
 
   buscarResultados(competencia: any) {
     this.obteneSemanasxiPeriodoEvalAperId(competencia);
-    console.log(competencia, 'competencia seleccionada');
+
+    this.tituloCompetencia = null;
     this.tituloCompetencia = competencia.cCompetenciaNombre;
 
     this.query
@@ -376,6 +395,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       })
       .subscribe({
         next: (data: any) => {
+          this.detalleActividades = [];
           this.detalleActividades = data.data;
         },
         error: error => {
@@ -404,6 +424,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       })
       .subscribe({
         next: (data: any) => {
+          this.contenidoSemanas = [];
           this.contenidoSemanas = data.data;
         },
         error: error => {
@@ -415,6 +436,12 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
           });
         },
       });
+  }
+
+  limpiarVariables() {
+    this.detalleActividades = []; // agregados para aula virtual
+    this.contenidoSemanas = []; // agregados para aula virtual
+    this.tituloCompetencia = '';
   }
 
   //this.iDetMatrId

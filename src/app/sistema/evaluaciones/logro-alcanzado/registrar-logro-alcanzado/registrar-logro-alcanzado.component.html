@@ -19,7 +19,7 @@
         styleClass="w-full"
         [(ngModel)]="iPeriodoId"
         [options]="periodos"
-        optionLabel="cNombrePeriodo"
+        optionLabel="cNombrePeriodoH"
         optionValue="iNumeroPeriodo"
         placeholder="Seleccionar"
         [disabled]="true"
@@ -89,7 +89,9 @@
                 [text]="true"
                 severity="warning"
                 *ngIf="
-                  competencias.iResultado_1 !== null && competencias.iResultado_1 !== undefined
+                  competencias.iResultado_1 !== null &&
+                  competencias.iResultado_1 !== undefined &&
+                  bHabilitado
                 "
                 (click)="convertirLogroCompetencias($event, i, competencias)"
               >
@@ -148,7 +150,9 @@
                 [text]="true"
                 severity="warning"
                 *ngIf="
-                  competencias.iResultado_2 !== null && competencias.iResultado_2 !== undefined
+                  competencias.iResultado_2 !== null &&
+                  competencias.iResultado_2 !== undefined &&
+                  bHabilitado
                 "
                 (click)="convertirLogroCompetencias($event, i, competencias)"
               >
@@ -207,7 +211,9 @@
                 [text]="true"
                 severity="warning"
                 *ngIf="
-                  competencias.iResultado_3 !== null && competencias.iResultado_3 !== undefined
+                  competencias.iResultado_3 !== null &&
+                  competencias.iResultado_3 !== undefined &&
+                  bHabilitado
                 "
                 (click)="convertirLogroCompetencias($event, i, competencias)"
               >
@@ -266,7 +272,9 @@
                 [text]="true"
                 severity="warning"
                 *ngIf="
-                  competencias.iResultado_4 !== null && competencias.iResultado_4 !== undefined
+                  competencias.iResultado_4 !== null &&
+                  competencias.iResultado_4 !== undefined &&
+                  bHabilitado
                 "
                 (click)="convertirLogroCompetencias($event, i, competencias)"
               >
@@ -325,7 +333,9 @@
                 [text]="true"
                 severity="warning"
                 *ngIf="
-                  competencias.iResultado_5 !== null && competencias.iResultado_5 !== undefined
+                  competencias.iResultado_5 !== null &&
+                  competencias.iResultado_5 !== undefined &&
+                  bHabilitado
                 "
                 (click)="convertirLogroCompetencias($event, i, competencias)"
               >

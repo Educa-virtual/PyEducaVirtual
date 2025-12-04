@@ -21,7 +21,7 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
   @Input() competencia: string;
 
   actividadSeleccionado: any;
-  semanaSeleccionado: any;
+  semanaSeleccionado: any = 0;
 
   evaluacion: any[] = [];
   foro: any[] = [];
@@ -32,14 +32,24 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
   ngOnChanges(changes) {
     // Si el valor de 'showModalEvaluacion' cambia, se actualiza y se obtiene el tipo de evaluaciones
     if (changes.contenidoSemanas?.currentValue) {
+      this.contenidoSemanas = [];
       this.contenidoSemanas = changes.contenidoSemanas.currentValue;
-
-      console.log(this.contenidoSemanas, 'this.contenidoSemanas');
     }
     if (changes.detalleActividades?.currentValue) {
+      this.detalleActividades = [];
+
+      this.evaluacion = [];
+      this.foro = [];
+      this.tarea = [];
       this.detalleActividades = changes.detalleActividades.currentValue;
-      this.buscarResultados();
-      console.log(this.detalleActividades, 'this.detalleActividades');
+
+      if (this.detalleActividades.length > 0) {
+        this.buscarResultados();
+      }
+    }
+    if (changes.competencia?.currentValue) {
+      this.competencia = '';
+      this.competencia = changes.competencia.currentValue;
     }
   }
 
@@ -48,17 +58,6 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
     { label: 'Foro', value: FORO, styleClass: 'btn-success' },
     { label: 'Evaluación', value: EVALUACION, styleClass: 'btn-danger' },
   ];
-
-  // mostrar(){
-  //   this.obteneSemanasxiPeriodoEvalAperId()
-  // }
-  // obteneSemanasxiPeriodoEvalAperId(): any[] {
-  //   if (!this.iPeriodo) return [];
-  //   return this.contenidoSemanas.filter(
-  //     semana =>
-  //       semana.iContenidoSemId === 0 || semana.iPeriodoEvalAperId === this.periodoSeleccionado
-  //   );
-  // }
 
   obtenerActividadesxiActTipoId() {
     switch (this.actividadSeleccionado) {
@@ -74,28 +73,26 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
   }
 
   cambiarSemana() {
-    if (!this.semanaSeleccionado || this.semanaSeleccionado === 0) {
+    if (Number(this.semanaSeleccionado) === 0) {
       this.buscarResultados();
       return;
     }
-    // const semana = this.contenidoSemanas.find(
-    //   semana => semana.iProgActId === semanaId
-    // );
 
-    const jTarea = this.detalleActividades[0].tarea.filter(
-      tarea => tarea.iContenidoSemId === this.semanaSeleccionado
-    );
-    this.tarea = JSON.parse(jTarea);
+    // Convertir JSON string → array
 
-    const jForo = this.detalleActividades[0].foro.filter(
-      foro => foro.iContenidoSemId === this.semanaSeleccionado
+    const evaluaciones = JSON.parse(this.detalleActividades[0].evaluacion ?? []);
+    const foros = JSON.parse(this.detalleActividades[0].foro ?? []);
+    const tareas = JSON.parse(this.detalleActividades[0].tarea ?? []);
+
+    // Filtrar por semana
+    this.tarea = tareas.filter(t => Number(t.iContenidoSemId) === Number(this.semanaSeleccionado));
+    this.foro = foros.filter(f => Number(f.iContenidoSemId) === Number(this.semanaSeleccionado));
+    this.evaluacion = evaluaciones.filter(
+      e => Number(e.iContenidoSemId) === Number(this.semanaSeleccionado)
     );
-    this.foro = JSON.parse(jForo);
-    const jEvaluacion = this.detalleActividades[0].evaluacion.filter(
-      evaluacion => evaluacion.iContenidoSemId === this.semanaSeleccionado
-    );
-    this.evaluacion = JSON.parse(jEvaluacion);
+    this.obtenerActividadesxiActTipoId();
   }
+
   obtenerStyleActividad() {
     const colores = {
       [TAREA]: '--green-500',
@@ -107,8 +104,9 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
   }
 
   buscarResultados() {
-    this.evaluacion = JSON.parse(this.detalleActividades[0].evaluacion ?? []);
-    this.foro = JSON.parse(this.detalleActividades[0].foro ?? []);
-    this.tarea = JSON.parse(this.detalleActividades[0].tarea ?? []);
+    const parseOrEmpty = (value: any) => (value ? JSON.parse(value) : []);
+    this.evaluacion = parseOrEmpty(this.detalleActividades[0].evaluacion);
+    this.foro = parseOrEmpty(this.detalleActividades[0].foro);
+    this.tarea = parseOrEmpty(this.detalleActividades[0].tarea);
   }
 }

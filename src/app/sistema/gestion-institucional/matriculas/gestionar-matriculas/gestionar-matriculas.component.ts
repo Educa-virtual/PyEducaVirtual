@@ -111,10 +111,19 @@ export class GestionMatriculasComponent implements OnInit {
       text: 'left',
     },
     {
-      type: 'text',
+      type: 'tag',
       width: '5rem',
       field: 'cGradoNombre',
       header: 'Grado',
+      styles: {
+        Primero: 'info',
+        Segundo: 'warning',
+        Tercero: 'contrast',
+        Cuarto: 'danger',
+        Quinto: 'success',
+        F: 'success',
+        G: 'success',
+      },
       text_header: 'center',
       text: 'center',
     },
@@ -124,6 +133,9 @@ export class GestionMatriculasComponent implements OnInit {
       field: 'cSeccionNombre',
       header: 'Seccion',
       text_header: 'center',
+
+      //severity: (row) => (row.cSeccionNombre === 'UNICA' ? 'success' : 'success'),
+      //  styles: { 'A': 'success','B': 'warning','C': 'success','D': 'success','E': 'success','F': 'success','G': 'success' },
       text: 'center',
     },
     {
@@ -134,6 +146,48 @@ export class GestionMatriculasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
     },
+    // {
+    //   type: 'cell-editor',
+    //   field: 'iEstado',
+    //   header: 'Estado',
+    //   text_header: null,
+    //   width: '15%',
+    //   inputType: 'dropdown',
+    //   placeholder: 'Seleccionar estado',
+    //   options: [
+    //     { label: 'Activo', value: 'A' },
+    //     { label: 'Inactivo', value: 'I' }
+    //   ],
+    //   text: 'center',
+    // },
+    {
+      type: 'tag',
+      width: '5rem',
+      field: 'cTipoEstadoMatricula',
+      header: 'Estado',
+      text_header: 'center',
+      styles: {
+        Definitivo: 'success',
+        Traslado: 'warning',
+        Abandono: 'danger',
+        'En proceso': 'danger',
+      },
+      text: 'center',
+    },
+    // {
+    //   field: 'cSeccionNombre',
+    //   header: 'Tipo Matrícula',
+    //   text_header: 'center',
+    //   type: 'tag',
+    //   width: '15%',
+    //   inputType:'dropdown',
+    //   placeholder: 'Seleccionar estado',
+    //   severity: seleccionar() 'info',
+    //   options: [
+
+    //   ],
+    //   text: 'center'
+    // },
     {
       type: 'actions',
       width: '3rem',

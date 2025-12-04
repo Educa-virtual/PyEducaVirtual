@@ -127,17 +127,17 @@ export class CurriculasComponent implements OnInit {
     this.frmCurriculas = this.fb.group({
       iCurrId: [''],
       iModalServId: ['', Validators.required],
-      iCurrNotaMinima: ['', Validators.required],
-      iCurrTotalCreditos: ['', Validators.required],
-      iCurrNroHoras: ['', Validators.required],
-      cCurrPerfilEgresado: ['', Validators.required],
-      cCurrMencion: ['', Validators.required],
-      nCurrPesoProcedimiento: ['', Validators.required],
-      cCurrPesoConceptual: ['', Validators.required],
-      cCurrPesoActitudinal: ['', Validators.required],
-      bCurrEsLaVigente: [''],
-      cCurrRsl: ['', Validators.required],
-      dtCurrRsl: ['', Validators.required],
+      iCurrNotaMinima: [''],
+      iCurrTotalCreditos: [''],
+      iCurrNroHoras: [''],
+      cCurrPerfilEgresado: [''],
+      cCurrMencion: [''],
+      nCurrPesoProcedimiento: [''],
+      cCurrPesoConceptual: [''],
+      cCurrPesoActitudinal: [''],
+      bCurrEsLaVigente: [false],
+      cCurrRsl: [''],
+      dtCurrRsl: [''],
       cCurrDescripcion: ['', Validators.required],
     });
   }
@@ -164,7 +164,7 @@ export class CurriculasComponent implements OnInit {
         this.bEditar = false;
         this.visible = false;
         this.iCurrId = item.iCurrId;
-        this.caption = item.cCurrRsl;
+        this.caption = item.cCurrDescripcion;
         break;
 
       case 'mostrar_curricula':
@@ -177,12 +177,12 @@ export class CurriculasComponent implements OnInit {
 
       case 'editar':
         this.iCurrId = item.iCurrId;
-        this.caption = item.cCurrRsl;
+        this.caption = item.cCurrDescripcion;
         this.titulo = 'Formulario para editar nueva currícula';
-        this.titulo = 'Editar currícula';
+        this.titulo = 'Formulario para editar currícula';
         this.visible = true;
         this.bEditar = true;
-
+        console.log(item);
         this.frmCurriculas.patchValue({
           iCurrId: item.iCurrId,
           iModalServId: item.iModalServId,
@@ -194,7 +194,8 @@ export class CurriculasComponent implements OnInit {
           nCurrPesoProcedimiento: item.nCurrPesoProcedimiento,
           cCurrPesoConceptual: item.cCurrPesoConceptual,
           cCurrPesoActitudinal: item.cCurrPesoActitudinal,
-          bCurrEsLaVigente: item.bCurrEsLaVigente,
+          bCurrEsLaVigente: Number(item.bCurrEsLaVigente) ?? false,
+
           cCurrRsl: item.cCurrRsl,
           dtCurrRsl: item.dtCurrRsl ? new Date(item.dtCurrRsl) : null,
           cCurrDescripcion: item.cCurrDescripcion,
@@ -203,8 +204,8 @@ export class CurriculasComponent implements OnInit {
         break;
       case 'eliminar_curricula':
         this._confirmService.openConfirm({
-          header: 'Advertencia de curriculas',
-          message: '¿Desea eliminar la curricula?',
+          header: 'Advertencia de currículas',
+          message: '¿Desea eliminar la currícula?',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
             // Acción para eliminar el registro
@@ -250,6 +251,11 @@ export class CurriculasComponent implements OnInit {
     this.curriculasService.getCurriculas().subscribe({
       next: (res: any) => {
         this.curriculas = res.data;
+
+        this.curriculas = this.curriculas.map(e => ({
+          ...e,
+          cCurrRslShort: e.cCurrRsl ? e.cCurrRsl.substring(0, 20) : '',
+        }));
       },
       // error: (error) =>{
       //   let message = error?.error?.message || 'Sin conexión a la bd';
@@ -289,7 +295,7 @@ export class CurriculasComponent implements OnInit {
       cCurrPesoActitudinal: parseFloat(this.frmCurriculas.value.cCurrPesoActitudinal || 0).toFixed(
         2
       ),
-      bCurrEsLaVigente: Number(this.frmCurriculas.value.bCurrEsLaVigente) || 0,
+      bCurrEsLaVigente: this.frmCurriculas.value.bCurrEsLaVigente || false,
       cCurrRsl: this.frmCurriculas.value.cCurrRsl || '',
       dtCurrRsl: this.frmCurriculas.value.dtCurrRsl
         ? new Date(this.frmCurriculas.value.dtCurrRsl)
@@ -421,11 +427,11 @@ export class CurriculasComponent implements OnInit {
 
   accionesCurricula: IActionContainer[] = [
     {
-      labelTooltip: 'Agregar curricula',
-      text: 'Nueva curricula',
+      labelTooltip: 'Agregar currícula',
+      text: 'Nueva currícula',
       icon: 'pi pi-plus',
       accion: 'nueva_curricula',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
     // {
     //   labelTooltip: 'Mostrar curriculas',
@@ -451,13 +457,13 @@ export class CurriculasComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar áreas curriculares',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_curricula',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar áreas curriculares',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_curricula',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
   curriculasColumns = [
     {
@@ -479,8 +485,8 @@ export class CurriculasComponent implements OnInit {
     {
       type: 'text',
       width: '30%',
-      field: 'cCurrRsl',
-      header: 'Refencia',
+      field: 'cCurrRslShort',
+      header: 'Referencia',
       text_header: 'center',
       text: 'left',
     },

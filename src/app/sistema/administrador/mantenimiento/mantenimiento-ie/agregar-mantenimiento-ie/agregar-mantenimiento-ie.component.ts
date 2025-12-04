@@ -34,7 +34,8 @@ export class AgregarMantenimientoIeComponent
   data = input(null);
 
   closeModal = output<void>();
-  recargarLista = output<void>();
+
+  recargarLista = output<{ action: string }>();
 
   isLoading = signal<boolean>(false);
   distritos = signal<any[]>([]);
@@ -53,13 +54,13 @@ export class AgregarMantenimientoIeComponent
       '',
       [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
     ],
-    cIieeNombre: ['', [Validators.required, Validators.maxLength(200)]],
+    cIieeNombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
     iDsttId: [null, Validators.required],
     iZonaId: [null],
     iTipoSectorId: [null, Validators.required],
     cIieeRUC: ['', [Validators.minLength(11), Validators.maxLength(11)]],
-    cIieeDireccion: ['', Validators.required],
-    iNivelTipoId: [null, Validators.required],
+    cIieeDireccion: ['', [Validators.minLength(2), Validators.required]],
+    iNivelTipoId: [''],
     iUgelId: [null, Validators.required],
     iSedeId: [null],
     iSesionId: [1],
@@ -67,10 +68,10 @@ export class AgregarMantenimientoIeComponent
     iIieeId: [],
     iCredEntPerfId: [],
 
-    cIieeEmail: [null, [Validators.required, Validators.email]],
-    cIieeTelefono: [null, Validators.required],
+    cIieeEmail: [null, [Validators.email]],
+    cIieeTelefono: [null, Validators.pattern(/^[0-9]+$/)],
     iEstado: [null, Validators.required],
-    cIieeDirector: [null, Validators.required],
+    cIieeDirector: [null],
   });
 
   ngOnChanges(changes: SimpleChanges) {
@@ -165,7 +166,16 @@ export class AgregarMantenimientoIeComponent
       return;
     }
 
-    this.guardarInstitucion();
+    if (Number(this.iNivelTipoId()) > 0) {
+      this.guardarInstitucion();
+    } else {
+      this.mostrarMensajeToast({
+        severity: 'error',
+        summary: 'Mensaeje del sistema',
+        detail: 'No cuenta con nivel educativo para asignar',
+      });
+      this.isLoading.set(false);
+    }
   }
 
   guardarInstitucion() {
@@ -184,18 +194,51 @@ export class AgregarMantenimientoIeComponent
             });
             this.formInstitucion.reset();
             this.closeModal.emit();
-            this.recargarLista.emit();
+
+            const accion = datosInstitucion.iIieeId ? 'editar_iiee' : 'agregar_iiee';
+            this.recargarLista.emit({ action: accion });
           } else {
             this.mostrarMensajeToast({
               severity: 'error',
-              summary: 'Error',
+              summary: 'Mensaje del sistema',
               detail: response.mensaje || 'Error al crear la institución',
             });
           }
         },
         error: error => {
-          this.mostrarErrores(error);
+          let message = error?.error?.message || 'Sin conexión a la bd';
+
+          // 1. Eliminar TODO lo que esté entre corchetes [ ... ]
+          message = message.replace(/\[[^\]]*\]/g, '');
+          // 2. Eliminar la palabra "SQLSTATE:" si aparece
+          message = message.replace(/SQLSTATE:/gi, '');
+          // 3. Eliminar "Mensaje del sistema" si aparece en el mensaje recibido
+          message = message.replace(/Mensaje del sistema/gi, '');
+          // 4. Cortar todo lo que venga después de un paréntesis "(" (Connection, SQL, etc.)
+          message = message.split('(')[0];
+          // 5. Recortar espacios sobrantes
+          message = message.replace(/\s+/g, ' ').trim();
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: message,
+          });
         },
       });
+  }
+  onSubmit() {
+    if (this.formInstitucion.invalid) {
+      this.formInstitucion.markAllAsTouched();
+      return;
+    }
+
+    // si es válido
+    this.guardarInstitucion();
+  }
+
+  esInvalido(control: string): boolean {
+    const c = this.formInstitucion.get(control);
+    return !!(c && c.invalid && (c.dirty || c.touched));
   }
 }

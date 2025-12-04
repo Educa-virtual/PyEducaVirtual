@@ -90,6 +90,10 @@ export class ComunicadosService implements OnDestroy {
     return this.http.post(`${baseUrl}/com/buscarPersona`, data);
   }
 
+  recepcionarComunicado(data: any) {
+    return this.http.post(`${baseUrl}/com/recepcionarComunicado`, data);
+  }
+
   /**
    * FORMATEAR PARAMETROS EN FORMULARIO
    */

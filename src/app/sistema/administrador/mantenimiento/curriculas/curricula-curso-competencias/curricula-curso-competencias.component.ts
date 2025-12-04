@@ -95,7 +95,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       iCompCursoId: [''],
       iNivelId: [0],
       iNivelTipoId: [0, Validators.required],
-      iCursoId: ['', Validators.required],
+      iCursoId: [''],
       iCompetenciaId: ['', Validators.required],
       iEstado: [1],
     });
@@ -167,7 +167,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
           iNivelTipoId: item.iNivelTipoId,
           iCursoId: this.iCursoId,
           iCompetenciaId: item.iCompetenciaId,
-          iEstado: Number(item.iEstado) || 0,
+          iEstado: Number(item.iEstado) ?? 0,
         });
         this.bUpdate = true;
         break;
@@ -426,13 +426,13 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar competencias',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_competencia',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar competencias',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_competencia',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
 
   actionsContainer = [
@@ -441,7 +441,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       text: 'Agregar competencia',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 }

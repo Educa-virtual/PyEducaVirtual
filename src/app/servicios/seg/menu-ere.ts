@@ -56,7 +56,7 @@ export const administradorDremo = [
             routerLink: ['/administrador/mantenimiento-ie'],
           },
           {
-            label: 'Curricula',
+            label: 'Currícula',
             icon: 'pi pi-folder',
             routerLink: ['/administrador/mantenimiento-curricula'],
           },

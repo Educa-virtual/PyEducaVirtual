@@ -1,6 +1,7 @@
 ::ng-deep .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
   width: 100% !important;
 }
+
 .tag {
   position: absolute;
   top: -15px;
@@ -12,4 +13,24 @@
   color: white;
   text-align: left;
   width: fit-content;
+  background-color: #0b0533;
+}
+
+.tag2 {
+  // position: absolute;
+  //top: -15px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  // z-index: 10;
+  background-color: #399760;
+  color: white;
+  text-align: center;
+  width: fit-content;
+}
+
+.pie-90 canvas {
+  width: 80% !important;
+  height: 80% !important;
 }

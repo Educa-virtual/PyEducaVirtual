@@ -71,6 +71,7 @@ export class ResultadosEreComponent implements OnInit {
       },
       {
         label: 'Progreso',
+        active: true,
       },
     ];
     this.obtenerEvaluacionesEstudiantePorAnio();

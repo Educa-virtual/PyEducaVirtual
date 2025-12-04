@@ -10,11 +10,19 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { finalize } from 'rxjs';
+import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import { GeneralService } from '@/app/servicios/general.service';
 
 @Component({
   selector: 'app-form-evaluacion',
   standalone: true,
-  imports: [PrimengModule, NgIf, TypesFilesUploadPrimengComponent, ModalPrimengComponent],
+  imports: [
+    PrimengModule,
+    NgIf,
+    TypesFilesUploadPrimengComponent,
+    TablePrimengComponent,
+    ModalPrimengComponent,
+  ],
   templateUrl: './form-evaluacion.component.html',
   styleUrl: './form-evaluacion.component.scss',
 })
@@ -29,6 +37,7 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _EvaluacionesService = inject(EvaluacionesService);
   private _ConstantesService = inject(ConstantesService);
+  public query = inject(GeneralService);
 
   @Output() accionCloseForm = new EventEmitter();
   @Output() accionRefresh = new EventEmitter<void>();
@@ -51,6 +60,9 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
     repository: false,
     image: false,
   };
+
+  competencias = []; // agregado
+  selectedItems = []; // agregado
 
   formEvaluacion = this._FormBuilder.group({
     iEvaluacionId: [],
@@ -80,6 +92,7 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
 
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
+    bCompetencia: [false],
   });
 
   ngOnChanges(changes) {
@@ -90,6 +103,7 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
 
     if (changes.semanaEvaluacion?.currentValue) {
       this.semanaEvaluacion = changes.semanaEvaluacion.currentValue;
+      this.buscarCompetencias(this.semanaEvaluacion.idDocCursoId);
     }
     if (changes.iEvaluacionId?.currentValue) {
       this.iEvaluacionId = changes.iEvaluacionId.currentValue;
@@ -115,6 +129,15 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
             dtEvaluacionInicio: new Date(data.dtEvaluacionInicio),
             dtEvaluacionFin: new Date(data.dtEvaluacionFin),
           });
+
+          //se agrego validacion de competencias si ya existen
+          const idsCompetencias = data.jCompetencias
+            ? JSON.parse(data.jCompetencias).map((x: any) => Number(x))
+            : [];
+
+          this.selectedItems = this.competencias.filter(x =>
+            idsCompetencias.includes(Number(x.iCompetenciaId))
+          );
         }
       },
       error: error => {
@@ -220,6 +243,8 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
       this.isLoading = false;
       return;
     }
+    const ids = this.selectedItems.map(x => Number(x.iCompetenciaId));
+
     const data = {
       ...this.formEvaluacion.value,
       dtEvaluacionInicio: this.formEvaluacion.value.dtEvaluacionInicio
@@ -228,6 +253,8 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
       dtEvaluacionFin: this.formEvaluacion.value.dtEvaluacionFin
         ? this.pipe.transform(this.formEvaluacion.value.dtEvaluacionFin, 'dd/MM/yyyy HH:mm:ss')
         : null,
+
+      jCompetencias: JSON.stringify(ids),
     };
 
     if (this.iEvaluacionId) {
@@ -299,4 +326,58 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
     fecha.setMilliseconds(0);
     return fecha;
   }
+
+  setSelectedItems(event) {
+    this.selectedItems = event;
+  }
+  buscarCompetencias(idDocCursoId: number) {
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          idDocCursoId: idDocCursoId,
+        }),
+        _opcion: 'competenciaXidDocCursoId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.competencias = data.data;
+          this.selectedItems = data.data;
+        },
+        error: error => {
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+      });
+  }
+
+  columns: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'item',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '90%',
+      field: 'cCompetenciaNombre',
+      header: 'Competencia',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'checkbox',
+      width: '5%',
+      field: 'checked',
+      header: '',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
 }

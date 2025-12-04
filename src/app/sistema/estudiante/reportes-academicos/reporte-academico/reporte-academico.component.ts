@@ -60,6 +60,7 @@ export class ReporteAcademicoComponent implements OnInit {
       },
       {
         label: 'Académico',
+        active: true,
       },
     ];
   }

@@ -8,3 +8,112 @@
   cursor: not-allowed;
   color: #333333;
 }
+
+/* ======== BREADCRUMB ======== */
+:host ::ng-deep .p-breadcrumb {
+  background: transparent !important;
+  border: none !important;
+  padding-left: 0 !important;
+  margin-bottom: 1rem;
+}
+
+:host ::ng-deep .p-breadcrumb .p-breadcrumb-list li a {
+  color: #0d6efd !important;
+  font-weight: 500;
+}
+
+/* ======== PANEL ======== */
+:host ::ng-deep .container-page {
+  padding: 1.5rem !important;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e6e6e6;
+}
+
+.encabezado h3 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #0d6efd;
+}
+
+/* ======== INPUT GROUP ======== */
+:host ::ng-deep .p-inputgroup {
+  width: 100%;
+}
+
+.mi-addon-primary {
+  background-color: #0d6efd !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+
+.input-disabled {
+  background: #f5f6f8 !important;
+  border: 1px solid #d1d5db !important;
+  color: #6b7280 !important;
+}
+
+/* ======== TABLA ======== */
+:host ::ng-deep .p-datatable {
+  font-size: 0.9rem;
+}
+
+:host ::ng-deep .p-datatable thead th {
+  background-color: #f0f4ff !important;
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  padding: 10px !important;
+}
+
+:host ::ng-deep .p-datatable tbody td {
+  padding: 10px;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .p-datatable tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+:host ::ng-deep .p-datatable tbody tr:hover {
+  background: #eef4ff;
+}
+
+:host ::ng-deep .p-datatable-sm .p-datatable-tbody > tr > td {
+  padding: 8px;
+}
+
+/* Centrado y mejor estética del contenido de clases */
+:host ::ng-deep td div b {
+  color: #374151;
+}
+
+:host ::ng-deep td div small {
+  color: #6b7280;
+}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width: 768px) {
+  :host ::ng-deep .container-page {
+    padding: 1rem !important;
+  }
+
+  :host ::ng-deep .p-datatable thead th {
+    font-size: 0.75rem;
+  }
+
+  :host ::ng-deep .p-datatable tbody td {
+    font-size: 0.8rem;
+  }
+}
+
+/* Celdas que sí tienen una clase (curso) */
+.celda-con-clase:hover {
+  background-color: #fff7a3 !important;
+  /* amarillo suave */
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}

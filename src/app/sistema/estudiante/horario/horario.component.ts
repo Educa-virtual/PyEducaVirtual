@@ -5,11 +5,12 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Dia } from './interfaces/dia.interface';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 
 @Component({
   selector: 'app-horario',
   standalone: true,
-  imports: [PrimengModule],
+  imports: [PrimengModule, ContainerPageComponent],
   templateUrl: './horario.component.html',
   styleUrl: './horario.component.scss',
 })
@@ -41,11 +42,9 @@ export class HorarioComponent implements OnInit {
       icon: 'pi pi-home',
       routerLink: '/',
     };
-    this.breadCrumbItems = [
-      {
-        label: 'Horario',
-      },
-    ];
+
+    this.breadCrumbItems = [{ label: 'Módulo Estudiante' }, { label: 'Horario', active: true }];
+
     this.obtenerHorarios();
   }
 

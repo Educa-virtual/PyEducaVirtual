@@ -16,45 +16,38 @@
           [searchPlaceholder]="'Buscar por competencia...'"
         />
       } @else {
-        <app-no-data
-          [showIcon]="'NO-DATA'"
-          mensaje="No se encontraron áreas curriculares asignadas"
-        />
+        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
       }
     </div>
   </div>
 </app-container-page>
 <p-dialog
-  #dialog
+  header="{{ titulo }}"
   [(visible)]="visible_competencia"
   [modal]="true"
   [maximizable]="true"
+  [resizable]="false"
   appendTo="body"
   (onHide)="(false)"
   [style]="{ width: '75rem' }"
 >
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <span class="font-bold white-space-nowrap">
-        {{ titulo }}
-      </span>
-    </div>
-  </ng-template>
+  <!-- CONTENIDO DEL DIALOG -->
   <ng-template pTemplate="content">
     <p-tabView>
       <p-tabPanel header="Información de competencias">
         <app-container-page title="Competencias" [actions]="[]">
           <form [formGroup]="formCompetencia" class="flex flex-column gap-3 w-full">
             <div class="grid">
-              <div class="col-field col-12 md:col-2">
-                <span class="p-float-label">
+              <p></p>
+              <div class="field col-12 md:col-2">
+                <span class="p-float-label w-full">
                   <p-inputNumber
                     inputId="cCompetenciaNro"
+                    [min]="1"
                     formControlName="cCompetenciaNro"
                     inputStyleClass="w-full"
                     [showButtons]="true"
-                  />
-
+                  ></p-inputNumber>
                   <label for="cCompetenciaNro">N°</label>
                 </span>
               </div>
@@ -81,7 +74,7 @@
 
             <div class="grid">
               <div class="field col-12 md:col-10">
-                <span class="p-float-label">
+                <span class="p-float-label w-full">
                   <textarea
                     pInputTextarea
                     id="cCompetenciaDescripcion"
@@ -125,6 +118,7 @@
               </div>
             </div>
           </form>
+          <div class="tag2">Los parámetros en (*) son obligatorios</div>
         </app-container-page>
       </p-tabPanel>
 

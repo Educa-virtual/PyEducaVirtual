@@ -11,11 +11,17 @@ import { ValidacionFormulariosService } from '@/app/servicios/validacion-formula
 import { TareasService } from '@/app/servicios/aula/tareas.service';
 import { DatePipe } from '@angular/common';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
+import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 // Selector que se utiliza para referenciar este componente en la plantilla de otros componentes.
 @Component({
   selector: 'app-tarea-form',
   standalone: true,
-  imports: [PrimengModule, TypesFilesUploadPrimengComponent, ModalPrimengComponent],
+  imports: [
+    PrimengModule,
+    TypesFilesUploadPrimengComponent,
+    ModalPrimengComponent,
+    TablePrimengComponent,
+  ],
   templateUrl: './tarea-form.component.html',
   styleUrl: './tarea-form.component.scss',
 })
@@ -34,6 +40,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
   private _GeneralService = inject(GeneralService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _TareasService = inject(TareasService);
+  public query = inject(GeneralService);
 
   pipe = new DatePipe('es-ES');
   date = this.ajustarAHorarioDeMediaHora(new Date());
@@ -45,6 +52,9 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
     repository: false,
     image: false,
   };
+
+  competencias = []; // agregado
+  selectedItems = []; // agregado
 
   semana: Message[] = [];
   filesUrl = [];
@@ -64,6 +74,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
           detail: this.semanaTarea?.cContenidoSemTitulo || '-',
         },
       ];
+      this.buscarCompetencias(this.semanaTarea.idDocCursoId);
     }
     if (changes.iTareaId.currentValue) {
       this.iTareaId = changes.iTareaId.currentValue;
@@ -92,6 +103,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
 
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
+    bCompetencia: [false],
   });
 
   // Método para obtener una tarea específica por su ID (iTareaId)
@@ -122,6 +134,15 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
           bTareaEsGrupal: data.bTareaEsGrupal,
         });
 
+        //se agrego validacion de competencias si ya existen
+        const idsCompetencias = data.jCompetencias
+          ? JSON.parse(data.jCompetencias).map((x: any) => Number(x))
+          : [];
+
+        this.selectedItems = this.competencias.filter(x =>
+          idsCompetencias.includes(Number(x.iCompetenciaId))
+        );
+
         this.filesUrl = data.cTareaArchivoAdjunto ? JSON.parse(data.cTareaArchivoAdjunto) : [];
       },
     });
@@ -137,6 +158,10 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
     fecha.setSeconds(0); // Opcional: Resetear los segundos a 0
     fecha.setMilliseconds(0); // Opcional: Resetear los milisegundos a 0
     return fecha;
+  }
+
+  setSelectedItems(event) {
+    this.selectedItems = event;
   }
 
   accionBtnItem(elemento): void {
@@ -223,6 +248,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       this.isLoading = false;
       return;
     }
+    const ids = this.selectedItems.map(x => Number(x.iCompetenciaId));
 
     const data = {
       ...this.formTareas.value,
@@ -233,6 +259,8 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       dtTareaFin: this.formTareas.value.dtTareaFin
         ? this.pipe.transform(this.formTareas.value.dtTareaFin, 'dd/MM/yyyy HH:mm:ss')
         : null,
+
+      jCompetencias: JSON.stringify(ids),
     };
 
     if (this.iTareaId) {
@@ -289,4 +317,54 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
       },
     });
   }
+  buscarCompetencias(idDocCursoId: number) {
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          idDocCursoId: idDocCursoId,
+        }),
+        _opcion: 'competenciaXidDocCursoId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.competencias = data.data;
+          this.selectedItems = data.data;
+        },
+        error: error => {
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+      });
+  }
+
+  columns: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'item',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '90%',
+      field: 'cCompetenciaNombre',
+      header: 'Competencia',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'checkbox',
+      width: '5%',
+      field: 'checked',
+      header: '',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
 }

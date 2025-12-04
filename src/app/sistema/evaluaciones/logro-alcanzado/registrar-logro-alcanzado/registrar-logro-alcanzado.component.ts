@@ -15,11 +15,13 @@ import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calen
 import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/services/datos-matricula.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
+import { AulaVirtualComponent } from '../../aula-virtual/aula-virtual.component';
+import { GeneralService } from '@/app/servicios/general.service';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
   standalone: true,
-  imports: [PrimengModule, FormsModule],
+  imports: [PrimengModule, FormsModule, AulaVirtualComponent],
   templateUrl: './registrar-logro-alcanzado.component.html',
   styleUrl: './registrar-logro-alcanzado.component.scss',
   providers: [MessageService],
@@ -38,6 +40,12 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   //periodo array
 
   cargarPeriodo: boolean = true;
+  public bHabilitado: boolean = false;
+
+  detalleActividades: any[] = []; // agregados para aula virtual
+  contenidoSemanas: any[] = []; // agregados para aula virtual
+  tituloCompetencia: string = '';
+
   area_nombre: string = ''; // Variable para almacenar el área del curso seleccionado
   conversion: any[] = [
     // tabla de conversion
@@ -66,7 +74,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   ];
 
   mostrarBotonFinalizar: boolean = false;
-
+  iDetMatrId: number = 0; // Variable para almacenar el periodo seleccionado
   //variables
   nCalifIdPeriodo1: number = 0; // Variable para almacenar el periodo seleccionado
   nCalifIdPeriodo2: number = 0; // Variable para almacenar el periodo seleccionado
@@ -87,6 +95,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   cDetMatrConclusionDescPromedio: string = ''; // Variable para almacenar el periodo seleccionado
 
   private _confirmService = inject(ConfirmationModalService);
+  public query = inject(GeneralService);
   constructor(
     private messageService: MessageService,
     private calendarioPeriodosService: CalendarioPeriodosEvalacionesService,
@@ -99,26 +108,43 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // if (changes['selectedItem']) {
     //   if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
-
-    //     this.messageService.add({
-    //       severity: 'warn',
-    //       summary: 'Mensaje del sistema',
-    //       detail: 'Se detecto cambios en información del estudiante',
-    //       life: 3000,
-    //     });
+    //     this.limpiarVariables();
     //   }
     //   // this.filtrarArea();
     // }
     if (changes['competencias']) {
       if (Array.isArray(this.competencias) && this.competencias.length > 0) {
         this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
+        this.iDetMatrId = this.competencias[0].iDetMatrId ?? 0;
+      }
+    }
+    if (changes['selectedItem']) {
+      if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
+        this.limpiarVariables();
+      }
+      // this.filtrarArea();
+    }
+    // if (changes['periodos']) {
+    //   if (Array.isArray(this.periodos) && this.periodos.length > 0) {
 
-        // this.messageService.add({
-        //   severity: 'warn',
-        //   summary: 'Mensaje del sistema',
-        //   detail: 'Se detecto cambios en información del competencias',
-        //   life: 3000,
-        // });
+    //     console.log(this.periodos, 'periodos cambiados');
+    //   }
+    //   // this.filtrarArea();
+    // }
+    if (changes['iPeriodoId']) {
+      if (Number(this.iPeriodoId) > 0) {
+        const seleccionadoPeriodo = this.periodos.find(
+          p => Number(p.iNumeroPeriodo) === Number(this.iPeriodoId)
+        );
+
+        if (!seleccionadoPeriodo) {
+          console.warn('No se encontró información del período');
+          return;
+        }
+
+        this.bHabilitado = seleccionadoPeriodo.bHabilitado === '1';
+
+        this.limpiarVariables();
       }
     }
   }
@@ -153,28 +179,28 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
   }
 
   // BUSCADOR DE PAOLO EN FRONT
-  buscarLogrosDelEstudiante(iMatriculaId: number) {
-    this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({
-      next: (response: any) => {
-        if (response.validated && response.data) {
-          console.log('Logros encontrados:', response.data);
-          // Mapea la respuesta a tus arrays de competencias
-          // Ejemplo: this.competenciasMatematica = response.data.matematica;
-        } else {
-          console.warn('No se encontraron logros para este estudiante.');
-        }
-      },
-      error: error => {
-        console.error('Error al buscar logros:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo obtener la información de logros.',
-          life: 3000,
-        });
-      },
-    });
-  }
+  // buscarLogrosDelEstudiante(iMatriculaId: number) {
+  //   this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({
+  //     next: (response: any) => {
+  //       if (response.validated && response.data) {
+  //         console.log('Logros encontrados:', response.data);
+  //         // Mapea la respuesta a tus arrays de competencias
+  //         // Ejemplo: this.competenciasMatematica = response.data.matematica;
+  //       } else {
+  //         console.warn('No se encontraron logros para este estudiante.');
+  //       }
+  //     },
+  //     error: error => {
+  //       console.error('Error al buscar logros:', error);
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: 'No se pudo obtener la información de logros.',
+  //         life: 3000,
+  //       });
+  //     },
+  //   });
+  // }
 
   insertarResultadoXcompetencias(json: any, iCredId: number, option: string) {
     this.ApiEvaluacionesService.insertarResultadoXcompetencias({
@@ -351,152 +377,72 @@ export class RegistrarLogroAlcanzadoComponent implements OnChanges {
       },
     });
   }
-}
 
-/*
-  convertirLogro(campo: string, periodo: string): void {
-    const mensaje = 'Este registro se guardará automáticamente: ' + campo + ': ' + this[campo];
+  buscarResultados(competencia: any) {
+    this.obteneSemanasxiPeriodoEvalAperId(competencia);
 
-    this._confirmService.openConfiSave({
-      message: mensaje,
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        if (periodo === this.iPeriodoId) {
-          switch (campo) {
-            case 'nCalifIdPeriodo1':
-              this.getLogroPorValor(this.nCalifIdPeriodo1, periodo);
-              break;
-            case 'nCalifIdPeriodo2':
-              this.getLogroPorValor(this.nCalifIdPeriodo2, periodo);
-              break;
-            case 'nCalifIdPeriodo3':
-              this.getLogroPorValor(this.nCalifIdPeriodo3, periodo);
-              break;
-            case 'nCalifIdPeriodo4':
-              this.getLogroPorValor(this.nCalifIdPeriodo4, periodo);
-              break;
-            case 'nPromedio':
-              this.getLogroPorValor(this.nPromedio, '5');
-              break;
-            default:
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Por favor, complete todos los campos requeridos.',
-                life: 3000,
-              });
-              break;
-          }
-        } else {
+    this.tituloCompetencia = null;
+    this.tituloCompetencia = competencia.cCompetenciaNombre;
+
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          iDetMatrId: this.iDetMatrId,
+          iPeriodo: Number(this.iPeriodoId),
+          iCompetenciaId: Number(competencia.iCompetenciaId),
+        }),
+        _opcion: 'competenciaXiDetMatrId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.detalleActividades = [];
+          this.detalleActividades = data.data;
+        },
+        error: error => {
           this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Los periodos no coinciden.',
+            summary: 'Mensaje de sistema',
+            detail: error.error.message,
             life: 3000,
+            severity: 'error',
           });
-        }
-      },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail: 'Acción cancelada',
-        });
-      },
-    });
-  }
-*/
-/*  
-validarLogro(opcion: string) {
-    let camposRequeridos = [];
-    let json: any = {};
-    let rango: any = {};
-    const val = opcion === '5' ? '5' : this.iPeriodoId; // Valor para el promedio
-
-    switch (val) {
-      case '1':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc1, this.iCalifIdPeriodo1];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc1: this.cDetMatrConclusionDesc1,
-          iEscalaCalifIdPeriodo1: rango.iCalifId,
-          nDetMatrPeriodo1: this.nCalifIdPeriodo1,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '2':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc2, this.iCalifIdPeriodo2];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc2: this.cDetMatrConclusionDesc2,
-          iEscalaCalifIdPeriodo2: rango.iCalifId,
-          nDetMatrPeriodo2: this.nCalifIdPeriodo2,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '3':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc3, this.iCalifIdPeriodo3];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc3: this.cDetMatrConclusionDesc3,
-          iEscalaCalifIdPeriodo3: rango.iCalifId,
-          nDetMatrPeriodo3: this.nCalifIdPeriodo3,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '4':
-        rango = this.conversion.find(item => (item.logro = this.iCalifIdPeriodo1));
-        camposRequeridos = [this.cDetMatrConclusionDesc4, this.iCalifIdPeriodo4];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDesc4: this.cDetMatrConclusionDesc4,
-          iEscalaCalifIdPeriodo4: rango.iCalifId,
-          nDetMatrPeriodo4: this.nCalifIdPeriodo4,
-          opcion: Number(this.iPeriodoId),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      case '5':
-        rango = this.conversion.find(item => (item.logro = this.iPromedio));
-        camposRequeridos = [this.cDetMatrConclusionDescPromedio, this.iPromedio];
-        json = {
-          iDetMatrId: this.selectedItem[0].iDetMatrId,
-          cDetMatrConclusionDescPromedio: this.cDetMatrConclusionDescPromedio,
-          iEscalaCalifIdPromedio: rango.iCalifId,
-          nPromedio: this.nPromedio,
-          opcion: Number(opcion),
-        };
-        this.actualizarResultadoXperiodoDetMatricula(json);
-        break;
-      default:
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'El periodo seleccionado no es válido.',
-          life: 3000,
-        });
-        break;
-    }
-
-    const camposVacios = camposRequeridos.filter(campo => !campo);
-
-    if (camposVacios.length > 0) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Por favor, complete todos los campos requeridos.',
-        life: 3000,
+        },
+        // complete: () => {
+        //   this.obteneSemanasxiPeriodoEvalAperId()
+        // }
       });
-    } else {
-      console.log('Campos completos:', camposRequeridos, json);
-    }
   }
-*/
+
+  obteneSemanasxiPeriodoEvalAperId(competencia: any) {
+    this.query
+      .searchCalendario({
+        json: JSON.stringify({
+          iDetMatrId: this.iDetMatrId,
+          iPeriodo: Number(this.iPeriodoId),
+          iCompetenciaId: Number(competencia.iCompetenciaId),
+        }),
+        _opcion: 'obteneSemanasxiPeriodoEvalAperId',
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.contenidoSemanas = [];
+          this.contenidoSemanas = data.data;
+        },
+        error: error => {
+          this.messageService.add({
+            summary: 'Mensaje de sistema',
+            detail: 'Error al cargar secciones de IE.' + error.error.message,
+            life: 3000,
+            severity: 'error',
+          });
+        },
+      });
+  }
+
+  limpiarVariables() {
+    this.detalleActividades = []; // agregados para aula virtual
+    this.contenidoSemanas = []; // agregados para aula virtual
+    this.tituloCompetencia = '';
+  }
+
+  //this.iDetMatrId
+}

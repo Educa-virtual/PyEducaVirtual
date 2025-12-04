@@ -21,6 +21,29 @@
       />
     </div>
   </div>
+  <!-- Se agrego validación de los componmentes -->
+  <div class="grid">
+    <div class="col-10">
+      <p-inputGroupAddon>Mostrar competencias</p-inputGroupAddon>
+    </div>
+    <div class="col-2">
+      <p-inputSwitch formControlName="bCompetencia" />
+    </div>
+    <div class="col-12" *ngIf="formCuestionario.get('bCompetencia')?.value">
+      <app-table-primeng
+        [columnas]="columns"
+        [data]="competencias"
+        [scrollable]="true"
+        (selectedColumn)="setSelectedItems($event)"
+        (selectedRowDataChange)="setSelectedItems($event)"
+        [showPaginator]="false"
+        [(selectedRowData)]="selectedItems"
+        [showAdvancedFilter]="false"
+        [showCaption]="false"
+      >
+      </app-table-primeng>
+    </div>
+  </div>
   <div class="col-12">
     <div class="grid">
       <div class="col-12 md:col-6 gap-3">

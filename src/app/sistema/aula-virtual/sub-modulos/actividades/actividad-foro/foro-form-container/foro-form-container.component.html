@@ -1,4 +1,4 @@
-<form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
+<form [formGroup]="foroForm" class="mt-4" width="65rem">
   <div class="grid">
     <div class="col-12" [hidden]="!contenidoSemana">
       <p-messages [(value)]="semana" [enableService]="false" [closable]="false" />
@@ -39,6 +39,7 @@
         <p-editor
           id="descripcion"
           placeholder="Escribe una Descripción "
+          styleClass="w-full"
           formControlName="cForoDescripcion"
           [style]="{ height: 'auto', overflow: 'hidden' }"
         />
@@ -47,14 +48,15 @@
 
     <!-- Se agrego validación de los componmentes -->
 
-    <div class="col-10">
-      <p-inputGroupAddon>Mostrar competencias</p-inputGroupAddon>
+    <div class="col-12" *ngIf="competencias && competencias.length > 0">
+      <label for="descripcion" class="mt-1">Lista de competencias </label>
     </div>
-    <div class="col-2">
+    <!-- <div class="col-2">
       <p-inputSwitch formControlName="bCompetencia" />
-    </div>
+    </div> -->
 
-    <div class="col-12" *ngIf="foroForm.get('bCompetencia')?.value">
+    <div class="col-12" *ngIf="competencias && competencias.length > 0">
+      <!-- *ngIf="foroForm.get('bCompetencia')?.value" -->
       <app-table-primeng
         [columnas]="columns"
         [data]="competencias"

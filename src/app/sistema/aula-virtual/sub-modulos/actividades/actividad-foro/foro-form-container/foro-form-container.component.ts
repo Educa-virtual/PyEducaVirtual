@@ -73,7 +73,7 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
     iDocenteId: ['', Validators.required],
-    bCompetencia: [false],
+    //bCompetencia: [false],
   });
 
   action: string = 'GUARDAR';
@@ -379,9 +379,9 @@ export class ForoFormContainerComponent extends MostrarErrorComponent implements
     },
     {
       type: 'checkbox',
-      width: '5%',
+      width: '10%',
       field: 'checked',
-      header: ' ',
+      header: '',
       text_header: 'center',
       text: 'center',
     },

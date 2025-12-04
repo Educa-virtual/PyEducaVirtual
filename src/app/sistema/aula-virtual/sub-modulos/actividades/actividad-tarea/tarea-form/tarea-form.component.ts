@@ -103,7 +103,7 @@ export class TareaFormComponent extends MostrarErrorComponent implements OnChang
 
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
-    bCompetencia: [false],
+    // bCompetencia: [false],
   });
 
   // Método para obtener una tarea específica por su ID (iTareaId)

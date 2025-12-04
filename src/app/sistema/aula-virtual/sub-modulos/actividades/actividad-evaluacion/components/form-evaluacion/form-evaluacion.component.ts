@@ -92,7 +92,7 @@ export class FormEvaluacionComponent extends MostrarErrorComponent implements On
 
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
-    bCompetencia: [false],
+    //bCompetencia: [false],
   });
 
   ngOnChanges(changes) {

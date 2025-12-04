@@ -58,13 +58,14 @@
       </div>
       <!-- Se agrego validación de los componmentes -->
 
-      <div class="col-10">
-        <p-inputGroupAddon>Mostrar competencias</p-inputGroupAddon>
+      <div class="col-12" *ngIf="competencias && competencias.length > 0">
+        <label for="descripcion" class="mt-1">Lista de competencias </label>
       </div>
-      <div class="col-2">
+      <!-- <div class="col-2">
         <p-inputSwitch formControlName="bCompetencia" />
-      </div>
-      <div class="col-12" *ngIf="formEvaluacion.get('bCompetencia')?.value">
+      </div> -->
+      <div class="col-12" *ngIf="competencias && competencias.length > 0">
+        <!-- *ngIf="formEvaluacion.get('bCompetencia')?.value" -->
         <app-table-primeng
           [columnas]="columns"
           [data]="competencias"

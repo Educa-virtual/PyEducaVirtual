@@ -1,11 +1,6 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
-<p-panel styleClass="container-page">
-  <ng-template pTemplate="header" class="encabezado">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Mi horario</h3>
-    </div>
-  </ng-template>
 
+<app-container-page [title]="'Mi horario'" [actions]="[]">
   <div style="max-width: 500px">
     <p-inputGroup class="mb-3">
       <p-inputGroupAddon class="mi-addon-primary"> Matrícula </p-inputGroupAddon>
@@ -13,7 +8,12 @@
     </p-inputGroup>
   </div>
 
-  <p-table [value]="franjas" [responsiveLayout]="'scroll'" class="p-datatable-sm">
+  <p-table
+    [value]="franjas"
+    [responsiveLayout]="'scroll'"
+    class="p-datatable-sm"
+    styleClass="p-datatable-gridlines"
+  >
     <ng-template pTemplate="header">
       <tr>
         <th class="text-center">Bloque</th>
@@ -23,9 +23,13 @@
     </ng-template>
     <ng-template pTemplate="body" let-row>
       <tr>
-        <td class="text-center">{{ row.bloque }}</td>
-        <td class="text-center">{{ row.horario }}</td>
-        <td class="text-center" *ngFor="let d of dias">
+        <td class="text-center" width="5%">{{ row.bloque }}</td>
+        <td class="text-center" width="100px">{{ row.horario }}</td>
+        <td
+          class="text-center"
+          *ngFor="let d of dias"
+          [ngClass]="{ 'celda-con-clase': clase(d.id, row.bloque) }"
+        >
           <ng-container *ngIf="clase(d.id, row.bloque) as c">
             <div>
               <b>{{ c.cCursoNombre }}</b>
@@ -38,5 +42,5 @@
       </tr>
     </ng-template>
   </p-table>
-</p-panel>
+</app-container-page>
 <p-toast></p-toast>

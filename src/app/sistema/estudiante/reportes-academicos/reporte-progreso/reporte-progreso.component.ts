@@ -40,6 +40,7 @@ export class ReporteProgresoComponent implements OnInit {
       },
       {
         label: 'Progreso',
+        active: true,
       },
     ];
 

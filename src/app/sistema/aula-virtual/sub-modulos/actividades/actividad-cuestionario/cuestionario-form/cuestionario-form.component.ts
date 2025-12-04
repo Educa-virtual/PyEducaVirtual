@@ -14,15 +14,15 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Message } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize } from 'rxjs';
-import { GeneralService } from '@/app/servicios/general.service';
-import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+//import { GeneralService } from '@/app/servicios/general.service';
+//import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 
 @Component({
   selector: 'app-cuestionario-form',
   standalone: true,
   templateUrl: './cuestionario-form.component.html',
   styleUrls: ['./cuestionario-form.component.scss'],
-  imports: [PrimengModule, TypesFilesUploadPrimengComponent, TablePrimengComponent],
+  imports: [PrimengModule, TypesFilesUploadPrimengComponent], //, TablePrimengComponent
 })
 export class CuestionarioFormComponent extends MostrarErrorComponent implements OnInit {
   @Input() contenidoSemana;
@@ -32,7 +32,7 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
   private dialogConfig = inject(DynamicDialogConfig);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _CuestionariosService = inject(CuestionariosService);
-  public query = inject(GeneralService);
+  //public query = inject(GeneralService);
   // Crea una instancia de la clase DatePipe para formatear fechas en español
   pipe = new DatePipe('es-ES');
   date = this.ajustarAHorarioDeMediaHora(new Date());
@@ -52,8 +52,8 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
   opcion: string = 'GUARDAR';
   isLoading: boolean = false;
 
-  competencias = []; // agregado
-  selectedItems = []; // agregado
+  // competencias = []; // agregado
+  // selectedItems = []; // agregado
 
   public formCuestionario = this._formBuilder.group({
     cTitulo: ['', [Validators.required]],
@@ -73,14 +73,14 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
 
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
-    bCompetencia: [false],
+    //  bCompetencia: [false],
   });
 
   ngOnInit() {
     this.contenidoSemana = this.dialogConfig.data.contenidoSemana;
     this.action = this.dialogConfig.data.action;
     this.actividad = this.dialogConfig.data.actividad;
-    this.buscarCompetencias(this.dialogConfig.data.idDocCursoId);
+    //this.buscarCompetencias(this.dialogConfig.data.idDocCursoId);
 
     if (this.actividad?.ixActivadadId && this.action === 'ACTUALIZAR') {
       this.obtenerCuestionarioPorId(this.actividad.ixActivadadId);
@@ -120,13 +120,13 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
             data.cArchivoAdjunto = data.cArchivoAdjunto ? JSON.parse(data.cArchivoAdjunto) : [];
 
             //se agrego validacion de competencias si ya existen
-            const idsCompetencias = data.jCompetencias
-              ? JSON.parse(data.jCompetencias).map((x: any) => Number(x))
-              : [];
+            // const idsCompetencias = data.jCompetencias
+            //   ? JSON.parse(data.jCompetencias).map((x: any) => Number(x))
+            //   : [];
 
-            this.selectedItems = this.competencias.filter(x =>
-              idsCompetencias.includes(Number(x.iCompetenciaId))
-            );
+            // this.selectedItems = this.competencias.filter(x =>
+            //   idsCompetencias.includes(Number(x.iCompetenciaId))
+            // );
 
             this.filesUrl = data.cArchivoAdjunto;
             this.formCuestionario.patchValue({
@@ -142,9 +142,9 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
       });
   }
 
-  setSelectedItems(event) {
-    this.selectedItems = event;
-  }
+  // setSelectedItems(event) {
+  //   this.selectedItems = event;
+  // }
 
   enviarFormulario() {
     if (this.isLoading) return; // evitar doble clic
@@ -197,7 +197,7 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
       return;
     }
 
-    const ids = this.selectedItems.map(x => Number(x.iCompetenciaId));
+    // const ids = this.selectedItems.map(x => Number(x.iCompetenciaId));
 
     const data = {
       ...this.formCuestionario.value,
@@ -209,7 +209,7 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
         ? this.pipe.transform(this.formCuestionario.value.dtFin, 'dd/MM/yyyy HH:mm:ss')
         : null,
 
-      jCompetencias: JSON.stringify(ids),
+      // jCompetencias: JSON.stringify(ids),
     };
 
     if (this.actividad.ixActivadadId) {
@@ -321,54 +321,54 @@ export class CuestionarioFormComponent extends MostrarErrorComponent implements 
         break;
     }
   }
-  buscarCompetencias(idDocCursoId: number) {
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          idDocCursoId: idDocCursoId,
-        }),
-        _opcion: 'competenciaXidDocCursoId',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.competencias = data.data;
-          this.selectedItems = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            summary: 'Mensaje de sistema',
-            detail: 'Error al cargar secciones de IE.' + error.error.message,
-            life: 3000,
-            severity: 'error',
-          });
-        },
-      });
-  }
+  // buscarCompetencias(idDocCursoId: number) {
+  //   this.query
+  //     .searchCalendario({
+  //       json: JSON.stringify({
+  //         idDocCursoId: idDocCursoId,
+  //       }),
+  //       _opcion: 'competenciaXidDocCursoId',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.competencias = data.data;
+  //         this.selectedItems = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           summary: 'Mensaje de sistema',
+  //           detail: 'Error al cargar secciones de IE.' + error.error.message,
+  //           life: 3000,
+  //           severity: 'error',
+  //         });
+  //       },
+  //     });
+  // }
 
-  columns: IColumn[] = [
-    {
-      type: 'item',
-      width: '5%',
-      field: 'item',
-      header: 'Item',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '90%',
-      field: 'cCompetenciaNombre',
-      header: 'Competencia',
-      text_header: 'center',
-      text: 'left',
-    },
-    {
-      type: 'checkbox',
-      width: '5%',
-      field: 'checked',
-      header: '',
-      text_header: 'center',
-      text: 'center',
-    },
-  ];
+  // columns: IColumn[] = [
+  //   {
+  //     type: 'item',
+  //     width: '5%',
+  //     field: 'item',
+  //     header: 'Item',
+  //     text_header: 'center',
+  //     text: 'center',
+  //   },
+  //   {
+  //     type: 'text',
+  //     width: '90%',
+  //     field: 'cCompetenciaNombre',
+  //     header: 'Competencia',
+  //     text_header: 'center',
+  //     text: 'left',
+  //   },
+  //   {
+  //     type: 'checkbox',
+  //     width: '5%',
+  //     field: 'checked',
+  //     header: '',
+  //     text_header: 'center',
+  //     text: 'center',
+  //   },
+  // ];
 }

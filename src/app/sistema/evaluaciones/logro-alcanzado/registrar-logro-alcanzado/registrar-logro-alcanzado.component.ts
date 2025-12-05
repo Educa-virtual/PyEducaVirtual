@@ -17,11 +17,12 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
 import { AulaVirtualComponent } from '../../aula-virtual/aula-virtual.component';
 import { GeneralService } from '@/app/servicios/general.service';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
   standalone: true,
-  imports: [PrimengModule, FormsModule, AulaVirtualComponent],
+  imports: [PrimengModule, FormsModule, AulaVirtualComponent, NoDataComponent],
   templateUrl: './registrar-logro-alcanzado.component.html',
   styleUrl: './registrar-logro-alcanzado.component.scss',
   providers: [MessageService],

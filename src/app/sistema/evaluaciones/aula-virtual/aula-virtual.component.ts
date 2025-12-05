@@ -20,7 +20,7 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
   @Input() detalleActividades: any[] = [];
   @Input() competencia: string;
 
-  actividadSeleccionado: any;
+  actividadSeleccionado: any = TAREA;
   semanaSeleccionado: any = 0;
 
   evaluacion: any[] = [];
@@ -90,6 +90,7 @@ export class AulaVirtualComponent extends MostrarErrorComponent implements OnCha
     this.evaluacion = evaluaciones.filter(
       e => Number(e.iContenidoSemId) === Number(this.semanaSeleccionado)
     );
+    this.actividadSeleccionado = TAREA;
     this.obtenerActividadesxiActTipoId();
   }
 

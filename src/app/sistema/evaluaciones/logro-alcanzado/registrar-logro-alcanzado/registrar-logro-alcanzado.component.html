@@ -356,11 +356,20 @@
     </p-table>
   </div>
   <div class="col-12 md:col-5 aula-container" style="min-width: 320px">
-    <app-aula-virtual
-      [contenidoSemanas]="contenidoSemanas"
-      [detalleActividades]="detalleActividades"
-      [competencia]="tituloCompetencia"
-    />
+    <div *ngIf="contenidoSemanas?.length > 0; else noData">
+      <app-aula-virtual
+        [contenidoSemanas]="contenidoSemanas"
+        [detalleActividades]="detalleActividades"
+        [competencia]="tituloCompetencia"
+      />
+    </div>
+
+    <ng-template #noData>
+      <app-no-data
+        [showIcon]="'NO-DATA'"
+        [mensaje]="'No ha seleccionado la competencia para visualizar las actividades'"
+      ></app-no-data>
+    </ng-template>
   </div>
 </div>
 <p-toast></p-toast>

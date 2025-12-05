@@ -33,70 +33,76 @@
     </p-inputGroup>
   </div>
   <div class="col-12">
-    @if ((foro?.length ?? 0) > 0 || (evaluacion?.length ?? 0) > 0 || (tarea?.length ?? 0) > 0) {
-      <div class="col-12">
-        <!-- mt-2 -->
-        @for (actividad of obtenerActividadesxiActTipoId(); track $index; let i = $index) {
-          <div class="card relative actividad-card" [style]="obtenerStyleActividad()">
-            <!-- mb-5 -->
-            <div class="flex flex-wrap justify-between gap-0 m-0 w-full">
-              <div class="flex gap-2 font-normal w-full">
-                <div class="flex flex-column my-2 align-items-start flex-1 min-w-0">
-                  <span
-                    class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
-                    [title]="actividad?.cProgActTituloLeccion"
-                  >
-                    #{{ i + 1 }}.
-                    {{
-                      actividad?.cProgActTituloLeccion.length > 150
-                        ? (actividad?.cProgActTituloLeccion | slice: 0 : 150) + '...'
-                        : actividad?.cProgActTituloLeccion
-                    }}
-                  </span>
-                  <div
-                    class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
-                  >
-                    <div class="flex items-center gap-1 m-1">
-                      <span>Desde:</span>
-                      <i class="pi pi-calendar text-primary ml-1"></i>
-                      <span>{{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }}</span>
-                      <i class="pi pi-clock text-primary ml-2"></i>
-                      <span>{{ actividad['dtProgActInicio'] | date: 'h:mm a' }}</span>
+    <div class="scroll-content">
+      @if ((foro?.length ?? 0) > 0 || (evaluacion?.length ?? 0) > 0 || (tarea?.length ?? 0) > 0) {
+        <div class="col-12">
+          <!-- mt-2 -->
+          @for (actividad of obtenerActividadesxiActTipoId(); track $index; let i = $index) {
+            <div class="card relative actividad-card" [style]="obtenerStyleActividad()">
+              <!-- mb-5 -->
+              <div class="flex flex-wrap justify-between gap-0 m-0 w-full">
+                <div class="flex gap-2 font-normal w-full">
+                  <div class="flex flex-column my-2 align-items-start flex-1 min-w-0">
+                    <span
+                      class="text-xl font-semibold text-gray-800 leading-snug break-words mb-2"
+                      [title]="actividad?.cProgActTituloLeccion"
+                    >
+                      #{{ i + 1 }}.
+                      {{
+                        actividad?.cProgActTituloLeccion.length > 150
+                          ? (actividad?.cProgActTituloLeccion | slice: 0 : 150) + '...'
+                          : actividad?.cProgActTituloLeccion
+                      }}
+                    </span>
+                    <div
+                      class="flex flex-wrap sm:flex-nowrap items-center gap-[4px] mt-2 text-sm text-gray-700"
+                    >
+                      <div class="flex items-center gap-1 m-1">
+                        <span>Desde:</span>
+                        <i class="pi pi-calendar text-primary ml-1"></i>
+                        <span>{{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }}</span>
+                        <i class="pi pi-clock text-primary ml-2"></i>
+                        <span>{{ actividad['dtProgActInicio'] | date: 'h:mm a' }}</span>
+                      </div>
+                      <div class="flex items-center gap-1 m-1">
+                        <span>hasta:</span>
+                        <i class="pi pi-calendar text-primary ml-1"></i>
+                        <span>{{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}</span>
+                        <i class="pi pi-clock text-primary ml-2"></i>
+                        <span>{{ actividad['dtProgActFin'] | date: 'h:mm a' }}</span>
+                      </div>
                     </div>
-                    <div class="flex items-center gap-1 m-1">
-                      <span>hasta:</span>
-                      <i class="pi pi-calendar text-primary ml-1"></i>
-                      <span>{{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}</span>
-                      <i class="pi pi-clock text-primary ml-2"></i>
-                      <span>{{ actividad['dtProgActFin'] | date: 'h:mm a' }}</span>
-                    </div>
-                  </div>
 
-                  @if (actividad.cRptaDocente) {
-                    <div class="mt-3 p-3 border-1 border-green-200 border-round bg-green-50 w-full">
-                      <p class="text-gray-700 font-medium mb-2">🏆<b>Conclusión Descriptiva:</b></p>
-                      <div class="mx-1" [innerHTML]="actividad.cRptaDocente || '-'"></div>
-                    </div>
-                  } @else {
-                    <div class="mt-3 p-3 border-1 border-green-200 border-round bg-green-50 w-full">
-                      <p class="text-gray-700 font-medium mb-2">
-                        🏆<b>Nota: {{ actividad.cRptaDocente || '-' }}</b>
-                      </p>
-                    </div>
-                  }
+                    @if (actividad.cRptaDocente) {
+                      <div
+                        class="mt-3 p-3 border-1 border-green-200 border-round bg-green-50 w-full"
+                      >
+                        <p class="text-gray-700 font-medium mb-2">
+                          🏆<b>Conclusión Descriptiva:</b>
+                        </p>
+                        <div class="mx-1" [innerHTML]="actividad.cRptaDocente || '-'"></div>
+                      </div>
+                    } @else {
+                      <div class="mt-3 p-3 border-1 border-red-200 border-round bg-red-50 w-full">
+                        <p class="text-gray-700 font-medium mb-2">
+                          🏆<b>Conclusión Descriptiva: - </b>
+                        </p>
+                      </div>
+                    }
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        }
-      </div>
-    } @else {
-      <div class="col-12">
-        <app-no-data
-          [showIcon]="'NO-DATA'"
-          [mensaje]="'No ha seleccionado para visualizar las actividades'"
-        ></app-no-data>
-      </div>
-    }
+          }
+        </div>
+      } @else {
+        <div class="col-12">
+          <app-no-data
+            [showIcon]="'NO-DATA'"
+            [mensaje]="'No ha seleccionado para visualizar las actividades'"
+          ></app-no-data>
+        </div>
+      }
+    </div>
   </div>
 </div>

@@ -162,7 +162,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     const gradoEstudiante = this.estudiante?.cGradoAbreviacion || 'cGradoAbreviacion';
     const secciconEstudiante = this.estudiante?.cSeccionNombre || 'cSeccionNombre';
     const areaCurricular = this.estudiante?.cCursoNombre || 'cCursoNombre';
-    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Seccion: ${secciconEstudiante} (Area: ${areaCurricular})`;
+    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Sección: ${secciconEstudiante} (Área: ${areaCurricular})`;
     //Generar competencias
     this.cargarCompetencias(curso);
   }

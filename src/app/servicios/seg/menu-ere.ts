@@ -324,6 +324,11 @@ export const especialistaUgel = [
         ],
       },
       {
+        label: 'Vacantes',
+        icon: 'pi pi-file-import',
+        routerLink: ['./especialista-ugel/ugel-vacantes'],
+      },
+      {
         label: 'Encuestas',
         icon: 'pi pi-list-check',
         routerLink: ['./encuestas/categorias'],

@@ -4,7 +4,7 @@
       <p-messages [(value)]="semana" [enableService]="false" [closable]="false" />
     </div>
     <!-- Mostrar el título -->
-    <div class="col-12 md:col-8">
+    <div class="col-12 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon>Título</p-inputGroupAddon>
         <input
@@ -16,7 +16,7 @@
       </p-inputGroup>
     </div>
     <!-- Mostrar las Categorias en un Select -->
-    <div class="col-12 md:col-4">
+    <div class="col-12 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon>Categoría</p-inputGroupAddon>
         <p-dropdown
@@ -61,6 +61,7 @@
         [columnas]="columns"
         [data]="competencias"
         [scrollable]="true"
+        [sortMode]="null"
         (selectedColumn)="setSelectedItems($event)"
         (selectedRowDataChange)="setSelectedItems($event)"
         [showPaginator]="false"

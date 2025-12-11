@@ -546,7 +546,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       this._dialogService
         .open(ForoFormContainerComponent, {
           ...MODAL_CONFIG,
-          width: '60%',
+          width: '50%',
           data: {
             contenidoSemana: this.datos,
             iActTipoId: actividad.iActTipoId,
@@ -569,7 +569,7 @@ export class TabContenidoComponent extends MostrarErrorComponent implements OnIn
       this._dialogService
         .open(ForoFormContainerComponent, {
           ...MODAL_CONFIG,
-          width: '60%',
+          width: '50%',
           header: 'Crear Foro',
           data: {
             contenidoSemana: this.datos,

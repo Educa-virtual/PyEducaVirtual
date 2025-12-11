@@ -94,7 +94,6 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
   obtenerPerfilesUsuario() {
     this.usuariosService.obtenerPerfilesUsuario(this.usuario.iCredId).subscribe({
       next: (respuesta: any) => {
-        console.log(respuesta.data);
         this.dataPerfilesUsuario = respuesta.data;
         this.usuario.iCantidadPerfiles = this.dataPerfilesUsuario.length;
       },

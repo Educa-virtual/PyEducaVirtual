@@ -96,13 +96,19 @@
                       <div class="text-center font-bold">
                         {{ item.cPerfilNombre }}
                       </div>
-                      <div class="perfiles-list-detail mt-3">
+                      <div class="perfil-description" *ngIf="item.nombre_ugel">
+                        {{ item.nombre_ugel }}
+                      </div>
+                      <div class="perfiles-list-detail mt-3" *ngIf="item.cIieeNombre">
                         <div class="perfil-description">
                           <!-- <span class="block p-0 font-semibold"> <img *ngIf="item?.cIieeLogo"
                                                     [src]="item?.cIieeLogo" height="50" /></span> -->
                           <span class="block p-0 font-semibold"
                             >IE:
                             {{ item.cIieeNombre }}
+                          </span>
+                          <span class="block p-0 font-semibold">
+                            Ugel : {{ item.cUgelNombre }}
                           </span>
                         </div>
                         <div class="perfil-description">

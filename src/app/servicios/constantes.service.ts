@@ -703,6 +703,7 @@ const administracion = [
             icon: 'pi pi-file-import',
             routerLink: ['/gestion-institucional/gestion-vacantes'],
           },
+
           // {
           //   label: 'Registro de deserciones',
           //   icon: 'pi pi-file-import',
@@ -795,11 +796,6 @@ const administracion = [
         icon: 'pi pi-download',
         routerLink: ['/gestion-institucional/descargar-plantillas'],
       },
-      {
-        label: 'Gestión de méritos',
-        icon: 'pi pi-download',
-        routerLink: ['/gestion-institucional/gestion-meritos'],
-      },
 
       // {
       //   label: 'Generar Reportes y Estadisticas',
@@ -835,6 +831,11 @@ const administracion = [
   {
     label: 'Otros Módulos',
     items: [
+      {
+        label: 'Gestión de méritos',
+        icon: 'pi pi-star',
+        routerLink: ['/gestion-institucional/gestion-meritos'],
+      },
       {
         label: 'Comunicados',
         icon: 'pi pi-fw pi-bell',

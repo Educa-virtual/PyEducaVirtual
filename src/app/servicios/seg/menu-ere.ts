@@ -39,11 +39,11 @@ export const administradorDremo = [
             icon: 'pi pi-calendar-clock',
             routerLink: ['/gestion-institucional/years-academicos'],
           },
-          {
-            label: 'Gestión de ciclos',
-            icon: 'pi pi-stopwatch',
-            routerLink: ['/gestion-institucional/ciclo'],
-          },
+          // {
+          //   label: 'Gestión de ciclos',
+          //   icon: 'pi pi-stopwatch',
+          //   routerLink: ['/gestion-institucional/ciclo'],
+          // },
         ],
       },
       {

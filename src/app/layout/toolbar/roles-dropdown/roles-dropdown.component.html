@@ -14,9 +14,10 @@
             {{ selectedPerfil.cNivelTipoNombre?.replace('Educación ', '') }} - UGEL:
             {{ selectedPerfil.cUgelNombre }}
           </span>
-        } @else {
-          <span class="block p-0 font-bold">{{ selectedPerfil.cPerfilNombre }}</span>
         }
+        <span class="block p-0 font-bold">
+          {{ selectedPerfil.cPerfilNombre }}
+        </span>
       </div>
     } @else {
       <i class="pi pi-graduation-cap" style="color: var(--surface-menu); font-size: 1.5rem"></i>
@@ -34,16 +35,14 @@
             </span>
           </div>
           <div *ngIf="selectedPerfil.nombre_ugel">
-            <span class="block p-0 font-bold">
-              {{ selectedPerfil.cPerfilNombre }}
-            </span>
             <span class="p-0 display-none">
               {{ selectedPerfil.nombre_ugel }}
             </span>
           </div>
-        } @else {
-          <span class="block p-0 font-bold">{{ selectedPerfil.cPerfilNombre }}</span>
         }
+        <span class="block p-0 font-bold">
+          {{ selectedPerfil.cPerfilNombre }}
+        </span>
       </div>
     }
   </div>

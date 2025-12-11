@@ -259,6 +259,11 @@ export const especialistaDremo = [
         ],
       },
       {
+        label: 'Indicadores',
+        icon: 'pi pi-chart-line',
+        routerLink: ['/gestion-institucional/reporte-indicadores'],
+      },
+      {
         label: 'Encuestas',
         icon: 'pi pi-list-check',
         routerLink: ['./encuestas/categorias'],
@@ -322,6 +327,11 @@ export const especialistaUgel = [
             routerLink: ['/bienestar/informe-estadistico'],
           },
         ],
+      },
+      {
+        label: 'Indicadores',
+        icon: 'pi pi-chart-line',
+        routerLink: ['/gestion-institucional/reporte-indicadores'],
       },
       {
         label: 'Encuestas',

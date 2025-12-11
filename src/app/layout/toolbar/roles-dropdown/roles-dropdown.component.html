@@ -23,14 +23,24 @@
 
       <div class="flex flex-column text-xs text-left">
         @if (!isAdminOrEspecialistaDremo()) {
-          <span class="block p-0 font-bold">IE: {{ selectedPerfil.cIieeNombre }}</span>
-          <span class="p-0 display-none"
-            >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} - Nivel:{{
-              selectedPerfil.cNivelTipoNombre
-            }}
-            - UGEL:
-            {{ selectedPerfil.cUgelNombre }}
-          </span>
+          <div *ngIf="selectedPerfil.cIieeCodigoModular">
+            <span class="block p-0 font-bold">IE: {{ selectedPerfil.cIieeNombre }}</span>
+            <span class="p-0 display-none"
+              >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} - Nivel:{{
+                selectedPerfil.cNivelTipoNombre
+              }}
+              - UGEL:
+              {{ selectedPerfil.cUgelNombre }}
+            </span>
+          </div>
+          <div *ngIf="selectedPerfil.nombre_ugel">
+            <span class="block p-0 font-bold">
+              {{ selectedPerfil.cPerfilNombre }}
+            </span>
+            <span class="p-0 display-none">
+              {{ selectedPerfil.nombre_ugel }}
+            </span>
+          </div>
         } @else {
           <span class="block p-0 font-bold">{{ selectedPerfil.cPerfilNombre }}</span>
         }

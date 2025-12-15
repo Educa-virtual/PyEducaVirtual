@@ -94,6 +94,7 @@ export class GestionFichasApoderadoComponent implements OnInit {
       .descargarFicha({
         iFichaDGId: item.iFichaDGId,
         iYAcadId: this.iYAcadId,
+        iCredEntPerfId: this.iCredEntPerfId,
       })
       .subscribe({
         next: response => {

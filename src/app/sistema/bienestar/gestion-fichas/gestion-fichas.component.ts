@@ -282,6 +282,7 @@ export class GestionFichasComponent implements OnInit {
       .descargarFicha({
         iFichaDGId: item.iFichaDGId,
         iYAcadId: this.iYAcadId,
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
       })
       .subscribe({
         next: response => {

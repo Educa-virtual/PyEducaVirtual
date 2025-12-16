@@ -170,11 +170,11 @@ export const administradorDremo = [
         label: 'Bienestar Social',
         icon: 'pi pi-fw pi-check-square',
         items: [
-          {
-            label: 'Recordatorios de cumpleaños',
-            icon: 'pi pi-fw pi-bell',
-            routerLink: ['/bienestar/recordario-fechas'],
-          },
+          // {
+          //   label: 'Recordatorios de cumpleaños',
+          //   icon: 'pi pi-fw pi-bell',
+          //   routerLink: ['/bienestar/recordario-fechas'],
+          // },
           {
             label: 'Seguimiento de bienestar',
             icon: 'pi pi-fw pi-eye',
@@ -241,11 +241,11 @@ export const especialistaDremo = [
             icon: 'pi pi-fw pi-list-check',
             routerLink: ['/bienestar/gestionar-encuestas'],
           },
-          {
-            label: 'Recordatorios de cumpleaños',
-            icon: 'pi pi-fw pi-bell',
-            routerLink: ['/bienestar/recordario-fechas'],
-          },
+          // {
+          //   label: 'Recordatorios de cumpleaños',
+          //   icon: 'pi pi-fw pi-bell',
+          //   routerLink: ['/bienestar/recordario-fechas'],
+          // },
           {
             label: 'Seguimiento de bienestar',
             icon: 'pi pi-fw pi-eye',
@@ -311,11 +311,11 @@ export const especialistaUgel = [
             icon: 'pi pi-fw pi-list-check',
             routerLink: ['/bienestar/gestionar-encuestas'],
           },
-          {
-            label: 'Recordatorios de cumpleaños',
-            icon: 'pi pi-fw pi-bell',
-            routerLink: ['/bienestar/recordario-fechas'],
-          },
+          // {
+          //   label: 'Recordatorios de cumpleaños',
+          //   icon: 'pi pi-fw pi-bell',
+          //   routerLink: ['/bienestar/recordario-fechas'],
+          // },
           {
             label: 'Seguimiento de bienestar',
             icon: 'pi pi-fw pi-eye',

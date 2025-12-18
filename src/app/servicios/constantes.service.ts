@@ -48,12 +48,12 @@ const docente = [
       //   routerLink: ['/docente/portafolio'],
       // },
       {
-        label: 'Mis Áreas Curriculares',
+        label: 'Mis áreas curriculares',
         icon: 'pi pi-fw pi-book',
         routerLink: ['/aula-virtual/areas-curriculares'],
       },
       {
-        label: 'Actividades De Gestión',
+        label: 'Actividades de gestión',
         icon: 'pi pi-fw pi-list-check',
         routerLink: ['/docente/actividades-no-lectivas'],
       },
@@ -65,12 +65,12 @@ const docente = [
         // routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
         items: [
           {
-            label: 'Logros Alcanzados',
+            label: 'Logros alcanzados',
             icon: 'pi pi-fw pi-share-alt',
             routerLink: ['/evaluaciones/registro-logro'],
           },
           {
-            label: 'Actividades Academicas',
+            label: 'Actividades académicas',
             icon: 'pi pi-fw pi-briefcase',
             routerLink: ['reporte-informe-actividades'],
           },
@@ -186,18 +186,14 @@ const docente = [
         icon: 'pi pi-user',
         routerLink: ['estudiantes-apoderados'],
       },
-      {
-        label: 'Enlaces de ayuda',
-        icon: 'pi pi-fw pi-share-alt',
-        routerLink: ['ayuda'],
-      },
+
       {
         label: 'Calendario',
         icon: 'pi pi-fw pi-calendar-clock',
         routerLink: ['/docente/calendario'],
       },
       {
-        label: 'Banco de Preguntas',
+        label: 'Banco de preguntas',
         icon: 'pi pi-fw pi-folder',
         routerLink: ['/aula-virtual/banco-preguntas'],
       },
@@ -212,28 +208,28 @@ const docente = [
       //     },
       //   ]
       // },
-      {
-        label: 'Informes y Estadisticas',
-        icon: 'pi pi-chart-line', // Agregué el icono que faltaba
-        items: [
-          {
-            label: 'Logro Alcanzado',
-            icon: 'pi pi-trophy',
-            routerLink: ['/ere/logro-alcanzado'],
-          },
-        ],
-      },
+      // {
+      //   label: 'Informes y estadísticas',
+      //   icon: 'pi pi-chart-line', // Agregué el icono que faltaba
+      //   items: [
+      //     {
+      //       label: 'Logro alcanzado',
+      //       icon: 'pi pi-trophy',
+      //       routerLink: ['/ere/logro-alcanzado'],
+      //     },
+      //   ],
+      // },
       // {
       //     label: 'Comunicados',
       //     icon: 'pi pi-fw pi-folder',
       //     routerLink: ['/comunicados/principal'],
       // },
       {
-        label: 'Bienestar Social',
+        label: 'Bienestar social',
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
-            label: 'Ficha Socioeconomica',
+            label: 'Ficha socioeconómica',
             icon: 'pi pi-fw pi-file-edit',
             routerLink: ['/bienestar/ficha-declaracion'],
           },
@@ -254,6 +250,11 @@ const docente = [
         icon: 'pi pi-list-check',
         routerLink: ['./encuestas/categorias'],
       },
+      {
+        label: 'Enlaces de ayuda',
+        icon: 'pi pi-fw pi-share-alt',
+        routerLink: ['ayuda'],
+      },
     ],
   },
 ];
@@ -263,7 +264,7 @@ const estudiante = [
     items: [
       inicio,
       {
-        label: 'Mis Áreas Curriculares',
+        label: 'Mis áreas curriculares',
         icon: 'pi pi-fw pi-book',
         routerLink: ['/aula-virtual/areas-curriculares'],
       },
@@ -298,11 +299,11 @@ const estudiante = [
         routerLink: ['/estudiante/merito-estudiante'],
       },
       {
-        label: 'Bienestar Social',
+        label: 'Bienestar social',
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
-            label: 'Ficha Socioeconomica',
+            label: 'Ficha socioeconómica',
             icon: 'pi pi-fw pi-file-edit',
             routerLink: ['/bienestar/ficha-declaracion'],
           },
@@ -350,7 +351,7 @@ const estudiante = [
         ],
       },
       {
-        label: 'Mesa de Partes GORE',
+        label: 'Mesa de partes GORE',
         icon: 'pi pi-external-link',
         routerLink: ['/estudiante/mesa-partes-gore'],
       },
@@ -375,7 +376,7 @@ const administrador = [
     items: [
       inicio,
       {
-        label: 'Auditoria',
+        label: 'Auditoría',
         icon: 'pi pi-fw pi-book',
         routerLink: ['/administrador/auditoria'],
       },
@@ -462,11 +463,11 @@ const jefe_programa = [
     items: [
       inicio,
       {
-        label: 'Administracion del Sistema',
+        label: 'Administracion del sistema',
         icon: 'pi pi-fw pi-cog',
         items: [
           {
-            label: 'Registro Calendario Escolar',
+            label: 'Registro calendario escolar',
             icon: 'pi pi-fw pi-cog',
             routerLink: ['/gestion-institucional/calendarioAcademico'],
           },
@@ -513,16 +514,16 @@ const registro_asistencia = [
     routerLink: ['/administrador/gestion-usuarios'],
   },
   {
-    label: 'Bienestar Social',
+    label: 'Bienestar social',
     icon: 'pi pi-fw pi-check-square',
     items: [
       {
-        label: 'Ficha Socioeconomica',
+        label: 'Ficha socioeconómica',
         icon: 'pi pi-fw pi-file-edit',
         routerLink: ['/bienestar/ficha-declaracion'],
       },
       {
-        label: 'Consultar Fichas Socioeconómicas',
+        label: 'Consultar fichas socioeconómicas',
         icon: 'pi pi-fw pi-user-edit',
         routerLink: ['/bienestar/gestion-fichas'],
       },
@@ -633,7 +634,7 @@ const administracion = [
           //   routerLink: ['/gestion-institucional/apertura'],
           // },
           {
-            label: 'Gestión de Ambientes y Grados',
+            label: 'Gestión de ambientes y grados',
             icon: 'pi pi-building-columns',
             routerLink: ['/gestion-institucional/configGradoSeccion'],
           },
@@ -741,7 +742,7 @@ const administracion = [
                                   },
                                 */
       {
-        label: 'Gestión de Matrículas',
+        label: 'Gestión de matrículas',
         icon: 'pi pi-folder',
         items: [
           {
@@ -870,16 +871,16 @@ const administracion = [
       },
 
       {
-        label: 'Bienestar Social',
+        label: 'Bienestar social',
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
-            label: 'Ficha Socioeconomica',
+            label: 'Ficha socioeconomica',
             icon: 'pi pi-fw pi-file-edit',
             routerLink: ['/bienestar/ficha-declaracion'],
           },
           {
-            label: 'Consultar Fichas Socioeconómicas',
+            label: 'Consultar fichas socioeconómicas',
             icon: 'pi pi-fw pi-user-edit',
             routerLink: ['/bienestar/gestion-fichas'],
           },
@@ -982,11 +983,11 @@ const apoderado = [
       //   routerLink: ['apoderado/registro-apoderado'],
       // },
       {
-        label: 'Bienestar Social',
+        label: 'Bienestar social',
         icon: 'pi pi-fw pi-check-square',
         items: [
           {
-            label: 'Gestionar Fichas Socioeconómicas',
+            label: 'Gestionar fichas socioeconómicas',
             icon: 'pi pi-fw pi-user-edit',
             routerLink: ['/bienestar/gestion-fichas-apoderado'],
           },
@@ -1057,12 +1058,12 @@ const auxiliar = [
         icon: 'pi pi-list-check',
         items: [
           {
-            label: 'Registro de Asistencia',
+            label: 'Registro de asistencia',
             icon: 'pi pi-list-check',
             routerLink: ['asistencia-auxiliar'],
           },
           {
-            label: 'Reporte de Asistencia',
+            label: 'Reporte de asistencia',
             icon: 'pi pi-chart-bar',
             routerLink: ['reporte-asistencia-auxiliar'],
           },
@@ -1079,16 +1080,16 @@ const auxiliar = [
 
 const asistente_social = [
   {
-    label: 'Bienestar Social',
+    label: 'Bienestar social',
     icon: 'pi pi-fw pi-check-square',
     items: [
       {
-        label: 'Ficha Socioeconomica',
+        label: 'Ficha socioeconomica',
         icon: 'pi pi-fw pi-file-edit',
         routerLink: ['/bienestar/ficha-declaracion'],
       },
       {
-        label: 'Consultar Fichas Socioeconómicas',
+        label: 'Consultar fichas socioeconómicas',
         icon: 'pi pi-fw pi-user-edit',
         routerLink: ['/bienestar/gestion-fichas'],
       },

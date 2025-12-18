@@ -151,7 +151,7 @@ export class ListaComunicadosComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error al enviar el comunicado',
-          detail: error.message,
+          detail: error.error.message,
         });
       },
     });

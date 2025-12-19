@@ -140,19 +140,20 @@ export class ListaComunicadosComponent implements OnInit {
     this.bBandeja = true;
 
     this.comunicadosService.recepcionarComunicado(datos).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Comunicado enviado',
-          detail: 'El comunicado ha sido enviado correctamente',
-        });
-      },
+      //next: () => {
+      // this.messageService.add({
+      //   severity: 'success',
+      //   summary: 'Comunicado enviado',
+      //   detail: 'El comunicado ha sido enviado correctamente',
+      // });
+      //},
       error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error al enviar el comunicado',
-          detail: error.error.message,
-        });
+        console.log(error.error.message);
+        // this.messageService.add({
+        //   severity: 'error',
+        //   summary: 'Error al enviar el comunicado',
+        //   detail: error.error.message,
+        // });
       },
     });
   }

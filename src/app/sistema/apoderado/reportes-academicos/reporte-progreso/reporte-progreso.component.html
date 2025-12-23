@@ -38,6 +38,28 @@
           />
         </p-inputGroup>
       </div>
+      <div class="field col-12 md:col-2">
+        <p-button
+          type="button"
+          label="Ver horario"
+          icon="pi pi-calendar"
+          class="w-full"
+          severity="warning"
+          (click)="obtenerHorario()"
+          [disabled]="!matriculaSeleccionada"
+        ></p-button>
+      </div>
+      <div class="field col-12 md:col-2">
+        <p-button
+          type="button"
+          label="Ver calendario"
+          icon="pi pi-calendar"
+          class="w-full"
+          severity="primary"
+          (click)="obtenerHorario()"
+          [disabled]="!matriculaSeleccionada"
+        ></p-button>
+      </div>
     </div>
     <small
       >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
@@ -55,4 +77,13 @@
     </div>
   </ng-template>
 </p-panel>
+<p-dialog
+  header="{{ captionHorario }}"
+  [(visible)]="visibleHorario"
+  [style]="{ width: '90%' }"
+  [modal]="true"
+>
+  <app-horario-estudiante [lista]="horarioEstudiante" />
+  >
+</p-dialog>
 <p-toast></p-toast>

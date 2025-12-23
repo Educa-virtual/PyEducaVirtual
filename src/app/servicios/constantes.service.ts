@@ -1035,6 +1035,11 @@ const apoderado = [
       //   routerLink: ['apoderado/notificacion-apoderado'],
       // },
       {
+        label: 'Mesa de partes GORE',
+        icon: 'pi pi-external-link',
+        routerLink: ['/estudiante/mesa-partes-gore'],
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],

@@ -39,7 +39,7 @@
         </p-inputGroup>
       </div>
       <div class="field col-12 md:col-2">
-        <p-button
+        <!-- <p-button
           type="button"
           label="Ver horario"
           icon="pi pi-calendar"
@@ -47,10 +47,10 @@
           severity="warning"
           (click)="mostrarHorario('Horario')"
           [disabled]="!matriculaSeleccionada"
-        ></p-button>
+        ></p-button> -->
       </div>
       <div class="field col-12 md:col-2">
-        <p-button
+        <!-- <p-button
           type="button"
           label="Ver calendario"
           icon="pi pi-calendar"
@@ -58,7 +58,7 @@
           severity="primary"
           (click)="mostrarHorario('Calendario')"
           [disabled]="!matriculaSeleccionada"
-        ></p-button>
+        ></p-button> -->
       </div>
     </div>
     <p-tabView>
@@ -89,7 +89,7 @@
   </ng-template>
 </p-panel>
 <p-dialog
-  header="{{ captionHorario }}"
+  header="{{ opcion }}"
   [(visible)]="visibleHorario"
   [style]="{ width: '90%' }"
   [modal]="true"

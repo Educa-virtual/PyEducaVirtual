@@ -24,6 +24,7 @@ export class CalendarioComponent implements OnChanges {
   actividades = [];
   events = []; // guarda los eventos para el calendario
   iYAcadId = '';
+  complete: boolean = false;
 
   @Input() lista; //listao de usuarios
 
@@ -96,6 +97,9 @@ export class CalendarioComponent implements OnChanges {
               summary: 'Error',
               detail: err.error.message,
             });
+          },
+          complete: () => {
+            this.complete = true;
           },
         });
     }

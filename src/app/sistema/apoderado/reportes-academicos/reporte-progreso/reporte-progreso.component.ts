@@ -135,12 +135,5 @@ export class ReporteProgresoComponent implements OnInit {
     this.opcion = null;
     this.opcion = opcion;
     this.visibleHorario = true;
-
-    console.log(
-      this.horarioEstudiante,
-      ' horio this.horarioEstudiante',
-      this.opcion,
-      'this.opcion'
-    );
   }
 }

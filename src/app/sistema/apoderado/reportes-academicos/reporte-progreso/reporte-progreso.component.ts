@@ -41,6 +41,7 @@ export class ReporteProgresoComponent implements OnInit {
   captionHorario: string = 'Horario de estudiante';
   horarioEstudiante: any = [];
   opcion: string = null;
+  activeTab = 0;
 
   constructor(
     private reporteProgresoService: ReporteProgresoService,
@@ -135,5 +136,15 @@ export class ReporteProgresoComponent implements OnInit {
     this.opcion = null;
     this.opcion = opcion;
     this.visibleHorario = true;
+  }
+  onTabChange(event: any) {
+    this.activeTab = event.index;
+
+    // Ejemplo: si el calendario está en el tab 2
+    if (this.activeTab === 2) {
+      setTimeout(() => {
+        this.obtenerHorario(this.matriculaSeleccionada); // updateSize / today / changeView
+      });
+    }
   }
 }

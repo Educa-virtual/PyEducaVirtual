@@ -61,33 +61,36 @@
         ></p-button> -->
       </div>
     </div>
-    <p-tabView>
-      <p-tabPanel header="Logro alcanzado">
-        <small
-          >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar,
-          seleccione otra opción</small
-        >
-
-        <div class="block mt-3">
-          @if (courses.length > 0) {
-            <app-tabla-reporte-progreso
-              [courses]="courses"
-              [iYAcadId]="matriculaSeleccionada?.iYAcadId"
-              [iMatrId]="matriculaSeleccionada"
-              [vista]="'apoderado'"
-            ></app-tabla-reporte-progreso>
-          }
-        </div>
-      </p-tabPanel>
-      <p-tabPanel header="Horario">
-        <app-horario-estudiante [lista]="horarioEstudiante" />
-      </p-tabPanel>
-      <p-tabPanel header="Calendario académico">
-        <app-calendario-estudiante [lista]="horarioEstudiante" />
-      </p-tabPanel>
-    </p-tabView>
   </ng-template>
 </p-panel>
+<p-tabView [(activeIndex)]="activeTab" (onChange)="onTabChange($event)">
+  <p-tabPanel header="Logro alcanzado" [headerStyleClass]="activeTab === 0 ? 'tab-activo' : ''">
+    <small
+      >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
+      otra opción</small
+    >
+
+    <div class="block mt-3">
+      @if (courses.length > 0) {
+        <app-tabla-reporte-progreso
+          [courses]="courses"
+          [iYAcadId]="matriculaSeleccionada?.iYAcadId"
+          [iMatrId]="matriculaSeleccionada"
+          [vista]="'apoderado'"
+        ></app-tabla-reporte-progreso>
+      }
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Horario" [headerStyleClass]="activeTab === 1 ? 'tab-activo' : ''">
+    <app-horario-estudiante [lista]="horarioEstudiante" />
+  </p-tabPanel>
+  <p-tabPanel
+    header="Calendario académico"
+    [headerStyleClass]="activeTab === 2 ? 'tab-activo' : ''"
+  >
+    <app-calendario-estudiante [lista]="horarioEstudiante" />
+  </p-tabPanel>
+</p-tabView>
 <p-dialog
   header="{{ opcion }}"
   [(visible)]="visibleHorario"

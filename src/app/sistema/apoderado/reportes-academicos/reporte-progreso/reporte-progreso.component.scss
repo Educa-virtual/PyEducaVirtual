@@ -8,3 +8,20 @@
   cursor: not-allowed;
   color: #333333;
 }
+
+:host ::ng-deep .tab-activo {
+  background-color: #2563eb;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Texto del tab activo */
+:host ::ng-deep .tab-activo .p-tabview-nav-link {
+  color: #ffffff;
+  font-weight: 600;
+  background-color: #3e67a8;
+}
+
+/* Hover */
+:host ::ng-deep .p-tabview-nav li:not(.tab-activo) .p-tabview-nav-link:hover {
+  background-color: #f1f5f9;
+}

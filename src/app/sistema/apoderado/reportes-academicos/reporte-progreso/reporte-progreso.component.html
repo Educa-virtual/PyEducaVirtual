@@ -45,7 +45,7 @@
           icon="pi pi-calendar"
           class="w-full"
           severity="warning"
-          (click)="obtenerHorario()"
+          (click)="mostrarHorario('Horario')"
           [disabled]="!matriculaSeleccionada"
         ></p-button>
       </div>
@@ -56,25 +56,36 @@
           icon="pi pi-calendar"
           class="w-full"
           severity="primary"
-          (click)="obtenerHorario()"
+          (click)="mostrarHorario('Calendario')"
           [disabled]="!matriculaSeleccionada"
         ></p-button>
       </div>
     </div>
-    <small
-      >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
-      otra opción</small
-    >
-    <div class="block mt-3">
-      @if (courses.length > 0) {
-        <app-tabla-reporte-progreso
-          [courses]="courses"
-          [iYAcadId]="matriculaSeleccionada?.iYAcadId"
-          [iMatrId]="matriculaSeleccionada"
-          [vista]="'apoderado'"
-        ></app-tabla-reporte-progreso>
-      }
-    </div>
+    <p-tabView>
+      <p-tabPanel header="Logro alcanzado">
+        <small
+          >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar,
+          seleccione otra opción</small
+        >
+
+        <div class="block mt-3">
+          @if (courses.length > 0) {
+            <app-tabla-reporte-progreso
+              [courses]="courses"
+              [iYAcadId]="matriculaSeleccionada?.iYAcadId"
+              [iMatrId]="matriculaSeleccionada"
+              [vista]="'apoderado'"
+            ></app-tabla-reporte-progreso>
+          }
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Horario">
+        <app-horario-estudiante [lista]="horarioEstudiante" />
+      </p-tabPanel>
+      <p-tabPanel header="Calendario académico">
+        <app-calendario-estudiante [lista]="horarioEstudiante" />
+      </p-tabPanel>
+    </p-tabView>
   </ng-template>
 </p-panel>
 <p-dialog
@@ -83,7 +94,14 @@
   [style]="{ width: '90%' }"
   [modal]="true"
 >
-  <app-horario-estudiante [lista]="horarioEstudiante" />
-  >
+  @switch (opcion) {
+    @case ('Horario') {
+      <app-horario-estudiante [lista]="horarioEstudiante" />
+    }
+    @case ('Calendario') {
+      <app-calendario-estudiante [lista]="horarioEstudiante" />
+    }
+  }
 </p-dialog>
+
 <p-toast></p-toast>

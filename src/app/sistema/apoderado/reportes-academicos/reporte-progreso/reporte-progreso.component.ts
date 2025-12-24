@@ -8,16 +8,20 @@ import { CalendarioAcademicoComponent } from '@/app/sistema/gestion-instituciona
 import { FullCalendarioComponent } from '@/app/shared/full-calendario/full-calendario.component';
 import { CalendarioService } from '@/app/sistema/estudiante/calendario/services/calendario.service';
 import { HorarioEstudianteComponent } from '@/app/sistema/estudiante/horario-estudiante/horario-estudiante.component';
+import { TabViewModule } from 'primeng/tabview';
+import { CalendarioComponent } from '@/app/sistema/estudiante/calendario-estudiante/calendario-estudiante.component';
 
 @Component({
   selector: 'app-reporte-progreso',
   standalone: true,
   imports: [
+    TabViewModule,
     PrimengModule,
     TablaReporteProgresoComponent,
     CalendarioAcademicoComponent,
     FullCalendarioComponent,
     HorarioEstudianteComponent,
+    CalendarioComponent,
   ],
   templateUrl: './reporte-progreso.component.html',
   styleUrl: './reporte-progreso.component.scss',
@@ -35,7 +39,8 @@ export class ReporteProgresoComponent implements OnInit {
 
   visibleHorario: boolean = false;
   captionHorario: string = 'Horario de estudiante';
-  horarioEstudiante: any = null;
+  horarioEstudiante: any = [];
+  opcion: string = null;
 
   constructor(
     private reporteProgresoService: ReporteProgresoService,
@@ -117,51 +122,25 @@ export class ReporteProgresoComponent implements OnInit {
         });
       },
     });
+    this.obtenerHorario(this.matriculaSeleccionada);
   }
-  obtenerHorario() {
-    this.horarioEstudiante = null;
+  obtenerHorario(id: any) {
+    this.horarioEstudiante = {};
 
-    this.horarioEstudiante = this.dataMatriculas.find(
-      item => item.iMatrId === this.matriculaSeleccionada
-    );
-    /*
-    if (matricula) {
-      this.horarioEstudiante = {
-        iYAcadId: matricula.iYAcadId,
-        iSedeId: matricula.iSedeId,
-        iNivelGradoId: matricula.iNivelGradoId,
-        iSeccionId: matricula.iSeccionId
-      };
-    }*/
+    this.horarioEstudiante = this.dataMatriculas.find(item => item.iMatrId === id);
+    console.log(this.horarioEstudiante, 'horarioEstudiante');
+  }
 
-    //  console.log(this.horarioEstudiante, 'this.horarioEstudiante')
+  mostrarHorario(opcion: string) {
+    this.opcion = null;
+    this.opcion = opcion;
     this.visibleHorario = true;
-  }
 
-  obtenerCalendarioAcademico() {
-    console.log(this.matriculaSeleccionada);
-    /*
-    this.calendarioService.obtenerCalendarioAcademico(this.iYAcadId).subscribe({
-      next: (response: any) => {
-        this.events = response.data.calendario;
-        this.curricula = response.data.cursos;
-        this.actividades = response.data.tiposActividad;
-        this.formatAnioAcademico(response.data.anioAcademico);
-        this.curricula.map(o => {
-          o.mostrar = true;
-        });
-        this.actividades.map(o => {
-          o.mostrar = true;
-        });
-      },
-      error: err => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error.message,
-        });
-      },
-    });
-  }*/
+    console.log(
+      this.horarioEstudiante,
+      ' horio this.horarioEstudiante',
+      this.opcion,
+      'this.opcion'
+    );
   }
 }

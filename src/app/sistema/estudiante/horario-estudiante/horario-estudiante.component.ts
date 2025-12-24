@@ -5,11 +5,12 @@ import { MessageService } from 'primeng/api';
 import { Dia } from './interfaces/dia.interface';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 import { GeneralService } from '@/app/servicios/general.service';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 
 @Component({
   selector: 'app-horario-estudiante',
   standalone: true,
-  imports: [PrimengModule, ContainerPageComponent],
+  imports: [PrimengModule, ContainerPageComponent, NoDataComponent],
   templateUrl: './horario-estudiante.component.html',
   styleUrl: './horario-estudiante.component.scss',
 })
@@ -38,16 +39,17 @@ export class HorarioEstudianteComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['lista']?.currentValue && !changes['lista'].firstChange) {
+    if (changes['lista']?.currentValue) {
       this.lista = changes['lista'].currentValue;
-      console.log(this.lista, 'this.lista horario estudiante');
 
-      const iYAcadId = Number(this.lista.iYAcadId);
-      const iSedeId = Number(this.lista.iSedeId);
-      const iNivelGradoId = Number(this.lista.iNivelGradoId);
-      const iSeccionId = Number(this.lista.iSeccionId);
+      if (this.lista) {
+        const iYAcadId = Number(this.lista.iYAcadId);
+        const iSedeId = Number(this.lista.iSedeId);
+        const iNivelGradoId = Number(this.lista.iNivelGradoId);
+        const iSeccionId = Number(this.lista.iSeccionId);
 
-      this.obtenerHorarios(iYAcadId, iSedeId, iNivelGradoId, iSeccionId);
+        this.obtenerHorarios(iYAcadId, iSedeId, iNivelGradoId, iSeccionId);
+      }
     }
   }
 

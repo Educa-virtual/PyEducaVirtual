@@ -366,6 +366,12 @@ const estudiante = [
         routerLink: ['/comunicados/lista-comunicados'],
         //routerLink: ['/comunicados/gestion-comunicados'],
       },
+      {
+        label: 'Exámenes ECE',
+        icon: 'pi pi-file',
+        url: 'http://umc.minedu.gob.pe/evaluaciones-censales/',
+        target: '_blank', // opcional
+      },
     ],
   },
 ];

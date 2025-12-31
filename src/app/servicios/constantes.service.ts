@@ -251,6 +251,12 @@ const docente = [
         routerLink: ['./encuestas/categorias'],
       },
       {
+        label: 'Exámenes ECE',
+        icon: 'pi pi-file',
+        url: 'http://umc.minedu.gob.pe/evaluaciones-censales/',
+        target: '_blank', // opcional
+      },
+      {
         label: 'Enlaces de ayuda',
         icon: 'pi pi-fw pi-share-alt',
         routerLink: ['ayuda'],

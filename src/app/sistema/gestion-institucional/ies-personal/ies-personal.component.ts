@@ -87,7 +87,7 @@ export class IesPersonalComponent implements OnInit {
         dtFin: [''],
         cResolucion: [''],
         iCodigoNexus: [],
-        cObservacion: [''],
+        cMotivo: [''],
       });
     } catch (error) {
       console.log(error, 'error de variables');
@@ -104,6 +104,13 @@ export class IesPersonalComponent implements OnInit {
       this.form.get('iPersIeId')?.setValue(item.iPersIeId);
       this.form.get('iPersCargoId')?.setValue(item.iPersCargoId);
       this.form.get('iHorasLabora')?.setValue(item.iHorasLabora);
+      this.form.get('iTipoIdentId')?.setValue(item.iTipoIdentId);
+      this.form.get('iTipoIdentId')?.disable();
+      this.form.get('cPersDocumento')?.setValue(item.cPersDocumento);
+      this.form.get('cPersDocumento')?.disable();
+      this.mensaje = item.nombres;
+      this.sever = 'success';
+      this.form.updateValueAndValidity();
 
       this.visible = true;
       console.log(item, 'btnTable');
@@ -111,6 +118,8 @@ export class IesPersonalComponent implements OnInit {
     if (accion === 'agregar') {
       this.c_accion = accion;
       this.form.get('iPersId')?.enable();
+      this.form.get('iTipoIdentId')?.enable();
+      this.form.get('cPersDocumento')?.enable();
       this.caption = 'Asignar cargo a personal';
       this.clearForm();
       this.visible = true;
@@ -279,6 +288,7 @@ export class IesPersonalComponent implements OnInit {
           iPersCargoId: this.form.value.iPersCargoId,
           iSedeId: this.form.value.iSedeId,
           iHorasLabora: this.form.value.iHorasLabora,
+          cMotivo: this.form.value.cMotivo,
         }),
       })
       .subscribe({
@@ -306,6 +316,7 @@ export class IesPersonalComponent implements OnInit {
         json: JSON.stringify({
           iPersCargoId: this.form.value.iPersCargoId,
           iHorasLabora: this.form.value.iHorasLabora,
+          cMotivo: this.form.value.cMotivo,
         }),
         campo: 'iPersIeId',
         condicion: this.form.get('iPersIeId')?.value,
@@ -382,9 +393,14 @@ export class IesPersonalComponent implements OnInit {
   clearForm() {
     // limpiar valores
     this.form.get('iPersId')?.setValue(0);
-    this.form.get('iPersIeId')?.setValue(0);
-    this.form.get('iPersCargoId')?.setValue(0);
+    this.form.get('iPersIeId')?.setValue(null);
+    this.form.get('iPersCargoId')?.setValue(null);
     this.form.get('iHorasLabora')?.setValue(0);
+    this.form.get('iTipoIdentId')?.setValue(null);
+    this.form.get('cPersDocumento')?.setValue('');
+    this.form.get('cMotivo')?.setValue('');
+    this.mensaje = '';
+    this.sever = '';
   }
 
   getDocente() {

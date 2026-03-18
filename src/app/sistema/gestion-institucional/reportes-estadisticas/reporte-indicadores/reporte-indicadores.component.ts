@@ -4,7 +4,11 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
+import {
+  ADMINISTRADOR_DREMO,
+  ESPECIALISTA_UGEL,
+  ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles';
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
@@ -52,7 +56,11 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   private _GestionUsuariosService = inject(GestionUsuariosService);
   private _DatosInformesService = inject(DatosInformesService);
 
-  isAdminDremo = signal<boolean>(this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO);
+  isAdminDremo = signal<boolean>(
+    this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO ||
+      this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO ||
+      this._ConstantesService.iPerfilId === ESPECIALISTA_UGEL
+  );
   nivelTipos = signal<any[]>([]);
   instituciones = signal<any[]>([]);
   institucionesxiNivelTipoId = signal<any[]>([]);

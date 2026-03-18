@@ -56,6 +56,30 @@
           }
         </div>
       </div>
+      <!-- Se agrego validación de los componmentes -->
+
+      <div class="col-12" *ngIf="competencias && competencias.length > 0">
+        <label for="descripcion" class="mt-1">Lista de competencias </label>
+      </div>
+      <!-- <div class="col-2">
+        <p-inputSwitch formControlName="bCompetencia" />
+      </div> -->
+      <div class="col-12" *ngIf="competencias && competencias.length > 0">
+        <!-- *ngIf="formEvaluacion.get('bCompetencia')?.value" -->
+        <app-table-primeng
+          [columnas]="columns"
+          [data]="competencias"
+          [scrollable]="true"
+          (selectedColumn)="setSelectedItems($event)"
+          (selectedRowDataChange)="setSelectedItems($event)"
+          [showPaginator]="false"
+          [(selectedRowData)]="selectedItems"
+          [showAdvancedFilter]="false"
+          [showCaption]="false"
+          [sortMode]="null"
+        >
+        </app-table-primeng>
+      </div>
       <!-- Selección de Fecha y Hora de Inicio -->
       <div class="col-12 md:col-6">
         <p-inputGroup>

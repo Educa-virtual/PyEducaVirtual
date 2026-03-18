@@ -4,11 +4,25 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TablaReporteProgresoComponent } from '@/app/sistema/estudiante/reportes-academicos/tabla-reporte-progreso/tabla-reporte-progreso.component';
 import { ReporteProgresoService } from './services/reporte-progreso.service';
+import { CalendarioAcademicoComponent } from '@/app/sistema/gestion-institucional/calendario-academico/calendario-academico.component';
+import { FullCalendarioComponent } from '@/app/shared/full-calendario/full-calendario.component';
+import { CalendarioService } from '@/app/sistema/estudiante/calendario/services/calendario.service';
+import { HorarioEstudianteComponent } from '@/app/sistema/estudiante/horario-estudiante/horario-estudiante.component';
+import { TabViewModule } from 'primeng/tabview';
+import { CalendarioComponent } from '@/app/sistema/estudiante/calendario-estudiante/calendario-estudiante.component';
 
 @Component({
   selector: 'app-reporte-progreso',
   standalone: true,
-  imports: [PrimengModule, TablaReporteProgresoComponent],
+  imports: [
+    TabViewModule,
+    PrimengModule,
+    TablaReporteProgresoComponent,
+    CalendarioAcademicoComponent,
+    FullCalendarioComponent,
+    HorarioEstudianteComponent,
+    CalendarioComponent,
+  ],
   templateUrl: './reporte-progreso.component.html',
   styleUrl: './reporte-progreso.component.scss',
 })
@@ -23,10 +37,17 @@ export class ReporteProgresoComponent implements OnInit {
   estudianteSeleccionado: any;
   matriculaSeleccionada: any;
 
+  visibleHorario: boolean = false;
+  captionHorario: string = 'Horario de estudiante';
+  horarioEstudiante: any = [];
+  opcion: string = null;
+  activeTab = 0;
+
   constructor(
     private reporteProgresoService: ReporteProgresoService,
     private messageService: MessageService,
-    private apoderadoService: ApoderadoService
+    private apoderadoService: ApoderadoService,
+    private calendarioService: CalendarioService
   ) {}
 
   ngOnInit() {
@@ -102,5 +123,28 @@ export class ReporteProgresoComponent implements OnInit {
         });
       },
     });
+    this.obtenerHorario(this.matriculaSeleccionada);
+  }
+  obtenerHorario(id: any) {
+    this.horarioEstudiante = {};
+
+    this.horarioEstudiante = this.dataMatriculas.find(item => item.iMatrId === id);
+    console.log(this.horarioEstudiante, 'horarioEstudiante');
+  }
+
+  mostrarHorario(opcion: string) {
+    this.opcion = null;
+    this.opcion = opcion;
+    this.visibleHorario = true;
+  }
+  onTabChange(event: any) {
+    this.activeTab = event.index;
+
+    // Ejemplo: si el calendario está en el tab 2
+    if (this.activeTab === 2) {
+      setTimeout(() => {
+        this.obtenerHorario(this.matriculaSeleccionada); // updateSize / today / changeView
+      });
+    }
   }
 }

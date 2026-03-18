@@ -30,6 +30,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ToastModule } from 'primeng/toast';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 
 @Component({
   selector: 'app-config-grado-seccion',
@@ -48,6 +49,7 @@ import { ToastModule } from 'primeng/toast';
     InputTextModule,
     CardModule,
     ToastModule,
+    NoDataComponent,
   ],
   providers: [GeneralService],
   templateUrl: './config-grado-seccion.component.html',
@@ -272,6 +274,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
       .searchAmbienteAcademico({
         json: JSON.stringify({
           iSedeId: this.iSedeId,
+          iYAcadId: this.dremoiYAcadId,
         }),
         _opcion: 'getConfiguracion',
       })

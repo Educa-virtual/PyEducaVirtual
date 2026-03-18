@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import {
   FormBuilder,
@@ -23,6 +23,7 @@ import { environment } from '@/environments/environment';
 import { MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 
 @Component({
   selector: 'app-gestion-vacantes',
@@ -59,7 +60,7 @@ export class GestionVacantesComponent implements OnInit {
   // Nivel_: string = 'SECUNDARIA'
   useFilteredData: boolean = false;
   filteredData: any[] = [];
-
+  private _confirmService = inject(ConfirmationModalService);
   constructor(
     private messageService: MessageService,
     private store: LocalStoreService,
@@ -134,10 +135,18 @@ export class GestionVacantesComponent implements OnInit {
 
         break;
 
-      // case 'eliminar' :
-      //         this.eliminarVacante(item )
+      case 'eliminar_vacante':
+        this._confirmService.openConfirm({
+          message: '¿Está seguro de eliminar la vacante?',
+          header: 'Confirmación de eliminación permanente',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.deleteVacante(item.iVacanteIEId);
+          },
+          reject: () => {},
+        });
 
-      //     break;
+        break;
       default:
         break;
     }
@@ -203,14 +212,14 @@ export class GestionVacantesComponent implements OnInit {
             severity: 'error',
           });
         },
-        complete: () => {
-          this.messageService.add({
-            summary: 'Mensaje de sistema',
-            detail: 'Carga de vacantes de IE exitosa.',
-            life: 3000,
-            severity: 'success',
-          });
-        },
+        // complete: () => {
+        //   this.messageService.add({
+        //     summary: 'Mensaje de sistema',
+        //     detail: 'Carga de vacantes de IE exitosa.',
+        //     life: 3000,
+        //     severity: 'success',
+        //   });
+        // },
       });
   }
 
@@ -393,6 +402,32 @@ export class GestionVacantesComponent implements OnInit {
   // generarImagen(){
   //   // Asegurar que la imagen se cargue antes de imprimir
 
+  deleteVacante(id: number) {
+    const params = {
+      esquema: 'acad',
+      tabla: 'vacantes_ies',
+      campo: 'iVacanteIEId',
+      valorId: id,
+    };
+    this.query.deleteAcademico(params).subscribe({
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje de error',
+          detail: 'No se pudo eliminar registro: ' + error.error.message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Eliminado',
+          detail: 'Registro eliminado correctamente',
+        });
+        this.getVacantes();
+      },
+    });
+  }
+
   //---------------------------
   accionesPrincipal: IActionContainer[] = [
     {
@@ -414,16 +449,6 @@ export class GestionVacantesComponent implements OnInit {
   selectedItems = [];
 
   actions: IActionTable[] = [
-    /* {
-         labelTooltip: 'Editar',
-         icon: 'pi pi-calendar-plus',
-         accion: 'Editar',
-         type: 'item',
-         class: 'p-button-rounded p-button-primary p-button-text',
-           isVisible: (rowData) => {
-                   return rowData.iEstado === '1' // Mostrar solo si el estado es 1 (activo)
-               },
-       },*/
     {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',
@@ -433,6 +458,13 @@ export class GestionVacantesComponent implements OnInit {
       isVisible: rowData => {
         return rowData.iEstado !== '1'; // Mostrar solo si el estado es 1 (activo)
       },
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar_vacante',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
     },
   ];
 

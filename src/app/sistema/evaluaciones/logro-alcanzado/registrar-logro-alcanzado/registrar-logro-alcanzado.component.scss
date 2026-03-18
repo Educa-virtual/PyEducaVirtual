@@ -20,3 +20,17 @@
   // border: 1px solid #ccc !important;
   /* borde personalizado */
 }
+
+.aula-container {
+  position: relative;
+  z-index: 20;
+  /* poner mayor z-index que p-table si es necesario */
+  min-width: 280px;
+  /* evita que desaparezca del layout en pantallas chicas */
+}
+
+.aula-container app-aula-virtual {
+  display: block;
+  width: 100%;
+  min-width: 320px;
+}

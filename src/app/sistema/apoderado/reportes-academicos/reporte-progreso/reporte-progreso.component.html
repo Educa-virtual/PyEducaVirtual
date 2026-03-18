@@ -38,11 +38,38 @@
           />
         </p-inputGroup>
       </div>
+      <div class="field col-12 md:col-2">
+        <!-- <p-button
+          type="button"
+          label="Ver horario"
+          icon="pi pi-calendar"
+          class="w-full"
+          severity="warning"
+          (click)="mostrarHorario('Horario')"
+          [disabled]="!matriculaSeleccionada"
+        ></p-button> -->
+      </div>
+      <div class="field col-12 md:col-2">
+        <!-- <p-button
+          type="button"
+          label="Ver calendario"
+          icon="pi pi-calendar"
+          class="w-full"
+          severity="primary"
+          (click)="mostrarHorario('Calendario')"
+          [disabled]="!matriculaSeleccionada"
+        ></p-button> -->
+      </div>
     </div>
+  </ng-template>
+</p-panel>
+<p-tabView [(activeIndex)]="activeTab" (onChange)="onTabChange($event)">
+  <p-tabPanel header="Logro alcanzado" [headerStyleClass]="activeTab === 0 ? 'tab-activo' : ''">
     <small
       >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
       otra opción</small
     >
+
     <div class="block mt-3">
       @if (courses.length > 0) {
         <app-tabla-reporte-progreso
@@ -53,6 +80,31 @@
         ></app-tabla-reporte-progreso>
       }
     </div>
-  </ng-template>
-</p-panel>
+  </p-tabPanel>
+  <p-tabPanel header="Horario" [headerStyleClass]="activeTab === 1 ? 'tab-activo' : ''">
+    <app-horario-estudiante [lista]="horarioEstudiante" />
+  </p-tabPanel>
+  <p-tabPanel
+    header="Calendario académico"
+    [headerStyleClass]="activeTab === 2 ? 'tab-activo' : ''"
+  >
+    <app-calendario-estudiante [lista]="horarioEstudiante" />
+  </p-tabPanel>
+</p-tabView>
+<p-dialog
+  header="{{ opcion }}"
+  [(visible)]="visibleHorario"
+  [style]="{ width: '90%' }"
+  [modal]="true"
+>
+  @switch (opcion) {
+    @case ('Horario') {
+      <app-horario-estudiante [lista]="horarioEstudiante" />
+    }
+    @case ('Calendario') {
+      <app-calendario-estudiante [lista]="horarioEstudiante" />
+    }
+  }
+</p-dialog>
+
 <p-toast></p-toast>

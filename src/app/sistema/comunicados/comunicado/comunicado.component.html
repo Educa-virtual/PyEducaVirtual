@@ -1,0 +1,433 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl font-bold">Nuevo comunicado</div>
+    </div>
+  </ng-template>
+
+  <p-stepper class="mt-3" [(activeStep)]="active">
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <button
+          class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+          (click)="handlePanelClick(onClick, active)"
+          labelTooltip="Información general"
+        >
+          <span
+            class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+            [ngClass]="{
+              'bg-primary border-primary': index <= active,
+              'surface-border': index > active,
+            }"
+          >
+            <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
+          </span>
+          <span class="hidden md:block font-bold text-primary">Información general</span>
+        </button>
+      </ng-template>
+      <ng-template
+        pTemplate="content"
+        let-nextCallback="nextCallback"
+        let-index="index"
+        class="p-0 m-0"
+      >
+        <form [formGroup]="formComunicado">
+          <div class="grid">
+            <div class="col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon> Título </p-inputGroupAddon>
+                <input
+                  pInputText
+                  styleClass="group-element"
+                  placeholder="Ingrese título"
+                  formControlName="cComunicadoTitulo"
+                  maxlength="150"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12">
+              <p-inputGroup class="vertical-group">
+                <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+                <div class="mt-2">
+                  <editor [init]="initEnunciado" formControlName="cComunicadoDescripcion"></editor>
+                </div>
+              </p-inputGroup>
+            </div>
+            <div class="col-12">
+              <app-subir-documento
+                [nameFile]="enviarDatos"
+                [nameOption]="'Comunicados'"
+                [typesFiles]="typesFiles"
+                (actionTypesFileUpload)="accionBtn($event)"
+                [filesUrl]="adjuntar"
+              ></app-subir-documento>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Desde</p-inputGroupAddon>
+                <p-calendar
+                  inputStyleClass="group-element"
+                  view="date"
+                  formControlName="dtComunicadoEmision"
+                  dateFormat="dd/mm/yy"
+                  placeholder="Fecha de emisión"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Hasta</p-inputGroupAddon>
+                <p-calendar
+                  inputStyleClass="group-element"
+                  view="date"
+                  formControlName="dtComunicadoHasta"
+                  dateFormat="dd/mm/yy"
+                  placeholder="Fecha de finalización"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Tipo de comunicado</p-inputGroupAddon>
+                <p-dropdown
+                  styleClass="group-element"
+                  showClear="false"
+                  [options]="tipos_comunicados"
+                  placeholder="Seleccione tipo de comunicado"
+                  formControlName="iTipoComId"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-inputGroup>
+                <p-inputGroupAddon>Prioridad</p-inputGroupAddon>
+                <p-dropdown
+                  styleClass="group-element"
+                  [options]="prioridades"
+                  showClear="false"
+                  placeholder="Seleccione una prioridad"
+                  formControlName="iPrioridadId"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
+                />
+              </p-inputGroup>
+            </div>
+          </div>
+        </form>
+        <div class="flex pt-4 justify-content-between">
+          <p-button
+            label="Salir"
+            severity="secondary"
+            icon="pi pi-arrow-left"
+            (onClick)="salir()"
+          />
+          <p-button
+            label="Continuar"
+            severity="success"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (onClick)="handleNextComunicadoGrupo(nextCallback)"
+          />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <button
+          class="bg-transparent border-none inline-flex flex-column gap-2 align-items-center"
+          (click)="handlePanelClick(onClick, active)"
+          labelTooltip="Grupo de recipíentes"
+        >
+          <span
+            class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+            [ngClass]="{
+              'bg-primary border-primary': index <= active,
+              'surface-border': index > active,
+            }"
+          >
+            <i class="pi pi-users" style="font-size: 1.5rem"></i>
+          </span>
+          <span class="hidden md:block font-bold text-primary">Grupo de recipíentes</span>
+        </button>
+      </ng-template>
+      <ng-template
+        pTemplate="content"
+        let-prevCallback="prevCallback"
+        let-nextCallback="nextCallback"
+        let-index="index"
+      >
+        <form [formGroup]="formGrupo">
+          <p-fieldset
+            legend="Seleccione y presione Agregar"
+            styleClass="mb-3 {{ puede_editar ? '' : 'hidden' }}"
+          >
+            <div class="grid">
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Recipientes</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="recipientes"
+                    [showClear]="!es_director"
+                    formControlName="iPerfilId"
+                    placeholder="Seleccione un tipo de recipiente"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Áreas</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="areas"
+                    [showClear]="!es_director"
+                    formControlName="iCursoId"
+                    placeholder="Seleccione un área"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="nivel_tipos"
+                    [showClear]="!es_director"
+                    formControlName="iNivelTipoId"
+                    placeholder="Seleccione un nivel educativo"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon> Gestión </p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="tipo_sectores"
+                    [showClear]="true"
+                    formControlName="iTipoSectorId"
+                    placeholder="Seleccione un tipo de gestión"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Zona</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="zonas"
+                    [showClear]="true"
+                    formControlName="iZonaId"
+                    placeholder="Seleccione un tipo de zona"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="ugeles"
+                    [showClear]="!es_especialista_ugel"
+                    formControlName="iUgelId"
+                    placeholder="Seleccione una UGEL"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6" *ngIf="!es_director">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="distritos"
+                    [showClear]="true"
+                    formControlName="iDsttId"
+                    placeholder="Seleccione un distrito"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Grado</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="nivel_grados"
+                    formControlName="iNivelGradoId"
+                    placeholder="Seleccione un grado"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-inputGroup>
+                  <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="ies"
+                    [showClear]="!es_director"
+                    formControlName="iIieeId"
+                    placeholder="Seleccione una Institución Educativa"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="secciones"
+                    [showClear]="true"
+                    formControlName="iSeccionId"
+                    placeholder="Seleccione una sección"
+                    styleClass="group-element"
+                    appendTo="body"
+                    filter="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Género</p-inputGroupAddon>
+                  <p-dropdown
+                    [options]="sexos"
+                    [showClear]="true"
+                    formControlName="cPersSexo"
+                    placeholder="Seleccione un género"
+                    styleClass="group-element"
+                    appendTo="body"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Tipo Documento</p-inputGroupAddon>
+                  <p-dropdown
+                    formControlName="iTipoIdentId"
+                    [options]="tipos_documentos"
+                    placeholder="Tipo de documento"
+                    [showClear]="false"
+                    [filter]="true"
+                    appendTo="body"
+                    [style]="{ flex: '1', width: '100%' }"
+                    styleClass="group-element"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-6">
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <p-button
+                      size="small"
+                      label="Buscar"
+                      styleClass="ml-2"
+                      (onClick)="buscarPersona()"
+                      severity="warning"
+                    />
+                    Documento
+                  </p-inputGroupAddon>
+                  <p-inputMask
+                    formControlName="cPersDocumento"
+                    [maxlength]="longitud_documento"
+                    [mask]="formato_documento"
+                    autoClear="false"
+                    slotChar=""
+                    class="group-element"
+                    styleClass="group-element"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-inputGroup styleClass="vertical-group">
+                  <p-inputGroupAddon>
+                    <span>Datos de la persona</span>
+                  </p-inputGroupAddon>
+                  <input
+                    pInputText
+                    formControlName="cPersApeNombres"
+                    [style]="{ flex: '1', width: '100%' }"
+                    appenTo="body"
+                    class="group-element"
+                    readonly
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12">
+                <p-button
+                  label="Agregar"
+                  severity="success"
+                  icon="pi pi-plus"
+                  iconPos="right"
+                  (onClick)="agregarGrupo()"
+                />
+              </div>
+            </div>
+          </p-fieldset>
+        </form>
+        <p-panel header="RECIPIENTES">
+          <ng-template pTemplate="icons">
+            <p-tag [value]="cantidad_grupo" severity="danger" />
+          </ng-template>
+          <div class="grid">
+            <div class="col-12">
+              <app-table-primeng
+                [columnas]="columns_grupo"
+                [showCaption]="false"
+                [data]="grupo"
+                (accionBtnItem)="accionBtnItemTableGrupo($event)"
+                [showPaginator]="false"
+                [showSortIcon]="false"
+                [actions]="actions_grupo"
+              />
+            </div>
+          </div>
+        </p-panel>
+        <div class="flex pt-4 justify-content-between">
+          <p-button
+            label="Regresar"
+            severity="secondary"
+            icon="pi pi-arrow-left"
+            (onClick)="prevCallback.emit()"
+          />
+          <p-button
+            *ngIf="puede_editar && !comunicado_registrado"
+            label="Guardar"
+            severity="success"
+            icon="pi pi-save"
+            iconPos="right"
+            (onClick)="guardarComunicado()"
+          />
+          <p-button
+            *ngIf="puede_editar && comunicado_registrado"
+            label="Actualizar"
+            severity="success"
+            icon="pi pi-save"
+            iconPos="right"
+            (onClick)="actualizarComunicado()"
+          />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+  </p-stepper>
+</p-panel>
+
+<p-toast></p-toast>

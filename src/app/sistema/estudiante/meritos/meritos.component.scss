@@ -1,0 +1,61 @@
+.merito-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Tu borde iluminado */
+.merito-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: #f7d34a;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Efecto iluminación / borde */
+.merito-card:hover::before {
+  opacity: 1;
+}
+
+/* Levantar y dar vida al card */
+.merito-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(247, 211, 74, 0.4);
+}
+
+/* Animación del ícono de medalla */
+.merito-icon {
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+/* Efecto hover en el ícono */
+.merito-card:hover .merito-icon {
+  transform: scale(1.2) rotate(-5deg);
+  filter: drop-shadow(0 0 6px #f7d34a);
+}
+
+/* Animación de contenido */
+.merito-content {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.merito-card:hover .merito-content {
+  opacity: 1;
+}

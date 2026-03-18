@@ -156,6 +156,7 @@ export class FichaComponent implements OnInit, AfterViewInit {
       .descargarFicha({
         iFichaDGId: this.iFichaDGId,
         iYAcadId: this.iYAcadId,
+        // iCredEntPerfId: this.perfil.iCredEntPerfId,
       })
       .subscribe({
         next: response => {

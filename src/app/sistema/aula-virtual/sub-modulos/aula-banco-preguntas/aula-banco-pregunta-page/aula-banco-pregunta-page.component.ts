@@ -263,6 +263,10 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
             iCursoId: 0,
             cCursoNombre: 'Todos',
           });
+
+          this.cursos = this.cursos.filter(
+            (usuario, index, self) => index == self.findIndex(u => u.iCursoId == usuario.iCursoId)
+          );
         },
         complete: () => {},
         error: error => {

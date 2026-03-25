@@ -153,6 +153,8 @@ export class ComunicadosService implements OnDestroy {
   getRecipientesJurisdiccion(iPerfilIdRecipiente: number, iPerfilIdUsuario: number) {
     if (iPerfilIdUsuario === DIRECTOR_IE) {
       return [DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdRecipiente);
+    } else if (iPerfilIdUsuario === DOCENTE) {
+      return [ESTUDIANTE, APODERADO].includes(iPerfilIdRecipiente);
     } else if (iPerfilIdUsuario === ESPECIALISTA_UGEL) {
       return [DIRECTOR_IE, DOCENTE, ESTUDIANTE, APODERADO].includes(iPerfilIdRecipiente);
     } else if (iPerfilIdUsuario === ESPECIALISTA_DREMO) {

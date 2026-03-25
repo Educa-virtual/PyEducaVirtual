@@ -33,11 +33,13 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   alumnosFiltrados: any[] = [];
   iSemAcadId: number; // ID del semestre académico
   mensaje: string = ''; // Mensaje para mostrar en la tabla
+  cantidad_preguntas: any;
 
   secciones = []; // Secciones obtenidas de la base de datos
   alumnos = []; // Alumnos obtenidos de la base de datos
   formCurso: FormGroup;
   alumnoSeleccionado: any = null;
+  columnas: IColumn[] = [];
 
   constructor(
     private store: LocalStoreService,
@@ -58,6 +60,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.formatearColumnas();
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.iSedeId = this.store.getItem('dremoPerfil').iSedeId;
     this.perfil = this.store.getItem('dremoPerfil');
@@ -68,6 +71,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     this.cabecera = localStorage.getItem('cEvaluacionNombre');
     this.getSeccion();
   }
+
   botonesTabla: IActionTable[] = [
     {
       labelTooltip: 'Guardar',
@@ -110,225 +114,109 @@ export class GuardarResultadosOnlineComponent implements OnInit {
       },
     },
   ];
-  columnas: IColumn[] = [
-    {
-      type: 'item',
-      width: '0.5rem',
-      field: 'index',
-      header: 'Nº',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      field: 'documento',
-      header: 'DNI',
-      type: 'text',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'paterno',
-      header: 'APELLIDO PATERNO',
-      type: 'text',
-      width: '4rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'materno',
-      header: 'APELLIDO MATERNO',
-      type: 'text',
-      width: '4rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'nombres',
-      header: 'NOMBRES',
-      type: 'text',
-      width: '4rem',
-      text: 'center',
-      text_header: 'center',
-    },
 
-    {
-      field: 'sexo',
-      header: 'Sexo',
-      type: 'text',
-      width: '4rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta01',
-      header: '1',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta02',
-      header: '2',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta03',
-      header: '3',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta04',
-      header: '4',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta05',
-      header: '5',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta06',
-      header: '6',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta07',
-      header: '7',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta08',
-      header: '8',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta09',
-      header: '9',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta10',
-      header: '10',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta11',
-      header: '11',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta12',
-      header: '12',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta13',
-      header: '13',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta14',
-      header: '14',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta15',
-      header: '15',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta16',
-      header: '16',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta17',
-      header: '17',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta18',
-      header: '18',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta19',
-      header: '19',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
-      field: 'respuesta20',
-      header: '20',
-      type: 'cell-editor',
-      width: '2rem',
-      text: 'center',
-      text_header: 'center',
-    },
-    {
+  obtenerCantidadPreguntas() {
+    this.datosInformesService
+      .obtenerCantidadPreguntas({
+        iEvaluacionIdHashed: this.curso.iEvaluacionIdHashed,
+        iCursosNivelGradId: this.curso.iCursosNivelGradId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.cantidad_preguntas = data.data ? data.data.cantidad_preguntas : 0;
+          if (Number(this.cantidad_preguntas) <= 0) {
+            this._messageService.add({
+              key: 'guardar-resultados-online',
+              severity: 'error',
+              summary: 'Mensaje del sistema',
+              detail: 'No se encontraron preguntas para el área y grado seleccionados',
+            });
+          }
+          this.formatearColumnas();
+          this.getEstudiante();
+        },
+        error: error => {
+          console.error('Error obteniendo datos', error);
+        },
+      });
+  }
+
+  formatearColumnas() {
+    this.columnas = [
+      {
+        type: 'item',
+        width: '0.5rem',
+        field: 'index',
+        header: 'Nº',
+        text_header: 'center',
+        text: 'center',
+      },
+      {
+        field: 'documento',
+        header: 'DNI',
+        type: 'text',
+        width: '2rem',
+        text: 'center',
+        text_header: 'center',
+      },
+      {
+        field: 'paterno',
+        header: 'APELLIDO PATERNO',
+        type: 'text',
+        width: '4rem',
+        text: 'center',
+        text_header: 'center',
+      },
+      {
+        field: 'materno',
+        header: 'APELLIDO MATERNO',
+        type: 'text',
+        width: '4rem',
+        text: 'center',
+        text_header: 'center',
+      },
+      {
+        field: 'nombres',
+        header: 'NOMBRES',
+        type: 'text',
+        width: '4rem',
+        text: 'center',
+        text_header: 'center',
+      },
+      {
+        field: 'sexo',
+        header: 'Sexo',
+        type: 'text',
+        width: '4rem',
+        text: 'center',
+        text_header: 'center',
+      },
+    ];
+
+    if (Number(this.cantidad_preguntas) > 0) {
+      for (let num_orden = 1; num_orden <= Number(this.cantidad_preguntas); num_orden++) {
+        const num_orden_formateado =
+          num_orden.toString().length === 1 ? `0${num_orden}` : num_orden;
+        this.columnas.push({
+          field: `respuesta${num_orden_formateado}`,
+          header: `${num_orden}`,
+          type: 'cell-editor',
+          width: '2rem',
+          text: 'center',
+          text_header: 'center',
+        });
+      }
+    }
+
+    this.columnas.push({
       field: '',
       header: 'Acciones',
       type: 'actions',
       width: '3rem',
       text: 'center',
       text_header: 'center',
-    },
-  ];
+    });
+  }
 
   mostrarDialog(datos: { curso: ICurso }) {
     this.titulo = `Importar resultados: ${datos.curso.cCursoNombre} - ${datos.curso.cGradoAbreviacion.toString().substring(0, 1)}° Grado
@@ -342,7 +230,7 @@ export class GuardarResultadosOnlineComponent implements OnInit {
     this.curso = datos.curso;
     this.alumnosFiltrados = [];
     this.formCurso.get('iSeccionId').patchValue(null);
-    this.getEstudiante();
+    this.obtenerCantidadPreguntas();
   }
 
   getEstudiante() {
@@ -360,80 +248,63 @@ export class GuardarResultadosOnlineComponent implements OnInit {
         this.estudiantes = data.data;
         this.estudiantes = this.estudiantes.map(alumno => {
           const respuestas = JSON.parse(alumno.respuestas ?? '[]');
-
+          const respuestas_array = new Array(Number(this.cantidad_preguntas));
+          for (let num_orden = 1; num_orden <= Number(this.cantidad_preguntas); num_orden++) {
+            const num_orden_formateado =
+              num_orden.toString().length === 1 ? `0${num_orden}` : num_orden;
+            respuestas_array[`respuesta${num_orden_formateado}`] = respuestas.find(
+              r => r.iPreguntaOrden === num_orden
+            )?.cAlternativaLetra;
+          }
           return {
             ...alumno,
-            respuesta01: respuestas.find(r => r.iPreguntaOrden === 1)?.cAlternativaLetra,
-            respuesta02: respuestas.find(r => r.iPreguntaOrden === 2)?.cAlternativaLetra,
-            respuesta03: respuestas.find(r => r.iPreguntaOrden === 3)?.cAlternativaLetra,
-            respuesta04: respuestas.find(r => r.iPreguntaOrden === 4)?.cAlternativaLetra,
-            respuesta05: respuestas.find(r => r.iPreguntaOrden === 5)?.cAlternativaLetra,
-            respuesta06: respuestas.find(r => r.iPreguntaOrden === 6)?.cAlternativaLetra,
-            respuesta07: respuestas.find(r => r.iPreguntaOrden === 7)?.cAlternativaLetra,
-            respuesta08: respuestas.find(r => r.iPreguntaOrden === 8)?.cAlternativaLetra,
-            respuesta09: respuestas.find(r => r.iPreguntaOrden === 9)?.cAlternativaLetra,
-            respuesta10: respuestas.find(r => r.iPreguntaOrden === 10)?.cAlternativaLetra,
-            respuesta11: respuestas.find(r => r.iPreguntaOrden === 11)?.cAlternativaLetra,
-            respuesta12: respuestas.find(r => r.iPreguntaOrden === 12)?.cAlternativaLetra,
-            respuesta13: respuestas.find(r => r.iPreguntaOrden === 13)?.cAlternativaLetra,
-            respuesta14: respuestas.find(r => r.iPreguntaOrden === 14)?.cAlternativaLetra,
-            respuesta15: respuestas.find(r => r.iPreguntaOrden === 15)?.cAlternativaLetra,
-            respuesta16: respuestas.find(r => r.iPreguntaOrden === 16)?.cAlternativaLetra,
-            respuesta17: respuestas.find(r => r.iPreguntaOrden === 17)?.cAlternativaLetra,
-            respuesta18: respuestas.find(r => r.iPreguntaOrden === 18)?.cAlternativaLetra,
-            respuesta19: respuestas.find(r => r.iPreguntaOrden === 19)?.cAlternativaLetra,
-            respuesta20: respuestas.find(r => r.iPreguntaOrden === 20)?.cAlternativaLetra,
+            ...respuestas_array,
           };
         });
       },
       error: error => {
+        console.error('Error obteniendo datos', error);
+        this._messageService.clear();
         this._messageService.add({
+          key: 'guardar-resultados-online',
           severity: 'error',
           summary: 'Mensaje del sistema',
-          detail: 'No se encontraron estudiantes matriculados error:' + error,
+          detail: 'No se encontraron estudiantes matriculados',
         });
       },
       complete: () => {
-        this.alumnos = this.estudiantes.map(est => ({
-          seccion: est.cSeccionNombre,
-          bTieneArchivo: est.bTieneArchivo,
-          tipo_documento: est.cPersTipoDocumento,
-          documento: est.cPersDocumento,
-          paterno: est.cPersPaterno,
-          materno: est.cPersMaterno,
-          sexo: est.cPersSexo,
-          nombres: est.cPersNombre,
-          iEstudianteId: est.iEstudianteId,
-          iSeccionId: +est.iSeccionId, // convertir a number
-          icon: 'pi pi-fw pi-home',
-          routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
-          respuesta01: est.respuesta01,
-          respuesta02: est.respuesta02,
-          respuesta03: est.respuesta03,
-          respuesta04: est.respuesta04,
-          respuesta05: est.respuesta05,
-          respuesta06: est.respuesta06,
-          respuesta07: est.respuesta07,
-          respuesta08: est.respuesta08,
-          respuesta09: est.respuesta09,
-          respuesta10: est.respuesta10,
-          respuesta11: est.respuesta11,
-          respuesta12: est.respuesta12,
-          respuesta13: est.respuesta13,
-          respuesta14: est.respuesta14,
-          respuesta15: est.respuesta15,
-          respuesta16: est.respuesta16,
-          respuesta17: est.respuesta17,
-          respuesta18: est.respuesta18,
-          respuesta19: est.respuesta19,
-          respuesta20: est.respuesta20,
-          iEstado: est.num_respuestas > 0 ? 0 : 1, // Estado inicia
-          bActive: est.num_respuestas > 0 ? 1 : 0, // Estado inicial
-        }));
-        this._messageService.add({
-          severity: 'warn',
-          summary: 'Mensaje del sistema',
-          detail: 'Debe seleccionar la sección',
+        if (this.estudiantes.length > 0) {
+          this._messageService.clear();
+          this._messageService.add({
+            key: 'guardar-resultados-online',
+            severity: 'warn',
+            summary: 'Mensaje del sistema',
+            detail: 'Debe seleccionar la sección',
+          });
+        }
+        this.alumnos = this.estudiantes.map(est => {
+          const datos = {
+            seccion: est.cSeccionNombre,
+            bTieneArchivo: est.bTieneArchivo,
+            tipo_documento: est.cPersTipoDocumento,
+            documento: est.cPersDocumento,
+            paterno: est.cPersPaterno,
+            materno: est.cPersMaterno,
+            sexo: est.cPersSexo,
+            nombres: est.cPersNombre,
+            iEstudianteId: est.iEstudianteId,
+            iSeccionId: Number(est.iSeccionId), // convertir a number
+            icon: 'pi pi-fw pi-home',
+            routerLink: '/sistema/ere/informes-ere/guardar-resultados-online',
+            iEstado: est.num_respuestas > 0 ? 0 : 1, // Estado inicia
+            bActive: est.num_respuestas > 0 ? 1 : 0, // Estado inicial
+          };
+          for (let num_orden = 1; num_orden <= Number(this.cantidad_preguntas); num_orden++) {
+            const num_orden_formateado =
+              num_orden.toString().length === 1 ? `0${num_orden}` : num_orden;
+            datos[`respuesta${num_orden_formateado}`] = est[`respuesta${num_orden_formateado}`];
+          }
+          return datos;
         });
       },
     });

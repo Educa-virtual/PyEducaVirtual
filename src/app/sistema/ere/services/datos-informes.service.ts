@@ -325,6 +325,10 @@ export class DatosInformesService {
     return this.http.post(`${baseUrl}/ere/reportes/importarOffLine`, data);
   }
 
+  obtenerCantidadPreguntas(data: any) {
+    return this.http.post(`${baseUrl}/ere/evaluacion/cantidad-preguntas`, data);
+  }
+
   guardarHojaDesarrolloEstudiante(
     formData: any,
     iEvaluacionId: string,

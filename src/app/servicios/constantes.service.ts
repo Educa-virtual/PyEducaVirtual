@@ -243,7 +243,7 @@ const docente = [
       {
         label: 'Comunicados',
         icon: 'pi pi-fw pi-share-alt',
-        routerLink: ['/comunicados/lista-comunicados'],
+        routerLink: ['/comunicados/gestion-comunicados'],
       },
       {
         label: 'Encuestas',
@@ -1046,6 +1046,11 @@ const apoderado = [
       //   icon: 'pi pi-megaphone',
       //   routerLink: ['apoderado/notificacion-apoderado'],
       // },
+      {
+        label: 'Bandeja de Comunicados',
+        icon: 'pi pi-inbox',
+        routerLink: ['/comunicados/lista-comunicados'],
+      },
       {
         label: 'Mesa de partes GORE',
         icon: 'pi pi-external-link',

@@ -388,16 +388,17 @@
     <div class="grid">
       @if (periodos.length > 0) {
         @for (periodo of periodos; track $index) {
-          <div class="col-12">
+          <div class="col-12" *ngIf="controles_periodos && controles_periodos.length > 0">
             <p-inputGroup class="vertical-group">
               <p-inputGroupAddon>
-                {{ periodo['label'] }}
+                {{ periodo['label'] }} {{ periodo['esta_vencido'] ? '(VENCIDO)' : '' }}
               </p-inputGroupAddon>
               <p-multiSelect
+                *ngIf="!periodo['esta_vencido']"
                 display="chip"
                 filter="true"
                 [options]="periodo['cursos']"
-                formControlName="iCursoId"
+                [formControl]="$any(controles_periodos.at($index)).controls['iCursoId']"
                 showClear="true"
                 appendTo="body"
                 showToggleAll="true"
@@ -427,7 +428,12 @@
           </p-inputGroup>
         </div>
       } @else {
-        <div class="col-12">No tiene áreas ni periodos configurados.</div>
+        <div class="col-12 text-center">
+          <p-message
+            severity="error"
+            text="No tiene áreas ni periodos configurados. Debe configurarlos para poder registrar las encuestas."
+          />
+        </div>
       }
     </div>
 

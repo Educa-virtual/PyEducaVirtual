@@ -110,7 +110,7 @@ export class ListaEncuestasComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.encuestas = data.data;
-          this.encuestas_filtradas = this.encuestas;
+          this.filtrarTabla();
         },
         error: error => {
           console.error('Error obteniendo lista de encuestas:', error);
@@ -178,7 +178,8 @@ export class ListaEncuestasComponent implements OnInit {
   formatearTiempoRestante(encuesta: any) {
     const iMinutosRestantes = Number(encuesta?.iMinutosRestantes);
     if (Number(encuesta?.iTiempDurId) === 0) return '';
-    else if (iMinutosRestantes === 0) return '(Tiempo expirado)';
+    else if (iMinutosRestantes || Number(encuesta?.puede_responder) === 0)
+      return '(Tiempo expirado)';
     else if (iMinutosRestantes > 0 && iMinutosRestantes < 60)
       return `(${iMinutosRestantes} minutos restantes)`;
     else if (iMinutosRestantes >= 60 && iMinutosRestantes < 1440)

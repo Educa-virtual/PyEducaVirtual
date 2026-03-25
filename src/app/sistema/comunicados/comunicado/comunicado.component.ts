@@ -1,7 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
-import { DIRECTOR_IE, ESPECIALISTA_UGEL, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
+import {
+  DIRECTOR_IE,
+  ESPECIALISTA_UGEL,
+  SUBDIRECTOR_IE,
+  DOCENTE,
+} from '@/app/servicios/seg/perfiles';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -148,7 +153,9 @@ export class ComunicadoComponent implements OnInit {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
     this.dremoYear = this.store.getItem('dremoYear');
-    this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
+    this.es_director = [DIRECTOR_IE, SUBDIRECTOR_IE, DOCENTE].includes(
+      Number(this.perfil.iPerfilId)
+    );
     this.es_especialista_ugel = [ESPECIALISTA_UGEL].includes(Number(this.perfil.iPerfilId));
     this.route.paramMap.subscribe((params: any) => {
       this.iComunicadoId = params.params.iComunicadoId || null;
@@ -281,9 +288,9 @@ export class ComunicadoComponent implements OnInit {
     this.formGrupo.get('iTipoIdentId').valueChanges.subscribe(value => {
       const tipo_doc = this.tipos_documentos.find((item: any) => item.value === value);
       if (tipo_doc) {
-        const longitud = this.formGrupo.get('cPersDocumento')?.value;
+        const longitud = this.formGrupo.get('cTipoIdentNombre')?.value;
         if (longitud && longitud.length > tipo_doc['longitud']) {
-          this.formGrupo.get('cPersDocumento').setValue(null);
+          this.formGrupo.get('cTipoIdentNombre').setValue(null);
         }
         this.longitud_documento = tipo_doc['longitud'];
         this.formato_documento = '9'.repeat(this.longitud_documento);
@@ -385,7 +392,6 @@ export class ComunicadoComponent implements OnInit {
           }
         },
         error: error => {
-          console.error('Error obteniendo comunicado:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -405,7 +411,7 @@ export class ComunicadoComponent implements OnInit {
     this.formComunicado.patchValue(data);
     if (data.cAdjunto) {
       try {
-        this.adjuntar = JSON.parse(data.cAdjunto);
+        this.adjuntar = JSON.parse(data.cAdjunto) || [];
       } catch (e) {
         this.adjuntar = [];
       }

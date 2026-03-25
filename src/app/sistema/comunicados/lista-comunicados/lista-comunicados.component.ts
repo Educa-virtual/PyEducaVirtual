@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
 import { ComunicadosService } from '../services/comunicados.services';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { formatDate, SlicePipe } from '@angular/common';
@@ -36,8 +35,7 @@ export class ListaComunicadosComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private comunicadosService: ComunicadosService,
-    private store: LocalStoreService,
-    private router: Router
+    private store: LocalStoreService
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');

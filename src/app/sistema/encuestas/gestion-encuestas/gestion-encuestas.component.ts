@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EncuestasService } from '../services/encuestas.services';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { SlicePipe } from '@angular/common';
+import { formatDate, SlicePipe } from '@angular/common';
 import { DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TutorialEncuestasComponent } from '../tutoriales/tutorial-encuestas/tutorial-encuestas.component';
@@ -27,11 +27,13 @@ export class GestionEncuestasComponent implements OnInit {
   visibleDialogPlantilla: boolean = false;
   visibleDialogTutorial: boolean = false;
   visibleDialogGenerar: boolean = false;
+  visibleDialogInfo: boolean = false;
 
   iCateId: number = null;
   categoria: any = null;
   selectedItem: any;
   cCateNombre: string;
+  encuesta: any;
 
   iYAcadId: number;
   perfil: any;
@@ -57,8 +59,8 @@ export class GestionEncuestasComponent implements OnInit {
 
   puede_generar_fija: boolean = false;
 
-  cursos: Array<object>;
-  periodos: Array<object>;
+  cursos: Array<object> = [];
+  periodos: Array<object> = [];
 
   constructor(
     private messageService: MessageService,
@@ -285,9 +287,15 @@ export class GestionEncuestasComponent implements OnInit {
         encuesta.cTiemDurNombre.toLowerCase().includes(filtro.toLowerCase())
       )
         return encuesta;
-      if (encuesta.dEncuInicio && encuesta.dEncuInicio.toLowerCase().includes(filtro.toLowerCase()))
+      const dEncuInicio = formatDate(encuesta.dEncuInicio, 'dd/MM/yyyy', 'es-PE');
+      if (encuesta.dEncuInicio && dEncuInicio.includes(filtro)) return encuesta;
+      const dEncuFin = formatDate(encuesta.dEncuFin, 'dd/MM/yyyy', 'es-PE');
+      if (encuesta.dEncuFin && dEncuFin.toLowerCase().includes(filtro.toLowerCase()))
         return encuesta;
-      if (encuesta.dEncuFin && encuesta.dEncuFin.toLowerCase().includes(filtro.toLowerCase()))
+      if (
+        encuesta.cCreadorAbreviado &&
+        encuesta.cCreadorAbreviado.toLowerCase().includes(filtro.toLowerCase())
+      )
         return encuesta;
       return null;
     });
@@ -421,6 +429,15 @@ export class GestionEncuestasComponent implements OnInit {
     this.resetFormPlantilla();
   }
 
+  abrirDialogoInfo(encuesta: any) {
+    this.visibleDialogInfo = true;
+    this.encuesta = encuesta;
+  }
+
+  cerrarDialogInfo() {
+    this.visibleDialogInfo = false;
+  }
+
   crearPlantilla() {
     if (this.formPlantilla.invalid) {
       this.messageService.add({
@@ -547,6 +564,9 @@ export class GestionEncuestasComponent implements OnInit {
       case 'plantilla':
         this.abrirDialogoCrearPlantilla(item);
         break;
+      case 'info':
+        this.abrirDialogoInfo(item);
+        break;
       default:
         console.warn('Acción no reconocida:', accion);
     }
@@ -644,6 +664,13 @@ export class GestionEncuestasComponent implements OnInit {
       type: 'item',
       class: 'p-menuitem-link text-primary',
     },
+    {
+      labelTooltip: 'Datos adicionales',
+      icon: 'pi pi-info',
+      accion: 'info',
+      type: 'item',
+      class: 'p-menuitem-link text-secondary',
+    },
   ];
 
   columns: IColumn[] = [
@@ -657,7 +684,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '30%',
+      width: '35%',
       field: 'cEncuNombre',
       header: 'Título de encuesta',
       text_header: 'left',
@@ -665,7 +692,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '15%',
+      width: '10%',
       field: 'cTiemDurNombre',
       header: 'Tiempo',
       text_header: 'center',
@@ -673,7 +700,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'date',
-      width: '15%',
+      width: '10%',
       field: 'dEncuInicio',
       header: 'Desde',
       text_header: 'center',
@@ -681,7 +708,7 @@ export class GestionEncuestasComponent implements OnInit {
     },
     {
       type: 'date',
-      width: '15%',
+      width: '10%',
       field: 'dEncuFin',
       header: 'Hasta',
       text_header: 'center',
@@ -698,6 +725,15 @@ export class GestionEncuestasComponent implements OnInit {
         BORRADOR: 'danger',
         APROBADA: 'success',
       },
+    },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'cCreadorAbreviado',
+      header: 'Creada por',
+      text_header: 'left',
+      text: 'left',
+      class: 'hidden md:table-cell',
     },
     {
       type: 'dropdown-actions',

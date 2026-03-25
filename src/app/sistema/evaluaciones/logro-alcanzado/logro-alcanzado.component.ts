@@ -162,7 +162,7 @@ export class LogroAlcanzadoComponent implements OnInit {
     const gradoEstudiante = this.estudiante?.cGradoAbreviacion || 'cGradoAbreviacion';
     const secciconEstudiante = this.estudiante?.cSeccionNombre || 'cSeccionNombre';
     const areaCurricular = this.estudiante?.cCursoNombre || 'cCursoNombre';
-    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Seccion: ${secciconEstudiante} (Area: ${areaCurricular})`;
+    this.registroTitleModal = `Registro : ${nombreEstudiante} - Nivel: ${gradoEstudiante} - Sección: ${secciconEstudiante} (Área: ${areaCurricular})`;
     //Generar competencias
     this.cargarCompetencias(curso);
   }
@@ -225,13 +225,13 @@ export class LogroAlcanzadoComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-primary p-button-text',
     },
-    {
-      labelTooltip: 'Imprimir Boleta',
-      icon: 'pi pi-print',
-      accion: 'Imprimir',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Imprimir Boleta',
+    //   icon: 'pi pi-print',
+    //   accion: 'Imprimir',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-success p-button-text',
+    // },
   ];
   /*
   obtenerGradoSeccion() {
@@ -303,17 +303,26 @@ export class LogroAlcanzadoComponent implements OnInit {
             if (this.periodos.length > 0) {
               this.iPeriodoId = '1';
             }
+            // Crear campo adicional
+            this.periodos = this.periodos.map(p => ({
+              ...p,
+              cNombrePeriodoH:
+                p.bHabilitado === '0'
+                  ? `${p.cNombrePeriodo} (Cerrado)`
+                  : `${p.cNombrePeriodo} (Aperturado)`,
+            }));
           }
         },
-        complete: () => {
-          this.periodos.push({
-            cNombrePeriodo: 'Logro final',
-            cPeriodoEvalNombre: '',
-            iEstado: '0',
-            iNumeroPeriodo: '5',
-            iPeriodoEvalAperId: '',
-          });
-        },
+        // complete: () => {
+        //   // this.periodos.push({
+        //   //   cNombrePeriodo: 'Logro final',
+        //   //   cPeriodoEvalNombre: '',
+        //   //   iEstado: '0',
+        //   //   iNumeroPeriodo: '5',
+        //   //   iPeriodoEvalAperId: '',
+        //   //   cNombrePeriodoH :'Logro final',
+        //   // });
+        // },
         // error: error => this.mostrarErrores(error),
       });
   }

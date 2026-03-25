@@ -28,7 +28,12 @@ import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricul
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
 import { YearsComponent } from './years/years.component';
-import { DIRECTOR_IE, ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
+import {
+  DIRECTOR_IE,
+  ADMINISTRADOR_DREMO,
+  ESPECIALISTA_UGEL,
+  ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { GestionarMatriculasDirectorComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas-director/gestionar-matriculas-director.component';
@@ -36,6 +41,7 @@ import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-ind
 
 import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
 import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
+import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -144,6 +150,15 @@ const routes: Routes = [
   {
     path: 'IesPersonal',
     component: IesPersonalComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+    },
+  },
+
+  {
+    path: 'gestion-meritos',
+    component: GestionMeritosComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [DIRECTOR_IE],
@@ -377,7 +392,7 @@ const routes: Routes = [
     component: ReporteIndicadoresComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE],
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, ESPECIALISTA_UGEL, ESPECIALISTA_DREMO],
       breadcrumb: 'Reporte de indicadores',
       icon: 'pi pi-folder-open',
     },

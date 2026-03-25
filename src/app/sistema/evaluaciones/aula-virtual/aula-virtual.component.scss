@@ -1,0 +1,34 @@
+/* aula-virtual.component.css (o .scss) */
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  /* importante para flex items */
+  box-sizing: border-box;
+}
+
+/* tarjeta interna que contiene las actividades */
+.actividad-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  /* evita que el contenido empuje */
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.w-full {
+  width: 100% !important;
+}
+
+.scroll-content {
+  overflow-y: auto;
+  height: auto;
+  padding: 8px;
+
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  max-height: 40vh;
+}

@@ -16,7 +16,7 @@
               class="w-full"
               formControlName="cCapacidadNombre"
             />
-            <label for="cCapacidadNombre">Nombre</label>
+            <label for="cCapacidadNombre">Nombre (*)</label>
           </span>
         </div>
 
@@ -75,6 +75,7 @@
           </div>
         </div>
       </form>
+      <div class="tag2">Los parámetros en (*) son obligatorios</div>
     </div>
     <div class="col-12 md:col-8">
       <div class="grid">
@@ -90,10 +91,7 @@
               [showCaption]="false"
             />
           } @else {
-            <app-no-data
-              [showIcon]="'NO-DATA'"
-              mensaje="No se encontraron áreas curriculares asignadas"
-            />
+            <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron capacidades asignadas" />
           }
         </div>
       </div>

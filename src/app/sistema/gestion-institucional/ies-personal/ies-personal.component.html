@@ -103,7 +103,7 @@
             <label for="cPersDocumento">Documento</label>
           </span>
         </div>
-        <div class="field col-12 md:col-2">
+        <div class="field col-12 md:col-2" *ngIf="!form.get('iPersIeId')?.value">
           <p-button
             label="Validar"
             icon="pi pi-search"
@@ -112,7 +112,7 @@
           />
         </div>
 
-        <div class="field col-12">
+        <div class="field col-12" *ngIf="mensaje">
           <p-message [severity]="sever" [text]="mensaje" styleClass="p-mr-2"></p-message>
         </div>
 
@@ -177,11 +177,11 @@
           <span class="p-float-label">
             <input
               pInputText
-              id="cObservacion"
-              formControlName="cObservacion"
-              aria-describedby="cObservacion-help"
+              id="cMotivo"
+              formControlName="cMotivo"
+              aria-describedby="cMotivo-help"
             />
-            <label for="cObservacion">Observación</label>
+            <label for="cMotivo">Observación</label>
           </span>
         </div>
       </div>

@@ -4,7 +4,11 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
+import {
+  ADMINISTRADOR_DREMO,
+  ESPECIALISTA_UGEL,
+  ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles';
 import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
@@ -12,6 +16,7 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { GestionUsuariosService } from '@/app/sistema/administrador/gestion-usuarios/services/gestion-usuarios.service';
+
 import {
   indicadorBajoRendimiento,
   indicadorDesempeno,
@@ -23,6 +28,10 @@ import {
 } from './constantes-indicadores';
 import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.service';
 import { CAMPOS_INDICADOR, COLORES_BASE, MAPEO_COLUMNAS } from './indicadores-mapeos';
+
+import * as XLSX from 'xlsx-js-style';
+
+import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-reporte-indicadores',
@@ -47,7 +56,11 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   private _GestionUsuariosService = inject(GestionUsuariosService);
   private _DatosInformesService = inject(DatosInformesService);
 
-  isAdminDremo = signal<boolean>(this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO);
+  isAdminDremo = signal<boolean>(
+    this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO ||
+      this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO ||
+      this._ConstantesService.iPerfilId === ESPECIALISTA_UGEL
+  );
   nivelTipos = signal<any[]>([]);
   instituciones = signal<any[]>([]);
   institucionesxiNivelTipoId = signal<any[]>([]);
@@ -55,6 +68,10 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   gradosSecciones = signal<any[]>([]);
   grados = signal<any[]>([]);
   secciones = signal<any[]>([]);
+
+  _total: number = 0;
+
+  _export: string = '';
 
   selectTab = signal<number>(0);
   tabSeleccionado = signal<string>('resumen-matriculados');
@@ -66,6 +83,8 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   chartOptionsBar = signal<any>(null);
 
   columnasTabla = signal<any[]>([]);
+
+  detalle = signal<any[]>([]); //Detalle de los indicadores
 
   data = signal<any[]>([]);
   tabs = signal<any[]>([
@@ -82,7 +101,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       opcion: indicadorDeserciones,
     },
     {
-      title: 'Asistencia',
+      title: 'Faltas y tardanzas',
       icon: 'pi pi-calendar',
       tab: 'resumen-asistencia',
       opcion: indicadorFaltasTardanzas,
@@ -139,6 +158,10 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         this.selectTab.set(index !== -1 ? index : 0);
       }
     });
+
+    setInterval(() => {
+      this.fechaActual = new Date();
+    }, 1000); // Actualiza cada 1 segundo
   }
 
   obtenerOpcion() {
@@ -148,6 +171,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
 
   obtenerResultadosxIndicador() {
     const opcion = this.obtenerOpcion();
+    const _opcion = String(opcion + 'Detalle');
     if (this.formIndicadores.value.iIieeId && !this.formIndicadores.value.iSedeId) {
       this.messageService.add({
         severity: 'error',
@@ -173,6 +197,11 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
             this.data.set(data);
             this.generarGraficoDinamicoPie();
             this.generarGraficoDinamicoBar();
+
+            const totaltotal = data.reduce((acc: number, item: any) => {
+              return acc + Number(item.Cantidad);
+            }, 0);
+            this._total = totaltotal;
           },
           error: error => {
             this.messageService.add({
@@ -181,8 +210,38 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
               detail: 'Error. No se proceso petición ' + error,
             });
           },
+          complete: () => {
+            this.obtenerDetalle(_opcion);
+          },
         });
     }
+  }
+
+  obtenerDetalle(_opcion: string) {
+    this._export = 'rpt' + _opcion + '.xls';
+    this._GeneralService
+      .searchCalendario({
+        json: JSON.stringify(this.formIndicadores.value),
+        _opcion: _opcion,
+      })
+      .subscribe({
+        next: (resp: any) => {
+          this.detalle.set(resp.data);
+        },
+        error: error => {
+          let message = error?.error?.message || 'Sin conexión a la bd';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: message,
+          });
+        },
+      });
   }
 
   obtenerColumnasTabla() {
@@ -275,10 +334,16 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
           );
         },
         error: error => {
+          let message = error?.error?.message || 'Sin conexión a la bd';
+          const match = message.match(/]([^\]]+?)\./);
+          if (match && match[1]) {
+            message = match[1].trim() + '.';
+          }
+          message = decodeURIComponent(message);
           this.messageService.add({
             severity: 'error',
-            summary: 'Problema al obtener sedes',
-            detail: error,
+            summary: 'Mensaje del sistema',
+            detail: message,
           });
         },
       });
@@ -379,7 +444,34 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
         tooltip: {
           callbacks: { label: (ctx: any) => `${ctx.label}: ${ctx.raw}%` },
         },
+        responsive: true,
+        maintainAspectRatio: false,
+
+        // 👇👇 ETIQUETAS CON FONDO TIPO BADGE
+        // datalabels: {
+        //   color: '#000',
+        //   anchor: 'center',
+        //   align: 'top',
+        //   padding: 6,
+        //   borderRadius: 10,
+        //   borderWidth: 2,
+        //   borderColor: '#000',
+        //   backgroundColor: '#FFF',
+        //   // backgroundColor: (ctx) => {
+        //   //   // color de fondo derivado de la barra
+        //   //   return ctx.dataset.backgroundColor;
+        //   // },
+        //   font: {
+        //     weight: 'bold',
+        //     size: 11,
+        //   },
+        //   formatter: value => value + '%',
+        // },
       },
+      layout: {
+        padding: 0,
+      },
+      radius: '90%', // 👈 ACHICA SOLO EL GRÁFICO, NO EL CANVAS
     });
   }
 
@@ -405,15 +497,115 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       plugins: {
         legend: { position: 'bottom', labels: { color: '#495057' } },
         tooltip: {
+          enabled: true, // 🔥 asegura que esté activado
+          mode: 'nearest',
+          intersect: false,
           callbacks: { label: (ctx: any) => `${ctx.dataset.label}: ${ctx.raw}` },
         },
+
+        // 👇👇 ETIQUETAS CON FONDO TIPO BADGE
+        // datalabels: {
+        //   color: '#000',
+        //   // anchor: 'center',
+        //   // align: 'top',
+        //   // padding: 6,
+        //   // borderRadius: 10,
+        //   // borderWidth: 2,
+        //   // borderColor: '#000',
+        //   backgroundColor: '#FFF',
+        //   // // backgroundColor: (ctx) => {
+        //   // //   // color de fondo derivado de la barra
+        //   // //   return ctx.dataset.backgroundColor;
+        //   // // },
+        //   font: {
+        //     weight: 'bold',
+        //     size: 11,
+        //   },
+        //   formatter: value => value,
+        // },
       },
       scales: {
         y: { beginAtZero: true, ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
         x: { ticks: { color: '#495057' }, grid: { color: '#ebedef' } },
       },
     });
+    // Registrar el plugin
+    // Chart.register(ChartDataLabels);
   }
+
+  //plugin personalizado para total
+  centerTextPlugin = {
+    id: 'centerTextBar',
+    afterDraw: (chart: any) => {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+
+      const label = `Total: ${this._total}`;
+      ctx.save();
+      ctx.font = 'bold 14px sans-serif';
+
+      // Ancho dinámico según el texto
+      const textWidth = ctx.measureText(label).width;
+      const paddingX = 12;
+      //const paddingY = 6;
+
+      // 📌 Posición: superior derecha del chart
+      const x = chartArea.right - paddingX;
+      const y = chartArea.top + 40;
+
+      const boxWidth = textWidth + paddingX * 2;
+      const boxHeight = 28;
+      const radius = 10;
+
+      // 🎨 Fondo (badge)
+      ctx.fillStyle = '#007bff'; // azul tipo PrimeNG (puedes cambiar)
+      ctx.strokeStyle = '#0056b3';
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.roundRect(
+        x - boxWidth, // inicio
+        y - boxHeight, // posición vertical
+        boxWidth,
+        boxHeight,
+        radius
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      // ✨ Texto dentro del badge
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x - paddingX, y - boxHeight / 2);
+
+      ctx.restore();
+    },
+  };
+  ///
+
+  chartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { stacked: false },
+      y: { beginAtZero: true, ticks: { precision: 0 } },
+    },
+    plugins: {
+      title: {
+        display: false,
+      },
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        offset: -6,
+        color: '#000',
+      },
+    },
+  };
 
   piePlugin = [
     {
@@ -476,4 +668,22 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
 
     return this.isAdminDremo() ? !!(iIieeId && iSedeId) : !!iSedeId;
   }
+
+  generarExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(this.data());
+    // Crear un libro de trabajo y añadir la hoja
+    const worksheet2 = XLSX.utils.json_to_sheet(this.detalle());
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+
+    //Agregar en otra hoja
+    XLSX.utils.book_append_sheet(workbook, worksheet2, 'Detalle');
+
+    // Exportar el archivo Excel
+    const titulo = this._export;
+    XLSX.writeFile(workbook, titulo);
+  }
+
+  //colocar hora en tiempo real
+  fechaActual: Date = new Date();
 }

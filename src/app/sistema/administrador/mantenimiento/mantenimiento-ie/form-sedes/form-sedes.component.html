@@ -1,15 +1,15 @@
 <app-modal-primeng
-  [title]="(this.formSedes.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Institución Educativa'"
+  [title]="(this.formSedes.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Sede Institucional'"
   [showModal]="showModal()"
   class="uppercase"
-  [width]="'50rem'"
+  [width]="'78rem'"
   (accionBtnItem)="closeModal.emit()"
 >
   <form [formGroup]="formSedes" class="mt-3">
     <div class="grid">
-      <div class="col-12 md:col-7">
+      <div class="col-12 md:col-12">
         <p-inputGroup>
-          <p-inputGroupAddon>Servicio Educativo</p-inputGroupAddon>
+          <p-inputGroupAddon>Servicio Educativo(*)</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             id="iServEdId"
@@ -19,11 +19,60 @@
             optionValue="iServEdId"
             placeholder="Seleccionar ..."
             [style]="{ width: '100%' }"
+            [showClear]="true"
+            [ngClass]="{ 'input-invalid': esInvalido('iServEdId') }"
           >
           </p-dropdown>
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-5">
+
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Turno(*)</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            id="iTurnoId"
+            formControlName="iTurnoId"
+            [options]="turnos"
+            [showClear]="true"
+            optionLabel="cTurnoNombre"
+            optionValue="iTurnoId"
+            placeholder="Seleccionar ..."
+            [style]="{ width: '100%' }"
+            [ngClass]="{ 'input-invalid': esInvalido('iTurnoId') }"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre(*)</p-inputGroupAddon>
+          <input
+            id="cSedeNombre"
+            type="text"
+            pInputText
+            placeholder="Ej: Sede Principal"
+            formControlName="cSedeNombre"
+            (input)="convertirMayusculas($event)"
+            [ngClass]="{ 'input-invalid': esInvalido('cSedeNombre') }"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Email(*)</p-inputGroupAddon>
+          <input
+            id="cSedeEmail"
+            type="email"
+            pInputText
+            placeholder="Ej: tu-correo@correo.com"
+            formControlName="cSedeEmail"
+            [ngClass]="{ 'input-invalid': esInvalido('cSedeEmail') }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon><i class="pi pi-phone"></i></p-inputGroupAddon>
           <input
@@ -32,34 +81,71 @@
             pInputText
             placeholder="Ej: 900010010"
             formControlName="cSedeTelefono"
+            (input)="soloNumeros($event)"
+            [ngClass]="{ 'input-invalid': esInvalido('cSedeTelefono') }"
           />
         </p-inputGroup>
       </div>
-      <div class="col-12">
+
+      <div class="col-12 md:col-12">
         <p-inputGroup>
-          <p-inputGroupAddon>Nombre</p-inputGroupAddon>
+          <p-inputGroupAddon>Director</p-inputGroupAddon>
           <input
-            id="cSedeNombre"
+            id="cSedeDirector"
             type="text"
             pInputText
-            placeholder="Ej: Sede Principal"
-            formControlName="cSedeNombre"
+            placeholder="Ej: Juan Pérez"
+            formControlName="cSedeDirector"
+            (input)="convertirMayusculas($event)"
+            [ngClass]="{ 'input-invalid': esInvalido('cSedeDirector') }"
           />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Resolución</p-inputGroupAddon>
+          <input
+            id="cSedeRslCreacion"
+            type="text"
+            pInputText
+            placeholder="Ej: N° de resolución"
+            formControlName="cSedeRslCreacion"
+            (input)="convertirMayusculas($event)"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha de creación</p-inputGroupAddon>
+          <p-calendar
+            appendTo="body"
+            id="dSedeRslCreacion"
+            formControlName="dSedeRslCreacion"
+            dateFormat="dd/mm/yy"
+            placeholder="dd/mm/aaaa"
+            showIcon="true"
+            inputId="dSedeRslCreacion"
+          >
+          </p-calendar>
         </p-inputGroup>
       </div>
 
       <div class="col-12 md:col-8">
         <p-inputGroup>
-          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
+          <p-inputGroupAddon>Dirección(*)</p-inputGroupAddon>
           <input
             id="cSedeDireccion"
             type="text"
             pInputText
             placeholder="Ej: Av. Los Olivos N° 123, San Martín"
             formControlName="cSedeDireccion"
+            [ngClass]="{ 'input-invalid': esInvalido('cSedeDireccion') }"
+            (input)="convertirMayusculas($event)"
           />
         </p-inputGroup>
       </div>
+
       <div class="col-12 md:col-4 align-content-center">
         <div class="flex align-items-center justify-content-between">
           <label for="iEstado" class="pr-1">Estado:</label>
@@ -77,6 +163,45 @@
       </div>
     </div>
   </form>
+  <div class="tag">Los parámetros con (*) son obligatorios</div>
+  @if (
+    formSedes.get('cSedeNombre')?.invalid &&
+    (formSedes.get('cSedeNombre')?.touched || formSedes.get('cSedeNombre')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formSedes.get('cSedeNombre')?.hasError('maxLength')) {
+        El nombre no puede exceder los 200 caracteres<br />
+      }
+
+      @if (formSedes.get('cSedeNombre')?.hasError('required')) {
+        El nombre de IE es obligatorio<br />
+      }
+    </small>
+  }
+  @if (
+    formSedes.get('cSedeEmail')?.invalid &&
+    (formSedes.get('cSedeEmail')?.touched || formSedes.get('cSedeEmail')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formSedes.get('cSedeEmail')?.hasError('email')) {
+        Ingrese un correo válido<br />
+      }
+
+      @if (formSedes.get('cSedeEmail')?.hasError('required')) {
+        El correo es obligatorio<br />
+      }
+    </small>
+  }
+  @if (
+    formSedes.get('cSedeDireccion')?.invalid &&
+    (formSedes.get('cSedeDireccion')?.touched || formSedes.get('cSedeDireccion')?.dirty)
+  ) {
+    <small class="p-error">
+      @if (formSedes.get('cSedeDireccion')?.hasError('required')) {
+        La dirección es obligatorio<br />
+      }
+    </small>
+  }
   <div footer class="flex justify-content-end gap-2">
     <p-button
       styleClass="uppercase"
@@ -92,6 +217,8 @@
       [severity]="this.formSedes.value.iSedeId ? 'warning' : 'success'"
       [loading]="isLoading()"
       (onClick)="enviarFormulario()"
+      [disabled]="formSedes.invalid"
     ></p-button>
   </div>
 </app-modal-primeng>
+<p-toast />

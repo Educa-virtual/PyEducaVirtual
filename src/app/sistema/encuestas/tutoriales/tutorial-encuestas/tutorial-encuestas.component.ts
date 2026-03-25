@@ -75,6 +75,11 @@ export class TutorialEncuestasComponent implements OnInit {
         label: 'Hacer plantilla',
         icon: 'pi pi-arrow-up',
       },
+      {
+        id: 'adicionales',
+        label: 'Datos adicionales',
+        icon: 'pi pi-info',
+      },
     ];
   }
 

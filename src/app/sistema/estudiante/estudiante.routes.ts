@@ -10,6 +10,7 @@ import { CodigoQrComponent } from './codigo-qr/codigo-qr.component';
 
 import { MesaPartesGoreComponent } from './mesa-partes-gore/mesa-partes-gore.component';
 import { AsistenciaEstudianteComponent } from './asistencia-estudiante/asistencia-estudiante.component';
+import { MeritosComponent } from './meritos/meritos.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,16 @@ const routes: Routes = [
       expectedRole: [ESTUDIANTE],
       breadcrumb: 'horario',
       icon: 'pi pi-share-alt',
+    },
+  },
+  {
+    path: 'merito-estudiante',
+    component: MeritosComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ESTUDIANTE],
+      breadcrumb: 'méritos',
+      icon: 'pi pi-star',
     },
   },
   {

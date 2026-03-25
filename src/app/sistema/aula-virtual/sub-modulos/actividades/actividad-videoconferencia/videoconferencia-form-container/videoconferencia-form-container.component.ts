@@ -15,13 +15,15 @@ import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mos
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { ReunionVirtualesService } from '@/app/servicios/aula/reunion-virtuales.service';
 import { finalize } from 'rxjs';
+//import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import { GeneralService } from '@/app/servicios/general.service';
 
 @Component({
   selector: 'app-videoconferencia-form-container',
   standalone: true,
   templateUrl: './videoconferencia-form-container.component.html',
   styleUrls: ['./videoconferencia-form-container.component.scss'],
-  imports: [PrimengModule, InputTextModule, InputGroupModule],
+  imports: [PrimengModule, InputTextModule, InputGroupModule], //, TablePrimengComponent
 })
 export class VideoconferenciaFormContainerComponent
   extends MostrarErrorComponent
@@ -43,8 +45,12 @@ export class VideoconferenciaFormContainerComponent
   private _ConstantesService = inject(ConstantesService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _ReunionVirtualesService = inject(ReunionVirtualesService);
+  public query = inject(GeneralService);
 
   semana: Message[] = [];
+
+  //competencias = []; // agregado
+  //selectedItems = []; // agregado
 
   public formConferencia = this._formBuilder.group({
     iRVirtualId: [''],
@@ -63,6 +69,7 @@ export class VideoconferenciaFormContainerComponent
 
     iCapacitacionId: [''],
     iYAcadId: ['', Validators.required],
+    //bCompetencia: [false],
   });
 
   opcion: string = 'GUARDAR';
@@ -72,6 +79,7 @@ export class VideoconferenciaFormContainerComponent
     this.contenidoSemana = this.dialogConfig.data.contenidoSemana;
     this.action = this.dialogConfig.data.action;
     this.actividad = this.dialogConfig.data.actividad;
+    // this.buscarCompetencias(this.dialogConfig.data.idDocCursoId);
     const data = this.dialogConfig.data;
 
     if (this.actividad.ixActivadadId && data.action == 'ACTUALIZAR') {
@@ -108,6 +116,15 @@ export class VideoconferenciaFormContainerComponent
               dtRVirtualFin: new Date(data.dtRVirtualFin),
               cRVirtualUrlJoin: data.cRVirtualUrlJoin,
             });
+
+            //se agrego validacion de competencias si ya existen
+            // const idsCompetencias = data.jCompetencias
+            //   ? JSON.parse(data.jCompetencias).map((x: any) => Number(x))
+            //   : [];
+
+            // this.selectedItems = this.competencias.filter(x =>
+            //   idsCompetencias.includes(Number(x.iCompetenciaId))
+            // );
           }
         },
         error: error => {
@@ -163,6 +180,7 @@ export class VideoconferenciaFormContainerComponent
       this.isLoading = false;
       return;
     }
+    //const ids = this.selectedItems.map(x => Number(x.iCompetenciaId));
 
     const data = {
       ...this.formConferencia.value,
@@ -173,6 +191,8 @@ export class VideoconferenciaFormContainerComponent
       dtRVirtualFin: this.formConferencia.value.dtRVirtualFin
         ? this.pipe.transform(this.formConferencia.value.dtRVirtualFin, 'dd/MM/yyyy HH:mm:ss')
         : null,
+
+      // jCompetencias: JSON.stringify(ids),
     };
 
     if (this.actividad.ixActivadadId) {
@@ -181,6 +201,10 @@ export class VideoconferenciaFormContainerComponent
       this.guardarReunionVirtual(data);
     }
   }
+
+  // setSelectedItems(event) {
+  //   this.selectedItems = event;
+  // }
 
   guardarReunionVirtual(data) {
     this._ReunionVirtualesService
@@ -247,4 +271,54 @@ export class VideoconferenciaFormContainerComponent
   closeModal(data) {
     this.ref.close(data);
   }
+  // buscarCompetencias(idDocCursoId: number) {
+  //   this.query
+  //     .searchCalendario({
+  //       json: JSON.stringify({
+  //         idDocCursoId: idDocCursoId,
+  //       }),
+  //       _opcion: 'competenciaXidDocCursoId',
+  //     })
+  //     .subscribe({
+  //       next: (data: any) => {
+  //         this.competencias = data.data;
+  //         this.selectedItems = data.data;
+  //       },
+  //       error: error => {
+  //         this.messageService.add({
+  //           summary: 'Mensaje de sistema',
+  //           detail: 'Error al cargar secciones de IE.' + error.error.message,
+  //           life: 3000,
+  //           severity: 'error',
+  //         });
+  //       },
+  //     });
+  // }
+
+  // columns: IColumn[] = [
+  //   {
+  //     type: 'item',
+  //     width: '5%',
+  //     field: 'item',
+  //     header: 'Item',
+  //     text_header: 'center',
+  //     text: 'center',
+  //   },
+  //   {
+  //     type: 'text',
+  //     width: '90%',
+  //     field: 'cCompetenciaNombre',
+  //     header: 'Competencia',
+  //     text_header: 'center',
+  //     text: 'left',
+  //   },
+  //   {
+  //     type: 'checkbox',
+  //     width: '5%',
+  //     field: 'checked',
+  //     header: '',
+  //     text_header: 'center',
+  //     text: 'center',
+  //   },
+  // ];
 }

@@ -146,7 +146,8 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         this.asignarcompetencia.emit(item);
         break;
       case 'agregar':
-        this.titulo = 'Formulario para agregar  área curricular (' + this.caption + ')';
+        this.titulo =
+          'Formulario para agregar competencia curricular (Curricula: ' + this.caption + ')';
         this.visible_competencia = true;
         this.iCompetenciaId = 0;
         this.bUpdate = false;
@@ -158,7 +159,8 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         break;
 
       case 'editar':
-        this.titulo = 'Formulario para editar áreas curriculares (' + this.caption + ')';
+        this.titulo =
+          'Formulario para editar competencia curricular (Curricula: ' + this.caption + ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
         this.visible_competencia = true;
@@ -176,8 +178,6 @@ export class CurriculaCompetenciaComponent implements OnChanges {
 
       case 'agregar_competencia':
         this.bUpdate = false;
-        this.visible_competencia = false;
-
         this.insertarCompetencia(this.formCompetencia.value);
 
         break;
@@ -242,10 +242,12 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           summary: 'Mensaje del sistema',
           detail: 'Se actualizo correctamente',
         });
-        this.inicializacion();
+        //this.inicializacion();
         if (!this.bUpdate) {
           this.formCompetencia.reset();
+          this.visible_competencia = false;
         }
+        this.inicializacion();
       },
     });
   }
@@ -279,7 +281,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           detail: 'Se eliminó la currícula correctamente.',
         });
         this.visible_competencia = false;
-        //this.obtenerDatosIniciales();
+        // this.obtenerDatosIniciales();
       },
     });
   }
@@ -290,7 +292,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       text: '',
       icon: 'pi pi-plus',
       accion: 'agregar',
-      class: 'p-button-primary',
+      class: 'p-button-success',
     },
   ];
 
@@ -302,13 +304,13 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    {
-      labelTooltip: 'Eliminar competencias',
-      icon: 'pi pi-trash',
-      accion: 'eliminar_competencia',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
-    },
+    // {
+    //   labelTooltip: 'Eliminar competencias',
+    //   icon: 'pi pi-trash',
+    //   accion: 'eliminar_competencia',
+    //   type: 'item',
+    //   class: 'p-button-rounded p-button-danger p-button-text',
+    // },
   ];
   competenciasColumns = [
     {

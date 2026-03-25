@@ -1,0 +1,46 @@
+@if (bloques.length > 0) {
+  <div style="max-width: 500px">
+    <p-inputGroup class="mb-3">
+      <p-inputGroupAddon class="mi-addon-primary"> Matrícula </p-inputGroupAddon>
+      <input pInputText [value]="detalleMatricula" disabled class="input-disabled" />
+    </p-inputGroup>
+  </div>
+
+  <p-table
+    [value]="franjas"
+    [responsiveLayout]="'scroll'"
+    class="p-datatable-sm"
+    styleClass="p-datatable-gridlines"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center">Bloque</th>
+        <th class="text-center">Horario</th>
+        <th class="text-center" *ngFor="let d of dias">{{ d.nombre }}</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td class="text-center" width="5%">{{ row.bloque }}</td>
+        <td class="text-center" width="100px">{{ row.horario }}</td>
+        <td
+          class="text-center"
+          *ngFor="let d of dias"
+          [ngClass]="{ 'celda-con-clase': clase(d.id, row.bloque) }"
+        >
+          <ng-container *ngIf="clase(d.id, row.bloque) as c">
+            <div>
+              <b>{{ c.cCursoNombre }}</b>
+            </div>
+            <div>
+              <small>{{ c.cNombreDocente }}</small>
+            </div>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+} @else {
+  <app-no-data [showIcon]="'NO-DATA'" [mensaje]="'No hay horario disponibles'"></app-no-data>
+}
+<p-toast></p-toast>

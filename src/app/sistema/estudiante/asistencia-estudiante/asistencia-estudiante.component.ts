@@ -16,7 +16,7 @@ export class AsistenciaEstudianteComponent {
   breadCrumbHome: MenuItem;
 
   constructor() {
-    this.breadCrumbItems = [{ label: 'Asistencia' }];
+    this.breadCrumbItems = [{ label: 'Módulo Estudiante' }, { label: 'Asistencia', active: true }];
     this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
   }
 }

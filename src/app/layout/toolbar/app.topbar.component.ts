@@ -16,6 +16,7 @@ import { provideIcons } from '@ng-icons/core';
 import { mat10k } from '@ng-icons/material-icons/baseline';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
+import { ComunicadosService } from '@/app/sistema/comunicados/services/comunicados.services';
 
 @Component({
   selector: 'app-topbar',
@@ -46,26 +47,33 @@ export class AppTopBarComponent implements OnInit {
   mostrarBanderinesNavidad: boolean = false;
   mostrarBanderinesMoquegua: boolean = false;
   years = [];
+  iYAcadId: number;
   selectedYear: string;
 
   modulos = [];
   selectedModulo: string;
 
+  USUARIO_RECIPIENTE: number = this.comunicadosService.USUARIO_RECIPIENTE;
+
   @ViewChild('menubutton') menuButton!: ElementRef;
-  // @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef
   @ViewChild('topbarmenu') menu!: ElementRef;
 
   items = [];
   constructor(
+    private comunicadosService: ComunicadosService,
+    private messageService: MessageService,
     public layoutService: LayoutService,
     private store: LocalStoreService,
     private tokenStorageService: TokenStorageService,
     private router: Router
-  ) {}
+  ) {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+  }
 
   ngOnInit() {
     const user = this.store.getItem('dremoUser');
     const year = this.store.getItem('dremoYear');
+
     this.years = user.years;
     this.selectedYear = year ? year : null;
 
@@ -79,12 +87,10 @@ export class AppTopBarComponent implements OnInit {
     this.selectedPerfil = perfil ? perfil : perfil_data;
 
     if (user.iDocenteId) {
-      // this.notificacionDocente(user.iDocenteId)
-      console.log(1);
+      this.notificacionDocente();
     }
     if (user.iEstudianteId) {
-      // this.notificacionEstudiante(user.iEstudianteId)
-      console.log(1);
+      this.notificacionEstudiante();
     }
     //Bandarines por fiestas patrias
     const hoy = new Date();
@@ -107,10 +113,10 @@ export class AppTopBarComponent implements OnInit {
     const iPerfilId = this._ConstantesService.iPerfilId;
     switch (iPerfilId) {
       case ESTUDIANTE:
-        this.notificacionEstudiante(user.iEstudianteId);
+        this.notificacionEstudiante();
         break;
       case DOCENTE:
-        this.notificacionDocente(user.iDocenteId);
+        this.notificacionDocente();
         break;
     }
   }
@@ -131,7 +137,6 @@ export class AppTopBarComponent implements OnInit {
   }
   changeYear(value) {
     const year = this.years.find(item => item.iYearId === value);
-    //this.router.navigate(['./']);
     this.store.setItem('dremoYear', value);
     this.store.setItem('dremoiYAcadId', year.iYAcadId);
     setTimeout(() => {
@@ -220,34 +225,53 @@ export class AppTopBarComponent implements OnInit {
         break;
     }
   }
-  notificacionDocente(iDocenteId) {
-    const params = {
-      petition: 'post',
-      group: 'aula-virtual',
-      prefix: 'notificacion_docente',
-      ruta: 'mostrar_notificacion',
-      data: {
-        iDocenteId: iDocenteId,
-        iYAcadId: this._ConstantesService.iYAcadId,
-        iSedeId: this._ConstantesService.iSedeId,
-      },
-    };
-    this.getInformation(params, params.prefix);
+  notificacionDocente() {
+    this.comunicadosService
+      .listarComunicados({
+        iYAcadId: this.iYAcadId,
+        iTipoUsuario: this.USUARIO_RECIPIENTE,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.comunicados = data.data;
+          this.comunicados.forEach(lista => {
+            lista.cComunicadoDescripcion = this.filtrarHtml(lista.cComunicadoDescripcion);
+          });
+          this.totalComunicados = this.comunicados.length;
+        },
+        error: error => {
+          console.warn('Error obteniendo lista de comunicados:', error);
+        },
+      });
   }
-  notificacionEstudiante(iEstudianteId) {
-    const params = {
-      petition: 'post',
-      group: 'aula-virtual',
-      prefix: 'notificacion_estudiante',
-      ruta: 'mostrar_notificacion',
-      data: {
-        iEstudianteId: iEstudianteId,
-        iYAcadId: this._ConstantesService.iYAcadId,
-        iSedeId: this._ConstantesService.iSedeId,
-      },
-    };
-    this.getInformation(params, params.prefix);
+
+  comunicados: any;
+  totalComunicados: number = 0;
+  notificacionEstudiante() {
+    this.comunicadosService
+      .listarComunicados({
+        iYAcadId: this.iYAcadId,
+        iTipoUsuario: this.USUARIO_RECIPIENTE,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.comunicados = data.data;
+          this.comunicados.forEach(lista => {
+            lista.cComunicadoDescripcion = this.filtrarHtml(lista.cComunicadoDescripcion);
+          });
+          this.totalComunicados = this.comunicados.length;
+        },
+        error: error => {
+          console.error('Error obteniendo lista de comunicados:', error);
+        },
+      });
   }
+
+  filtrarHtml(datos: string): string {
+    const doc = new DOMParser().parseFromString(datos, 'text/html');
+    return doc.body.textContent || '';
+  }
+
   getInformation(params, accion) {
     this._GeneralService.getGralPrefix(params).subscribe({
       next: response => {
@@ -255,7 +279,6 @@ export class AppTopBarComponent implements OnInit {
       },
       complete: () => {},
       error: error => {
-        console.log(error);
         this._MessageService.add({
           severity: 'error',
           summary: 'Error',

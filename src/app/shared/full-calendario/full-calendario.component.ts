@@ -46,10 +46,12 @@ export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit
     const calendarApi = this.calendarComponent.getApi();
     const currentDate = calendarApi.getDate();
     this.mesSeleccionado = currentDate.getMonth();
+    this.fixCalendar();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
       this.calendarOptions.events = changes['events'].currentValue;
+      this.fixCalendar();
       //this.filtrarMes(this.capturar);
       ///this.calendarOptions.events = changes['events'].currentValue;
     }
@@ -191,5 +193,11 @@ export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit
   }
   formatearHora(fecha: any) {
     return fecha.getHours() == '00' ? '' : fecha.getHours() + ':' + fecha.getMinutes();
+  }
+
+  private fixCalendar() {
+    setTimeout(() => {
+      this.calendarComponent?.getApi().updateSize();
+    }, 0);
   }
 }

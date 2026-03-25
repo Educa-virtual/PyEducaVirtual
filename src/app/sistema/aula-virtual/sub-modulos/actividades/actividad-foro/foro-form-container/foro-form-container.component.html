@@ -1,10 +1,10 @@
-<form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
+<form [formGroup]="foroForm" class="mt-4" width="65rem">
   <div class="grid">
     <div class="col-12" [hidden]="!contenidoSemana">
       <p-messages [(value)]="semana" [enableService]="false" [closable]="false" />
     </div>
     <!-- Mostrar el título -->
-    <div class="col-12 md:col-8">
+    <div class="col-12 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon>Título</p-inputGroupAddon>
         <input
@@ -16,7 +16,7 @@
       </p-inputGroup>
     </div>
     <!-- Mostrar las Categorias en un Select -->
-    <div class="col-12 md:col-4">
+    <div class="col-12 md:col-6">
       <p-inputGroup>
         <p-inputGroupAddon>Categoría</p-inputGroupAddon>
         <p-dropdown
@@ -39,11 +39,39 @@
         <p-editor
           id="descripcion"
           placeholder="Escribe una Descripción "
+          styleClass="w-full"
           formControlName="cForoDescripcion"
           [style]="{ height: 'auto', overflow: 'hidden' }"
         />
       </div>
     </div>
+
+    <!-- Se agrego validación de los componmentes -->
+
+    <div class="col-12" *ngIf="competencias && competencias.length > 0">
+      <label for="descripcion" class="mt-1">Lista de competencias </label>
+    </div>
+    <!-- <div class="col-2">
+      <p-inputSwitch formControlName="bCompetencia" />
+    </div> -->
+
+    <div class="col-12" *ngIf="competencias && competencias.length > 0">
+      <!-- *ngIf="foroForm.get('bCompetencia')?.value" -->
+      <app-table-primeng
+        [columnas]="columns"
+        [data]="competencias"
+        [scrollable]="true"
+        [sortMode]="null"
+        (selectedColumn)="setSelectedItems($event)"
+        (selectedRowDataChange)="setSelectedItems($event)"
+        [showPaginator]="false"
+        [(selectedRowData)]="selectedItems"
+        [showAdvancedFilter]="false"
+        [showCaption]="false"
+      >
+      </app-table-primeng>
+    </div>
+
     <!-- Asignar Los tiempos -->
     <div class="col-12 md:col-6 gap-3">
       <p-inputGroup>

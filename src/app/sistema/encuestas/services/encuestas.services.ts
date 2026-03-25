@@ -293,26 +293,27 @@ export class EncuestasService implements OnDestroy {
   }
 
   getAreasFija(data: any) {
-    if (!this.areas_fija && data) {
+    if (data) {
       this.areas_fija = data.map(area => ({
         value: area.iCursoId,
-        label: area.cCursoNombre,
+        label: area.cCursoNombre + (Number(area.bTieneEncuesta) === 1 ? ' (REGISTRADO)' : ''),
         disabled: Number(area.bTieneEncuesta) === 1 ? true : false,
       }));
-      return this.areas_fija;
     }
     return this.areas_fija;
   }
 
   getPeriodosFija(data: any) {
-    if (!this.periodos_fija && data) {
+    if (data) {
       this.periodos_fija = data.map(periodo => ({
         value: periodo.iPeriodoId,
         label: periodo.cPeriodoNombre,
+        esta_vencido: Number(periodo.bPeriodoVencido) === 1,
         cursos: periodo?.json_cursos
           ? JSON.parse(periodo?.json_cursos).map(curso => ({
               value: curso.iCursoId,
-              label: curso.cCursoNombre,
+              label:
+                curso.cCursoNombre + (Number(curso.bTieneEncuesta) === 1 ? ' (REGISTRADO)' : ''),
               disabled: Number(curso.bTieneEncuesta) === 1 ? true : false,
             }))
           : [],
@@ -793,7 +794,8 @@ export class EncuestasService implements OnDestroy {
     form: FormGroup,
     formJson: string,
     formControlName: string | string[] | null,
-    groupControl: string | null = null
+    groupControl: string | null = null,
+    devolverArray: boolean = false
   ): void {
     form.get(formJson).setValue(null);
     if (!formControlName) {
@@ -821,7 +823,7 @@ export class EncuestasService implements OnDestroy {
         }
       });
     });
-    form.get(formJson).setValue(JSON.stringify(items));
+    form.get(formJson).setValue(devolverArray ? items : JSON.stringify(items));
   }
 
   formMarkAsDirty(form: FormGroup) {

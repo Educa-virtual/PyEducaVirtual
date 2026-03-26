@@ -156,27 +156,31 @@ export class ListaComunicadosComponent implements OnInit {
     });
   }
 
-  descargarArchivo(archivo: string) {
-    const documento = {
-      archivo: archivo,
-    };
+  descargarArchivo(archivo: any) {
+    if (archivo.extension) {
+      const documento = {
+        archivo: archivo.file,
+      };
 
-    this.comunicadosService.descargarDocumento(documento).subscribe({
-      next: (response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = archivo;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al descargar el archivo',
-          detail: error.message,
-        });
-      },
-    });
+      this.comunicadosService.descargarDocumento(documento).subscribe({
+        next: (response: Blob) => {
+          const url = window.URL.createObjectURL(response);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = archivo.file;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al descargar el archivo',
+            detail: error.message,
+          });
+        },
+      });
+    } else {
+      window.open(archivo.name, '_blank');
+    }
   }
 }

@@ -149,7 +149,6 @@ export class AsistenciaComponent implements OnInit {
       if (data.dow === 6 || data.dow === 0) {
         data.el.style.backgroundColor = '#ffd7d7';
       }
-      //console.log("revisando #1 ",this.events);
     },
     datesSet: dateInfo => {
       const calendarioMes = dateInfo.view.currentStart.toLocaleString('default', {
@@ -452,7 +451,7 @@ export class AsistenciaComponent implements OnInit {
   valSelect1: string = '';
   valSelect2: number = 0;
 
-  data = [];
+  data: any[] = [];
 
   /**
    * changeAsistencia
@@ -611,8 +610,10 @@ export class AsistenciaComponent implements OnInit {
       enviar.append('idDocCursoId', this.idDocCursoId);
       enviar.append('iSedeId', this.iSedeId);
       enviar.append('asistencia_json', JSON.stringify(this.data));
-      this.archivo.forEach((item: File, index: number) => {
-        enviar.append(`archivos[${index}]`, item);
+      this.data.forEach((item: any, index: number) => {
+        if (item.subir) {
+          enviar.append(`archivos[${index}]`, item.subir);
+        }
       });
 
       const params = {
@@ -766,11 +767,13 @@ export class AsistenciaComponent implements OnInit {
     });
   }
 
-  subirDocumento(event: any, index: number, id: FileUpload) {
-    const archivo = event.files?.[0];
-    this.archivo[index] = archivo;
+  subirDocumento(event: any, item: any, fileUpload: any) {
+    const archivo = event.files[0];
+    //this.archivo[item] = archivo;
     if (archivo) {
-      id.clear();
+      item.subir = archivo;
+      fileUpload.name = archivo.name[0];
+      //fileUpload.clear();
     }
   }
 

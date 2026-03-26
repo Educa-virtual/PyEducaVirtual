@@ -175,9 +175,10 @@
                 [disabled]="!(item.iTipoAsiId === '4' || item.iTipoAsiId === '9')"
                 chooseLabel="Subir"
                 chooseIcon="pi pi-upload"
-                accept="application/pdf"
+                accept=".pdf"
+                name="archivo"
                 maxFileSize="1000000"
-                (onSelect)="subirDocumento($event, rowIndex, subirJustificacion)"
+                (onSelect)="subirDocumento($event, item, subirJustificacion)"
               />
             </td>
             <td class="text-center">

@@ -99,19 +99,15 @@
     </div>
     <div class="col-12" *ngIf="mensaje.cAdjunto !== null">
       <div class="flex flex-wrap">
-        <div
-          class="flex align-items-center justify-content-center m-1"
-          style="width: 200px"
-          *ngFor="let adjunto of mensaje.cAdjunto"
-        >
+        <div class="inline" *ngFor="let adjunto of mensaje.cAdjunto">
           <p-button
-            label="{{ adjunto.name }}"
-            icon="pi pi-download"
-            class="p-button-rounded p-button-text"
+            label="{{ adjunto.name | slice: 0 : 20 }}..."
+            [icon]="adjunto.extension ? 'pi pi-download' : 'pi pi-link'"
+            class="p-button-rounded p-button-text mr-3"
             size="small"
             [text]="true"
             [raised]="true"
-            (click)="descargarArchivo(adjunto.file)"
+            (click)="descargarArchivo(adjunto)"
           />
         </div>
       </div>

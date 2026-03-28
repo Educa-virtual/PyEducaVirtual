@@ -4,6 +4,15 @@
   }
 }
 :host ::ng-deep {
+  .p-fieldset-legend {
+    background-color: #3e67a9; /* azul, puedes usar cualquier color */
+    color: white; /* texto blanco para contraste */
+  }
+  .p-selectbutton .p-button.p-highlight {
+    background: #b8d7ff;
+    border-color: #b8d7ff;
+  }
+
   .expandir .p-button {
     width: 100%;
   }

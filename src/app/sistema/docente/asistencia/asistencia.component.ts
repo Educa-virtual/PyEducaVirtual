@@ -81,10 +81,43 @@ export class AsistenciaComponent implements OnInit {
     });
   }
 
+  estados: any[] = [
+    {
+      iTipoAsiId: '1',
+      cTipoAsiLetra: 'A',
+      bgColor: 'text-green-500',
+    },
+    {
+      iTipoAsiId: '2',
+      cTipoAsiLetra: 'T',
+      bgColor: 'text-orange-500',
+    },
+    {
+      iTipoAsiId: '3',
+      cTipoAsiLetra: 'I',
+      bgColor: 'text-red-500',
+    },
+    {
+      iTipoAsiId: '4',
+      cTipoAsiLetra: 'IJ',
+      bgColor: 'text-primary-500',
+    },
+    {
+      iTipoAsiId: '9',
+      cTipoAsiLetra: 'TJ',
+      bgColor: 'text-yellow-500',
+    },
+  ];
+
   ngOnInit() {
     this.getCursoHorario();
     this.detalleCurricular();
     this.getFechasImportantes();
+  }
+
+  seleccionarEstado(event: any, rowIndex: any) {
+    this.data[rowIndex].iTipoAsiId = event.value ? event.value : '7';
+    this.countAsistenciasModal();
   }
 
   // busca los datos para el encabezado
@@ -355,7 +388,7 @@ export class AsistenciaComponent implements OnInit {
   leyenda = [
     {
       significado: 'Asistio',
-      simbolo: 'X',
+      simbolo: 'A',
       contar: 0,
       divColor: 'green-50-boton',
       bgColor: 'green-boton',
@@ -369,7 +402,7 @@ export class AsistenciaComponent implements OnInit {
     },
     {
       significado: 'Inasistencia Justificada',
-      simbolo: 'J',
+      simbolo: 'IJ',
       contar: 0,
       divColor: 'primary-50-boton',
       bgColor: 'primary-boton',
@@ -383,7 +416,7 @@ export class AsistenciaComponent implements OnInit {
     },
     {
       significado: 'Tardanza Justificada',
-      simbolo: 'P',
+      simbolo: 'TJ',
       contar: 0,
       divColor: 'yellow-50-boton',
       bgColor: 'yellow-boton',
@@ -401,7 +434,7 @@ export class AsistenciaComponent implements OnInit {
     {
       significado: 'Asistio',
       iTipoAsiId: '1',
-      simbolo: 'X',
+      simbolo: 'A',
       contar: 0,
       divColor: 'green-50-boton',
       bgColor: 'green-boton',
@@ -417,7 +450,7 @@ export class AsistenciaComponent implements OnInit {
     {
       significado: 'Inasistencia Justificada',
       iTipoAsiId: '4',
-      simbolo: 'J',
+      simbolo: 'IJ',
       contar: 0,
       divColor: 'primary-50-boton',
       bgColor: 'primary-boton',
@@ -433,7 +466,7 @@ export class AsistenciaComponent implements OnInit {
     {
       significado: 'Tardanza Justificada',
       iTipoAsiId: '9',
-      simbolo: 'P',
+      simbolo: 'TJ',
       contar: 0,
       divColor: 'yellow-50-boton',
       bgColor: 'yellow-boton',
@@ -464,7 +497,7 @@ export class AsistenciaComponent implements OnInit {
   tipoAsistencia = [
     {
       iTipoAsiId: '1',
-      cTipoAsiLetra: 'X',
+      cTipoAsiLetra: 'A',
       cTipoAsiNombre: 'Asistio',
       bgColor: 'bg-green-500',
     },
@@ -482,13 +515,13 @@ export class AsistenciaComponent implements OnInit {
     },
     {
       iTipoAsiId: '4',
-      cTipoAsiLetra: 'J',
+      cTipoAsiLetra: 'IJ',
       cTipoAsiNombre: 'Inasistencia Justificada',
       bgColor: 'bg-primary-500',
     },
     {
       iTipoAsiId: '9',
-      cTipoAsiLetra: 'P',
+      cTipoAsiLetra: 'TJ',
       cTipoAsiNombre: 'Tardanza Justificada',
       bgColor: 'bg-yellow-500',
     },
@@ -499,20 +532,6 @@ export class AsistenciaComponent implements OnInit {
       bgColor: 'bg-cyan-500',
     },
   ];
-
-  iTipoAsiId = 0;
-  indice = 0;
-
-  changeAsistencia(index, item) {
-    const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
-    const indice = (Number(valor) + 1) % this.tipoAsistencia.length;
-    this.data[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
-    this.data[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
-    this.data[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
-    this.data[index].bgColor = this.tipoAsistencia[indice].bgColor;
-
-    this.countAsistenciasModal();
-  }
 
   goAreasEstudio() {
     this.router.navigate(['aula-virtual/areas-curriculares']);
@@ -541,13 +560,6 @@ export class AsistenciaComponent implements OnInit {
         break;
       case 'get_asistencia':
         this.data = item;
-        this.data.forEach(item => {
-          const seleccionar = this.tipoAsistencia.find(
-            lista => lista.iTipoAsiId == item.iTipoAsiId
-          );
-          item.bgColor = seleccionar.bgColor;
-          item.cTipoAsiNombre = seleccionar.cTipoAsiNombre;
-        });
         this.countAsistenciasModal();
         break;
       case 'get_curso_horario':

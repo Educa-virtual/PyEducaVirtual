@@ -30,17 +30,10 @@
       </div>
       <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
         <div *ngFor="let lista of leyenda" class="flex w-full mr-1">
-          <p-inputGroup>
-            <button type="button" size="small" pButton [ngClass]="lista.bgColor">
-              {{ lista.simbolo }}
-            </button>
-            <div [ngClass]="lista.divColor">
-              {{ lista.significado }}
-            </div>
-            <button type="button" size="small" pButton [ngClass]="lista.bgColor">
-              {{ lista.contar }}
-            </button>
-          </p-inputGroup>
+          <div [ngClass]="lista.divColor">{{ lista.significado }} ( {{ lista.simbolo }} )</div>
+          <button type="button" size="small" pButton [ngClass]="lista.bgColor" [rounded]="true">
+            {{ lista.contar }}
+          </button>
         </div>
       </div>
       <div class="w-full">
@@ -153,7 +146,6 @@
             <th style="width: auto">Nombres y Apellidos</th>
             <th style="width: auto">Marcar Asistencia</th>
             <th style="width: auto">Subir Documento</th>
-            <th style="width: auto">Documento</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
@@ -161,52 +153,54 @@
             <td>{{ rowIndex + 1 }}</td>
             <td>{{ item.nombrecompleto }}</td>
             <td>
-              <p-button
-                label="{{ item.cTipoAsiLetra }}"
-                size="small"
-                [styleClass]="item.bgColor"
-                (click)="changeAsistencia(rowIndex, item.iTipoAsiId)"
-              />
+              <p-selectButton
+                [options]="estados"
+                optionLabel="cTipoAsiLetra"
+                optionValue="iTipoAsiId"
+                [(ngModel)]="item.iTipoAsiId"
+                (onChange)="seleccionarEstado($event, rowIndex)"
+              >
+                <ng-template let-item pTemplate="item">
+                  <div class="text-center font-bold transition-all" [ngClass]="[item.bgColor]">
+                    {{ item.cTipoAsiLetra }}
+                  </div>
+                </ng-template>
+              </p-selectButton>
             </td>
             <td>
-              <p-fileUpload
-                #subirJustificacion
-                mode="basic"
-                [disabled]="!(item.iTipoAsiId === '4' || item.iTipoAsiId === '9')"
-                chooseLabel="Subir"
-                chooseIcon="pi pi-upload"
-                accept=".pdf"
-                name="archivo"
-                maxFileSize="1000000"
-                (onSelect)="subirDocumento($event, item, subirJustificacion)"
-              />
-            </td>
-            <td class="text-center">
-              <p-button
-                [disabled]="
-                  !(item.cJustificar === '' || item.iTipoAsiId === '4' || item.iTipoAsiId === '9')
-                "
-                icon="pi pi-file-pdf"
-                size="small"
-                (click)="descargarArchivo(iDocenteId, item.cJustificar)"
-              />
+              <div class="flex flex-wrap">
+                <p-fileUpload
+                  #subirJustificacion
+                  mode="basic"
+                  [disabled]="!(item.iTipoAsiId === '4' || item.iTipoAsiId === '9')"
+                  chooseLabel="Subir"
+                  chooseIcon="pi pi-upload"
+                  accept=".pdf"
+                  name="archivo"
+                  maxFileSize="1000000"
+                  class="m-1"
+                  (onSelect)="subirDocumento($event, item, subirJustificacion)"
+                />
+                <p-button
+                  *ngIf="item.cJustificar"
+                  [disabled]="
+                    !(item.cJustificar === '' || item.iTipoAsiId === '4' || item.iTipoAsiId === '9')
+                  "
+                  class="m-1"
+                  icon="pi pi-file-pdf"
+                  (click)="descargarArchivo(iDocenteId, item.cJustificar)"
+                />
+              </div>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="flex block flex-wrap column-gap-3 row-gap-3 p-2">
             <div *ngFor="let lista of leyendaModal" class="flex mr-1">
-              <p-inputGroup class="grupo">
-                <button type="button" size="small" pButton [ngClass]="lista.bgColor">
-                  {{ lista.simbolo }}
-                </button>
-                <div [ngClass]="lista.divColor">
-                  {{ lista.significado }}
-                </div>
-                <button type="button" size="small" pButton [ngClass]="lista.bgColor">
-                  {{ lista.contar }}
-                </button>
-              </p-inputGroup>
+              <div [ngClass]="lista.divColor">{{ lista.significado }} ( {{ lista.simbolo }} )</div>
+              <button type="button" size="small" pButton [ngClass]="lista.bgColor" [rounded]="true">
+                {{ lista.contar }}
+              </button>
             </div>
           </div>
         </ng-template>

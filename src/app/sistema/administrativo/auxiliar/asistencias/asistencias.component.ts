@@ -60,46 +60,80 @@ export class AsistenciasComponent implements OnInit {
     {
       iTipoAsiId: '1',
       cTipoAsiLetra: 'X',
-      cTipoAsiNombre: 'Asistio',
+      cTipoAsiNombre: 'Asistio (A)',
       textColor: 'green-50-boton',
-      bgColor: 'bg-green-500',
+      bgColor: 'text-green-500',
     },
     {
       iTipoAsiId: '2',
       cTipoAsiLetra: 'T',
-      cTipoAsiNombre: 'Tardanza',
+      cTipoAsiNombre: 'Tardanza (T)',
       textColor: 'orange-50-boton',
-      bgColor: 'bg-orange-500',
+      bgColor: 'text-orange-500',
     },
     {
       iTipoAsiId: '3',
       cTipoAsiLetra: 'I',
-      cTipoAsiNombre: 'Inasistencia',
+      cTipoAsiNombre: 'Inasistencia (I)',
       textColor: 'red-50-boton',
-      bgColor: 'bg-red-500',
+      bgColor: 'text-red-500',
     },
     {
       iTipoAsiId: '4',
       cTipoAsiLetra: 'J',
-      cTipoAsiNombre: 'Inasistencia Justificada',
+      cTipoAsiNombre: 'Inasistencia Justificada (IJ)',
       textColor: 'primary-50-boton',
-      bgColor: 'bg-primary-500',
+      bgColor: 'text-primary-500',
     },
     {
       iTipoAsiId: '9',
       cTipoAsiLetra: 'P',
-      cTipoAsiNombre: 'Tardanza Justificada',
+      cTipoAsiNombre: 'Tardanza Justificada (TJ)',
       textColor: 'yellow-50-boton',
-      bgColor: 'bg-yellow-500',
-    },
-    {
-      iTipoAsiId: '7',
-      cTipoAsiLetra: '-',
-      cTipoAsiNombre: 'Sin Registro',
-      textColor: 'cyan-50-boton',
-      bgColor: 'bg-cyan-500',
+      bgColor: 'text-yellow-500',
     },
   ];
+
+  estados: any[] = [
+    {
+      iTipoAsiId: '1',
+      cTipoAsiLetra: 'A',
+      bgColor: 'text-green-500',
+    },
+    {
+      iTipoAsiId: '2',
+      cTipoAsiLetra: 'T',
+      bgColor: 'text-orange-500',
+    },
+    {
+      iTipoAsiId: '3',
+      cTipoAsiLetra: 'I',
+      bgColor: 'text-red-500',
+    },
+    {
+      iTipoAsiId: '4',
+      cTipoAsiLetra: 'IJ',
+      bgColor: 'text-primary-500',
+    },
+    {
+      iTipoAsiId: '9',
+      cTipoAsiLetra: 'TJ',
+      bgColor: 'text-yellow-500',
+    },
+  ];
+
+  busqueda: any[] = [
+    {
+      value: 1,
+      label: 'Grado y Sección',
+    },
+    {
+      value: 2,
+      label: 'Documento o Codigo de Estudiante',
+    },
+  ];
+
+  tipoBusqueda: any = 1;
 
   constructor(
     private messageService: MessageService,
@@ -111,6 +145,34 @@ export class AsistenciasComponent implements OnInit {
 
   ngOnInit() {
     this.buscarAulas();
+    this.fechaActual();
+  }
+
+  fechaActual() {
+    this.datos.dtAsistencia = new Date();
+  }
+
+  seleccionarEstado(event: any, alumno: any) {
+    alumno.iTipoAsiId = event.value ? event.value : '7';
+    if (alumno.iTipoAsiId === '3' || alumno.iTipoAsiId === '4') {
+      alumno.dtAsistenciaHora = '00:00';
+      alumno.habilitar = true;
+    } else {
+      alumno.habilitar = false;
+    }
+  }
+
+  seleccionarEstadoEstudiante(event: any, rowIndex: any) {
+    this.estudiante[rowIndex].iTipoAsiId = event.value ? event.value : '7';
+    if (
+      this.estudiante[rowIndex].iTipoAsiId === '3' ||
+      this.estudiante[rowIndex].iTipoAsiId === '4'
+    ) {
+      this.estudiante[rowIndex].dtAsistenciaHora = '00:00';
+      this.estudiante[rowIndex].habilitar = true;
+    } else {
+      this.estudiante[rowIndex].habilitar = false;
+    }
   }
 
   // busca las aulas de la institucion para el dropdown
@@ -149,7 +211,7 @@ export class AsistenciasComponent implements OnInit {
 
   // busca la lista de alumnos por grados y seccion
   buscarGrupo() {
-    if (this.datos.iGradoId && this.datos.iSeccionId && this.datos.dtAsistencia) {
+    if (this.datos.dtAsistencia) {
       this.finalizar = true;
 
       const enlace = {
@@ -170,13 +232,23 @@ export class AsistenciasComponent implements OnInit {
       this.servicioGeneral.getRecibirDatos(enlace).subscribe({
         next: data => {
           this.alumnos = data.data;
+          const horaAsistencia = new Date(this.datos.dtAsistencia).toLocaleTimeString('es-PE', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          });
           this.alumnos.forEach(item => {
-            const seleccionar = this.tipoAsistencia.find(
-              lista => lista.iTipoAsiId == item.iTipoAsiId
-            );
-            item.textColor = seleccionar.textColor;
-            item.bgColor = seleccionar.bgColor;
-            item.cTipoAsiNombre = seleccionar.cTipoAsiNombre;
+            if (!item.dtAsistenciaHora) {
+              item.dtAsistenciaHora = horaAsistencia;
+            }
+          });
+
+          this.alumnos.sort((a, b) => {
+            const cGradoAbreviacion = a.cGradoAbreviacion.localeCompare(b.cGradoAbreviacion);
+            if (cGradoAbreviacion !== 0) {
+              return cGradoAbreviacion;
+            }
+            return a.cSeccionNombre.localeCompare(b.cSeccionNombre);
           });
         },
         error: () => {
@@ -341,6 +413,13 @@ export class AsistenciasComponent implements OnInit {
   }
 
   guardarAsistenciaAula() {
+    this.alumnos.forEach(item => {
+      if (item.dtAsistenciaHora) {
+        const separado = item.dtAsistenciaHora.toString().split(':');
+        item.dtAsistenciaHora = separado[0].slice(-2) + ':' + separado[1].slice(0, 2);
+      }
+    });
+
     const enviar = new FormData();
     enviar.append('asistencia', JSON.stringify(this.alumnos));
     enviar.append('iPersId', this.dremoPerfil.iPersId);
@@ -452,31 +531,6 @@ export class AsistenciasComponent implements OnInit {
     });
   }
 
-  // cambiar estado de asistencia
-  /**
-   *
-   * @param valor encontrar el indice de tipoAsistencia
-   * @param tipoAsistencia es el array de objetos de los tipo de asistencia
-   * @param indice le asignamos un nuevo indice con un limitador
-   */
-  cambiarEstado(index: any, item: any) {
-    const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
-    const indice = (Number(valor) + 1) % this.tipoAsistencia.length;
-    this.alumnos[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
-    this.alumnos[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
-    this.alumnos[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
-    this.alumnos[index].bgColor = this.tipoAsistencia[indice].bgColor;
-  }
-
-  cambiarEstadoEstudiante(index: any, item: any) {
-    const valor = this.tipoAsistencia.findIndex(valor => valor.iTipoAsiId == item);
-    const indice = (Number(valor) + 1) % this.tipoAsistencia.length;
-    this.estudiante[index].iTipoAsiId = this.tipoAsistencia[indice].iTipoAsiId;
-    this.estudiante[index].cTipoAsiLetra = this.tipoAsistencia[indice].cTipoAsiLetra;
-    this.estudiante[index].cTipoAsiNombre = this.tipoAsistencia[indice].cTipoAsiNombre;
-    this.estudiante[index].bgColor = this.tipoAsistencia[indice].bgColor;
-  }
-
   camaraEncontrada() {
     this.estado = false;
     this.progreso = false;
@@ -521,6 +575,35 @@ export class AsistenciasComponent implements OnInit {
           detail: error.error.message,
         });
       },
+    });
+  }
+
+  horaGeneral: any;
+
+  aplicarHora() {
+    this.alumnos.forEach(item => {
+      item.dtAsistenciaHora = this.datos.dtAsistencia;
+      item.habilitar = false;
+    });
+  }
+
+  general: any[] = [
+    {
+      iTipoAsiId: '1',
+      cTipoAsiLetra: 'A',
+      bgColor: 'text-green-500',
+    },
+    {
+      iTipoAsiId: '2',
+      cTipoAsiLetra: 'T',
+      bgColor: 'text-orange-500',
+    },
+  ];
+
+  marcarUniversal: any;
+  marcarTodo(event: any) {
+    this.alumnos.forEach(item => {
+      item.iTipoAsiId = event.value;
     });
   }
 }

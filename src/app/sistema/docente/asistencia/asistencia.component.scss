@@ -4,6 +4,11 @@
     * * vendana modal
 */
 :host ::ng-deep {
+  .p-selectbutton .p-button.p-highlight {
+    background: #b8d7ff;
+    border-color: #b8d7ff;
+  }
+
   .p-toolbar {
     background-color: var(--primary-700);
   }

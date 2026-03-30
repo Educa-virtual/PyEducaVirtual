@@ -8,9 +8,9 @@ import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { SlicePipe } from '@angular/common';
+import { formatDate, SlicePipe } from '@angular/common';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TutorialPlantillasComponent } from '../../tutoriales/tutorial-plantillas/tutorial-plantillas.component';
 import { ADMINISTRADOR_DREMO, DIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 
@@ -65,6 +65,10 @@ export class GestionPlantillasComponent implements OnInit {
   CATEGORIA_SATISFACCION: number = this.encuestasService.CATEGORIA_SATISFACCION;
   CATEGORIA_AUTOEVALUACION: number = this.encuestasService.CATEGORIA_AUTOEVALUACION;
 
+  get controles_periodos(): FormArray {
+    return this.formEncuestaFija.get('controles_periodos') as FormArray;
+  }
+
   constructor(
     private route: ActivatedRoute,
     private encuestasService: EncuestasService,
@@ -106,7 +110,9 @@ export class GestionPlantillasComponent implements OnInit {
 
       this.formEncuestaFija = this.fb.group({
         iCursoId: [null, Validators.required],
-        iPeriodoId: [null, Validators.required],
+        jsonCursos: [null],
+        controles_periodos: this.fb.array([]),
+        jsonPeriodosCursos: [null],
       });
 
       this.formPlantilla = this.fb.group({
@@ -172,12 +178,26 @@ export class GestionPlantillasComponent implements OnInit {
             this.cursos = this.encuestasService.getAreasFija(data.data);
           } else if (Number(this.iCateId) === this.CATEGORIA_AUTOEVALUACION) {
             this.periodos = this.encuestasService.getPeriodosFija(data.data);
+            this.crearControlesPeriodos();
           }
         },
         error: error => {
           console.error('Error obteniendo datos:', error);
         },
       });
+  }
+
+  private crearControlesPeriodos() {
+    const formArray = this.formEncuestaFija.get('controles_periodos') as FormArray;
+    formArray.clear();
+    this.periodos.map((periodo: any) => {
+      const grupo: FormGroup = this.fb.group({
+        iPeriodoId: [periodo.value],
+        iCursoId: [null],
+        jsonCursos: [null],
+      });
+      formArray.push(grupo);
+    });
   }
 
   setBreadCrumbs() {
@@ -211,10 +231,12 @@ export class GestionPlantillasComponent implements OnInit {
         return plantilla;
       if (plantilla.cCreador && plantilla.cCreador.toLowerCase().includes(filtro.toLowerCase()))
         return plantilla;
-      if (
-        plantilla?.dtUltimaModificacion &&
-        plantilla.dtUltimaModificacion.toString().includes(filtro)
-      )
+      const dtUltimaModificacion = formatDate(
+        plantilla.dtUltimaModificacion,
+        'dd/MM/yyyy',
+        'es-PE'
+      );
+      if (plantilla?.dtUltimaModificacion && dtUltimaModificacion.toString().includes(filtro))
         return null;
     });
   }
@@ -394,6 +416,20 @@ export class GestionPlantillasComponent implements OnInit {
   }
 
   generarEncuestaPlantilla(encuesta_reemplazada: any | null = null, plantilla: any) {
+    this.formEncuestaFija.value.controles_periodos.map((periodo: any, index: number) => {
+      this.encuestasService.formControlJsonStringify(
+        this.controles_periodos.at(index) as FormGroup,
+        'jsonCursos',
+        'iCursoId',
+        null,
+        true
+      );
+    });
+    this.encuestasService.formControlJsonStringify(this.formEncuestaFija, 'jsonCursos', 'iCursoId');
+    this.formEncuestaFija
+      .get('jsonPeriodosCursos')
+      .setValue(JSON.stringify(this.controles_periodos.value));
+
     if (Number(this.iCateId) === this.CATEGORIA_SATISFACCION) {
       this.encuestasService
         .crearEncuestaSatisfaccion({
@@ -401,6 +437,7 @@ export class GestionPlantillasComponent implements OnInit {
           iYAcadId: this.iYAcadId,
           iPlanId: plantilla?.iPlanId,
           iEncuId: encuesta_reemplazada?.iEncuId,
+          jsonCursos: this.formEncuestaFija.get('jsonCursos').value,
         })
         .subscribe({
           next: () => {
@@ -422,6 +459,7 @@ export class GestionPlantillasComponent implements OnInit {
           iYAcadId: this.iYAcadId,
           iPlanId: plantilla?.iPlanId,
           iEncuId: encuesta_reemplazada?.iEncuId,
+          jsonPeriodosCursos: this.formEncuestaFija.get('jsonPeriodosCursos').value,
         })
         .subscribe({
           next: () => {

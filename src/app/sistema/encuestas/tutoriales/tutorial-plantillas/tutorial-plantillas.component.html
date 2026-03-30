@@ -315,6 +315,8 @@
       <p>
         Cuando su listado de plantillas se vuelva demasiado extenso, puede elegir
         <strong>archivar algunas plantillas</strong> para que no se muestren en la lista principal.
+        Tenga en cuenta que las plantillas archivadas pueden
+        <strong>seguir siendo usadas para generar encuestas</strong>.
         <strong>Este cambio solo es visible para usted</strong>, es decir que los demás usuarios con
         acceso a la plantilla seguirán visualizándola en sus listas principales.
       </p>
@@ -351,7 +353,7 @@
           [popup]="true"
           appendTo="body"
           class="z-0"
-          [model]="listarAcciones('respuestas')"
+          [model]="listarAcciones('archivar')"
         />
         <button
           [rounded]="true"

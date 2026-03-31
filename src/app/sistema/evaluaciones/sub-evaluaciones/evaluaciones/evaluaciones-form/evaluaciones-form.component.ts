@@ -130,7 +130,6 @@ export class EvaluacionesFormComponent implements OnInit {
       cEvaluacionUrlDrive: [
         '',
         [
-          Validators.required,
           Validators.pattern(
             'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)'
           ),
@@ -289,7 +288,7 @@ export class EvaluacionesFormComponent implements OnInit {
       iNivelEvalId: [null, [Validators.required]],
       cEvaluacionNombre: [null, [Validators.required]],
       cEvaluacionDescripcion: [null, [Validators.required]],
-      cEvaluacionUrlDrive: [null, [Validators.required]],
+      cEvaluacionUrlDrive: [null],
       dtEvaluacionFechaInicio: [null, [Validators.required]],
       dtEvaluacionFechaFin: [null, [Validators.required]],
     });

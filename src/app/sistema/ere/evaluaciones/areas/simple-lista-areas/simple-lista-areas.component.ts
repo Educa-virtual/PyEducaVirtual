@@ -50,6 +50,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
   @Input() iEvaluacionIdHashed: string = '';
   @Input() curso: ICurso;
   @Input() cursosFromParent: ICurso[] = [];
+  @Input() evaluacion: any;
 
   @Output() dialogSubirArchivoEvent = new EventEmitter<{ curso: ICurso }>();
   @Output() dialogConfigurarNivelLogroEvent = new EventEmitter<{
@@ -94,6 +95,26 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     private areasService: AreasService
   ) {}
   ngOnInit(): void {
+    if (this.evaluacion.iUgelId !== null && this.esEspecialistaUgel) {
+      this.colsEspecialista.push(
+        {
+          field: 'activarDescargas',
+          header: 'Estado descarga matriz',
+          width: '10%',
+        },
+        {
+          field: 'acciones',
+          header: 'Acciones',
+          width: '10%',
+        }
+      );
+    } else {
+      this.colsEspecialista.push({
+        field: 'acciones',
+        header: 'Acciones',
+        width: '10%',
+      });
+    }
     this.initializeBreadcrumb();
     this.initializeColumns();
   }
@@ -167,7 +188,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         width: '10%',
       },
       { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
-      { field: 'acciones', header: 'Acciones', width: '10%' },
     ];
 
     this.colsAdministradorDremo = [

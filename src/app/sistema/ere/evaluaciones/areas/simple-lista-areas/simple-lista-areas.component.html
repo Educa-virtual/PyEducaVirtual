@@ -114,7 +114,7 @@
 </div>
 
 <!-- Especialista -->
-<div *ngIf="esEspecialista" class="mb-4">
+<div *ngIf="esEspecialista || esEspecialistaUgel" class="mb-4">
   <div *ngFor="let grado of gradosOrdenados" class="mb-4">
     <p-panel>
       <ng-template pTemplate="header">
@@ -230,6 +230,16 @@
               ></p-button>
             </td>
 
+            <td
+              style="text-align: center; width: 10%"
+              *ngIf="evaluacion.iUgelId !== null && esEspecialistaUgel"
+            >
+              <p-inputSwitch
+                [ngModel]="curso.bDescarga === '1'"
+                (click)="actualizarEstadoDescargaMatriz(curso)"
+              />
+            </td>
+
             <td style="text-align: center">
               <div class="flex gap-1 justify-content-center">
                 <p-button
@@ -274,7 +284,7 @@
 </div>
 
 <!-- Administrador DREMO -->
-<div *ngIf="esAdministradorDremo || esEspecialistaUgel" class="mb-4">
+<div *ngIf="esAdministradorDremo" class="mb-4">
   <div *ngFor="let grado of gradosOrdenados" class="mb-4">
     <p-panel>
       <ng-template pTemplate="header">

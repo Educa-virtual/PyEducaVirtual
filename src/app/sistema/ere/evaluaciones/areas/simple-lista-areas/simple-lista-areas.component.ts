@@ -23,7 +23,7 @@ import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
+import { DIRECTOR_IE, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
 import { environment } from '@/environments/environment';
 import { AreasService } from '../../services/areas.service';
 interface Column {
@@ -343,6 +343,10 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
   }
   get esAdministradorDremo(): boolean {
     return this.iPerfilId === ADMINISTRADOR_DREMO;
+  }
+
+  get esEspecialistaUgel(): boolean {
+    return this.iPerfilId === ESPECIALISTA_UGEL;
   }
 
   eliminarArchivoCuadernillo(curso: ICurso): void {

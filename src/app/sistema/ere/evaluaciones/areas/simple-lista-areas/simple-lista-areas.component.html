@@ -274,7 +274,7 @@
 </div>
 
 <!-- Administrador DREMO -->
-<div *ngIf="esAdministradorDremo" class="mb-4">
+<div *ngIf="esAdministradorDremo || esEspecialistaUgel" class="mb-4">
   <div *ngFor="let grado of gradosOrdenados" class="mb-4">
     <p-panel>
       <ng-template pTemplate="header">

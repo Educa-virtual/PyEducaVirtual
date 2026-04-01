@@ -23,7 +23,7 @@ import { ApiEvaluacionesRService } from '@/app/sistema/ere/evaluaciones/services
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
+import { DIRECTOR_IE, ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
 import { environment } from '@/environments/environment';
 import { AreasService } from '../../services/areas.service';
 interface Column {
@@ -50,6 +50,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
   @Input() iEvaluacionIdHashed: string = '';
   @Input() curso: ICurso;
   @Input() cursosFromParent: ICurso[] = [];
+  @Input() evaluacion: any;
 
   @Output() dialogSubirArchivoEvent = new EventEmitter<{ curso: ICurso }>();
   @Output() dialogConfigurarNivelLogroEvent = new EventEmitter<{
@@ -94,6 +95,26 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     private areasService: AreasService
   ) {}
   ngOnInit(): void {
+    if (this.evaluacion.iUgelId !== null && this.esEspecialistaUgel) {
+      this.colsEspecialista.push(
+        {
+          field: 'activarDescargas',
+          header: 'Estado descarga matriz',
+          width: '10%',
+        },
+        {
+          field: 'acciones',
+          header: 'Acciones',
+          width: '10%',
+        }
+      );
+    } else {
+      this.colsEspecialista.push({
+        field: 'acciones',
+        header: 'Acciones',
+        width: '10%',
+      });
+    }
     this.initializeBreadcrumb();
     this.initializeColumns();
   }
@@ -167,7 +188,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
         width: '10%',
       },
       { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
-      { field: 'acciones', header: 'Acciones', width: '10%' },
     ];
 
     this.colsAdministradorDremo = [
@@ -343,6 +363,10 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
   }
   get esAdministradorDremo(): boolean {
     return this.iPerfilId === ADMINISTRADOR_DREMO;
+  }
+
+  get esEspecialistaUgel(): boolean {
+    return this.iPerfilId === ESPECIALISTA_UGEL;
   }
 
   eliminarArchivoCuadernillo(curso: ICurso): void {

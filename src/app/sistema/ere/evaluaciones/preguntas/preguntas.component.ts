@@ -18,6 +18,7 @@ import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles';
 import { BancoPreguntasComponent } from '../banco-preguntas/banco-preguntas-ere.component';
 import { PreguntasEreService } from '../services/preguntas-ere.service';
 import { Router } from '@angular/router';
+import { ESPECIALISTA_UGEL } from '@/app/servicios/perfilesConstantes';
 @Component({
   selector: 'app-preguntas',
   standalone: true,
@@ -60,7 +61,9 @@ export class PreguntasComponent implements OnInit {
   cantidadMaximaPreguntas: number = 20;
   nIndexAcordionTab: number = null;
   isSecundaria: boolean = false;
-  isDisabled: boolean = this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO;
+  isDisabled: boolean = [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+    this._ConstantesService.iPerfilId
+  );
   preguntaPeso = [
     {
       iPreguntaPesoId: 1,

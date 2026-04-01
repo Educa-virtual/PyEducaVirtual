@@ -124,7 +124,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     this.form.valueChanges.subscribe(value => {
       value;
     });
-    this.showActions = this.iPerfilId !== ADMINISTRADOR_DREMO ? false : true;
+    this.showActions = [ADMINISTRADOR_DREMO, ESPECIALISTA_UGEL].includes(this.iPerfilId);
   }
 
   // obtener idPerfil
@@ -375,7 +375,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
-      isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
+      isVisible: (rowData: any) =>
+        this.iPerfilId === ADMINISTRADOR_DREMO ||
+        (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
     },
     {
       labelTooltip: 'Eliminar',
@@ -383,7 +385,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       accion: 'eliminar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
-      isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
+      isVisible: (rowData: any) =>
+        this.iPerfilId === ADMINISTRADOR_DREMO ||
+        (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
     },
     {
       labelTooltip: 'Ver lista de áreas',
@@ -391,10 +395,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       accion: 'verListaAreas',
       type: 'item',
       class: 'p-button-rounded p-button-help p-button-text',
-      isVisible: () =>
-        this.iPerfilId === ESPECIALISTA_DREMO ||
-        this.iPerfilId === ADMINISTRADOR_DREMO ||
-        this.iPerfilId === DIRECTOR_IE,
+      isVisible: (rowData: any) =>
+        (rowData.iUgelId === null &&
+          [ESPECIALISTA_DREMO, ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(this.iPerfilId)) ||
+        (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
     },
     {
       labelTooltip: 'Gestionar exclusiones',
@@ -403,10 +407,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: () =>
-        this.iPerfilId === DIRECTOR_IE ||
-        this.iPerfilId === ESPECIALISTA_DREMO ||
-        this.iPerfilId === ESPECIALISTA_UGEL ||
-        this.iPerfilId === ADMINISTRADOR_DREMO,
+        [DIRECTOR_IE, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL, ADMINISTRADOR_DREMO].includes(
+          this.iPerfilId
+        ),
     },
     {
       labelTooltip: 'Asignar horas de inicio y fin a las áreas',

@@ -42,7 +42,7 @@ const routes: Routes = [
     component: ListaAreasComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, DIRECTOR_IE],
+      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, DIRECTOR_IE, ESPECIALISTA_UGEL],
       breadcrumb: 'Lista de áreas',
       icon: 'pi pi-list-check',
     },
@@ -62,7 +62,7 @@ const routes: Routes = [
     component: PreguntasComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
+      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL],
       breadcrumb: 'Gestionar Preguntas',
       icon: 'pi pi-list-check',
     },
@@ -72,7 +72,7 @@ const routes: Routes = [
     component: VistaPreviaEreComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
+      expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL],
       breadcrumb: 'Vista previa Preguntas',
       icon: 'pi pi-list-check',
     },

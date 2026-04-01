@@ -77,9 +77,7 @@ export class InicioComponent implements OnInit {
   ngOnInit() {
     this.obtenerPerfiles();
     const perfil = this.ls.getItem('dremoPerfil');
-    if (perfil) {
-      this.cargarComunicadosDestino();
-    } else {
+    if (!perfil) {
       this.openModal();
     }
   }
@@ -108,34 +106,34 @@ export class InicioComponent implements OnInit {
     }, 200);
   }
 
-  cargarComunicadosDestino(): void {
-    const perfil = this.perfiles.map(item => item.iPerfilId); // Se filtran los id de los perfiles
-    const params = {
-      petition: 'post',
-      group: 'com',
-      prefix: 'comunicado',
-      ruta: 'obtener_comunicados_destino', // Ruta definida en el backend
-      data: {
-        iPersId: this.getUserId(), // Se obtiene el ID del usuario
-        iYAcadId: this.iYAcadId,
-        perfil: perfil,
-        iSedeId: this.iSedeId,
-      },
-    };
+  // cargarComunicadosDestino(): void {
+  //   const perfil = this.perfiles.map(item => item.iPerfilId); // Se filtran los id de los perfiles
+  //   const params = {
+  //     petition: 'post',
+  //     group: 'com',
+  //     prefix: 'comunicado',
+  //     ruta: 'obtener_comunicados_destino', // Ruta definida en el backend
+  //     data: {
+  //       iPersId: this.getUserId(), // Se obtiene el ID del usuario
+  //       iYAcadId: this.iYAcadId,
+  //       perfil: perfil,
+  //       iSedeId: this.iSedeId,
+  //     },
+  //   };
 
-    this.generalService.getGralPrefix(params).subscribe({
-      next: (response: any) => {
-        if (response && response.data && response.data?.length > 0) {
-          // Asigna el array completo de comunicados
-          this.comunicados = response.data;
-          this.displayComunicado = true;
-        }
-      },
-      error: err => {
-        console.error('Error al obtener comunicados destino', err);
-      },
-    });
-  }
+  //   this.generalService.getGralPrefix(params).subscribe({
+  //     next: (response: any) => {
+  //       if (response && response.data && response.data?.length > 0) {
+  //         // Asigna el array completo de comunicados
+  //         this.comunicados = response.data;
+  //         this.displayComunicado = true;
+  //       }
+  //     },
+  //     error: err => {
+  //       console.error('Error al obtener comunicados destino', err);
+  //     },
+  //   });
+  // }
 
   // Método auxiliar para obtener el ID del usuario
   getUserId(): number {

@@ -85,13 +85,6 @@ export class AppTopBarComponent implements OnInit {
       cEntNombreLargo: '-',
     };
     this.selectedPerfil = perfil ? perfil : perfil_data;
-
-    if (user.iDocenteId) {
-      this.notificacionDocente();
-    }
-    if (user.iEstudianteId) {
-      this.notificacionEstudiante();
-    }
     //Bandarines por fiestas patrias
     const hoy = new Date();
     const limite_banderin = new Date(hoy.getFullYear(), 6); // 31 de julio

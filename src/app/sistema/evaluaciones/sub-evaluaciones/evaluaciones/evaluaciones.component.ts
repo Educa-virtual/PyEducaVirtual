@@ -398,7 +398,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       isVisible: (rowData: any) =>
         (rowData.iUgelId === null &&
           [ESPECIALISTA_DREMO, ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(this.iPerfilId)) ||
-        (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
+        ([ESPECIALISTA_UGEL, DIRECTOR_IE].includes(this.iPerfilId) && rowData.iUgelId !== null),
     },
     {
       labelTooltip: 'Gestionar exclusiones',

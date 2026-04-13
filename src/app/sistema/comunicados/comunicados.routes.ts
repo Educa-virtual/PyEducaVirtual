@@ -52,7 +52,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'lista-comunicados',
+    path: 'lista-comunicados/:id',
     component: ListaComunicadosComponent,
     canActivate: [RoleGuard],
     data: {

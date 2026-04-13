@@ -160,7 +160,7 @@ export class GestionComunicadosComponent implements OnInit {
   }
 
   verListaComunicados() {
-    this.router.navigate([`/comunicados/lista-comunicados`]);
+    this.router.navigate([`/comunicados/lista-comunicados`, 0]);
   }
 
   accionBtnItemTable({ accion, item }) {

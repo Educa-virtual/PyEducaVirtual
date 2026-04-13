@@ -5,6 +5,7 @@ import { ComunicadosService } from '../services/comunicados.services';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { formatDate, SlicePipe } from '@angular/common';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-lista-comunicados',
@@ -35,7 +36,8 @@ export class ListaComunicadosComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private comunicadosService: ComunicadosService,
-    private store: LocalStoreService
+    private store: LocalStoreService,
+    private route: ActivatedRoute
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
@@ -69,6 +71,18 @@ export class ListaComunicadosComponent implements OnInit {
               lista.cAdjunto = JSON.parse(lista.cAdjunto);
             }
           });
+
+          const id = Number(this.route.snapshot.paramMap.get('id'));
+
+          if (id && id !== 0) {
+            const seleccionado = this.comunicados_filtrados.find(
+              item => Number(item.iComunicadoId) === id
+            );
+
+            if (seleccionado) {
+              this.seleccionarBandeja({ data: seleccionado });
+            }
+          }
         },
         error: error => {
           this.messageService.add({
@@ -77,6 +91,13 @@ export class ListaComunicadosComponent implements OnInit {
             detail: error.error.message,
           });
         },
+        // complete: () => {
+        //   const id = this.route.snapshot.paramMap.get('id');
+        //   if (id != '0') {
+        //     const seleccionado = this.comunicados_filtrados.find(item => item.iComunicadoId === id);
+        //     this.seleccionarBandeja({ data: seleccionado });
+        //   }
+        // },
       });
   }
 
@@ -137,24 +158,17 @@ export class ListaComunicadosComponent implements OnInit {
     this.mensaje = datos;
     this.bBandeja = true;
 
-    this.comunicadosService.recepcionarComunicado(datos).subscribe({
-      complete: () => {
-        this.listarComunicados();
-        // this.messageService.add({
-        //   severity: 'success',
-        //   summary: 'Comunicado enviado',
-        //   detail: 'El comunicado ha sido enviado correctamente',
-        // });
-      },
-      error: error => {
-        console.log(error.error.message);
-        // this.messageService.add({
-        //   severity: 'error',
-        //   summary: 'Error al enviar el comunicado',
-        //   detail: error.error.message,
-        // });
-      },
-    });
+    const verificado = this.mensaje.iRecepcionId;
+    if (!verificado) {
+      this.comunicadosService.recepcionarComunicado(datos).subscribe({
+        next: () => {
+          this.listarComunicados();
+        },
+        error: error => {
+          console.log(error.error.message);
+        },
+      });
+    }
   }
 
   descargarArchivo(archivo: any) {

@@ -51,7 +51,9 @@
       <ul class="list-none p-0 m-0 flex flex-column gap-2">
         <li *ngFor="let lista of comunicados">
           <a
-            [routerLink]="['/comunicados/lista-comunicados']"
+            [routerLink]="
+              lista.iComunicadoId ? ['/comunicados/lista-comunicados', lista.iComunicadoId] : '0'
+            "
             class="flex align-items-center gap-2 hover-comunicado"
           >
             <div style="width: 32px">

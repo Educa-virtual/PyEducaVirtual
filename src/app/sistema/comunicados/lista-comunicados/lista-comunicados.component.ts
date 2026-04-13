@@ -138,13 +138,14 @@ export class ListaComunicadosComponent implements OnInit {
     this.bBandeja = true;
 
     this.comunicadosService.recepcionarComunicado(datos).subscribe({
-      //next: () => {
-      // this.messageService.add({
-      //   severity: 'success',
-      //   summary: 'Comunicado enviado',
-      //   detail: 'El comunicado ha sido enviado correctamente',
-      // });
-      //},
+      complete: () => {
+        this.listarComunicados();
+        // this.messageService.add({
+        //   severity: 'success',
+        //   summary: 'Comunicado enviado',
+        //   detail: 'El comunicado ha sido enviado correctamente',
+        // });
+      },
       error: error => {
         console.log(error.error.message);
         // this.messageService.add({

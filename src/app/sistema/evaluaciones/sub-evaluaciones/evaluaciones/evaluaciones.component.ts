@@ -301,6 +301,14 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       type: 'text',
       width: '10rem',
       text: 'left',
+      text_header: 'left',
+    },
+    {
+      field: 'cAmbito',
+      header: 'Ámbito',
+      type: 'text',
+      width: '5rem',
+      text: 'center',
       text_header: 'center',
     },
     {
@@ -342,7 +350,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     {
       field: '',
       header: 'Acciones',
-      type: 'actions',
+      type: 'dropdown-actions',
       width: '5rem',
       text: 'center',
       text_header: 'center',
@@ -367,14 +375,14 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-eye',
       accion: 'ver',
       type: 'item',
-      class: 'p-button-rounded p-button-primary p-button-text',
+      class: 'p-menuitem-link text-primary',
     },
     {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
+      class: 'p-menuitem-link text-yellow-500',
       isVisible: (rowData: any) =>
         this.iPerfilId === ADMINISTRADOR_DREMO ||
         (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
@@ -384,7 +392,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-trash',
       accion: 'eliminar',
       type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
+      class: 'p-menuitem-link text-red-500',
       isVisible: (rowData: any) =>
         this.iPerfilId === ADMINISTRADOR_DREMO ||
         (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
@@ -394,7 +402,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-list-check',
       accion: 'verListaAreas',
       type: 'item',
-      class: 'p-button-rounded p-button-help p-button-text',
+      class: 'p-menuitem-link text-purple-500',
       isVisible: (rowData: any) =>
         (rowData.iUgelId === null &&
           [ESPECIALISTA_DREMO, ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(this.iPerfilId)) ||
@@ -405,7 +413,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-user-minus',
       accion: 'verListaExclusion',
       type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
+      class: 'p-menuitem-link text-red-500',
       isVisible: () =>
         [DIRECTOR_IE, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL, ADMINISTRADOR_DREMO].includes(
           this.iPerfilId
@@ -416,7 +424,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-clock',
       accion: 'asignarHoraAreas',
       type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
+      class: 'p-menuitem-link text-secondary',
       isVisible: () => this.iPerfilId === DIRECTOR_IE,
     },
     {
@@ -424,7 +432,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-verified',
       accion: 'liberarUgelEvaluacion',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
+      class: 'p-menuitem-link text-green-500',
       isVisible: () => this.iPerfilId === ESPECIALISTA_UGEL,
     },
     /*{

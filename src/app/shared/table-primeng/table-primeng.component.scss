@@ -94,3 +94,9 @@ tr {
     display: table-cell !important;
   }
 }
+
+:host ::ng-deep .p-datatable-header {
+  border: 0 none !important;
+  padding: 0 !important;
+  background: none !important;
+}

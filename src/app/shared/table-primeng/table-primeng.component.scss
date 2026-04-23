@@ -100,3 +100,7 @@ tr {
   padding: 0 !important;
   background: none !important;
 }
+
+:host ::ng-deep .p-datatable-table {
+  min-width: 768px;
+}

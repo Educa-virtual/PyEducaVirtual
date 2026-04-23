@@ -29,7 +29,6 @@ import {
   ESPECIALISTA_DREMO,
   ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles';
-import { FormLiberarAreasUgelComponent } from '@/app/sistema/ere/evaluaciones/liberar-areas-ugel/form-liberar-areas-ugel.component';
 import { AsignarHorasAreasComponent } from './asignar-horas-areas/asignar-horas-areas.component';
 
 @Component({
@@ -39,7 +38,6 @@ import { AsignarHorasAreasComponent } from './asignar-horas-areas/asignar-horas-
     TablePrimengComponent,
     PrimengModule,
     ContainerPageAccionbComponent,
-    FormLiberarAreasUgelComponent,
     AsignarHorasAreasComponent,
   ],
   providers: [DialogService],
@@ -69,6 +67,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
 
+  es_especialista: boolean = false;
+
   private _dialogService = inject(DialogService);
   private _apiEre = inject(ApiEvaluacionesRService);
   private _MessageService = inject(MessageService);
@@ -85,13 +85,15 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
   };
   public data = [];
   //public showModalAsignarHorasAreas: boolean = false
-  public showModalLiberarUgel: boolean = false;
   form: FormGroup;
   @ViewChild(AsignarHorasAreasComponent)
   dialogAsignarHorasAreasComponent!: AsignarHorasAreasComponent;
 
   private _formBuilder = inject(FormBuilder); //form para obtener la variable
   public guardarIniFinCurso: FormGroup = this._formBuilder.group({});
+
+  // obtener idPerfil
+  iPerfilId: number = this._constantesService.iPerfilId;
 
   // Variable donde se almacenan las acciones filtradas
   // public accionesTabla: IActionTable[] = [];
@@ -105,14 +107,18 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     private utils: UtilService
   ) {
     this.form = this.fb.group({});
+    this.es_especialista = [ESPECIALISTA_UGEL, ESPECIALISTA_DREMO].includes(this.iPerfilId);
+    this.setBreadCrumbs();
   }
   resetSelect: boolean = false;
 
-  ngOnInit() {
+  setBreadCrumbs() {
     this.breadCrumbItems = [{ label: 'ERE' }, { label: 'Evaluaciones' }];
     this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
+  }
+
+  ngOnInit() {
     this.obtenerEvaluacion();
-    this.obtenerPerfil();
     this.caption = 'Evaluaciones';
     this.dataSubject.subscribe((newData: any[]) => {
       this.data = newData;
@@ -127,12 +133,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     this.showActions = [ADMINISTRADOR_DREMO, ESPECIALISTA_UGEL].includes(this.iPerfilId);
   }
 
-  // obtener idPerfil
-  iPerfilId: number;
-
-  obtenerPerfil() {
-    this.iPerfilId = this._constantesService.iPerfilId;
-  }
   ejecutarAccion(event: { accion: string; item: IActionContainer }) {
     if (event.accion === 'agregar') {
       // Lógica para agregar
@@ -289,7 +289,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
   columnasBase: IColumn[] = [
     {
       type: 'item',
-      width: '1rem',
+      width: '5%',
       field: 'index',
       header: '#',
       text_header: 'center',
@@ -299,7 +299,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: 'cEvaluacionNombre',
       header: 'Nombre evaluación',
       type: 'text',
-      width: '10rem',
+      width: '35%',
       text: 'left',
       text_header: 'left',
     },
@@ -307,7 +307,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: 'cAmbito',
       header: 'Ámbito',
       type: 'text',
-      width: '5rem',
+      width: '10%',
       text: 'center',
       text_header: 'center',
     },
@@ -315,7 +315,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: 'cTipoEvalDescripcion',
       header: 'Tipo evaluación',
       type: 'text',
-      width: '3rem',
+      width: '10%',
       text: 'center',
       text_header: 'center',
     },
@@ -323,7 +323,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: 'cNivelEvalNombre',
       header: 'Nivel evaluación',
       type: 'text',
-      width: '4rem',
+      width: '10%',
       text: 'center',
       text_header: 'center',
     },
@@ -331,7 +331,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: 'dtEvaluacionFechaInicio',
       header: 'Fecha inicio',
       type: 'text',
-      width: '4rem',
+      width: '10%',
       text: 'center',
       text_header: 'center',
     },
@@ -339,7 +339,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: 'dtEvaluacionFechaFin',
       header: 'Fecha fin',
       type: 'text',
-      width: '4rem',
+      width: '10%',
       text: 'center',
       text_header: 'center',
     },
@@ -351,22 +351,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       field: '',
       header: 'Acciones',
       type: 'dropdown-actions',
-      width: '5rem',
+      width: '10%',
       text: 'center',
       text_header: 'center',
     },
   ];
-  columnasAuto: IColumn[] = [
-    {
-      type: 'radio-action',
-      width: '3rem',
-      field: 'iConfigId',
-      header: 'Seleccionar',
-      text_header: 'center',
-      text: 'center',
-    },
-    ...this.columnasBase,
-  ]; // Perfil del usuario
 
   // Acciones del listar evaluaciones creadas
   public accionesTabla: IActionTable[] = [
@@ -382,7 +371,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
-      class: 'p-menuitem-link text-yellow-500',
+      class: 'p-menuitem-link text-orange-500',
       isVisible: (rowData: any) =>
         this.iPerfilId === ADMINISTRADOR_DREMO ||
         (this.iPerfilId === ESPECIALISTA_UGEL && rowData.iUgelId !== null),
@@ -420,20 +409,12 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         ),
     },
     {
-      labelTooltip: 'Asignar horas de inicio y fin a las áreas',
+      labelTooltip: 'Asignar horas de inicio y fin',
       icon: 'pi pi-clock',
       accion: 'asignarHoraAreas',
       type: 'item',
       class: 'p-menuitem-link text-secondary',
       isVisible: () => this.iPerfilId === DIRECTOR_IE,
-    },
-    {
-      labelTooltip: 'Liberar evaluación',
-      icon: 'pi pi-verified',
-      accion: 'liberarUgelEvaluacion',
-      type: 'item',
-      class: 'p-menuitem-link text-green-500',
-      isVisible: () => this.iPerfilId === ESPECIALISTA_UGEL,
     },
     /*{
             labelTooltip: 'Resultados',
@@ -561,17 +542,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         break;
       case 'resultados':
         alert('En proceso de desarrollo');
-        break;
-      case 'liberarUgelEvaluacion':
-        if (!(this.iPerfilId === ESPECIALISTA_UGEL)) {
-          return;
-        }
-        this.item = item;
-        this.showModalLiberarUgel = true;
-
-        break;
-      case 'close-modal-liberar-ugel-evaluacion':
-        this.showModalLiberarUgel = false;
         break;
     }
   }

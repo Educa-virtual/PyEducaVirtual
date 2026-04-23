@@ -3,7 +3,7 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-xl font-bold">LISTA DE EVALUACIONES</div>
+      <div class="flex text-2xl font-bold">Lista de evaluaciones</div>
     </div>
   </ng-template>
 
@@ -13,7 +13,9 @@
         severity="success"
         pTooltip="Nueva evaluación"
         tooltipPosition="top"
-        (click)="agregarEvaluacion()"
+        (click)="agregarEditarPregunta(null)"
+        size="small"
+        *ngIf="es_especialista"
       >
         <i class="pi pi-fw pi-plus"></i>
         <span class="hidden md:inline ml-2">Nueva</span>
@@ -36,9 +38,3 @@
 <p-toast key="evaluaciones"></p-toast>
 
 <app-asignar-horas-areas></app-asignar-horas-areas>
-
-<app-form-liberar-areas-ugel
-  [showModal]="showModalLiberarUgel"
-  [data]="areas"
-  [titulo]="'Liberar áreas para la evaluación: '"
-></app-form-liberar-areas-ugel>

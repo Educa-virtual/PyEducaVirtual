@@ -6,7 +6,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
@@ -71,6 +71,13 @@ export class GestionMatriculasComponent implements OnInit {
   activeIndex: number = 0;
   deserciones: any[] = [];
 
+  breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
+  breadCrumbItems: MenuItem[] = [
+    {
+      label: 'Gestionar matrículas',
+    },
+  ];
+
   selectedItems = [];
   estudianteSeleccionado: any;
 
@@ -80,7 +87,7 @@ export class GestionMatriculasComponent implements OnInit {
   columns = [
     {
       type: 'item',
-      width: '1rem',
+      width: '5%',
       field: 'item',
       header: '',
       text_header: 'left',
@@ -88,7 +95,7 @@ export class GestionMatriculasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '10%',
       field: 'cEstCodigo',
       header: 'Código',
       text_header: 'left',
@@ -96,101 +103,61 @@ export class GestionMatriculasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
-      field: 'cPersDocumento',
+      width: '10%',
+      field: 'cPersTipoNumDocumento',
       header: 'Documento',
-      text_header: 'center',
+      text_header: 'left',
       text: 'left',
     },
     {
       type: 'text',
-      width: '10rem',
-      field: '_cPersNomape',
+      width: '25%',
+      field: 'cPersNombreCompleto',
       header: 'Estudiante',
       text_header: 'left',
       text: 'left',
     },
     {
-      type: 'tag',
-      width: '5rem',
-      field: 'cGradoNombre',
+      type: 'text',
+      width: '10%',
+      field: 'cGrado',
       header: 'Grado',
-      styles: {
-        Primero: 'info',
-        Segundo: 'warning',
-        Tercero: 'contrast',
-        Cuarto: 'danger',
-        Quinto: 'success',
-        F: 'success',
-        G: 'success',
-      },
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '10%',
       field: 'cSeccionNombre',
       header: 'Seccion',
       text_header: 'center',
-
-      //severity: (row) => (row.cSeccionNombre === 'UNICA' ? 'success' : 'success'),
-      //  styles: { 'A': 'success','B': 'warning','C': 'success','D': 'success','E': 'success','F': 'success','G': 'success' },
       text: 'center',
     },
     {
       type: 'text',
-      width: '6rem',
+      width: '10%',
       field: 'cTurnoNombre',
       header: 'Turno',
       text_header: 'center',
       text: 'center',
     },
-    // {
-    //   type: 'cell-editor',
-    //   field: 'iEstado',
-    //   header: 'Estado',
-    //   text_header: null,
-    //   width: '15%',
-    //   inputType: 'dropdown',
-    //   placeholder: 'Seleccionar estado',
-    //   options: [
-    //     { label: 'Activo', value: 'A' },
-    //     { label: 'Inactivo', value: 'I' }
-    //   ],
-    //   text: 'center',
-    // },
     {
       type: 'tag',
-      width: '5rem',
+      width: '10%',
       field: 'cTipoEstadoMatricula',
       header: 'Estado',
       text_header: 'center',
       styles: {
         Definitivo: 'success',
-        Traslado: 'warning',
+        Traslado: 'danger',
         Abandono: 'danger',
-        'En proceso': 'danger',
+        'En proceso': 'warning',
       },
       text: 'center',
     },
-    // {
-    //   field: 'cSeccionNombre',
-    //   header: 'Tipo Matrícula',
-    //   text_header: 'center',
-    //   type: 'tag',
-    //   width: '15%',
-    //   inputType:'dropdown',
-    //   placeholder: 'Seleccionar estado',
-    //   severity: seleccionar() 'info',
-    //   options: [
-
-    //   ],
-    //   text: 'center'
-    // },
     {
-      type: 'actions',
-      width: '3rem',
+      type: 'dropdown-actions',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
@@ -224,31 +191,31 @@ export class GestionMatriculasComponent implements OnInit {
           icon: 'pi pi-eye',
           accion: 'asig_apoderado',
           type: 'item',
-          class: 'p-button-rounded p-button-warning p-button-text',
+          class: 'p-menuitem-link text-primary',
         },
       ];
     } else {
       this.actions = [
         {
-          labelTooltip: 'Agregar deserción',
-          icon: 'pi pi-user-minus',
-          accion: 'agregar_desercion',
-          type: 'item',
-          class: 'p-button-rounded p-button-danger p-button-text',
-        },
-        {
-          labelTooltip: 'Editar apoderado',
-          icon: 'pi pi-user-plus',
-          accion: 'asig_apoderado',
-          type: 'item',
-          class: 'p-button-rounded p-button-warning p-button-text',
-        },
-        {
-          labelTooltip: 'Editar Matrícula',
+          labelTooltip: 'Editar matrícula',
           icon: 'pi pi-pencil',
           accion: 'editar_matricula',
           type: 'item',
-          class: 'p-button-rounded p-button-primary p-button-text',
+          class: 'p-menuitem-link text-orange-500',
+        },
+        {
+          labelTooltip: 'Agregar deserción',
+          icon: 'pi pi-ban',
+          accion: 'agregar_desercion',
+          type: 'item',
+          class: 'p-menuitem-link text-red-500',
+        },
+        {
+          labelTooltip: 'Gestionar apoderados',
+          icon: 'pi pi-user-plus',
+          accion: 'asig_apoderado',
+          type: 'item',
+          class: 'p-menuitem-link text-primary',
         },
       ];
     }
@@ -455,14 +422,12 @@ export class GestionMatriculasComponent implements OnInit {
 
   filterGrados() {
     this.nivel_grados = this.grados_secciones_turnos.reduce((prev: any, current: any) => {
-      const x = prev.find(
-        item => item.id === current.iNivelGradoId && item.nombre === current.cGradoNombre
-      );
+      const x = prev.find(item => item.id === current.iNivelGradoId);
       if (!x) {
         return prev.concat([
           {
             id: current.iNivelGradoId,
-            nombre: current.cGradoNombre,
+            nombre: current.cGradoAbreviacion + ' ' + current.cGradoNombre,
           },
         ]);
       } else {

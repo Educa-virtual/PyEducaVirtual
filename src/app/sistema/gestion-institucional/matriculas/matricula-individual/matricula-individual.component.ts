@@ -8,7 +8,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { DatosEstudianteService } from '../../services/datos-estudiante-service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { CompartirMatriculaService } from '../../services/compartir-matricula.service';
 
 @Component({
@@ -30,6 +30,17 @@ export class MatriculaIndividualComponent implements OnInit {
   nivel_grados: Array<object>;
   secciones: Array<object>;
   turnos: Array<object>;
+
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [
+    {
+      label: 'Gestionar matrículas',
+      routerLink: ['/gestion-institucional/gestion-matriculas'],
+    },
+    {
+      label: 'Matricula',
+    },
+  ];
 
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
 

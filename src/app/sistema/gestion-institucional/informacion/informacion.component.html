@@ -6,22 +6,44 @@
   <p-toast />
 
   <div class="grid p-fluid mt-3">
-    <p-fieldset legend="Insignia Institucional" [toggleable]="true" [collapsed]="false">
-      <div class="field col-12 flex flex-column align-items-center">
-        <img [src]="logo" alt="Logo del proyecto" height="90" style="overflow: hidden" />
-      </div>
+    <div class="field col-12 xl:col-4 lg:col-6">
+      <p-fieldset legend="Insignia Institucional" [toggleable]="false">
+        <div class="grid">
+          <div class="col-12 xl:col-12 lg:col-12 md:col-6 sm:col-6 text-center">
+            <img [src]="logo" alt="Logo del proyecto" height="90" style="overflow: hidden" />
+            <div class="block font-medium">Código modular</div>
+            <div class="block font-bold">{{ perfil.cIieeCodigoModular }}</div>
+          </div>
 
-      <div class="field col-12 flex flex-column align-items-center">
-        <span class="text-sm font-medium text-500">Código modular</span>
-        <span class="text-lg font-bold text-900">{{ perfil.cIieeCodigoModular }}</span>
-      </div>
-    </p-fieldset>
-
-    <div class="field col-12 md:col-8">
+          <div class="col-12 xl:col-12 lg:col-12 md:col-6 sm:col-6">
+            <p-fileUpload
+              #escudo
+              mode="basic"
+              chooseLabel="Subir"
+              chooseIcon="pi pi-upload"
+              styleClass="block mb-1"
+              name="escudo"
+              accept="image/*"
+              maxFileSize="1000000"
+              (onSelect)="subirImagen($event, escudo)"
+            >
+            </p-fileUpload>
+            <p-button
+              styleClass="block"
+              icon="pi pi-save"
+              label="Guardar"
+              severity="success"
+              (click)="guardarEscudo()"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+    <div class="field col-12 xl:col-8 lg:col-6">
       <form [formGroup]="form">
-        <p-fieldset legend="Información de la Institución" [toggleable]="true" [collapsed]="false">
+        <p-fieldset legend="Información de la Institución" [toggleable]="false">
           <div class="grid p-fluid mt-2">
-            <div class="field col-12 md:col-6">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
               <span class="p-float-label">
                 <input
                   pInputText
@@ -33,7 +55,7 @@
               </span>
             </div>
 
-            <div class="field col-12 md:col-6">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
               <span class="p-float-label">
                 <input
                   pInputText
@@ -46,7 +68,7 @@
             </div>
           </div>
           <div class="grid p-fluid mt-2">
-            <div class="field col-12 md:col-6">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
               <span class="p-float-label">
                 <input
                   pInputText
@@ -57,7 +79,7 @@
                 <label for="cIieeRslCreacion">Resolución de creación</label>
               </span>
             </div>
-            <div class="field col-12 md:col-6">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
               <span class="p-float-label">
                 <input
                   pInputText
@@ -68,23 +90,18 @@
                 <label for="cIieeDireccion">Dirección</label>
               </span>
             </div>
-            <div class="field col-12 md:col-12">
+            <div class="field col-12">
               <label for="cIieeUrlReglamentoInterno">Reglamento</label>
               <p-inputGroup>
                 <p-inputGroupAddon>
                   <i class="pi pi-link" style="color: #333437"></i>
                 </p-inputGroupAddon>
-                <!-- <input type="hidden" pInputText
-                  [placeholder]="filesUrl.length ? filesUrl[0]['name'] : 'seleccionar reglamento'"
-                  class="w-full p-inputtext-sm opacity-100" formControlName="cIieeUrlReglamentoInterno" pInputText
-                  readonly /> -->
                 <input
                   type="text"
                   pInputText
-                  [placeholder]="filesUrl.length ? filesUrl[0]['name'] : 'seleccionar reglamento'"
+                  [placeholder]="filesUrl ? filesUrl['nombre'] : 'seleccionar reglamento'"
                   class="w-full p-inputtext-sm opacity-100"
-                  formControlName="reglamentoInterno"
-                  pInputText
+                  formControlName="cIieeUrlReglamentoInterno"
                   readonly
                 />
                 <button
@@ -95,15 +112,11 @@
                   class="p-button-primary btn-file-image"
                 >
                   <i class="pi pi-upload"></i
-                  ><input
-                    type="file"
-                    (change)="onUploadChange($event, 'reglamento')"
-                    accept=".pdf "
-                  />
+                  ><input type="file" (change)="subirReglamento($event)" accept=".pdf" />
                 </button>
                 <button
                   type="button"
-                  (click)="openLink(filesUrl.length ? filesUrl[0]['ruta'] : null)"
+                  (click)="descargarArchivo(filesUrl ? filesUrl['enlace'] : null)"
                   [disabled]="!filesUrl"
                   pButton
                   icon="pi pi-eye"
@@ -112,6 +125,15 @@
                   &nbsp;
                 </button>
               </p-inputGroup>
+            </div>
+            <div class="col-12 xl:col-offset-6 xl:col-6 lg:col-12 md:col-12 sm:col-12">
+              <p-button
+                styleClass="block"
+                icon="pi pi-save"
+                label="Actualizar Datos"
+                severity="success"
+                (click)="btnItem('update')"
+              />
             </div>
           </div>
         </p-fieldset>

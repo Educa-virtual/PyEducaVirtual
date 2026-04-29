@@ -33,10 +33,10 @@ import {
   ADMINISTRADOR_DREMO,
   ESPECIALISTA_UGEL,
   ESPECIALISTA_DREMO,
+  DOCENTE,
 } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
-import { GestionarMatriculasDirectorComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas-director/gestionar-matriculas-director.component';
 import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-indicadores/reporte-indicadores.component';
 
 import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
@@ -337,11 +337,11 @@ const routes: Routes = [
     },
   },
   {
-    path: 'gestion-matriculas',
+    path: 'gestionar-matriculas',
     component: GestionMatriculasComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [DIRECTOR_IE],
+      expectedRole: [DIRECTOR_IE, DOCENTE],
     },
   },
   {
@@ -353,6 +353,24 @@ const routes: Routes = [
     },
   },
   {
+    path: 'matricula-individual/:iMatrId/editar',
+    component: MatriculaIndividualComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE],
+      solo_ver: false,
+    },
+  },
+  {
+    path: 'matricula-individual/:iMatrId/ver',
+    component: MatriculaIndividualComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DIRECTOR_IE, DOCENTE],
+      solo_ver: true,
+    },
+  },
+  {
     path: 'matricula-masiva',
     component: MatriculaMasivaComponent,
     canActivate: [RoleGuard],
@@ -360,9 +378,6 @@ const routes: Routes = [
       expectedRole: [DIRECTOR_IE],
     },
   },
-  { path: 'gestionar-matriculas', component: GestionarMatriculasDirectorComponent },
-  { path: 'matricula-individual', component: MatriculaIndividualComponent },
-  { path: 'matricula-masiva', component: MatriculaMasivaComponent },
 
   {
     path: 'estudiante',

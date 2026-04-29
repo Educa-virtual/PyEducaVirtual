@@ -189,7 +189,7 @@ export class GestionMatriculasComponent implements OnInit {
         {
           labelTooltip: 'Ver apoderados',
           icon: 'pi pi-eye',
-          accion: 'asig_apoderado',
+          accion: 'apoderado',
           type: 'item',
           class: 'p-menuitem-link text-primary',
         },
@@ -199,21 +199,21 @@ export class GestionMatriculasComponent implements OnInit {
         {
           labelTooltip: 'Editar matrícula',
           icon: 'pi pi-pencil',
-          accion: 'editar_matricula',
+          accion: 'editar',
           type: 'item',
           class: 'p-menuitem-link text-orange-500',
         },
         {
           labelTooltip: 'Agregar deserción',
           icon: 'pi pi-ban',
-          accion: 'agregar_desercion',
+          accion: 'desercion',
           type: 'item',
           class: 'p-menuitem-link text-red-500',
         },
         {
           labelTooltip: 'Gestionar apoderados',
           icon: 'pi pi-user-plus',
-          accion: 'asig_apoderado',
+          accion: 'apoderado',
           type: 'item',
           class: 'p-menuitem-link text-primary',
         },
@@ -231,7 +231,7 @@ export class GestionMatriculasComponent implements OnInit {
       console.log(error, 'error de formulario');
     }
     this.getTiposDesercion();
-    this.searchMatriculas();
+    this.listarMatriculas();
     this.searchGradoSeccionTurno();
     this.getTiposMatriculas();
 
@@ -291,11 +291,11 @@ export class GestionMatriculasComponent implements OnInit {
   }
 
   accionBtnItemTable({ accion, item }) {
-    if (accion === 'editar_matricula') {
-      this.compartirMatriculaService.setiMatrId(item?.iMatrId);
-      this.router.navigate(['/gestion-institucional/matricula-individual']);
+    if (accion === 'editar') {
+      const iMatrId = item?.iMatrId;
+      this.router.navigate([`/gestion-institucional/matricula-individual/${iMatrId}/editar`]);
     }
-    if (accion === 'asig_apoderado') {
+    if (accion === 'apoderado') {
       this.bApoderado = true; // muestra dialogo de apoderado
       this.iEstudianteId = item?.iEstudianteId;
       this.caption = this.soloLectura
@@ -322,7 +322,7 @@ export class GestionMatriculasComponent implements OnInit {
       this.desercion = item;
     }
 
-    if (accion === 'agregar_desercion') {
+    if (accion === 'desercion') {
       this.caption = 'Agregar deserción de : ' + item?._cPersNomape;
       this.c_accion = 'agregar';
       this.matricula = item;
@@ -344,7 +344,7 @@ export class GestionMatriculasComponent implements OnInit {
         header: 'Anular matrícula',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.deleteMatricula(item?.iMatrId);
+          this.borrarMatricula(item?.iMatrId);
         },
       });
     }
@@ -357,9 +357,9 @@ export class GestionMatriculasComponent implements OnInit {
     }
   }
 
-  searchMatriculas() {
+  listarMatriculas() {
     this.datosMatriculaService
-      .searchMatriculas({
+      .listarMatriculas({
         iSedeId: this.iSedeId,
         iYAcadId: this.iYAcadId,
         iCredSesionId: this.constantesService.iCredId,
@@ -509,15 +509,15 @@ export class GestionMatriculasComponent implements OnInit {
     this.router.navigate(['/gestion-institucional/matricula-individual']);
   }
 
-  deleteMatricula(iMatrId: any) {
+  borrarMatricula(iMatrId: any) {
     this.datosMatriculaService
-      .deleteMatricula({
+      .borrarMatricula({
         iMatrId: iMatrId,
         iCredSesionId: this.constantesService.iCredId,
       })
       .subscribe({
         next: () => {
-          this.router.navigate(['/gestion-institucional/gestion-matriculas']);
+          this.router.navigate(['/gestion-institucional/gestionar-matriculas']);
         },
         error: error => {
           this._MessageService.add({

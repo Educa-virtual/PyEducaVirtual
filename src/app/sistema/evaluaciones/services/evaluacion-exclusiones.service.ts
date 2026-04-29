@@ -43,7 +43,7 @@ export class EvaluacionExclusionesService {
   }
 
   buscarMatricula(data: any) {
-    return this.http.post(`${baseUrl}/acad/matricula/searchMatricula`, data);
+    return this.http.post(`${baseUrl}/acad/matricula/verMatricula`, data);
   }
 
   getTiposDocumentos(params?: any) {

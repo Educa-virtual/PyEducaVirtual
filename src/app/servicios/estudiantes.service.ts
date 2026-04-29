@@ -365,7 +365,7 @@ const administracion = [
             label: 'Gestionar matriculas',
             icon: 'pi pi-fw pi-file-edit',
             badge: '',
-            routerLink: ['/gestion-institucional/gestion-matriculas'],
+            routerLink: ['/gestion-institucional/gestionar-matriculas'],
           },
           {
             label: 'Matrícula Individual',

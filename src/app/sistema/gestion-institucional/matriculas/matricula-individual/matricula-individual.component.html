@@ -23,7 +23,11 @@
               <div class="col-12">
                 <p-inputGroup class="vertical-group">
                   <p-inputGroupAddon>
-                    <p-button label="Buscar" (onClick)="searchEstudiante()" severity="success" />
+                    <p-button
+                      label="Buscar"
+                      (onClick)="searchCodigoEstudiante()"
+                      severity="success"
+                    />
                     Código *
                   </p-inputGroupAddon>
                   <p-inputMask
@@ -60,7 +64,6 @@
                   <p-dropdown
                     [options]="secciones"
                     formControlName="iSeccionId"
-                    [checkmark]="true"
                     [filter]="true"
                     styleClass="group-element"
                     appendTo="body"
@@ -74,7 +77,6 @@
                   <p-dropdown
                     [options]="turnos"
                     formControlName="iTurnoId"
-                    [filter]="true"
                     [appendTo]="'body'"
                     styleClass="group-element"
                     appendTo="body"

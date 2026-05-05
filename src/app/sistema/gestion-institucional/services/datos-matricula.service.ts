@@ -217,6 +217,14 @@ export class DatosMatriculaService {
     return this.http.post(`${baseUrl}/acad/matricula/borrarMatricula`, data);
   }
 
+  verEstudiante(data: any) {
+    return this.http.post(`${baseUrl}/acad/estudiante/verEstudiante`, data);
+  }
+
+  validarPersona(data: any) {
+    return this.http.post(`${baseUrl}/grl/validarPersona`, data);
+  }
+
   /**
    * IMPORTAR DATOS EN JSON PARA MATRICULA MASIVA
    */

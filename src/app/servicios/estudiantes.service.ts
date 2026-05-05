@@ -346,18 +346,6 @@ const administracion = [
         ],
       },
       {
-        label: 'Gestión de estudiantes',
-        icon: 'pi pi-fw pi-cog',
-        items: [
-          {
-            label: 'Ingresar estudiante',
-            icon: 'pi pi-fw pi-circle',
-            badge: 'NEW',
-            routerLink: ['/gestion-institucional/estudiante/registro'],
-          },
-        ],
-      },
-      {
         label: 'Gestión de Matrículas',
         icon: 'pi pi-folder',
         items: [

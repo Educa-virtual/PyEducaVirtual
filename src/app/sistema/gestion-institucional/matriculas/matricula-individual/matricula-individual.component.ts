@@ -152,7 +152,25 @@ export class MatriculaIndividualComponent implements OnInit {
   }
 
   /* BUSCAR DATOS POR CODIGO DE ESTUDIANTE */
-  searchEstudiante() {}
+  searchCodigoEstudiante() {
+    this.matriculaService
+      .verEstudiante({
+        cEstCodigo: this.formMatricula.value.cEstCodigo,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.setFormMatricula(data.data);
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error,
+          });
+        },
+      });
+  }
 
   verMatricula() {
     this.matriculaService

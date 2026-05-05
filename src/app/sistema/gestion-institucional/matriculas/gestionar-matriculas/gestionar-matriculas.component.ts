@@ -333,11 +333,6 @@ export class GestionMatriculasComponent implements OnInit {
       this.getDesercion(item.iMatrId);
     }
 
-    if (accion === 'editar_estudiante') {
-      this.compartirEstudianteService.setiEstudianteId(item?.iEstudianteId);
-      this.compartirEstudianteService.setiPersId(item?.iPersId);
-      this.router.navigate(['/gestion-institucional/estudiante/registro/datos']);
-    }
     if (accion === 'anular') {
       this._confirmService.openConfirm({
         message: '¿Está seguro de anular la matrícula seleccionada?',

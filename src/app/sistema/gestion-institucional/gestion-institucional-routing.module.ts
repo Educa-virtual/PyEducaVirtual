@@ -378,11 +378,6 @@ const routes: Routes = [
       expectedRole: [DIRECTOR_IE],
     },
   },
-
-  {
-    path: 'estudiante',
-    loadChildren: () => import('./estudiante/estudiante.module').then(c => c.EstudianteModule),
-  },
   {
     path: 'mantenimiento-usuario',
     component: MantenimientoUsuariosComponent,

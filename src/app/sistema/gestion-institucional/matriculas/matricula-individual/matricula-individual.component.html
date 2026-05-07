@@ -15,6 +15,12 @@
     </div>
   </ng-template>
   <ng-content>
+    <p-messages [closable]="true" severity="info" *ngIf="!iMatrId">
+      <ng-template pTemplate="content"
+        >Puede buscar estudiantes por su código de estudiante o por el documento de identidad. Los
+        campos con asterisco (*) son obligatorios.</ng-template
+      >
+    </p-messages>
     <form [formGroup]="formMatricula">
       <div class="grid p-fluid">
         <div class="col-12 md:col-4">
@@ -166,7 +172,11 @@
               <div class="col-12 md:col-6">
                 <p-inputGroup class="vertical-group">
                   <p-inputGroupAddon>
-                    <p-button label="Buscar" severity="success" (onClick)="validarPersona()" />
+                    <p-button
+                      label="Buscar"
+                      severity="success"
+                      (onClick)="searchPersonaEstudiante()"
+                    />
                     Documento *
                   </p-inputGroupAddon>
                   <p-inputMask
@@ -264,7 +274,7 @@
             <div class="grid p-fluid">
               <div class="col-12 md:col-6">
                 <p-inputGroup class="vertical-group">
-                  <p-inputGroupAddon>Tipo de documento *</p-inputGroupAddon>
+                  <p-inputGroupAddon>Tipo de documento</p-inputGroupAddon>
                   <p-dropdown
                     [options]="tipos_documentos"
                     formControlName="iTipoIdentIdApoderado"
@@ -277,8 +287,12 @@
               <div class="col-12 md:col-6">
                 <p-inputGroup class="vertical-group">
                   <p-inputGroupAddon>
-                    <p-button label="Buscar" severity="success" (onClick)="validarPersona()" />
-                    Documento *
+                    <p-button
+                      label="Buscar"
+                      severity="success"
+                      (onClick)="searchPersonaApoderado()"
+                    />
+                    Documento
                   </p-inputGroupAddon>
                   <p-inputMask
                     formControlName="cPersDocumentoApoderado"

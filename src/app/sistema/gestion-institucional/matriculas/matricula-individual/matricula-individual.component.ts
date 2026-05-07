@@ -70,8 +70,9 @@ export class MatriculaIndividualComponent implements OnInit {
   ngOnInit(): void {
     try {
       this.formMatricula = this.fb.group({
-        iMatrId: [0],
-        iPersId: [null, Validators.required],
+        iMatrId: [this.iMatrId],
+        iPersId: [null],
+        iYAcadId: [this.iYAcadId],
         cPersPaterno: ['', Validators.required],
         cPersMaterno: [''],
         cPersNombre: ['', Validators.required],
@@ -85,7 +86,7 @@ export class MatriculaIndividualComponent implements OnInit {
         iNivelGradoId: [null, [Validators.required]],
         iSeccionId: [null, [Validators.required]],
         iTurnoId: [null, [Validators.required]],
-        iEstudianteId: [null, [Validators.required]],
+        iEstudianteId: [null],
         cEstCodigo: ['', [Validators.required]],
         cMatrObservaciones: [''],
         iMatrEstado: [null],
@@ -153,6 +154,10 @@ export class MatriculaIndividualComponent implements OnInit {
 
   /* BUSCAR DATOS POR CODIGO DE ESTUDIANTE */
   searchCodigoEstudiante() {
+    this.formMatricula.patchValue({
+      iEstudianteId: null,
+      iPersId: null,
+    });
     this.matriculaService
       .verEstudiante({
         cEstCodigo: this.formMatricula.value.cEstCodigo,
@@ -166,7 +171,59 @@ export class MatriculaIndividualComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error,
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  searchPersonaEstudiante() {
+    this.formMatricula.patchValue({
+      iPersId: null,
+    });
+    this.matriculaService
+      .verEstudiante({
+        iTipoIdentId: this.formMatricula.value.iTipoIdentId,
+        cPersDocumento: this.formMatricula.value.cPersDocumento,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.setFormMatricula(data.data);
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  searchPersonaApoderado() {
+    this.formMatricula.patchValue({
+      cApoderadoApenom: '',
+      iPersIdApoderado: null,
+    });
+    this.matriculaService
+      .verEstudiante({
+        iTipoIdentId: this.formMatricula.value.iTipoIdentIdApoderado,
+        cPersDocumento: this.formMatricula.value.cPersDocumentoApoderado,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.formMatricula.patchValue({
+            cApoderadoApenom: data.data.cPersNombreCompleto,
+            iPersIdApoderado: data.data.iPersId,
+          });
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
           });
         },
       });
@@ -188,14 +245,17 @@ export class MatriculaIndividualComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error,
+            detail: error.error.message,
           });
         },
       });
   }
 
   setFormMatricula(matricula: any) {
-    this.formMatricula.reset();
+    this.formMatricula.reset({
+      iYAcadId: this.iYAcadId,
+      iMatrId: this.iMatrId,
+    });
     this.formMatricula.patchValue(matricula);
     this.matriculaService.formatearFormControl(
       this.formMatricula,
@@ -279,31 +339,28 @@ export class MatriculaIndividualComponent implements OnInit {
       header: 'Actualizar matrícula',
       message: `¿Realmente desea actualizar la matricula?`,
       accept: () => {
-        this.matriculaService.guardarMatricula(this.formMatricula.value).subscribe({
+        this.matriculaService.actualizarMatricula(this.formMatricula.value).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Matrícula registrada',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/gestion-institucional/gestionar-matriculas']);
+            }, 1000);
+          },
           error: error => {
+            console.error('Error guardando matricula:', error);
             this.messageService.add({
               severity: 'error',
-              summary: 'Mensaje de sistema',
-              detail: 'Error. No se proceso petición ' + error.message,
-            });
-          },
-          complete: () => {
-            this.messageService.add({
-              summary: 'Mensaje del sistema',
-              severity: 'success',
-              detail: 'Se actualizo el registro de matrícula',
+              summary: 'Error',
+              detail: error.error.message,
             });
           },
         });
       },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
-        });
-      },
+      reject: () => {},
     });
   }
 
@@ -324,13 +381,11 @@ export class MatriculaIndividualComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: error,
+          detail: error.error.message,
         });
       },
     });
   }
-
-  validarPersona() {}
 
   salir() {
     this.router.navigate(['/gestion-institucional/gestionar-matriculas']);

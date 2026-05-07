@@ -43,52 +43,56 @@
       <form [formGroup]="form">
         <p-fieldset legend="Información de la Institución" [toggleable]="false">
           <div class="grid p-fluid mt-2">
-            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
-              <span class="p-float-label">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-12 sm:col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon class="mi-addon-primary font-bold"
+                  >Nombre de la Institución</p-inputGroupAddon
+                >
                 <input
                   pInputText
                   id="cIieeNombre"
                   formControlName="cIieeNombre"
                   aria-describedby="cIieeNombre-help"
                 />
-                <label for="cIieeNombre">Nombre de la Institución </label>
-              </span>
+              </p-inputGroup>
             </div>
 
-            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
-              <span class="p-float-label">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-12 sm:col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon class="mi-addon-primary font-bold">RUC</p-inputGroupAddon>
                 <input
                   pInputText
                   id="cIieeRUC"
                   formControlName="cIieeRUC"
                   aria-describedby="cIieeRUC-help"
                 />
-                <label for="cIieeRUC">RUC</label>
-              </span>
+              </p-inputGroup>
             </div>
           </div>
           <div class="grid p-fluid mt-2">
-            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
-              <span class="p-float-label">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-12 sm:col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon class="mi-addon-primary font-bold"
+                  >Resolución de creación</p-inputGroupAddon
+                >
                 <input
                   pInputText
                   id="cIieeRslCreacion"
                   formControlName="cIieeRslCreacion"
                   aria-describedby="cIieeRslCreacion-help"
                 />
-                <label for="cIieeRslCreacion">Resolución de creación</label>
-              </span>
+              </p-inputGroup>
             </div>
-            <div class="field col-12 xl:col-6 lg:col-12 md:col-6 sm:col-6">
-              <span class="p-float-label">
+            <div class="field col-12 xl:col-6 lg:col-12 md:col-12 sm:col-12">
+              <p-inputGroup>
+                <p-inputGroupAddon class="mi-addon-primary font-bold">Dirección</p-inputGroupAddon>
                 <input
                   pInputText
                   id="cIieeDireccion"
                   formControlName="cIieeDireccion"
                   aria-describedby="cIieeDireccion-help"
                 />
-                <label for="cIieeDireccion">Dirección</label>
-              </span>
+              </p-inputGroup>
             </div>
             <div class="field col-12">
               <label for="cIieeUrlReglamentoInterno">Reglamento</label>

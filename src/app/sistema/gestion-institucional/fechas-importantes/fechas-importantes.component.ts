@@ -13,6 +13,7 @@ import { ToastModule } from 'primeng/toast';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { DropdownModule } from 'primeng/dropdown';
 import { importantDayRecovery } from './table/important-day-recovery.table';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-fechas-importantes',
@@ -33,6 +34,7 @@ import { importantDayRecovery } from './table/important-day-recovery.table';
 export class FechasImportentesComponent implements OnInit {
   file: any;
   option: string;
+  perfil: any;
   dialogs = {
     importantDay: {
       title: '',
@@ -61,8 +63,10 @@ export class FechasImportentesComponent implements OnInit {
     public messageService: MessageService,
     public dialog: ConfirmationModalService,
     public importantDayService: importantDayService,
-    public datePipe: DatePipe
+    public datePipe: DatePipe,
+    private localStore: LocalStoreService
   ) {
+    this.perfil = this.localStore.getItem('dremoPerfil');
     this.forms.importantDay = this.fb.group({
       iFechaImpId: [''],
       iTipoFerId: [''],
@@ -72,6 +76,7 @@ export class FechasImportentesComponent implements OnInit {
       bFechaImpSeraLaborable: [''],
       cFechaImpURLDocumento: [''],
       cFechaImpInfoAdicional: [''],
+      iCredEntPerfId: [''],
     });
 
     this.forms.importantDayRecovery = this.fb.group({
@@ -83,7 +88,7 @@ export class FechasImportentesComponent implements OnInit {
       bFechaImpSeraLaborable: [''],
       cFechaImpURLDocumento: [''],
       cFechaImpInfoAdicional: [''],
-
+      iCredEntPerfId: [''],
       iDepFechaImpId: [''],
     });
   }
@@ -98,9 +103,6 @@ export class FechasImportentesComponent implements OnInit {
       },
       error: error => {
         console.error('Error fetching Años Académicos:', error);
-      },
-      complete: () => {
-        console.log('Request completed');
       },
     });
 

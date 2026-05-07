@@ -41,6 +41,7 @@ export class GestionMeritosComponent implements OnInit {
   tipo_merito = signal<any[]>([]);
   selectedItems = [];
   bUpdate: boolean = false;
+  mostrar: boolean = false;
   selecionado: any = {};
 
   private _GeneralService = inject(GeneralService);
@@ -77,7 +78,6 @@ export class GestionMeritosComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.meritos.set(data.data);
-          console.log(this.meritos(), 'this.meritos');
         },
         error: error => {
           this.messageService.add({
@@ -92,6 +92,7 @@ export class GestionMeritosComponent implements OnInit {
     if (event.accion === 'nuevo_merito') {
       this.selecionado = {};
       this.bUpdate = false;
+      this.mostrar = true;
     }
     if (event.accion === 'merito') {
       this.selecionado = {};
@@ -103,6 +104,7 @@ export class GestionMeritosComponent implements OnInit {
       this.selecionado = event.item;
       this.bUpdate = false;
       this.bUpdate = true;
+      this.mostrar = true;
     }
     if (event.accion === 'eliminar_merito') {
       this.bUpdate = false;
@@ -245,7 +247,7 @@ export class GestionMeritosComponent implements OnInit {
     {
       type: 'date',
       width: '10%',
-      field: 'dMeritoFecha',
+      field: 'dtMeritoFecha',
       header: 'Fecha',
       text_header: 'center',
       text: 'center',
@@ -254,7 +256,7 @@ export class GestionMeritosComponent implements OnInit {
       type: 'estado-activo',
       width: '5%',
       field: 'iEstado',
-      header: '',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },

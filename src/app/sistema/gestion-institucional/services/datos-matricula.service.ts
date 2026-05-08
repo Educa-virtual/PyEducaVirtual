@@ -221,8 +221,28 @@ export class DatosMatriculaService {
     return this.http.post(`${baseUrl}/acad/estudiante/verEstudiante`, data);
   }
 
-  validarPersona(data: any) {
-    return this.http.post(`${baseUrl}/grl/validarPersona`, data);
+  buscarPersonaApoderado(data: any) {
+    return this.http.post(`${baseUrl}/apo/buscarPersonaApoderado`, data);
+  }
+
+  listarApoderados(data: any) {
+    return this.http.post(`${baseUrl}/apo/listarApoderados`, data);
+  }
+
+  verApoderado(data: any) {
+    return this.http.post(`${baseUrl}/apo/verApoderado`, data);
+  }
+
+  guardarApoderado(data: any) {
+    return this.http.post(`${baseUrl}/apo/guardarApoderado`, data);
+  }
+
+  actualizarApoderado(data: any) {
+    return this.http.post(`${baseUrl}/apo/actualizarApoderado`, data);
+  }
+
+  borrarApoderado(data: any) {
+    return this.http.post(`${baseUrl}/apo/borrarApoderado`, data);
   }
 
   /**

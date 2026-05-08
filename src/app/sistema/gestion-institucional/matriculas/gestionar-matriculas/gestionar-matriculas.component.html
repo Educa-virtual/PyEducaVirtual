@@ -65,8 +65,8 @@
     (accionBtnItem)="accionBtnItemTable($event)"
     [showPaginator]="true"
     sortMode="single"
-    sortField="_cPersNomape"
-    [sortOrder]="1"
+    sortField="dtMatrFecha"
+    [sortOrder]="0"
     [(selectedRowData)]="selectedItems"
     [actions]="actions"
     [showSearchTable]="false"
@@ -76,7 +76,6 @@
   <ng-container slot="caption-content"> </ng-container>
 
   <p-dialog
-    [header]="caption"
     [(visible)]="bApoderado"
     [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
     [style]="{
@@ -89,14 +88,21 @@
     [closable]="true"
     [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
     [styleClass]="'dialog-responsive'"
-    (onHide)="bApoderado = false"
+    (onHide)="limpiarModalApoderado()"
     [resizable]="true"
     [maximizable]="true"
   >
+    <ng-template pTemplate="header">
+      <div class="flex flex-column">
+        <div class="flex text-2xl font-bold">Gestionar apoderados</div>
+        <div class="flex">{{ estudianteNombreCompleto }}</div>
+      </div>
+    </ng-template>
     <app-matricula-apoderado
       [iEstudianteId]="iEstudianteId"
       [estudiante]="estudianteSeleccionado"
       [iCredId]="iCredId"
+      [visible]="bApoderado"
       (closeDialog)="bApoderado = false"
       [soloLectura]="soloLectura"
     >
@@ -152,7 +158,7 @@
                 <div class="flex align-items-center">
                   <p-avatar icon="pi pi-user" shape="circle" />
                   <span class="font-bold text-center m-0">
-                    Historial de deserciones - {{ matricula._cPersNomape }}
+                    Historial de deserciones - {{ matricula.cPersNombreCompleto }}
                   </span>
                 </div>
                 <p-message

@@ -1,304 +1,219 @@
-<p-tabView>
+<p-tabView [(activeIndex)]="activeTab">
   <p-toast />
-  <p-tabPanel header="Historial de apoderados">
-    <form [formGroup]="frmApoderado" *ngIf="!soloLectura">
-      <div class="grid p-fluid mt-3">
-        <div class="field col-5">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="tipos_documentos"
-              formControlName="iTipoIdentId"
-              optionLabel="nombre"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iTipoIdentId">Tipo de documento *</label>
-          </span>
-        </div>
-        <div class="field col-4">
-          <span class="p-float-label">
-            <p-inputMask
-              formControlName="cPersDocumento"
-              aria-describedby="cPersDocumento-help"
-              [maxlength]="longitud_documento"
-              [mask]="formato_documento"
-              autoClear="false"
-              slotChar=""
-            />
-            <label for="cPersDocumento">Documento *</label>
-          </span>
-        </div>
-        <div class="field col-3">
-          <p-button label="Validar" styleClass="p-button-primary" (onClick)="validarDocumento()" />
-        </div>
-
-        <div class="field col-12">
-          <p-message [severity]="sever" [text]="mensaje" styleClass="p-mr-2"></p-message>
-        </div>
-      </div>
-
-      <div *ngIf="bDocumentoValido" class="grid p-fluid mt-3">
-        <div class="field col-3">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="tipos_familiar"
-              formControlName="iTipoFamiliarId"
-              optionLabel="cTipoFamiliarDescripcion"
-              optionValue="iTipoFamiliarId"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iTipoFamiliarId">Tipo familiar *</label>
-          </span>
-        </div>
-        <div class="field col-6">
-          <span class="p-float-label">
-            <input
-              pInputText
-              id="cObservacion"
-              formControlName="cObservacion"
-              aria-describedby="cObservacion-help"
-            />
-            <label for="cObservacion">Observaciones </label>
-          </span>
-        </div>
-        <div class="field col-3">
-          <p-button
-            *ngIf="!bEditar"
-            label="Asignar apoderado"
-            styleClass="p-button-success"
-            (click)="asignarApoderado()"
-            [disabled]="frmApoderado.invalid"
-          />
-          <p-button
-            *ngIf="bEditar"
-            label="Actualizar apoderado"
-            styleClass="p-button-warning"
-            (click)="accionBtnItemTable({ accion: 'editar' })"
-            [disabled]="frmApoderado.invalid"
-          />
-        </div>
-      </div>
-    </form>
-
-    <!-- <p-fieldset legend="Historial de apoderados" [toggleable]="true" [collapsed]="false"> -->
-
-    @if (apoderados.length > 0) {
-      <div class="flex justify-content-end mb-2">
-        <button
-          pButton
-          pRipple
-          label="Exportar"
-          class="p-button-success"
-          (click)="exportarApoderados()"
-        ></button>
-      </div>
-      <app-table-primeng
-        [columnas]="columns"
-        [data]="apoderados"
-        [showCaption]="false"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        [(selectedRowData)]="selectedItems"
-        [actions]="actions"
-      >
-      </app-table-primeng>
-    } @else {
-      <p-message
-        severity="info"
-        text="No se encontraron apoderados registrados."
-        styleClass="p-mr-2"
-      >
-      </p-message>
-    }
+  <p-tabPanel header="Historial de Apoderados" *ngIf="activeTab === 0" [disabled]="true">
+    <div class="flex justify-content-end gap-2 mb-2">
+      <p-button
+        size="small"
+        icon="pi pi-plus"
+        label="Nuevo"
+        severity="success"
+        (click)="nuevoApoderado()"
+      />
+      <p-button
+        size="small"
+        icon="pi pi-download"
+        label="Exportar"
+        severity="secondary"
+        (click)="exportarApoderados()"
+      />
+    </div>
+    <app-table-primeng
+      [columnas]="columns"
+      [data]="apoderados"
+      [showCaption]="false"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showPaginator]="true"
+      [(selectedRowData)]="selectedItems"
+      [actions]="actions"
+    >
+    </app-table-primeng>
   </p-tabPanel>
-  <p-tabPanel header="Registrar apoderado" *ngIf="!soloLectura">
-    <form [formGroup]="form">
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
+  <p-tabPanel header="Detalle de apoderado" *ngIf="activeTab === 1" [disabled]="true">
+    <form [formGroup]="formApoderado">
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-6">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Tipo de documento *</p-inputGroupAddon>
             <p-dropdown
               [options]="tipos_documentos"
               formControlName="iTipoIdentId"
-              optionLabel="nombre"
-              optionValue="id"
               [filter]="true"
-              [showClear]="true"
+              styleClass="group-element"
               [appendTo]="'body'"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="iTipoIdentId">Tipo de documento *</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-6 md:col-4">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>
+              <p-button label="Buscar" severity="success" (onClick)="searchPersona()" />
+              Documento *
+            </p-inputGroupAddon>
             <p-inputMask
               formControlName="cPersDocumento"
-              aria-describedby="cPersDocumento-help"
               [maxlength]="longitud_documento"
               [mask]="formato_documento"
               autoClear="false"
               slotChar=""
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="cPersDocumento">Documento *</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-6 md:col-2">
-          <p-button label="Validar" styleClass="p-button-primary" (onClick)="validarPersona()" />
-        </div>
-
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Primer apellido *</p-inputGroupAddon>
             <input
               pInputText
               id="cPersPaterno"
               formControlName="cPersPaterno"
-              aria-describedby="cPersPaterno-help"
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="cPersPaterno">Primer Apellido *</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Segundo apellido *</p-inputGroupAddon>
             <input
               pInputText
               id="cPersMaterno"
               formControlName="cPersMaterno"
-              aria-describedby="cPersMaterno-help"
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="cPersMaterno">Segundo Apellido</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Nombres *</p-inputGroupAddon>
             <input
               pInputText
               id="cPersNombre"
               formControlName="cPersNombre"
-              aria-describedby="cPersNombre-help"
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="cPersNombre">Nombres *</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="estados_civiles"
-              formControlName="iTipoEstCivId"
-              optionLabel="nombre"
-              [checkmark]="true"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iTipoEstCivId">Estado Civil</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="sexos"
-              formControlName="cPersSexo"
-              optionLabel="nombre"
-              [checkmark]="true"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="cPersSexo">Sexo *</label>
-          </span>
-        </div>
-      </div>
-
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="nacionalidades"
-              formControlName="iNacionId"
-              optionLabel="nombre"
-              [checkmark]="true"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iNacionId">Nacionalidad</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Fecha de nacimiento *</p-inputGroupAddon>
             <p-calendar
               formControlName="dPersNacimiento"
               [iconDisplay]="'input'"
               [showIcon]="true"
               inputId="dPersNacimiento"
               [appendTo]="'body'"
+              inputStyleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="dPersNacimiento">Fecha de nacimiento *</label>
-          </span>
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Género</p-inputGroupAddon>
+            <p-dropdown
+              [options]="sexos"
+              formControlName="cPersSexo"
+              [showClear]="true"
+              [appendTo]="'body'"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Nacionalidad</p-inputGroupAddon>
+            <p-dropdown
+              [options]="nacionalidades"
+              formControlName="iNacionId"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Relación</p-inputGroupAddon>
+            <p-dropdown
+              [options]="tipos_familiares"
+              formControlName="iTipoFamiliarId"
+              [filter]="true"
+              [showClear]="true"
+              [appendTo]="'body'"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Teléfono</p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cPersTelefono"
+              class="group-element"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Correo</p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cPersCorreo"
+              class="group-element"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Observaciones</p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cObservacion"
+              aria-describedby="cObservacion-help"
+              class="group-element"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
         </div>
       </div>
 
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="departamentos"
-              formControlName="iDptoId"
-              optionLabel="nombre"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iDptoId">Departamento</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="provincias"
-              formControlName="iPrvnId"
-              optionLabel="nombre"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iPrvnId">Provincia</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [options]="distritos"
-              formControlName="iDsttId"
-              optionLabel="nombre"
-              optionValue="id"
-              [filter]="true"
-              [showClear]="true"
-              [appendTo]="'body'"
-            />
-            <label for="iDsttId">Distrito</label>
-          </span>
-        </div>
-
-        <div class="field col-12">
-          <span class="p-float-label">
-            <input
-              pInputText
-              formControlName="cPersDomicilio"
-              aria-describedby="cPersDomicilio-help"
-            />
-            <label for="cPersDomicilio">Dirección</label>
-          </span>
-        </div>
+      <div class="flex flex-wrap gap-2 justify-content-end">
+        <p-button
+          label="Ver todos"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          (click)="verTodosApoderados()"
+        />
+        <p-button
+          *ngIf="!iApoderadoId && !solo_ver"
+          label="Registrar"
+          icon="pi pi-save"
+          severity="success"
+          (click)="guardarApoderado()"
+          [disabled]="formApoderado.invalid"
+        />
+        <p-button
+          *ngIf="iApoderadoId && !solo_ver"
+          label="Actualizar"
+          icon="pi pi-save"
+          severity="warning"
+          (click)="actualizarApoderado()"
+          [disabled]="formApoderado.invalid"
+        />
       </div>
     </form>
   </p-tabPanel>

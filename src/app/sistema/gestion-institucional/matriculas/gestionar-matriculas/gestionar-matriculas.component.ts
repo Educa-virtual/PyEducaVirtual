@@ -14,11 +14,9 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DatosMatriculaService } from '../../services/datos-matricula.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
-import { CompartirMatriculaService } from '../../services/compartir-matricula.service';
 import { MatriculaApoderadoComponent } from '../matricula-apoderado/matricula-apoderado.component';
 import { FormDesercionComponent } from '../../gestion-desercion/form-desercion/form-desercion.component';
 import { HistorialDesercionComponent } from '../../gestion-desercion/historial-desercion/historial-desercion.component';
-import { CompartirEstudianteService } from '../../services/compartir-estudiante.service';
 
 @Component({
   selector: 'app-gestionar-matriculas',
@@ -80,16 +78,17 @@ export class GestionMatriculasComponent implements OnInit {
 
   selectedItems = [];
   estudianteSeleccionado: any;
+  estudianteNombreCompleto: string;
 
   actionsLista: IActionTable[];
 
   actions: IActionTable[] = [];
   columns = [
     {
-      type: 'item',
-      width: '5%',
-      field: 'item',
-      header: '',
+      type: 'date',
+      width: '10%',
+      field: 'dtMatrFecha',
+      header: 'Fecha',
       text_header: 'left',
       text: 'left',
     },
@@ -127,7 +126,7 @@ export class GestionMatriculasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '10%',
+      width: '5%',
       field: 'cSeccionNombre',
       header: 'Seccion',
       text_header: 'center',
@@ -173,17 +172,14 @@ export class GestionMatriculasComponent implements OnInit {
     private store: LocalStoreService,
     private constantesService: ConstantesService,
     private datosMatriculaService: DatosMatriculaService,
-    private compartirMatriculaService: CompartirMatriculaService,
-    private compartirEstudianteService: CompartirEstudianteService,
     private fb: FormBuilder
   ) {
     const perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.iSedeId = perfil.iSedeId;
   }
 
   ngOnInit(): void {
-    this.iYAcadId = this.store.getItem('dremoiYAcadId');
-
     if (this.soloLectura) {
       this.actions = [
         {
@@ -230,10 +226,7 @@ export class GestionMatriculasComponent implements OnInit {
     } catch (error) {
       console.log(error, 'error de formulario');
     }
-    this.getTiposDesercion();
     this.listarMatriculas();
-    this.searchGradoSeccionTurno();
-    this.getTiposMatriculas();
 
     this.form.get('iNivelGradoId').valueChanges.subscribe(value => {
       this.filtrarTabla();
@@ -296,13 +289,11 @@ export class GestionMatriculasComponent implements OnInit {
       this.router.navigate([`/gestion-institucional/matricula-individual/${iMatrId}/editar`]);
     }
     if (accion === 'apoderado') {
-      this.bApoderado = true; // muestra dialogo de apoderado
       this.iEstudianteId = item?.iEstudianteId;
-      this.caption = this.soloLectura
-        ? 'Ver apoderados de: ' + item?._cPersNomape
-        : 'Asignar apoderados a : ' + item?._cPersNomape;
+      this.estudianteNombreCompleto = item?.cPersNombreCompleto;
       this.iCredId = this.constantesService.iCredId;
       this.estudianteSeleccionado = item;
+      this.bApoderado = true; // muestra dialogo de apoderado
     }
 
     if (accion === 'actualizar') {
@@ -318,12 +309,12 @@ export class GestionMatriculasComponent implements OnInit {
     if (accion === 'editar_desercion') {
       this.desercion = {};
       this.update = true;
-      this.caption = 'Actualizar deserción de : ' + this.matricula._cPersNomape;
+      this.caption = 'Actualizar deserción de : ' + this.matricula.cPersNombreCompleto;
       this.desercion = item;
     }
 
     if (accion === 'desercion') {
-      this.caption = 'Agregar deserción de : ' + item?._cPersNomape;
+      this.caption = 'Agregar deserción de : ' + item?.cPersNombreCompleto;
       this.c_accion = 'agregar';
       this.matricula = item;
       this.iEstudianteId = item?.iEstudianteId;
@@ -350,6 +341,13 @@ export class GestionMatriculasComponent implements OnInit {
         this.router.navigate(['/gestion-institucional/matricula-individual']);
         break;
     }
+  }
+
+  limpiarModalApoderado() {
+    this.bApoderado = false;
+    this.iEstudianteId = null;
+    this.estudianteSeleccionado = null;
+    this.estudianteNombreCompleto = null;
   }
 
   listarMatriculas() {
@@ -472,33 +470,6 @@ export class GestionMatriculasComponent implements OnInit {
       this.form.get('iSeccionId')?.setValue(this.secciones[0]['id']);
     }
   }
-
-  getTiposMatriculas() {
-    this.query
-      .searchTablaXwhere({
-        esquema: 'acad',
-        tabla: 'tipo_matriculas',
-        campos: '*',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          const item = data.data;
-          this.tipos_matriculas = item.map(tipo => ({
-            id: tipo.iTipoMatrId,
-            nombre: tipo.cTipoMatrNombre,
-          }));
-        },
-        error: error => {
-          console.error('Error consultando tipos de matriculas:', error);
-        },
-      });
-  }
-
-  //Maquetar tablas
-  // handleActions(actions) {
-  //   console.log(actions);
-  // }
 
   agregarMatricula() {
     this.router.navigate(['/gestion-institucional/matricula-individual']);

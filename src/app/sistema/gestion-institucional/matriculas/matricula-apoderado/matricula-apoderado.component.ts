@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx-js-style';
 import { saveAs } from 'file-saver';
 import {
   IActionTable,
+  IColumn,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { DatosMatriculaService } from '../../services/datos-matricula.service';
@@ -62,7 +63,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
 
   activeTab: number = 0;
 
-  columns = [
+  columns: IColumn[] = [
     {
       type: 'date',
       width: '10%',
@@ -76,7 +77,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       width: '15%',
       field: 'cPersDocumento',
       header: 'Documento',
-      text_header: 'center',
+      text_header: 'left',
       text: 'left',
     },
     {
@@ -84,7 +85,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       width: '35%',
       field: 'cPersNombreCompleto',
       header: 'Apoderado',
-      text_header: 'center',
+      text_header: 'left',
       text: 'left',
     },
     {
@@ -100,30 +101,34 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       width: '15%',
       field: 'cPersTelefono',
       header: 'Teléfono',
-      text_header: 'center',
-      text: 'center',
+      text_header: 'left',
+      text: 'left',
     },
     {
-      type: 'estado-activo',
+      type: 'tag',
       width: '10%',
-      field: 'iEstado',
+      field: 'cHabilitadoNombre',
       header: 'Estado',
       text_header: 'center',
       text: 'center',
+      styles: {
+        ACTIVO: 'success',
+        INACTIVO: 'secondary',
+      },
     },
     {
       type: 'actions',
       width: '1rem',
       field: 'actions',
       header: 'Acciones',
-      text_header: 'center',
-      text: 'center',
+      text_header: 'right',
+      text: 'right',
     },
   ];
 
   actions: IActionTable[] = [
     {
-      labelTooltip: 'Editar Matrícula',
+      labelTooltip: 'Editar Apoderado',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
@@ -131,12 +136,12 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
     },
     {
       labelTooltip: 'Deshabilitar apoderado',
-      icon: 'pi pi-trash',
+      icon: 'pi pi-times',
       accion: 'borrar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: rowData => {
-        return Number(rowData.iEstado) === 1;
+        return Number(rowData.iHabilitado) === 1;
       },
     },
     {
@@ -146,7 +151,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: rowData => {
-        return Number(rowData.iEstado) === 0;
+        return Number(rowData.iHabilitado) === 0;
       },
     },
   ];

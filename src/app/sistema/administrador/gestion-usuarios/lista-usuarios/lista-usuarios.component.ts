@@ -1,7 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component } from '@angular/core';
-import { LazyLoadEvent, MenuItem, MessageService, SelectItem } from 'primeng/api';
-import { HttpParams } from '@angular/common/http';
+import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { EditarPerfilComponent } from '../editar-perfil/editar-perfil.component';
 import { Usuario } from '../interfaces/usuario.interface';
@@ -9,6 +8,16 @@ import { AgregarUsuarioComponent } from '../agregar-usuario/agregar-ususario.com
 import { CambiarFechaCaducidadComponent } from '../cambiar-fecha-caducidad/cambiar-fecha-caducidad.component';
 import { GestionUsuariosService } from '../services/gestion-usuarios.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ESPECIALISTA_UGEL,
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  DOCENTE,
+  AUXILIAR,
+  ESTUDIANTE,
+  APODERADO,
+  ASISTENTE_SOCIAL,
+} from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-lista-usuarios',
@@ -30,7 +39,6 @@ export class ListaUsuariosComponent {
   totalDataUsuarios: number = 0;
 
   fechaServidor: Date;
-  listaBotones: MenuItem[];
   loading = false;
 
   usuarioSeleccionado: Usuario | null = null;
@@ -41,22 +49,32 @@ export class ListaUsuariosComponent {
   modalAgregarUsuariolVisible: boolean = false;
   modalCambiarFechaCaducidadVisible: boolean = false;
   modalPersonalVisible: boolean = false;
-  //criterioBusqueda: string = ''
-  //selectedPersonal: Usuario | null = null
-  opcionesBusqueda: any[] = [];
-  //opcionBusquedaSeleccionada: any
 
-  dataInstituciones: SelectItem[] = [];
-  dataPerfiles: SelectItem[] = [];
-  dataIeSedes: SelectItem[] = [];
-  dataCursos: SelectItem[] = [];
-  //dataModulosAdministrativos: SelectItem[] = []
-  dataInstitucionesEducativas: SelectItem[] = [];
-  dataPerfilesUsuario: any[] = [];
-  dataUgeles: any[] = [];
-  //filtroInstitucionSeleccionada: any
-  //filtrosRoles: any[] = []
-  //filtroPerfilSeleccionado: any
+  opcionesBusqueda: Array<object> = [
+    { label: 'DATOS', value: 'datos' },
+    { label: 'PERFIL', value: 'perfil' },
+    { label: 'ESTADO', value: 'estado' },
+    { label: 'CREACIÓN', value: 'creacion' },
+  ];
+  instituciones: Array<object> = [
+    { label: 'DREMO', value: 1 },
+    { label: 'UGEL', value: 2 },
+    { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
+  ];
+  perfiles: Array<object>;
+  nivel_tipos: Array<object>;
+  ugeles: Array<object>;
+  distritos: Array<object>;
+  instituciones_educativas: Array<object>;
+  sedes: Array<object>;
+  estados: Array<object>;
+
+  buscarTexto: boolean = true;
+  buscarPerfil: boolean = false;
+  buscarEstado: boolean = false;
+  buscarCreacion: boolean = false;
+  buscarIe: boolean = false;
+  buscarUgel: boolean = false;
 
   constructor(
     private messageService: MessageService,
@@ -64,172 +82,80 @@ export class ListaUsuariosComponent {
     private confirmationModalService: ConfirmationModalService,
     private fb: FormBuilder
   ) {
-    this.breadCrumbItems = [
-      {
-        label: 'Gestión de usuarios',
-      },
-    ];
-    this.breadCrumbHome = {
-      icon: 'pi pi-home',
-      routerLink: '/',
-    };
+    this.breadCrumbItems = [{ label: 'Gestión de usuarios' }];
+    this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
+  }
 
-    this.opcionesBusqueda = [
-      { label: 'Documento', value: 'documento' },
-      { label: 'Apellidos', value: 'apellidos' },
-      { label: 'Nombres', value: 'nombres' },
-      { label: 'Perfil', value: 'perfil' },
-    ];
-    //this.opcionBusquedaSeleccionada = this.opcionesBusqueda[0].value
-    this.dataInstituciones = [
-      { label: 'DREMO', value: 1 },
-      { label: 'UGEL', value: 2 },
-      { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
-    ];
-    //this.dataInstitucionSeleccionada = this.filtrosInstituciones[0]
-    /*this.filtrosRoles = [
-            { name: 'Todos', code: 'todos' },
-            { name: 'Activos', code: 'activos' },
-            { name: 'Inactivos', code: 'inactivos' },
-        ]*/
-    //this.filtroPerfilSeleccionado = this.filtrosRoles[0]
-
-    this.listaBotones = [
-      {
-        label: 'Restablecer contraseña',
-        command: () => {
-          this.preguntarCambiarClave(this.usuarioSeleccionado);
-        },
-      },
-    ];
-    // Configurar debounce para el input
-    /*this.searchChanged.pipe(debounceTime(400)).subscribe(() => {
-            if (this.lastLazyEvent) {
-                this.loadUsuariosLazy(this.lastLazyEvent) // reutiliza último evento
-            }
-        })*/
-
+  ngOnInit(): void {
     this.formCriteriosBusqueda = this.fb.group({
-      opcionSeleccionada: [this.opcionesBusqueda[0].value, [Validators.required]],
+      opcionSeleccionada: ['datos', [Validators.required]],
       criterioBusqueda: [''],
       institucionSeleccionada: [''],
-      ieSeleccionada: [''],
-      //iModuloSeleccionado: [''],
-      iUgelSeleccionada: [''],
-      ieSedeSeleccionada: [''],
-      //iCursoSeleccionado: [''],
-      perfilSeleccionado: [''],
+      iIieeId: [null],
+      iNivelTipoId: [null],
+      iUgelId: [null],
+      iSedeId: [null],
+      iPerfilId: [null],
+      dDesde: [null],
+      dHasta: [null],
+      iHabilitado: [null],
     });
 
-    this.inicializarDatos();
-  }
-
-  inicializarDatos() {
-    this.obtenerInstitucionesEducativas();
-    this.obtenerUgeles();
-    //this.obtenerCursos()
-    //this.obtenerModulosAdministrativos()
-    /*this.opciones = [
-            { label: 'DREMO', value: 1 },
-            { label: 'UGEL', value: 2 },
-            { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
-        ]*/
-    //this.iniciarFormulario()
-  }
-
-  obtenerPerfilesPorTipo(tipo: string) {
-    this.usuariosService.obtenerPerfilesPorTipo(tipo).subscribe({
-      next: (respuesta: any) => {
-        this.dataPerfiles = respuesta.data.map(perfil => ({
-          value: perfil.iPerfilId,
-          label: perfil.cPerfilNombre,
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener perfiles',
-          detail: error,
-        });
-      },
+    this.usuariosService.crearUsuario().subscribe((data: any) => {
+      this.perfiles = this.usuariosService.getPerfiles(data?.perfiles);
+      this.nivel_tipos = this.usuariosService.getNivelesTipos(data?.nivel_tipos);
+      this.ugeles = this.usuariosService.getUgeles(data?.ugeles);
+      this.distritos = this.usuariosService.getDistritos(data?.distritos);
+      this.instituciones_educativas = this.usuariosService.getInstitucionesEducativas(
+        data?.instituciones_educativas
+      );
+      this.estados = this.usuariosService.getEstados();
     });
-  }
 
-  /*obtenerModulosAdministrativos() {
-        this.usuariosService.obtenerModulosAdministrativos().subscribe({
-            next: (respuesta: any) => {
-                this.dataModulosAdministrativos = respuesta.data.map((mod) => ({
-                    value: mod.iModuloId,
-                    label: mod.cModuloNombre,
-                }))
-            },
-            error: (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Problema al obtener instituciones educativas',
-                    detail: error,
-                })
-            },
-        })
-    }*/
-
-  /*obtenerCursos() {
-        this.usuariosService.obtenerCursos().subscribe({
-            next: (respuesta: any) => {
-                this.dataCursos = respuesta.data.map((curso) => ({
-                    value: curso.iCursosNivelGradId,
-                    label: curso.curso_grado,
-                }))
-            },
-            error: (error) => {
-                this.messageService.add({
-                    severity: 'danger',
-                    summary: 'Mensaje',
-                    detail: error,
-                })
-            },
-        })
-    }*/
-
-  obtenerUgeles() {
-    this.usuariosService.obtenerUgeles().subscribe({
-      next: (respuesta: any) => {
-        this.dataUgeles = respuesta.data.map(ugel => ({
-          value: ugel.iUgelId,
-          label: ugel.cUgelNombre,
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'danger',
-          summary: 'Mensaje',
-          detail: error,
-        });
-      },
+    this.formCriteriosBusqueda.get('opcionSeleccionada').valueChanges.subscribe(opcion => {
+      this.buscarTexto = false;
+      this.buscarPerfil = false;
+      this.buscarEstado = false;
+      this.buscarCreacion = false;
+      this.buscarIe = false;
+      this.buscarUgel = false;
+      if (opcion == 'datos') {
+        this.buscarTexto = true;
+      } else if (opcion == 'perfil') {
+        this.buscarPerfil = true;
+      } else if (opcion == 'estado') {
+        this.buscarEstado = true;
+      } else if (opcion == 'creacion') {
+        this.buscarCreacion = true;
+      }
     });
-  }
 
-  obtenerInstitucionesEducativas() {
-    this.usuariosService.obtenerInstitucionesEducativas().subscribe({
-      next: (respuesta: any) => {
-        this.dataInstitucionesEducativas = respuesta.data.map(ie => ({
-          value: ie.iIieeId,
-          label: (
-            ie.cIieeCodigoModular +
-            ' - ' +
-            ie.cIieeNombre +
-            ' - ' +
-            (ie.iNivelTipoId == 3 ? 'PRIMARIA' : 'SECUNDARIA')
-          ).trim(),
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener instituciones educativas',
-          detail: error,
-        });
-      },
+    this.formCriteriosBusqueda.get('iPerfilId').valueChanges.subscribe(perfil => {
+      this.buscarIe = false;
+      this.buscarUgel = false;
+      if ([ESPECIALISTA_UGEL].includes(perfil)) {
+        this.buscarUgel = true;
+      } else if (
+        [
+          DIRECTOR_IE,
+          SUBDIRECTOR_IE,
+          DOCENTE,
+          AUXILIAR,
+          ESTUDIANTE,
+          APODERADO,
+          ASISTENTE_SOCIAL,
+        ].includes(perfil)
+      ) {
+        this.buscarIe = true;
+      }
+    });
+
+    this.formCriteriosBusqueda.get('iNivelTipoId').valueChanges.subscribe(nivel => {
+      this.instituciones_educativas = this.usuariosService.filterInstitucionesEducativas(nivel);
+    });
+
+    this.formCriteriosBusqueda.get('iIieeId').valueChanges.subscribe(ie => {
+      this.sedes = this.usuariosService.getSedes(this.instituciones_educativas, ie);
     });
   }
 
@@ -247,66 +173,13 @@ export class ListaUsuariosComponent {
     this.formCriteriosBusqueda.get('perfilSeleccionado')?.updateValueAndValidity();
   }
 
-  reiniciarFiltrosPerfil() {
-    const fields = ['ieSeleccionada', 'iUgelSeleccionada', 'ieSedeSeleccionada'];
-    fields.forEach(field => {
-      this.formCriteriosBusqueda.get(field)?.setValue('');
-      this.formCriteriosBusqueda.get(field)?.clearValidators();
-    });
-
-    const opcion = this.formCriteriosBusqueda.get('institucionSeleccionada')?.value;
-    switch (opcion) {
-      case 1:
-        this.obtenerPerfilesPorTipo('dremo');
-        break;
-      case 2:
-        this.obtenerPerfilesPorTipo('ugel');
-        this.formCriteriosBusqueda.get('iUgelSeleccionada')?.setValidators([Validators.required]);
-        break;
-      case 3:
-        this.obtenerPerfilesPorTipo('ie');
-        this.formCriteriosBusqueda.get('ieSeleccionada')?.setValidators([Validators.required]);
-        this.formCriteriosBusqueda.get('ieSedeSeleccionada')?.setValidators([Validators.required]);
-        break;
-    }
-
-    // Actualizar validadores
-    fields.forEach(field => {
-      this.formCriteriosBusqueda.get(field)?.updateValueAndValidity();
-    });
-  }
-
-  obtenerSedesIe() {
-    this.usuariosService
-      .obtenerSedesInstitucionEducativa(this.formCriteriosBusqueda.get('ieSeleccionada')?.value)
-      .subscribe({
-        next: (respuesta: any) => {
-          this.dataIeSedes = respuesta.data.map(sede => ({
-            value: sede.iSedeId,
-            label: sede.cSedeNombre,
-          }));
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Problema al obtener sedes',
-            detail: error,
-          });
-        },
-      });
-  }
-
-  /*cambioCriterioBusqueda() {
-        this.searchChanged.next() // activa debounce
-    }*/
-
   esUsuarioExpirado(fechaCaducidadString: string) {
     const fechaCaducidad = new Date(fechaCaducidadString);
     return fechaCaducidad < this.fechaServidor;
   }
 
   obtenerListaUsuarios(params: any) {
-    this.usuariosService.obtenerListaUsuarios(params).subscribe({
+    this.usuariosService.listarUsuarios(params).subscribe({
       next: (respuesta: any) => {
         this.totalDataUsuarios = respuesta.data.totalFilas;
         this.dataUsuarios = respuesta.data.dataUsuarios;
@@ -338,19 +211,16 @@ export class ListaUsuariosComponent {
   loadUsuariosLazy(event: any) {
     this.lastLazyEvent = event;
     this.loading = true;
-    const params = new HttpParams()
-      .set('offset', event.first)
-      .set('limit', event.rows)
-      .set('opcionSeleccionada', this.formCriteriosBusqueda.get('opcionSeleccionada')?.value)
-      .set('criterioBusqueda', this.formCriteriosBusqueda.get('criterioBusqueda')?.value)
-      .set(
-        'institucionSeleccionada',
-        this.formCriteriosBusqueda.get('institucionSeleccionada')?.value
-      )
-      .set('perfilSeleccionado', this.formCriteriosBusqueda.get('perfilSeleccionado')?.value)
-      .set('iUgelSeleccionada', this.formCriteriosBusqueda.get('iUgelSeleccionada')?.value)
-      //.set('ieSeleccionada', this.formCriteriosBusqueda.get('ieSeleccionada')?.value)
-      .set('ieSedeSeleccionada', this.formCriteriosBusqueda.get('ieSedeSeleccionada')?.value);
+    const params = {
+      offset: event.first,
+      limit: event.rows,
+      opcionSeleccionada: this.formCriteriosBusqueda.value.opcionSeleccionada,
+      criterioBusqueda: this.formCriteriosBusqueda.value.criterioBusqueda,
+      institucionSeleccionada: this.formCriteriosBusqueda.value.iIieeId,
+      perfilSeleccionado: this.formCriteriosBusqueda.value.iPerfilId,
+      iUgelSeleccionada: this.formCriteriosBusqueda.value.iUgelId,
+      ieSedeSeleccionada: this.formCriteriosBusqueda.value.iSedeId,
+    };
     this.obtenerListaUsuarios(params);
   }
 
@@ -368,20 +238,6 @@ export class ListaUsuariosComponent {
     this.usuarioSeleccionado = usuario;
     this.modalCambiarFechaCaducidadVisible = true;
   }
-  /*
-    abrirDialogoAsignarRol(usuario: Usuario) {
-        this.selectedUser = usuario
-        this.modalRolVisible = true
-    }
-    */
-
-  /*editarUsuario(usuario: Usuario) {
-        console.log('Editar usuario:', usuario)
-    }
-
-    verUsuario(usuario: Usuario) {
-        console.log('Ver usuario:', usuario)
-    }*/
 
   preguntarDesactivarUsuario(usuario: Usuario) {
     this.confirmationModalService.openConfirm({

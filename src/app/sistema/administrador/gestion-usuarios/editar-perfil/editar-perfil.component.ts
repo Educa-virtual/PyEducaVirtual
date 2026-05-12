@@ -243,10 +243,6 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
   }
 
   inicializarDatos() {
-    this.obtenerInstitucionesEducativas();
-    this.obtenerUgeles();
-    this.obtenerCursos();
-    this.obtenerModulosAdministrativos();
     this.opciones = [
       { label: 'DREMO', value: 1 },
       { label: 'UGEL', value: 2 },

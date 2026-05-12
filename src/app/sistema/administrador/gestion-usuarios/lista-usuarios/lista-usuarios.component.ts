@@ -40,6 +40,10 @@ export class ListaUsuariosComponent {
 
   fechaServidor: Date;
   loading = false;
+  columnaOrdenar: string = 'dtCredEntPerfCreado';
+  direccionOrdenar: number = -1;
+  first: number = 0;
+  rows: number = 20;
 
   usuarioSeleccionado: Usuario | null = null;
   breadCrumbItems: MenuItem[];
@@ -122,10 +126,20 @@ export class ListaUsuariosComponent {
       if (opcion == 'datos') {
         this.buscarTexto = true;
       } else if (opcion == 'perfil') {
+        this.formCriteriosBusqueda.patchValue({
+          iPerfilId: null,
+          iNivelTipoId: null,
+          iUgelId: null,
+          iIieeId: null,
+          iSedeId: null,
+        });
         this.buscarPerfil = true;
       } else if (opcion == 'estado') {
+        this.formCriteriosBusqueda.patchValue({ iHabilitado: null });
         this.buscarEstado = true;
       } else if (opcion == 'creacion') {
+        this.formCriteriosBusqueda.get('dDesde').setValue(null);
+        this.formCriteriosBusqueda.get('dHasta').setValue(null);
         this.buscarCreacion = true;
       }
     });
@@ -133,7 +147,16 @@ export class ListaUsuariosComponent {
     this.formCriteriosBusqueda.get('iPerfilId').valueChanges.subscribe(perfil => {
       this.buscarIe = false;
       this.buscarUgel = false;
+      this.formCriteriosBusqueda.patchValue({
+        iNivelTipoId: null,
+        iUgelId: null,
+        iIieeId: null,
+        iSedeId: null,
+      });
       if ([ESPECIALISTA_UGEL].includes(perfil)) {
+        this.formCriteriosBusqueda.get('iNivelTipoId').setValue(null);
+        this.formCriteriosBusqueda.get('iIieeId').setValue(null);
+        this.formCriteriosBusqueda.get('iSedeId').setValue(null);
         this.buscarUgel = true;
       } else if (
         [
@@ -146,16 +169,23 @@ export class ListaUsuariosComponent {
           ASISTENTE_SOCIAL,
         ].includes(perfil)
       ) {
+        this.formCriteriosBusqueda.get('iUgelId').setValue(null);
         this.buscarIe = true;
       }
     });
 
     this.formCriteriosBusqueda.get('iNivelTipoId').valueChanges.subscribe(nivel => {
+      this.formCriteriosBusqueda.get('iIieeId').setValue(null);
+      this.formCriteriosBusqueda.get('iSedeId').setValue(null);
       this.instituciones_educativas = this.usuariosService.filterInstitucionesEducativas(nivel);
     });
 
     this.formCriteriosBusqueda.get('iIieeId').valueChanges.subscribe(ie => {
+      this.formCriteriosBusqueda.get('iSedeId').setValue(null);
       this.sedes = this.usuariosService.getSedes(this.instituciones_educativas, ie);
+      if (this.sedes && this.sedes.length == 1) {
+        this.formCriteriosBusqueda.get('iSedeId').setValue(this.sedes[0]['value']);
+      }
     });
   }
 
@@ -197,8 +227,13 @@ export class ListaUsuariosComponent {
   }
 
   realizarBusqueda() {
-    this.lastLazyEvent.first = 0;
-    this.loadUsuariosLazy(this.lastLazyEvent);
+    this.first = 0;
+    this.loadUsuariosLazy({
+      first: this.first,
+      rows: this.rows,
+      columnaOrdenar: this.columnaOrdenar,
+      direccionOrdenar: this.direccionOrdenar,
+    });
   }
 
   usuarioRegistrado(data) {
@@ -209,7 +244,19 @@ export class ListaUsuariosComponent {
   }
 
   loadUsuariosLazy(event: any) {
+    if (!event) {
+      event = {
+        first: 0,
+        rows: 20,
+        columnaOrdenar: this.columnaOrdenar,
+        direccionOrdenar: this.direccionOrdenar,
+      };
+    }
+
+    event.sortField = event.sortField ?? this.columnaOrdenar;
+    event.sortOrder = event.sortOrder ?? this.direccionOrdenar;
     this.lastLazyEvent = event;
+    this.first = event.first;
     this.loading = true;
     const params = {
       offset: event.first,
@@ -220,7 +267,12 @@ export class ListaUsuariosComponent {
       perfilSeleccionado: this.formCriteriosBusqueda.value.iPerfilId,
       iUgelSeleccionada: this.formCriteriosBusqueda.value.iUgelId,
       ieSedeSeleccionada: this.formCriteriosBusqueda.value.iSedeId,
+      nivelSeleccionado: this.formCriteriosBusqueda.value.iNivelTipoId,
+      columnaOrdenar: event.sortField,
+      direccionOrdenar: event.sortOrder,
     };
+    this.columnaOrdenar = params.columnaOrdenar;
+    this.direccionOrdenar = params.direccionOrdenar;
     this.obtenerListaUsuarios(params);
   }
 

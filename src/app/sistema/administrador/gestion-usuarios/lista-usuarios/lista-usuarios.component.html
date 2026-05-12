@@ -180,36 +180,75 @@
     styleClass="p-datatable-sm"
     [lazy]="true"
     [paginator]="true"
-    [rows]="20"
+    [rows]="rows"
+    [first]="first"
     [totalRecords]="totalDataUsuarios"
     [showCurrentPageReport]="true"
     [loading]="loading"
+    [sortField]="columnaOrdenar"
+    [sortOrder]="direccionOrdenar"
     (onLazyLoad)="loadUsuariosLazy($event)"
     [scrollable]="true"
     currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
   >
     <ng-template pTemplate="header">
       <tr class="bg-gray-200">
-        <th style="width: 3%" class="text-center">N°</th>
-        <th style="width: 15%" class="text-center">Documento / Usuario</th>
-        <th style="width: 25%" class="text-center">Apellidos y nombres</th>
-        <th class="text-center">Verificado</th>
-        <th class="text-center">Estado usuario</th>
-        <th class="text-center">Fecha caducidad</th>
-        <th class="text-center">Ctd. perfiles</th>
+        <th style="width: 10%" class="text-center" pSortableColumn="dtCredEntPerfCreado">
+          <div class="flex flex-nowrap">
+            <span>Actualizado</span>
+            <p-sortIcon field="dtCredEntPerfCreado"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 10%" class="text-center" pSortableColumn="cPersDocumento">
+          <div class="flex flex-nowrap">
+            <span>Documento</span>
+            <p-sortIcon field="cPersDocumento"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 10%" class="text-center" pSortableColumn="cCredUsuario">
+          <div class="flex flex-nowrap">
+            <span>Usuario</span>
+            <p-sortIcon field="cCredUsuario"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 25%" class="text-center" pSortableColumn="cApellidosNombres">
+          <div class="flex flex-nowrap">
+            <span>Nombres</span>
+            <p-sortIcon field="cApellidosNombres"></p-sortIcon>
+          </div>
+        </th>
+        <th class="text-center" pSortableColumn="bCredVerificado">
+          <div class="flex flex-nowrap">
+            <span>Verificado</span>
+            <p-sortIcon field="bCredVerificado"></p-sortIcon>
+          </div>
+        </th>
+        <th class="text-center" pSortableColumn="iCredEstado">
+          <div class="flex flex-nowrap">
+            <span>Estado</span>
+            <p-sortIcon field="iCredEstado"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="dtCredCaduca">
+          <div class="flex flex-nowrap">
+            <span>Caducidad</span>
+            <p-sortIcon field="dtCredCaduca"></p-sortIcon>
+          </div>
+        </th>
+        <th class="text-center" pSortableColumn="iCantidadPerfiles">
+          <div class="flex flex-nowrap">
+            <span>Perfiles</span>
+            <p-sortIcon field="iCantidadPerfiles"></p-sortIcon>
+          </div>
+        </th>
         <th class="text-center">Acciones</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user let-i="rowIndex">
       <tr [ngClass]="{ 'bg-gray-100': i % 2 === 0 }">
-        <td class="text-center">{{ i + 1 }}</td>
-        <td class="text-center">
-          {{ user.cPersDocumento }}
-          @if (user.cPersDocumento !== user.cCredUsuario) {
-            <br />
-            (<span pTooltip="Usuario" tooltipPosition="top">{{ user.cCredUsuario }})</span>
-          }
-        </td>
+        <td class="text-center">{{ user.dtCredEntPerfCreado | date: 'dd/MM/y HH:mm' }}</td>
+        <td class="text-center">{{ user.cPersDocumento }}</td>
+        <td class="text-center">{{ user.cCredUsuario }}</td>
         <td>{{ user.cApellidosNombres }}</td>
         <td class="text-center">
           @if (user.bCredVerificado === '1') {
@@ -226,56 +265,99 @@
           }
         </td>
         <td class="text-center">
-          {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
           @if (esUsuarioExpirado(user.dtCredCaduca)) {
-            <p class="text-red-600">Caducado</p>
+            <p class="text-red-600">{{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}</p>
+          } @else {
+            {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
           }
         </td>
         <td class="text-center">{{ user.iCantidadPerfiles }}</td>
         <td class="text-center action-buttons">
+          <p-menu #menu [popup]="true" appendTo="body" class="z-0">
+            <ng-template pTemplate="start">
+              <div class="p-menu-list" class="z-0">
+                <div class="p-menuitem" aria-label="menuitem">
+                  <div class="p-menuitem-content">
+                    <a
+                      pRipple
+                      (click)="editarPerfilesUsuario(user)"
+                      (keydown.space)="editarPerfilesUsuario(user)"
+                      style="width: 100%; text-align: left"
+                      tabindex="1"
+                      class="p-menuitem-link text-orange-600"
+                    >
+                      <i class="pi pi-user-edit"></i>
+                      <span class="p-menuitem-text ml-2">Editar perfiles</span>
+                    </a>
+                  </div>
+                  <div class="p-menuitem-content">
+                    <a
+                      pRipple
+                      (click)="preguntarCambiarClave(user)"
+                      (keydown.space)="preguntarCambiarClave(user)"
+                      style="width: 100%; text-align: left"
+                      tabindex="2"
+                      class="p-menuitem-link text-primary"
+                    >
+                      <i class="pi pi-unlock"></i>
+                      <span class="p-menuitem-text ml-2">Restablecer contraseña</span>
+                    </a>
+                  </div>
+                  <div class="p-menuitem-content" *ngIf="+user.iCredEstado === 1">
+                    <a
+                      pRipple
+                      (click)="preguntarDesactivarUsuario(user)"
+                      (keydown.space)="preguntarDesactivarUsuario(user)"
+                      style="width: 100%; text-align: left"
+                      tabindex="3"
+                      class="p-menuitem-link text-red-600"
+                    >
+                      <i class="pi pi-ban"></i>
+                      <span class="p-menuitem-text ml-2">Desactivar usuario</span>
+                    </a>
+                  </div>
+                  <div class="p-menuitem-content" *ngIf="+user.iCredEstado === 0">
+                    <a
+                      pRipple
+                      (click)="preguntarReactivarUsuario(user)"
+                      (keydown.space)="preguntarReactivarUsuario(user)"
+                      style="width: 100%; text-align: left"
+                      tabindex="4"
+                      class="p-menuitem-link text-green-600"
+                    >
+                      <i class="pi pi-check"></i>
+                      <span class="p-menuitem-text ml-2">Activar usuario</span>
+                    </a>
+                  </div>
+                  <div class="p-menuitem-content">
+                    <a
+                      pRipple
+                      (click)="cambiarFechaCaducidad(user)"
+                      (keydown.space)="cambiarFechaCaducidad(user)"
+                      style="width: 100%; text-align: left"
+                      tabindex="5"
+                      class="p-menuitem-link text-orange-600"
+                    >
+                      <i class="pi pi-calendar"></i>
+                      <span class="p-menuitem-text ml-2">Cambiar fecha de caducidad</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-menu>
           <button
+            [rounded]="true"
             pButton
-            icon="pi pi-user-edit"
-            class="p-button-text p-button-warning"
-            pTooltip="Editar perfiles"
-            tooltipPosition="top"
-            (click)="editarPerfilesUsuario(user)"
-          ></button>
-          <button
-            pButton
-            icon="pi pi-key"
-            class="p-button-text p-button-info"
-            pTooltip="Restablecer contraseña"
-            tooltipPosition="top"
-            (click)="preguntarCambiarClave(user)"
-          ></button>
-          @if (user.iCredEstado === '1') {
-            <button
-              pButton
-              icon="pi pi-ban"
-              class="p-button-text p-button-danger"
-              pTooltip="Desactivar usuario"
-              tooltipPosition="top"
-              (click)="preguntarDesactivarUsuario(user)"
-            ></button>
-          } @else {
-            <button
-              pButton
-              icon="pi pi-check-circle"
-              class="p-button-text p-button-success"
-              pTooltip="Activar usuario"
-              tooltipPosition="top"
-              (click)="preguntarReactivarUsuario(user)"
-            ></button>
-          }
-          <button
-            pButton
-            icon="pi pi-calendar"
-            class="p-button-text p-button-help"
-            pTooltip="Cambiar fecha de caducidad"
-            tooltipPosition="top"
-            (click)="cambiarFechaCaducidad(user)"
-          ></button>
+            pRipple
+            (click)="menu.toggle($event)"
+            (keydown.space)="menu.toggle($event)"
+            class="p-1 z-0"
+            ngClass="p-button-rounded p-button-secondary p-button-text"
+            aria-label="Desplegar acciones"
+          >
+            <i class="pi pi-ellipsis-v"></i>
+          </button>
         </td>
       </tr>
     </ng-template>

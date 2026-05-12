@@ -120,8 +120,8 @@ export class GestionUsuariosService {
 
   filterInstitucionesEducativas(iNivelTipoId: any) {
     let ies_tmp: Array<object> = this.instituciones_educativas;
-    if (!iNivelTipoId || !this.instituciones_educativas) {
-      return null;
+    if (!iNivelTipoId) {
+      return this.instituciones_educativas;
     }
     if (iNivelTipoId) {
       ies_tmp = ies_tmp.filter((ie: any) => {
@@ -137,13 +137,11 @@ export class GestionUsuariosService {
   getSedes(data: any, iIieeId: number) {
     if (iIieeId) {
       const ies = data.filter(ie => ie.value == iIieeId);
-      console.log(ies, 'filtrado');
       this.sedes = ies.map(ie => ({
         value: ie.iSedeId,
         label: ie.cSedeNombre,
         iIieeId: ie?.iIieeId,
       }));
-      console.log(this.sedes);
       return this.sedes;
     }
     return this.sedes;

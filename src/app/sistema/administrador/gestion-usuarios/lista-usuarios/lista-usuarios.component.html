@@ -12,7 +12,7 @@
       <p-button
         severity="success"
         pTooltip="Agregar usuario"
-        tooltipPosition="top"
+        tooltipPosition="left"
         (click)="agregarUsuario()"
       >
         <i class="pi pi-fw pi-plus"></i>
@@ -68,7 +68,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-5" *ngIf="buscarCreacion">
+      <div class="col-12 md:col-5" *ngIf="buscarActualizado">
         <p-inputGroup>
           <p-inputGroupAddon> Desde </p-inputGroupAddon>
           <p-calendar
@@ -81,7 +81,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-5" *ngIf="buscarCreacion">
+      <div class="col-12 md:col-5" *ngIf="buscarActualizado">
         <p-inputGroup>
           <p-inputGroupAddon> Hasta </p-inputGroupAddon>
           <p-calendar

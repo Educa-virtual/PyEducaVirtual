@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { EditarPerfilComponent } from '../editar-perfil/editar-perfil.component';
@@ -31,7 +31,7 @@ import {
   templateUrl: './lista-usuarios.component.html',
   styleUrl: './lista-usuarios.component.scss',
 })
-export class ListaUsuariosComponent {
+export class ListaUsuariosComponent implements OnInit {
   //private searchChanged: Subject<void> = new Subject<void>()
   private lastLazyEvent: LazyLoadEvent | undefined;
   formCriteriosBusqueda: FormGroup;
@@ -58,7 +58,7 @@ export class ListaUsuariosComponent {
     { label: 'DATOS', value: 'datos' },
     { label: 'PERFIL', value: 'perfil' },
     { label: 'ESTADO', value: 'estado' },
-    { label: 'CREACIÓN', value: 'creacion' },
+    { label: 'ACTUALIZADO', value: 'actualizado' },
   ];
   instituciones: Array<object> = [
     { label: 'DREMO', value: 1 },
@@ -76,7 +76,7 @@ export class ListaUsuariosComponent {
   buscarTexto: boolean = true;
   buscarPerfil: boolean = false;
   buscarEstado: boolean = false;
-  buscarCreacion: boolean = false;
+  buscarActualizado: boolean = false;
   buscarIe: boolean = false;
   buscarUgel: boolean = false;
 
@@ -120,7 +120,7 @@ export class ListaUsuariosComponent {
       this.buscarTexto = false;
       this.buscarPerfil = false;
       this.buscarEstado = false;
-      this.buscarCreacion = false;
+      this.buscarActualizado = false;
       this.buscarIe = false;
       this.buscarUgel = false;
       if (opcion == 'datos') {
@@ -137,10 +137,10 @@ export class ListaUsuariosComponent {
       } else if (opcion == 'estado') {
         this.formCriteriosBusqueda.patchValue({ iHabilitado: null });
         this.buscarEstado = true;
-      } else if (opcion == 'creacion') {
+      } else if (opcion == 'actualizado') {
         this.formCriteriosBusqueda.get('dDesde').setValue(null);
         this.formCriteriosBusqueda.get('dHasta').setValue(null);
-        this.buscarCreacion = true;
+        this.buscarActualizado = true;
       }
     });
 
@@ -268,6 +268,9 @@ export class ListaUsuariosComponent {
       iUgelSeleccionada: this.formCriteriosBusqueda.value.iUgelId,
       ieSedeSeleccionada: this.formCriteriosBusqueda.value.iSedeId,
       nivelSeleccionado: this.formCriteriosBusqueda.value.iNivelTipoId,
+      estadoSeleccionado: this.formCriteriosBusqueda.value.iHabilitado,
+      fechaDesde: this.formCriteriosBusqueda.value.dDesde,
+      fechaHasta: this.formCriteriosBusqueda.value.dHasta,
       columnaOrdenar: event.sortField,
       direccionOrdenar: event.sortOrder,
     };

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
-import { map, of } from 'rxjs';
+import { map, of, Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 const baseUrl = environment.backendApi;
 
@@ -15,7 +16,9 @@ export class GestionUsuariosService {
   public readonly ESTADO_ACTIVO = 1;
 
   parametros: any;
+  parametros$?: Observable<any>;
 
+  tipos_documentos: Array<object>;
   perfiles: Array<object>;
   nivel_tipos: Array<object>;
   ugeles: Array<object>;
@@ -29,16 +32,33 @@ export class GestionUsuariosService {
    */
 
   crearUsuario() {
-    if (!this.parametros) {
-      this.parametros = this.http.get(`${baseUrl}/seg/crearUsuario`).pipe(
+    if (this.parametros) {
+      return of(this.parametros);
+    }
+
+    if (!this.parametros$) {
+      this.parametros$ = this.http.get(`${baseUrl}/seg/crearUsuario`).pipe(
         map((data: any) => {
           this.parametros = data.data;
           return this.parametros;
-        })
+        }),
+        shareReplay(1)
       );
-      return this.parametros;
     }
-    return of(this.parametros);
+
+    return this.parametros$;
+  }
+
+  getTiposDocumentos(data: any) {
+    if (!this.tipos_documentos && data) {
+      const items = typeof data === 'string' ? JSON.parse(data.replace(/^"(.*)"$/, '$1')) : data;
+      this.tipos_documentos = items.map(tipo => ({
+        value: tipo.iTipoIdentId,
+        label: tipo.cTipoIdentNombre,
+      }));
+      return this.tipos_documentos;
+    }
+    return this.tipos_documentos;
   }
 
   getDistritos(data: any) {
@@ -158,7 +178,7 @@ export class GestionUsuariosService {
   }
 
   listarUsuarios(data: any) {
-    return this.http.post(`${baseUrl}/seg/usuarios`, data);
+    return this.http.post(`${baseUrl}/seg/listarUsuarios`, data);
   }
 
   listarPerfilesUsuario(iCredId: any) {
@@ -189,8 +209,8 @@ export class GestionUsuariosService {
     return this.http.post(`${baseUrl}/seg/usuarios`, data);
   }
 
-  buscarPersona(data) {
-    return this.http.get(`${baseUrl}/seg/buscarPersona`, data);
+  buscarPersona(data: any) {
+    return this.http.post(`${baseUrl}/seg/personas`, data);
   }
 
   //Debe moverse a otro servicio

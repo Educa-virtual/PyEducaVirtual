@@ -1,9 +1,10 @@
 <p-dialog
   [(visible)]="visible"
-  [style]="{ width: '1000px' }"
+  [style]="{ width: '75vw' }"
+  [breakpoints]="{ '960px': '100vw', '640px': '100vw' }"
   header="Agregar usuario"
   [modal]="true"
-  styleClass="p-fluid personal-dialog"
+  styleClass="p-fluid"
   [draggable]="false"
   (onHide)="closeDialog()"
 >

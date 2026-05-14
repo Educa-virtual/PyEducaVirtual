@@ -368,3 +368,10 @@
 :host ::ng-deep .p-datatable-table tr {
   font-size: 0.75rem;
 }
+
+:host ::ng-deep .p-button.p-button-icon-only.p-button-sm {
+  width: 1.65rem !important;
+  height: 1.65rem !important;
+  padding: 0.25rem !important;
+  border-radius: 50% !important;
+}

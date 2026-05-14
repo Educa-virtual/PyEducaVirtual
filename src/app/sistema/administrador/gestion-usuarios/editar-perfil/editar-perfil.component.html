@@ -1,188 +1,179 @@
 <p-dialog
   [(visible)]="visible"
-  [style]="{ width: '1000px' }"
-  [header]="'Editar perfil de ' + usuario?.cApellidosNombres"
+  [style]="{ width: '75vw' }"
+  [breakpoints]="{ '960px': '100vw', '640px': '100vw' }"
   [modal]="true"
-  styleClass="p-fluid roles-dialog"
+  styleClass="p-fluid"
   [draggable]="false"
   (onHide)="cerrarDialog()"
 >
-  <div class="asignar-rol-container">
-    <form [formGroup]="formAgregarPerfil">
-      <div class="grid">
-        <div class="col-12">
-          <div class="card">
-            <div class="filtros-row">
-              <div class="filtro-item">
-                <label for="opciones">Opciones:</label>
-                <p-dropdown
-                  [options]="opciones"
-                  formControlName="opcionSeleccionada"
-                  placeholder="Seleccione opción"
-                  styleClass="dropdown-field"
-                  (onChange)="reiniciarFiltros()"
-                >
-                </p-dropdown>
-              </div>
-              <div class="filtro-item">
-                <label for="instituciones">Perfil:</label>
-                <p-dropdown
-                  appendTo="body"
-                  [options]="dataPerfiles"
-                  placeholder="Seleccione opción"
-                  styleClass="dropdown-field"
-                  formControlName="perfilSeleccionado"
-                  [filter]="true"
-                  (onChange)="reiniciarFiltros()"
-                >
-                </p-dropdown>
-              </div>
-              @if (
-                +formAgregarPerfil.get('opcionSeleccionada')?.value === 1 &&
-                +formAgregarPerfil.get('perfilSeleccionado')?.value > 0 &&
-                +formAgregarPerfil.get('perfilSeleccionado')?.value !== 2
-              ) {
-                <div class="filtro-item">
-                  <label for="ugeles">Módulo administrativo:</label>
-                  <p-dropdown
-                    appendTo="body"
-                    [options]="dataModulosAdministrativos"
-                    formControlName="iModuloSeleccionado"
-                    placeholder="Seleccione opción"
-                    styleClass="dropdown-field"
-                  >
-                  </p-dropdown>
-                </div>
-              }
-              @if (+formAgregarPerfil.get('opcionSeleccionada')?.value === 2) {
-                <div class="filtro-item">
-                  <label for="ugeles">UGEL:</label>
-                  <p-dropdown
-                    appendTo="body"
-                    [options]="dataUgeles"
-                    formControlName="iUgelSeleccionada"
-                    placeholder="Seleccione opción"
-                    styleClass="dropdown-field"
-                  >
-                  </p-dropdown>
-                </div>
-              }
-              @if (+formAgregarPerfil.get('opcionSeleccionada')?.value === 3) {
-                <div class="filtro-item">
-                  <label for="instituciones">Institución educativa:</label>
-                  <p-dropdown
-                    appendTo="body"
-                    [options]="dataInstitucionesEducativas"
-                    formControlName="ieSeleccionada"
-                    (onChange)="obtenerSedesIe()"
-                    placeholder="Seleccione opción"
-                    [filter]="true"
-                    styleClass="dropdown-field"
-                  >
-                  </p-dropdown>
-                </div>
-              }
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Registro de perfiles</div>
+      <div class="flex">{{ usuario?.cApellidosNombres }}</div>
+    </div>
+  </ng-template>
 
-              @if (+formAgregarPerfil.get('ieSeleccionada')?.value > 0) {
-                <div class="filtro-item">
-                  <label for="sedes">Sede:</label>
-                  <p-dropdown
-                    appendTo="body"
-                    [options]="dataIeSedes"
-                    formControlName="ieSedeSeleccionada"
-                    placeholder="Seleccione opción"
-                    styleClass="dropdown-field"
-                  >
-                  </p-dropdown>
-                </div>
-              }
-              @if (
-                +formAgregarPerfil.get('iUgelSeleccionada')?.value > 0 ||
-                +formAgregarPerfil.get('perfilSeleccionado')?.value === 2
-              ) {
-                <div class="filtro-item">
-                  <label for="cursos">Curso:</label>
-                  <p-dropdown
-                    appendTo="body"
-                    [options]="dataCursos"
-                    formControlName="iCursoSeleccionado"
-                    placeholder="Seleccione opción"
-                    styleClass="dropdown-field"
-                    [filter]="true"
-                  >
-                  </p-dropdown>
-                </div>
-              }
-
-              <div class="agregar-btn-container">
-                <button
-                  [disabled]="formAgregarPerfil.invalid"
-                  pButton
-                  pRipple
-                  label="+ Agregar"
-                  class="p-button-success"
-                  (click)="agregarPerfil()"
-                ></button>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <p-table
-                [value]="dataPerfilesUsuario"
-                [tableStyle]="{ 'min-width': '50rem' }"
-                [rows]="20"
-                [showCurrentPageReport]="true"
-                styleClass="p-datatable-sm"
-              >
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th style="width: 5%" class="text-center">#</th>
-                    <th style="width: 20%" class="text-center">Perfil</th>
-                    <th style="width: 20%" class="text-center">Nivel</th>
-                    <th style="width: 35%" class="text-center">Institución</th>
-                    <th style="width: 15%" class="text-center">Fecha asignación</th>
-                    <th style="width: 5%; text-align: center">Acciones</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-perfil let-i="rowIndex">
-                  <tr
-                    [ngClass]="{
-                      'bg-gray-100': i % 2 === 0,
-                    }"
-                  >
-                    <td class="text-center">
-                      {{ i + 1 }}
-                    </td>
-                    <td>{{ perfil.cPerfilNombre }}</td>
-                    <td>{{ perfil.cNivelTipoNombre }}</td>
-                    <td>
-                      {{ perfil.cUgelNombre }}
-                      <div *ngIf="perfil.cIieeCodigoModular">
-                        {{ perfil.cIieeCodigoModular }} -
-                        {{ perfil.cIieeNombre }}
-                      </div>
-                    </td>
-                    <td class="text-center">
-                      {{ perfil.dtCredEntPerfCreado | date: 'dd/MM/y' }}
-                    </td>
-                    <td class="text-center">
-                      <button
-                        pButton
-                        pRipple
-                        icon="pi pi-trash"
-                        class="p-button-rounded p-button-danger delete-button"
-                        pTooltip="Eliminar perfil"
-                        tooltipPosition="top"
-                        (click)="preguntarEliminarPerfil(perfil)"
-                      ></button>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
-          </div>
-        </div>
+  <form [formGroup]="formAgregarPerfil">
+    <div class="grid p-fluid mt-2">
+      <div class="col-12 md:col">
+        <p-inputGroup>
+          <p-inputGroupAddon> Perfil </p-inputGroupAddon>
+          <p-dropdown
+            [options]="perfiles"
+            formControlName="iPerfilId"
+            [filter]="true"
+            [showClear]="true"
+            appendTo="body"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
       </div>
-    </form>
+      <div class="col-12 md:col-4" *ngIf="buscarUgel">
+        <p-inputGroup>
+          <p-inputGroupAddon> UGEL </p-inputGroupAddon>
+          <p-dropdown
+            [options]="ugeles"
+            formControlName="iUgelId"
+            [filter]="true"
+            [showClear]="true"
+            appendTo="body"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6" *ngIf="buscarIe">
+        <p-inputGroup>
+          <p-inputGroupAddon> Nivel </p-inputGroupAddon>
+          <p-dropdown
+            [options]="nivel_tipos"
+            formControlName="iNivelTipoId"
+            [filter]="true"
+            [showClear]="true"
+            appendTo="body"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6" *ngIf="buscarIe">
+        <p-inputGroup>
+          <p-inputGroupAddon> I.E. </p-inputGroupAddon>
+          <p-dropdown
+            [options]="instituciones_educativas"
+            formControlName="iIieeId"
+            [filter]="true"
+            [showClear]="true"
+            appendTo="body"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-4" *ngIf="buscarIe">
+        <p-inputGroup>
+          <p-inputGroupAddon> Sede </p-inputGroupAddon>
+          <p-dropdown
+            [options]="sedes"
+            formControlName="iSedeId"
+            [filter]="true"
+            [showClear]="true"
+            appendTo="body"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-2">
+        <p-button
+          label="Agregar"
+          severity="success"
+          [disabled]="formAgregarPerfil.invalid"
+          (click)="agregarPerfil()"
+        />
+      </div>
+    </div>
+  </form>
+
+  <div class="mt-4">
+    <p-table
+      [value]="dataPerfilesUsuario"
+      [paginator]="true"
+      [rows]="20"
+      [showCurrentPageReport]="true"
+      styleClass="p-datatable-sm"
+      sortField="dtCredEntPerfCreado"
+      [sortOrder]="-1"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 5%" class="text-center">#</th>
+          <th style="width: 20%" pSortableColumn="cPerfilNombre">
+            <div class="flex flex-nowrap">
+              <span>Perfil</span>
+              <p-sortIcon field="cPerfilNombre"></p-sortIcon>
+            </div>
+          </th>
+          <th style="width: 20%" pSortableColumn="cNivelTipoNombre">
+            <div class="flex flex-nowrap">
+              <span>Nivel</span>
+              <p-sortIcon field="cNivelTipoNombre"></p-sortIcon>
+            </div>
+          </th>
+          <th style="width: 35%" pSortableColumn="cInstitucionNombre">
+            <div class="flex flex-nowrap">
+              <span>Isntitución</span>
+              <p-sortIcon field="cInstitucionNombre"></p-sortIcon>
+            </div>
+          </th>
+          <th style="width: 15%" pSortableColumn="dtCredEntPerfCreado">
+            <div class="flex flex-nowrap justify-content-center">
+              <span>Creado</span>
+              <p-sortIcon field="dtCredEntPerfCreado"></p-sortIcon>
+            </div>
+          </th>
+          <th style="width: 5%" class="text-center">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-perfil let-i="rowIndex">
+        <tr
+          [ngClass]="{
+            'bg-gray-100': i % 2 === 0,
+          }"
+        >
+          <td class="text-center">
+            {{ i + 1 }}
+          </td>
+          <td>{{ perfil.cPerfilNombre }}</td>
+          <td>{{ perfil.cNivelTipoNombre }}</td>
+          <td>{{ perfil.cInstitucionNombre }}</td>
+          <td class="text-center">
+            {{ perfil.dtCredEntPerfCreado | date: 'dd/MM/y' }}
+          </td>
+          <td class="text-center">
+            <button
+              [rounded]="true"
+              pButton
+              pRipple
+              pTooltip="Desactivar"
+              tooltipPosition="left"
+              (click)="preguntarEliminarPerfil(perfil)"
+              class="p-1"
+              ngClass="p-button-rounded p-button-sm p-button-danger p-button-text p-button-icon-only"
+            >
+              <i class="pi pi-times"></i>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
 </p-dialog>

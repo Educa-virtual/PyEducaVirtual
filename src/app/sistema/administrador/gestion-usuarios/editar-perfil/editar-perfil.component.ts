@@ -10,26 +10,21 @@ import {
 import { PrimengModule } from '@/app/primeng.module';
 import { DialogModule } from 'primeng/dialog';
 import { Usuario } from '../interfaces/usuario.interface';
-import { MessageService, SelectItem } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { PerfilAsignado } from '../interfaces/perfil-asignado.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GestionUsuariosService } from '../services/gestion-usuarios.service';
-
-interface Nivel {
-  nombre: string;
-  codigo: string;
-}
-
-interface Modulo {
-  nombre: string;
-  codigo: string;
-}
-
-interface Rol {
-  nombre: string;
-  codigo: string;
-}
+import {
+  ESPECIALISTA_UGEL,
+  DIRECTOR_IE,
+  SUBDIRECTOR_IE,
+  DOCENTE,
+  AUXILIAR,
+  ESTUDIANTE,
+  APODERADO,
+  ASISTENTE_SOCIAL,
+} from '@/app/servicios/perfilesConstantes';
 
 /*interface AsignacionRol {
     id: number
@@ -50,39 +45,25 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
   @Input() visible: boolean = false;
   @Input() usuario: Usuario = null;
   @Output() visibleChange = new EventEmitter<boolean>();
-  formAgregarPerfil: FormGroup;
-  //@Output() perfilesAsignados = new EventEmitter<any>()
-  dataPerfilesUsuario: any[] = [];
-  dataUgeles: any[] = [];
-  opciones: SelectItem[] = [];
-  dataIeSedes: SelectItem[] = [];
-  dataPerfiles: SelectItem[] = [];
-  dataCursos: SelectItem[] = [];
-  dataModulosAdministrativos: SelectItem[] = [];
-  iDremoId: number;
 
+  formAgregarPerfil: FormGroup;
+  dataPerfilesUsuario: any[] = [];
   ENTIDAD: number = 10; // DREMO
 
-  dataInstitucionesEducativas: SelectItem[] = [];
-  //ieSeleccionada: number
-
-  //ieSedeSeleccionada: number
-
-  //perfilSeleccionado: number
-
-  niveles: Nivel[] = [];
-  modulos: Modulo[] = [];
-  roles: Rol[] = [];
-
-  nivelSeleccionado: Nivel | null = null;
-  moduloSeleccionado: Modulo | null = null;
+  nivelSeleccionado: any | null = null;
+  moduloSeleccionado: any | null = null;
   perfilUsuarioSeleccionado: PerfilAsignado | null = null;
 
-  // Propiedades para el diálogo
+  perfiles: Array<object>;
+  nivel_tipos: Array<object>;
+  ugeles: Array<object>;
+  distritos: Array<object>;
+  instituciones_educativas: Array<object>;
+  sedes: Array<object>;
+  estados: Array<object>;
 
-  ngOnInit() {
-    this.inicializarDatos();
-  }
+  buscarIe: boolean = false;
+  buscarUgel: boolean = false;
 
   constructor(
     private messageService: MessageService,
@@ -91,10 +72,87 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     private fb: FormBuilder
   ) {}
 
+  ngOnInit() {
+    this.formAgregarPerfil = this.fb.group({
+      iIieeId: [null],
+      iNivelTipoId: [null],
+      iUgelId: [null],
+      iSedeId: [null],
+      iPerfilId: [null, [Validators.required]],
+    });
+
+    this.usuariosService.crearUsuario().subscribe((data: any) => {
+      this.perfiles = this.usuariosService.getPerfiles(data?.perfiles);
+      this.nivel_tipos = this.usuariosService.getNivelesTipos(data?.nivel_tipos);
+      this.ugeles = this.usuariosService.getUgeles(data?.ugeles);
+      this.distritos = this.usuariosService.getDistritos(data?.distritos);
+      this.instituciones_educativas = this.usuariosService.getInstitucionesEducativas(
+        data?.instituciones_educativas
+      );
+    });
+
+    this.formAgregarPerfil.get('iPerfilId').valueChanges.subscribe(perfil => {
+      this.buscarIe = false;
+      this.buscarUgel = false;
+      this.formAgregarPerfil.patchValue({
+        iNivelTipoId: null,
+        iUgelId: null,
+        iIieeId: null,
+        iSedeId: null,
+      });
+      if ([ESPECIALISTA_UGEL].includes(perfil)) {
+        this.formAgregarPerfil.get('iNivelTipoId').setValue(null);
+        this.formAgregarPerfil.get('iIieeId').setValue(null);
+        this.formAgregarPerfil.get('iSedeId').setValue(null);
+        this.buscarUgel = true;
+      } else if (
+        [
+          DIRECTOR_IE,
+          SUBDIRECTOR_IE,
+          DOCENTE,
+          AUXILIAR,
+          ESTUDIANTE,
+          APODERADO,
+          ASISTENTE_SOCIAL,
+        ].includes(perfil)
+      ) {
+        this.formAgregarPerfil.get('iUgelId').setValue(null);
+        this.buscarIe = true;
+      }
+    });
+
+    this.formAgregarPerfil.get('iNivelTipoId').valueChanges.subscribe(nivel => {
+      this.formAgregarPerfil.get('iIieeId').setValue(null);
+      this.formAgregarPerfil.get('iSedeId').setValue(null);
+      this.instituciones_educativas = this.usuariosService.filterInstitucionesEducativas(nivel);
+    });
+
+    this.formAgregarPerfil.get('iIieeId').valueChanges.subscribe(ie => {
+      this.formAgregarPerfil.get('iSedeId').setValue(null);
+      this.sedes = this.usuariosService.getSedes(this.instituciones_educativas, ie);
+      if (this.sedes && this.sedes.length == 1) {
+        this.formAgregarPerfil.get('iSedeId').setValue(this.sedes[0]['value']);
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['visible'] && changes['visible'].currentValue === true) {
+      this.obtenerPerfilesUsuario();
+    }
+  }
+
   obtenerPerfilesUsuario() {
     this.usuariosService.obtenerPerfilesUsuario(this.usuario.iCredId).subscribe({
       next: (respuesta: any) => {
         this.dataPerfilesUsuario = respuesta.data;
+        this.dataPerfilesUsuario.forEach(perfil => {
+          const ugel = perfil.cUgelNombre;
+          const ie = perfil.cIieeCodigoModular
+            ? perfil.cIieeCodigoModular + ' - ' + perfil.cIieeNombre
+            : null;
+          perfil.cInstitucionNombre = ugel ?? ie ?? null;
+        });
         this.usuario.iCantidadPerfiles = this.dataPerfilesUsuario.length;
       },
       error: error => {
@@ -105,150 +163,6 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
         });
       },
     });
-  }
-
-  iniciarFormulario() {
-    this.formAgregarPerfil = this.fb.group({
-      opcionSeleccionada: ['', [Validators.required]],
-      ieSeleccionada: [''],
-      iModuloSeleccionado: [''],
-      iUgelSeleccionada: [''],
-      ieSedeSeleccionada: [''],
-      iCursoSeleccionado: [''],
-      perfilSeleccionado: ['', [Validators.required]],
-    });
-  }
-
-  obtenerPerfilesPorTipo(tipo: string) {
-    this.usuariosService.obtenerPerfilesPorTipo(tipo).subscribe({
-      next: (respuesta: any) => {
-        this.dataPerfiles = respuesta.data.map(perfil => ({
-          value: perfil.iPerfilId,
-          label: perfil.cPerfilNombre,
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener perfiles',
-          detail: error,
-        });
-      },
-    });
-  }
-
-  obtenerCursos() {
-    this.usuariosService.obtenerCursos().subscribe({
-      next: (respuesta: any) => {
-        this.dataCursos = respuesta.data.map(curso => ({
-          value: curso.iCursosNivelGradId,
-          label: curso.curso_grado,
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'danger',
-          summary: 'Mensaje',
-          detail: error,
-        });
-      },
-    });
-  }
-
-  obtenerUgeles() {
-    this.usuariosService.obtenerUgeles().subscribe({
-      next: (respuesta: any) => {
-        this.dataUgeles = respuesta.data.map(ugel => ({
-          value: ugel.iUgelId,
-          label: ugel.cUgelNombre,
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'danger',
-          summary: 'Mensaje',
-          detail: error,
-        });
-      },
-    });
-  }
-
-  obtenerSedesIe() {
-    this.usuariosService
-      .obtenerSedesInstitucionEducativa(this.formAgregarPerfil.get('ieSeleccionada')?.value)
-      .subscribe({
-        next: (respuesta: any) => {
-          this.dataIeSedes = respuesta.data.map(sede => ({
-            value: sede.iSedeId,
-            label: sede.cSedeNombre,
-          }));
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Problema al obtener sedes',
-            detail: error,
-          });
-        },
-      });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['visible'] && changes['visible'].currentValue === true) {
-      this.obtenerPerfilesUsuario();
-    }
-  }
-
-  reiniciarFiltros() {
-    const fields = [
-      'ieSeleccionada',
-      'iUgelSeleccionada',
-      'ieSedeSeleccionada',
-      'iCursoSeleccionado',
-      'iModuloSeleccionado',
-    ];
-
-    // Limpiar valores y validadores
-    fields.forEach(field => {
-      this.formAgregarPerfil.get(field)?.setValue('');
-      this.formAgregarPerfil.get(field)?.clearValidators();
-    });
-
-    const opcion = this.formAgregarPerfil.get('opcionSeleccionada')?.value;
-    switch (opcion) {
-      case 1:
-        this.obtenerPerfilesPorTipo('dremo');
-        if (+this.formAgregarPerfil.get('perfilSeleccionado')?.value == 2) {
-          this.formAgregarPerfil.get('iCursoSeleccionado')?.setValidators([Validators.required]);
-        } else {
-          this.formAgregarPerfil.get('iModuloSeleccionado')?.setValidators([Validators.required]);
-        }
-        break;
-      case 2:
-        this.obtenerPerfilesPorTipo('ugel');
-        this.formAgregarPerfil.get('iUgelSeleccionada')?.setValidators([Validators.required]);
-        this.formAgregarPerfil.get('iCursoSeleccionado')?.setValidators([Validators.required]);
-        break;
-      case 3:
-        this.obtenerPerfilesPorTipo('ie');
-        this.formAgregarPerfil.get('ieSeleccionada')?.setValidators([Validators.required]);
-        this.formAgregarPerfil.get('ieSedeSeleccionada')?.setValidators([Validators.required]);
-        break;
-    }
-
-    // Actualizar validadores
-    fields.forEach(field => {
-      this.formAgregarPerfil.get(field)?.updateValueAndValidity();
-    });
-  }
-
-  inicializarDatos() {
-    this.opciones = [
-      { label: 'DREMO', value: 1 },
-      { label: 'UGEL', value: 2 },
-      { label: 'INSTITUCIONES EDUCATIVAS', value: 3 },
-    ];
-    this.iniciarFormulario();
   }
 
   preguntarEliminarPerfil(perfil: PerfilAsignado) {
@@ -286,99 +200,29 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
 
   cerrarDialog() {
     this.dataPerfilesUsuario = [];
-    this.iniciarFormulario();
     this.visibleChange.emit(false);
   }
 
-  obtenerModulosAdministrativos() {
-    this.usuariosService.obtenerModulosAdministrativos().subscribe({
-      next: (respuesta: any) => {
-        this.dataModulosAdministrativos = respuesta.data.map(mod => ({
-          value: mod.iModuloId,
-          label: mod.cModuloNombre,
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener instituciones educativas',
-          detail: error,
-        });
-      },
-    });
-  }
-
-  obtenerInstitucionesEducativas() {
-    this.usuariosService.obtenerInstitucionesEducativas().subscribe({
-      next: (respuesta: any) => {
-        this.dataInstitucionesEducativas = respuesta.data.map(ie => ({
-          value: ie.iIieeId,
-          label: (
-            ie.cIieeCodigoModular +
-            ' - ' +
-            ie.cIieeNombre +
-            ' - ' +
-            (ie.iNivelTipoId == 3 ? 'PRIMARIA' : 'SECUNDARIA')
-          ).trim(),
-        }));
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener instituciones educativas',
-          detail: error,
-        });
-      },
-    });
-  }
-
   agregarPerfil() {
-    let param: any = {};
-    switch (this.formAgregarPerfil.get('opcionSeleccionada')?.value) {
-      case 1: //DREMO
-        param = {
-          iEntId: this.ENTIDAD,
-          iPerfilId: this.formAgregarPerfil.get('perfilSeleccionado')?.value,
-          iCursosNivelGradId: this.formAgregarPerfil.get('iCursoSeleccionado')?.value,
-          opcion: 'dremo',
-        };
-        break;
-      case 2: //UGEL
-        param = {
-          iUgelId: this.formAgregarPerfil.get('iUgelSeleccionada')?.value,
-          iEntId: this.ENTIDAD,
-          iPerfilId: this.formAgregarPerfil.get('perfilSeleccionado')?.value,
-          iCursosNivelGradId: this.formAgregarPerfil.get('iCursoSeleccionado')?.value,
-          opcion: 'ugel',
-        };
-        break;
-      case 3: //IIEE
-        param = {
-          iSedeId: this.formAgregarPerfil.get('ieSedeSeleccionada')?.value,
-          iEntId: this.ENTIDAD,
-          iPerfilId: this.formAgregarPerfil.get('perfilSeleccionado')?.value,
-          opcion: 'iiee',
-        };
-        break;
-    }
-
-    this.usuariosService.registrarPerfil(this.usuario.iCredId, param).subscribe({
-      next: (data: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: data.message,
-        });
-        this.obtenerPerfilesUsuario();
-      },
-      error: error => {
-        console.error('Error al agregar perfil:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje',
-          detail: error.error.message,
-        });
-      },
-    });
+    this.usuariosService
+      .registrarPerfil(this.usuario.iCredId, this.formAgregarPerfil.value)
+      .subscribe({
+        next: (data: any) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: data.message,
+          });
+          this.obtenerPerfilesUsuario();
+        },
+        error: error => {
+          console.error('Error al agregar perfil:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 }

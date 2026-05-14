@@ -39,7 +39,6 @@ export class ListaUsuariosComponent implements OnInit {
   totalDataUsuarios: number = 0;
 
   fechaServidor: Date;
-  loading = false;
   columnaOrdenar: string = 'dtCredEntPerfCreado';
   direccionOrdenar: number = -1;
   first: number = 0;
@@ -189,32 +188,12 @@ export class ListaUsuariosComponent implements OnInit {
     });
   }
 
-  actualizarOpcionBusqueda() {
-    if (this.formCriteriosBusqueda.get('opcionSeleccionada')?.value == 'perfil') {
-      this.formCriteriosBusqueda
-        .get('institucionSeleccionada')
-        ?.setValidators([Validators.required]);
-      this.formCriteriosBusqueda.get('perfilSeleccionado')?.setValidators([Validators.required]);
-    } else {
-      this.formCriteriosBusqueda.get('institucionSeleccionada')?.clearValidators();
-      this.formCriteriosBusqueda.get('perfilSeleccionado')?.clearValidators();
-    }
-    this.formCriteriosBusqueda.get('institucionSeleccionada')?.updateValueAndValidity();
-    this.formCriteriosBusqueda.get('perfilSeleccionado')?.updateValueAndValidity();
-  }
-
-  esUsuarioExpirado(fechaCaducidadString: string) {
-    const fechaCaducidad = new Date(fechaCaducidadString);
-    return fechaCaducidad < this.fechaServidor;
-  }
-
   obtenerListaUsuarios(params: any) {
     this.usuariosService.listarUsuarios(params).subscribe({
       next: (respuesta: any) => {
         this.totalDataUsuarios = respuesta.data.totalFilas;
         this.dataUsuarios = respuesta.data.dataUsuarios;
         this.fechaServidor = new Date(respuesta.data.fechaServidor);
-        this.loading = false;
       },
       error: error => {
         this.messageService.add({
@@ -257,7 +236,7 @@ export class ListaUsuariosComponent implements OnInit {
     event.sortOrder = event.sortOrder ?? this.direccionOrdenar;
     this.lastLazyEvent = event;
     this.first = event.first;
-    this.loading = true;
+
     const params = {
       offset: event.first,
       limit: event.rows,

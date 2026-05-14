@@ -32,7 +32,6 @@
             appendTo="body"
             styleClass="group-element"
             [style]="{ flex: '1', width: '100%' }"
-            (onChange)="actualizarOpcionBusqueda()"
           >
           </p-dropdown>
         </p-inputGroup>
@@ -184,7 +183,6 @@
     [first]="first"
     [totalRecords]="totalDataUsuarios"
     [showCurrentPageReport]="true"
-    [loading]="loading"
     [sortField]="columnaOrdenar"
     [sortOrder]="direccionOrdenar"
     (onLazyLoad)="loadUsuariosLazy($event)"
@@ -192,7 +190,7 @@
     currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
   >
     <ng-template pTemplate="header">
-      <tr class="bg-gray-200">
+      <tr>
         <th style="width: 10%" class="text-center" pSortableColumn="dtCredEntPerfCreado">
           <div class="flex flex-nowrap">
             <span>Actualizado</span>
@@ -265,14 +263,14 @@
           }
         </td>
         <td class="text-center">
-          @if (esUsuarioExpirado(user.dtCredCaduca)) {
+          @if (+user.bEstadoCaducado === 1) {
             <p class="text-red-600">{{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}</p>
           } @else {
             {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
           }
         </td>
         <td class="text-center">{{ user.iCantidadPerfiles }}</td>
-        <td class="text-center action-buttons">
+        <td class="text-center">
           <p-menu #menu [popup]="true" appendTo="body" class="z-0">
             <ng-template pTemplate="start">
               <div class="p-menu-list" class="z-0">

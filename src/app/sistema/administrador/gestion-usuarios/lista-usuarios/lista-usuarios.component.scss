@@ -356,3 +356,15 @@
 .text-pre-wrap {
   white-space: pre-wrap !important;
 }
+
+:host ::ng-deep .p-datatable-table tr th {
+  background-color: #e6e6ee;
+}
+
+:host ::ng-deep .p-datatable-table tr:hover:not(.itemSelected, .itemActive) {
+  background-color: var(--highlight-bg);
+}
+
+:host ::ng-deep .p-datatable-table tr {
+  font-size: 0.75rem;
+}

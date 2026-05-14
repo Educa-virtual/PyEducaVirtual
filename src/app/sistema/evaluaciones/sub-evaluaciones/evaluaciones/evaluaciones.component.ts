@@ -397,7 +397,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       class: 'p-button-rounded p-button-help p-button-text',
       isVisible: (rowData: any) =>
         (rowData.iUgelId === null &&
-          [ESPECIALISTA_DREMO, ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(this.iPerfilId)) ||
+          [ESPECIALISTA_DREMO, ADMINISTRADOR_DREMO, ESPECIALISTA_UGEL, DIRECTOR_IE].includes(
+            this.iPerfilId
+          )) ||
         ([ESPECIALISTA_UGEL, DIRECTOR_IE].includes(this.iPerfilId) && rowData.iUgelId !== null),
     },
     {

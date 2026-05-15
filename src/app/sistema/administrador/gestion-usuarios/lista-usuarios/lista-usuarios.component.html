@@ -249,20 +249,10 @@
         <td class="text-center">{{ user.cCredUsuario }}</td>
         <td>{{ user.cApellidosNombres }}</td>
         <td class="text-center">
-          @if (+user.bCredVerificado === 1) {
-            <p-tag severity="success" value="Si" />
-          } @else {
-            <p-tag severity="danger" value="No" />
-          }
+          <p-tag [severity]="user.bCredVerificadoColor" [value]="user.bCredVerificadoNombre" />
         </td>
         <td class="text-center">
-          @if (+user.bEstadoCaducado === 1) {
-            <p-tag severity="warning" value="user.cCredEstadoNombre" />
-          } @else if (+user.iCredEstado === 1) {
-            <p-tag severity="success" value="Activo" />
-          } @else {
-            <p-tag severity="danger" value="Inactivo" />
-          }
+          <p-tag [severity]="user.cCredEstadoColor" [value]="user.cCredEstadoNombre" />
         </td>
         <td class="text-center">{{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}</td>
         <td class="text-center">{{ user.iCantidadPerfiles }}</td>

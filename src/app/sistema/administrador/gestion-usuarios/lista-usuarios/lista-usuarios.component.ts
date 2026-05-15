@@ -193,6 +193,19 @@ export class ListaUsuariosComponent implements OnInit {
       next: (respuesta: any) => {
         this.totalDataUsuarios = respuesta.data.totalFilas;
         this.dataUsuarios = respuesta.data.dataUsuarios;
+        this.dataUsuarios.forEach((usuario: any) => {
+          const verifNombre = Number(usuario.bCredVerificado) === 1 ? 'Si' : 'No';
+          const verifColor = Number(usuario.bCredVerificado) === 1 ? 'success' : 'danger';
+          const estadoColor =
+            Number(usuario.iCredEstado) === 0
+              ? 'danger'
+              : Number(usuario.bEstaCaducado) === 1
+                ? 'warning'
+                : 'success';
+          usuario.bCredVerificadoNombre = verifNombre;
+          usuario.bCredVerificadoColor = verifColor;
+          usuario.cCredEstadoColor = estadoColor;
+        });
         this.fechaServidor = new Date(respuesta.data.fechaServidor);
       },
       error: error => {
@@ -285,7 +298,7 @@ export class ListaUsuariosComponent implements OnInit {
       header: 'Desactivar usuario',
       message: `¿Está seguro de que desea desactivar el usuario de ${usuario.cApellidosNombres}?`,
       accept: () => {
-        this.cambiarEstadoUsuario(usuario, '0');
+        this.cambiarEstadoUsuario(usuario, 0);
       },
     });
   }
@@ -296,21 +309,21 @@ export class ListaUsuariosComponent implements OnInit {
       message: `¿Está seguro de que desea activar el usuario de ${usuario.cApellidosNombres}?`,
       icon: 'pi pi-check-circle',
       accept: () => {
-        this.cambiarEstadoUsuario(usuario, '1');
+        this.cambiarEstadoUsuario(usuario, 1);
       },
     });
   }
 
-  cambiarEstadoUsuario(usuario: Usuario, activo: string) {
-    this.usuariosService.cambiarEstadoUsuario(usuario.iCredId, activo).subscribe({
-      next: (respuesta: any) => {
+  cambiarEstadoUsuario(usuario: Usuario, estado: number) {
+    const data = { iCredEstado: estado };
+    this.usuariosService.cambiarEstadoUsuario(usuario.iCredId, data).subscribe({
+      next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: `Cambio realizado`,
-          detail: respuesta.message,
+          summary: 'Éxito',
+          detail: 'Datos actualizados con éxito',
         });
-        usuario.iCredEstado = activo;
-        //this.loadUsuariosLazy(this.lastLazyEvent);
+        this.loadUsuariosLazy(null);
       },
       error: error => {
         this.messageService.add({

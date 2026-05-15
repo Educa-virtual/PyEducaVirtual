@@ -1,8 +1,8 @@
 <p-dialog
   [(visible)]="visible"
   [focusOnShow]="false"
-  [style]="{ width: '75vw' }"
-  [breakpoints]="{ '960px': '100vw', '640px': '100vw' }"
+  [style]="{ width: '50vw' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
   [modal]="true"
   styleClass="p-fluid roles-dialog"
   [draggable]="false"
@@ -17,32 +17,34 @@
 
   <form [formGroup]="formCambiarFecha">
     <div class="grid p-fluid mt-2">
-      <div class="col-12 md:col-6">
+      <div class="col-12">
         <p-inputGroup>
           <p-inputGroupAddon> Fecha actual </p-inputGroupAddon>
           <p-calendar
             formControlName="fechaActual"
+            iconDisplay="input"
             dateFormat="dd/mm/yy"
             [showTime]="true"
-            [hourFormat]="'24'"
+            hourFormat="24"
             variant="filled"
+            [showIcon]="true"
+            inputStyleClass="group-element"
             appendTo="body"
-            [showOnFocus]="false"
-            styleClass="dropdown-field"
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-6">
+      <div class="col-12">
         <p-inputGroup>
           <p-inputGroupAddon> Nueva fecha </p-inputGroupAddon>
           <p-calendar
             formControlName="nuevaFecha"
+            iconDisplay="input"
             dateFormat="dd/mm/yy"
             [showTime]="true"
-            [hourFormat]="'24'"
-            variant="filled"
+            hourFormat="24"
+            [showIcon]="true"
+            inputStyleClass="group-element"
             appendTo="body"
-            styleClass="dropdown-field"
           />
         </p-inputGroup>
       </div>

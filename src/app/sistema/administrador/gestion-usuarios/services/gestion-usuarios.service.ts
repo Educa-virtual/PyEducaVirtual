@@ -14,6 +14,7 @@ export class GestionUsuariosService {
 
   public readonly ESTADO_INACTIVO = 0;
   public readonly ESTADO_ACTIVO = 1;
+  public readonly ESTADO_CADUCADO = 2;
 
   parametros: any;
   parametros$?: Observable<any>;
@@ -172,6 +173,7 @@ export class GestionUsuariosService {
       this.estados = [
         { label: 'INACTIVO', value: this.ESTADO_INACTIVO },
         { label: 'ACTIVO', value: this.ESTADO_ACTIVO },
+        { label: 'CADUCADO', value: this.ESTADO_CADUCADO },
       ];
     }
     return this.estados;
@@ -186,7 +188,7 @@ export class GestionUsuariosService {
   }
 
   cambiarEstadoUsuario(iCredId: number, data: any) {
-    return this.http.put(`${baseUrl}/seg/usuarios/${iCredId}/estado`, data);
+    return this.http.patch(`${baseUrl}/seg/usuarios/${iCredId}/estado`, data);
   }
 
   restablecerClaveUsuario(iCredId: number) {

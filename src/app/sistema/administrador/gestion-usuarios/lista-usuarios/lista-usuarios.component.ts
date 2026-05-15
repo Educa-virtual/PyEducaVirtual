@@ -39,7 +39,7 @@ export class ListaUsuariosComponent implements OnInit {
   totalDataUsuarios: number = 0;
 
   fechaServidor: Date;
-  columnaOrdenar: string = 'dtCredEntPerfCreado';
+  columnaOrdenar: string = 'dtCredEntPerfActualizado';
   direccionOrdenar: number = -1;
   first: number = 0;
   rows: number = 20;
@@ -266,6 +266,13 @@ export class ListaUsuariosComponent implements OnInit {
   editarPerfilesUsuario(usuario: Usuario) {
     this.usuarioSeleccionado = usuario;
     this.modalAsignarRolVisible = true;
+  }
+
+  visibilidadModalAsignarRol(visible: boolean) {
+    this.modalAsignarRolVisible = visible;
+    if (!visible) {
+      this.loadUsuariosLazy(null);
+    }
   }
 
   cambiarFechaCaducidad(usuario: Usuario) {

@@ -45,6 +45,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
   @Input() visible: boolean = false;
   @Input() usuario: Usuario = null;
   @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() refrescarLista = new EventEmitter<boolean>();
 
   formAgregarPerfil: FormGroup;
   dataPerfilesUsuario: any[] = [];
@@ -53,6 +54,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
   nivelSeleccionado: any | null = null;
   moduloSeleccionado: any | null = null;
   perfilUsuarioSeleccionado: PerfilAsignado | null = null;
+  perfilCreado: boolean = false;
 
   perfiles: Array<object>;
   nivel_tipos: Array<object>;
@@ -138,6 +140,8 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['visible'] && changes['visible'].currentValue === true) {
+      this.formAgregarPerfil.reset();
+      this.perfilCreado = false;
       this.obtenerPerfilesUsuario();
     }
   }
@@ -165,42 +169,61 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     });
   }
 
-  preguntarEliminarPerfil(perfil: PerfilAsignado) {
+  preguntarDesactivarPerfil(perfil: any) {
+    const perfil_institucion =
+      perfil.cPerfilNombre + (perfil.cInstitucionNombre ? ' - ' + perfil.cInstitucionNombre : '');
     this.confirmationModalService.openConfirm({
-      header: 'Eliminar perfil',
-      message: `El perfil ${perfil.cPerfilNombre} será eliminado del usuario, ¿desea continuar?`,
+      header: 'Desactivar perfil',
+      message: `El perfil ${perfil_institucion} será desactivado, ¿desea continuar?`,
       accept: () => {
-        this.eliminarPerfil(perfil.iCredEntPerfId);
+        this.cambiarEstadoPerfil(perfil.iCredEntPerfId, 0);
       },
     });
   }
 
-  eliminarPerfil(iCredEntPerfId: number) {
-    this.usuariosService.eliminarPerfilUsuario(this.usuario.iCredId, iCredEntPerfId).subscribe({
-      next: (respuesta: any) => {
-        this.dataPerfilesUsuario = this.dataPerfilesUsuario.filter(
-          item => item.iCredEntPerfId !== iCredEntPerfId
-        );
-        this.usuario.iCantidadPerfiles = this.dataPerfilesUsuario.length;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Perfil eliminado',
-          detail: respuesta.message,
-        });
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al eliminar perfil',
-          detail: error,
-        });
+  preguntarActivarPerfil(perfil: any) {
+    const perfil_institucion =
+      perfil.cPerfilNombre + (perfil.cInstitucionNombre ? ' - ' + perfil.cInstitucionNombre : '');
+    this.confirmationModalService.openConfirm({
+      header: 'Activar perfil',
+      message: `El perfil ${perfil_institucion} será activado, ¿desea continuar?`,
+      accept: () => {
+        this.cambiarEstadoPerfil(perfil.iCredEntPerfId, 1);
       },
     });
+  }
+
+  cambiarEstadoPerfil(iCredEntPerfId: number, estado: number) {
+    const data = { iCredEntPerfEstado: estado };
+    this.usuariosService
+      .actualizarPerfilUsuario(this.usuario.iCredId, iCredEntPerfId, data)
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Actualizado',
+            detail: 'Datos actualizados con éxito',
+          });
+          this.perfilCreado = true;
+          this.obtenerPerfilesUsuario();
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al actualizar estado del perfil',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   cerrarDialog() {
     this.dataPerfilesUsuario = [];
+    this.formAgregarPerfil.reset();
     this.visibleChange.emit(false);
+    if (this.perfilCreado) {
+      this.refrescarLista.emit(true);
+    }
   }
 
   agregarPerfil() {
@@ -213,6 +236,8 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             summary: 'Éxito',
             detail: data.message,
           });
+          this.perfilCreado = true;
+          this.formAgregarPerfil.reset();
           this.obtenerPerfilesUsuario();
         },
         error: error => {

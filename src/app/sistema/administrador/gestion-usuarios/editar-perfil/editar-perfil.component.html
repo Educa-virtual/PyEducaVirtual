@@ -130,8 +130,14 @@
           </th>
           <th style="width: 35%" pSortableColumn="cInstitucionNombre">
             <div class="flex flex-nowrap">
-              <span>Isntitución</span>
+              <span>Institución</span>
               <p-sortIcon field="cInstitucionNombre"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="cCredEntPerfEstadoNombre">
+            <div class="flex flex-nowrap justify-content-center">
+              <span>cCredEntPerfEstadoNombre</span>
+              <p-sortIcon field="cCredEntPerfEstadoNombre"></p-sortIcon>
             </div>
           </th>
           <th style="width: 15%" pSortableColumn="dtCredEntPerfCreado">
@@ -156,16 +162,37 @@
           <td>{{ perfil.cNivelTipoNombre }}</td>
           <td>{{ perfil.cInstitucionNombre }}</td>
           <td class="text-center">
+            <p-tag
+              [severity]="+perfil.iCredEntPerfEstado === 1 ? 'success' : 'danger'"
+              [value]="perfil.cCredEntPerfEstadoNombre"
+            />
+          </td>
+
+          <td class="text-center">
             {{ perfil.dtCredEntPerfCreado | date: 'dd/MM/y' }}
           </td>
           <td class="text-center">
             <button
+              *ngIf="+perfil.iCredEntPerfEstado === 0"
+              [rounded]="true"
+              pButton
+              pRipple
+              pTooltip="Activar"
+              tooltipPosition="left"
+              (click)="preguntarActivarPerfil(perfil)"
+              class="p-1"
+              ngClass="p-button-rounded p-button-sm p-button-success p-button-text p-button-icon-only"
+            >
+              <i class="pi pi-check"></i>
+            </button>
+            <button
+              *ngIf="+perfil.iCredEntPerfEstado === 1"
               [rounded]="true"
               pButton
               pRipple
               pTooltip="Desactivar"
               tooltipPosition="left"
-              (click)="preguntarEliminarPerfil(perfil)"
+              (click)="preguntarDesactivarPerfil(perfil)"
               class="p-1"
               ngClass="p-button-rounded p-button-sm p-button-danger p-button-text p-button-icon-only"
             >

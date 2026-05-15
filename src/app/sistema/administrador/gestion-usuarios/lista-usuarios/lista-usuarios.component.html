@@ -191,10 +191,10 @@
   >
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 10%" pSortableColumn="dtCredEntPerfCreado">
+        <th style="width: 10%" pSortableColumn="dtCredEntPerfActualizado">
           <div class="flex flex-nowrap text-center justify-content-center">
             <span>Actualizado</span>
-            <p-sortIcon field="dtCredEntPerfCreado"></p-sortIcon>
+            <p-sortIcon field="dtCredEntPerfActualizado"></p-sortIcon>
           </div>
         </th>
         <th style="width: 10%" pSortableColumn="cPersDocumento">
@@ -221,10 +221,10 @@
             <p-sortIcon field="bCredVerificado"></p-sortIcon>
           </div>
         </th>
-        <th pSortableColumn="iCredEstado">
+        <th pSortableColumn="cCredEstadoNombre">
           <div class="flex flex-nowrap text-center justify-content-center">
             <span>Estado</span>
-            <p-sortIcon field="iCredEstado"></p-sortIcon>
+            <p-sortIcon field="cCredEstadoNombre"></p-sortIcon>
           </div>
         </th>
         <th pSortableColumn="dtCredCaduca">
@@ -244,31 +244,27 @@
     </ng-template>
     <ng-template pTemplate="body" let-user let-i="rowIndex">
       <tr [ngClass]="{ 'bg-gray-100': i % 2 === 0 }">
-        <td class="text-center">{{ user.dtCredEntPerfCreado | date: 'dd/MM/y HH:mm' }}</td>
+        <td class="text-center">{{ user.dtCredEntPerfActualizado | date: 'dd/MM/y HH:mm' }}</td>
         <td class="text-center">{{ user.cPersDocumento }}</td>
         <td class="text-center">{{ user.cCredUsuario }}</td>
         <td>{{ user.cApellidosNombres }}</td>
         <td class="text-center">
-          @if (user.bCredVerificado === '1') {
-            <span class="text-green-600">Sí</span>
+          @if (+user.bCredVerificado === 1) {
+            <p-tag severity="success" value="Si" />
           } @else {
-            <span class="text-red-600">No</span>
-          }
-        </td>
-        <td class="text-center">
-          @if (user.iCredEstado === '1') {
-            <span class="text-green-600">Activo</span>
-          } @else {
-            <span class="text-red-600">Inactivo</span>
+            <p-tag severity="danger" value="No" />
           }
         </td>
         <td class="text-center">
           @if (+user.bEstadoCaducado === 1) {
-            <p class="text-red-600">{{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}</p>
+            <p-tag severity="warning" value="user.cCredEstadoNombre" />
+          } @else if (+user.iCredEstado === 1) {
+            <p-tag severity="success" value="Activo" />
           } @else {
-            {{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}
+            <p-tag severity="danger" value="Inactivo" />
           }
         </td>
+        <td class="text-center">{{ user.dtCredCaduca | date: 'dd/MM/y HH:mm' }}</td>
         <td class="text-center">{{ user.iCantidadPerfiles }}</td>
         <td class="text-center">
           <p-menu #menu [popup]="true" appendTo="body" class="z-0">
@@ -365,6 +361,7 @@
 <app-editar-perfil
   [visible]="modalAsignarRolVisible"
   (visibleChange)="modalAsignarRolVisible = $event"
+  (refrescarLista)="loadUsuariosLazy(null)"
   [usuario]="usuarioSeleccionado"
 >
 </app-editar-perfil>

@@ -197,8 +197,8 @@ export class GestionUsuariosService {
     return this.http.patch(`${baseUrl}/seg/usuarios/${iCredId}/vigencia`, data);
   }
 
-  eliminarPerfilUsuario(iCredId: number, iCredEntPerfId: number) {
-    return this.http.delete(`${baseUrl}/seg/usuarios/${iCredId}/perfiles/${iCredEntPerfId}`);
+  actualizarPerfilUsuario(iCredId: number, iCredEntPerfId: number, data: any) {
+    return this.http.post(`${baseUrl}/seg/usuarios/${iCredId}/perfiles/${iCredEntPerfId}`, data);
   }
 
   registrarPerfil(iCredId: number, data: any) {

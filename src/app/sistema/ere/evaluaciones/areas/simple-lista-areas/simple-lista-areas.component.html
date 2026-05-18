@@ -171,7 +171,7 @@
                 icon="pi pi-upload"
                 severity="warning"
                 size="small"
-                *ngIf="!curso.bTieneArchivo && evaluacion.iUgelId === null && !esEspecialistaUgel"
+                *ngIf="!curso.bTieneArchivo && (evaluacion.iUgelId !== null || !esEspecialistaUgel)"
                 pTooltip="Subir cuadernillo"
                 (click)="onDialogSubirArchivo(curso)"
               ></p-button>
@@ -242,7 +242,7 @@
 
             <td
               style="text-align: center"
-              *ngIf="evaluacion.iUgelId === null && !esEspecialistaUgel"
+              *ngIf="evaluacion.iUgelId !== null || !esEspecialistaUgel"
             >
               <div class="flex gap-1 justify-content-center">
                 <p-button

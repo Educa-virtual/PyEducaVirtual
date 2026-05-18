@@ -17,7 +17,9 @@ import {
   ESTUDIANTE,
   APODERADO,
   ASISTENTE_SOCIAL,
+  ADMINISTRADOR,
 } from '@/app/servicios/perfilesConstantes';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-lista-usuarios',
@@ -79,14 +81,20 @@ export class ListaUsuariosComponent implements OnInit {
   buscarIe: boolean = false;
   buscarUgel: boolean = false;
 
+  perfil: any = null;
+  es_administrador: boolean = false;
+
   constructor(
     private messageService: MessageService,
     private usuariosService: GestionUsuariosService,
     private confirmationModalService: ConfirmationModalService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private store: LocalStoreService
   ) {
     this.breadCrumbItems = [{ label: 'Gestión de usuarios' }];
     this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.es_administrador = [ADMINISTRADOR].includes(this.perfil.iPerfilId);
   }
 
   ngOnInit(): void {

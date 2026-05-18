@@ -93,7 +93,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-4" *ngIf="buscarUgel">
+      <div class="col-12 md:col-4" *ngIf="buscarUgel && es_administrador">
         <p-inputGroup>
           <p-inputGroupAddon> UGEL </p-inputGroupAddon>
           <p-dropdown
@@ -108,7 +108,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-6" *ngIf="buscarIe">
+      <div class="col-12 md:col-6" *ngIf="buscarIe && es_administrador">
         <p-inputGroup>
           <p-inputGroupAddon> Nivel </p-inputGroupAddon>
           <p-dropdown
@@ -123,7 +123,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-6" *ngIf="buscarIe">
+      <div class="col-12 md:col-6" *ngIf="buscarIe && es_administrador">
         <p-inputGroup>
           <p-inputGroupAddon> I.E. </p-inputGroupAddon>
           <p-dropdown
@@ -138,7 +138,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12 md:col-4" *ngIf="buscarIe">
+      <div class="col-12 md:col-4" *ngIf="buscarIe && es_administrador">
         <p-inputGroup>
           <p-inputGroupAddon> Sede </p-inputGroupAddon>
           <p-dropdown
@@ -287,7 +287,10 @@
                       <span class="p-menuitem-text ml-2">Restablecer contraseña</span>
                     </a>
                   </div>
-                  <div class="p-menuitem-content" *ngIf="+user.iCredEstado === 1">
+                  <div
+                    class="p-menuitem-content"
+                    *ngIf="+user.iCredEstado === 1 && es_administrador"
+                  >
                     <a
                       pRipple
                       (click)="preguntarDesactivarUsuario(user)"
@@ -300,7 +303,10 @@
                       <span class="p-menuitem-text ml-2">Desactivar usuario</span>
                     </a>
                   </div>
-                  <div class="p-menuitem-content" *ngIf="+user.iCredEstado === 0">
+                  <div
+                    class="p-menuitem-content"
+                    *ngIf="+user.iCredEstado === 0 && es_administrador"
+                  >
                     <a
                       pRipple
                       (click)="preguntarReactivarUsuario(user)"
@@ -313,7 +319,7 @@
                       <span class="p-menuitem-text ml-2">Activar usuario</span>
                     </a>
                   </div>
-                  <div class="p-menuitem-content">
+                  <div class="p-menuitem-content" *ngIf="es_administrador">
                     <a
                       pRipple
                       (click)="cambiarFechaCaducidad(user)"

@@ -20,7 +20,6 @@ import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados
 import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component';
 import { InformacionComponent } from './informacion/informacion.component';
 import { SincronizarArchivoComponent } from './sincronizar-archivo/sincronizar-archivo.component';
-import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-usuarios/mantenimiento-usuarios.component';
 
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
@@ -42,6 +41,7 @@ import { ReporteIndicadoresComponent } from './reportes-estadisticas/reporte-ind
 import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion.component';
 import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
 import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.component';
+import { ListaUsuariosComponent } from '../administrador/gestion-usuarios/lista-usuarios/lista-usuarios.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -370,7 +370,7 @@ const routes: Routes = [
   },
   {
     path: 'mantenimiento-usuario',
-    component: MantenimientoUsuariosComponent,
+    component: ListaUsuariosComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [DIRECTOR_IE],

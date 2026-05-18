@@ -159,6 +159,7 @@ export class LoginComponent implements OnInit {
       error: (error: any) => {
         this.loading = false;
         this.messageService.add({
+          key: 'login',
           severity: 'error',
           summary: '¡Atención!',
           detail: error.error.message,
@@ -190,6 +191,7 @@ export class LoginComponent implements OnInit {
         next: (response: any) => {
           this.formRegistro.reset();
           this.messageService.add({
+            key: 'login',
             severity: 'success',
             summary: 'Solicitud enviada',
             detail: response.message,
@@ -197,6 +199,7 @@ export class LoginComponent implements OnInit {
         },
         error: error => {
           this.messageService.add({
+            key: 'login',
             severity: 'error',
             summary: 'Problema al solicitar registro',
             detail: error.error.message || 'Problema al solicitar registro',

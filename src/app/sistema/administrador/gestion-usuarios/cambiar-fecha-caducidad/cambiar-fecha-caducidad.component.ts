@@ -51,10 +51,8 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['visible'] && changes['visible'].currentValue === true) {
-      const fechaActual = this.usuario?.dtCredCaduca
-        ? new Date(this.usuario.dtCredCaduca)
-        : new Date();
-      const fechaMasAnio = new Date(fechaActual);
+      const fechaActual = this.usuario?.dtCredCaduca ? new Date(this.usuario.dtCredCaduca) : null;
+      const fechaMasAnio = fechaActual ?? new Date();
       fechaMasAnio.setFullYear(fechaMasAnio.getFullYear() + 1);
       this.formCambiarFecha.get('fechaActual')?.setValue(fechaActual);
       this.formCambiarFecha.get('nuevaFecha')?.setValue(fechaMasAnio);
@@ -63,10 +61,9 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
 
   actualizarFecha() {
     this.usuariosService
-      .actualizarVigenciaUsuario(
-        this.usuario?.iCredId,
-        this.formCambiarFecha.get('nuevaFecha')?.value
-      )
+      .actualizarVigenciaUsuario(this.usuario?.iCredId, {
+        dtCredCaduca: this.formCambiarFecha.get('nuevaFecha')?.value,
+      })
       .subscribe({
         next: (data: any) => {
           this.messageService.add({
@@ -79,7 +76,7 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
           //this.obtenerPerfilesUsuario()
         },
         error: error => {
-          console.error('Error al agregar perfil:', error);
+          console.error(error);
           this.messageService.add({
             severity: 'error',
             summary: 'Mensaje',

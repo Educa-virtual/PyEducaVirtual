@@ -157,7 +157,6 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
             : null;
           perfil.cInstitucionNombre = ugel ?? ie ?? null;
         });
-        this.usuario.iCantidadPerfiles = this.dataPerfilesUsuario.length;
       },
       error: error => {
         this.messageService.add({
@@ -174,7 +173,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
       perfil.cPerfilNombre + (perfil.cInstitucionNombre ? ' - ' + perfil.cInstitucionNombre : '');
     this.confirmationModalService.openConfirm({
       header: 'Desactivar perfil',
-      message: `El perfil ${perfil_institucion} será desactivado, ¿desea continuar?`,
+      message: `El perfil ${perfil_institucion} será desactivado, ¿desea continuar?IMPORTANTE: Si desactiva el perfil entonces el usuario ya no tendrá acceso a los datos que generó.`,
       accept: () => {
         this.cambiarEstadoPerfil(perfil.iCredEntPerfId, 0);
       },
@@ -222,6 +221,7 @@ export class EditarPerfilComponent implements OnInit, OnChanges {
     this.formAgregarPerfil.reset();
     this.visibleChange.emit(false);
     if (this.perfilCreado) {
+      this.perfilCreado = false;
       this.refrescarLista.emit(true);
     }
   }

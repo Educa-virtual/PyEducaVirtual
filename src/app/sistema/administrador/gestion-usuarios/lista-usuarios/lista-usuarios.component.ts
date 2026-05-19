@@ -336,8 +336,8 @@ export class ListaUsuariosComponent implements OnInit {
       error: error => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Problema al realizar el cambio',
-          detail: error,
+          summary: 'Error',
+          detail: error.error.message || 'Error desconocido',
         });
       },
     });
@@ -365,8 +365,8 @@ export class ListaUsuariosComponent implements OnInit {
       error: error => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Problema al restablecer contraseña',
-          detail: error,
+          summary: 'Error',
+          detail: error.error.message || 'Error desconocido',
         });
       },
     });

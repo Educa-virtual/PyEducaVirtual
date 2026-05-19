@@ -24,9 +24,12 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
   @Input() visible: boolean = false;
   @Input() usuario: Usuario = null;
   @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() refrescarLista = new EventEmitter<boolean>();
+
   formCambiarFecha: FormGroup;
   fechaActual: any = null;
   nuevaFecha: any = null;
+  vigenciaActualizada: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,6 +39,10 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
 
   cerrarDialog() {
     this.visibleChange.emit(false);
+    if (this.vigenciaActualizada) {
+      this.vigenciaActualizada = false;
+      this.refrescarLista.emit(true);
+    }
   }
 
   ngOnInit() {
@@ -51,18 +58,34 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['visible'] && changes['visible'].currentValue === true) {
+      this.vigenciaActualizada = false;
       const fechaActual = this.usuario?.dtCredCaduca ? new Date(this.usuario.dtCredCaduca) : null;
-      const fechaMasAnio = fechaActual ?? new Date();
-      fechaMasAnio.setFullYear(fechaMasAnio.getFullYear() + 1);
+      const anioActual = new Date().getFullYear();
+      const fechaFebSgte = new Date(anioActual + 1, 2, 0, 23, 59);
       this.formCambiarFecha.get('fechaActual')?.setValue(fechaActual);
-      this.formCambiarFecha.get('nuevaFecha')?.setValue(fechaMasAnio);
+      this.formCambiarFecha.get('nuevaFecha')?.setValue(fechaFebSgte);
     }
+  }
+
+  formatearFecha(fecha: Date) {
+    const fechaSQL = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(
+      2,
+      '0'
+    )}-${String(fecha.getDate()).padStart(2, '0')}T${String(fecha.getHours()).padStart(
+      2,
+      '0'
+    )}:${String(fecha.getMinutes()).padStart(2, '0')}:${String(fecha.getSeconds()).padStart(
+      2,
+      '0'
+    )}`;
+    return fechaSQL;
   }
 
   actualizarFecha() {
     this.usuariosService
       .actualizarVigenciaUsuario(this.usuario?.iCredId, {
-        dtCredCaduca: this.formCambiarFecha.get('nuevaFecha')?.value,
+        // dtCredCaduca: this.formCambiarFecha.value.nuevaFecha,
+        dtCredCaduca: this.formatearFecha(this.formCambiarFecha.value.nuevaFecha),
       })
       .subscribe({
         next: (data: any) => {
@@ -71,9 +94,8 @@ export class CambiarFechaCaducidadComponent implements OnInit, OnChanges {
             summary: 'Éxito',
             detail: data.message,
           });
-          this.usuario.dtCredCaduca = this.formCambiarFecha.get('nuevaFecha')?.value;
+          this.vigenciaActualizada = true;
           this.cerrarDialog();
-          //this.obtenerPerfilesUsuario()
         },
         error: error => {
           console.error(error);

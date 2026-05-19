@@ -319,7 +319,7 @@
                       <span class="p-menuitem-text ml-2">Activar usuario</span>
                     </a>
                   </div>
-                  <div class="p-menuitem-content" *ngIf="es_administrador">
+                  <div class="p-menuitem-content">
                     <a
                       pRipple
                       (click)="cambiarFechaCaducidad(user)"
@@ -365,6 +365,7 @@
 <app-cambiar-fecha-caducidad
   [visible]="modalCambiarFechaCaducidadVisible"
   (visibleChange)="modalCambiarFechaCaducidadVisible = $event"
+  (refrescarLista)="loadUsuariosLazy(null)"
   [usuario]="usuarioSeleccionado"
 >
 </app-cambiar-fecha-caducidad>

@@ -394,7 +394,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
       class: 'p-menuitem-link text-purple-500',
       isVisible: (rowData: any) =>
         (rowData.iUgelId === null &&
-          [ESPECIALISTA_DREMO, ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(this.iPerfilId)) ||
+          [ESPECIALISTA_DREMO, ESPECIALISTA_UGEL, ADMINISTRADOR_DREMO, DIRECTOR_IE].includes(
+            this.iPerfilId
+          )) ||
         ([ESPECIALISTA_UGEL, DIRECTOR_IE].includes(this.iPerfilId) && rowData.iUgelId !== null),
     },
     {

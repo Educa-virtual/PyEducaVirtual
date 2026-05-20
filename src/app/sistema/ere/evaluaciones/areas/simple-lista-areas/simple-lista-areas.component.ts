@@ -358,7 +358,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     return this.iPerfilId === DIRECTOR_IE;
   }
 
-  get esEspecialista(): boolean {
+  get esEspecialistaDremo(): boolean {
     return this.iPerfilId === ESPECIALISTA_DREMO;
   }
   get esAdministradorDremo(): boolean {

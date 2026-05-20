@@ -1,124 +1,111 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PrimengModule } from '@/app/primeng.module';
-import { MessageService } from 'primeng/api';
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import * as XLSX from 'xlsx-js-style';
-import { saveAs } from 'file-saver';
 import {
   IActionTable,
   IColumn,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatosMatriculaService } from '../../services/datos-matricula.service';
+import { MessageService } from 'primeng/api';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import * as XLSX from 'xlsx-js-style';
+import { saveAs } from 'file-saver';
+import { PrimengModule } from '@/app/primeng.module';
 import { formatDate } from '@angular/common';
 
 @Component({
-  selector: 'app-matricula-apoderado',
+  selector: 'app-gestionar-deserciones',
   standalone: true,
   imports: [PrimengModule, TablePrimengComponent],
-  templateUrl: './matricula-apoderado.component.html',
-  styleUrl: './matricula-apoderado.component.scss',
+  templateUrl: './gestionar-deserciones.component.html',
+  styleUrl: './gestionar-deserciones.component.scss',
 })
-export class MatriculaApoderadoComponent implements OnChanges, OnInit {
-  formApoderado: FormGroup;
+export class GestionarDesercionesComponent implements OnInit, OnChanges {
+  formDesercion: FormGroup;
   form: FormGroup;
-  private _iEstudianteId: number = 0;
+  private _iMatrId: number = 0;
 
   @Input()
-  set iEstudianteId(value: number) {
-    if (this._iEstudianteId !== value && value) {
-      this._iEstudianteId = value;
+  set iMatrId(value: number) {
+    if (this._iMatrId !== value && value) {
+      this._iMatrId = value;
     }
   }
 
-  get iEstudianteId(): number {
-    return this._iEstudianteId;
+  get iMatrId(): number {
+    return this._iMatrId;
   }
 
   @Input() soloLectura: boolean = false;
   @Input() visible: boolean = false;
 
   @Input() estudiante: any;
-  // @Input() caption: string = 'Historial de Apoderados';
 
   selectedItems = [];
-  apoderados: any[] = [];
-  apoderado: any = {};
-  iApoderadoId: number = 0;
+  deserciones: any[] = [];
+  desercion: any = {};
+  iDesercionId: number = 0;
   perfil: any;
   iYAcadId: number;
 
-  //validar se es edicion
+  //validar si es edicion
   solo_ver: boolean = false;
 
-  //variables para registrar personas
-  tipos_familiares: Array<object>;
-  tipos_documentos: Array<object>;
-  sexos: Array<object>;
-  nacionalidades: Array<object>;
-  longitud_documento: number;
-  formato_documento: string = '99999999';
+  //variables para registrar desercion
+  tipos_deserciones: Array<object>;
+  estados: Array<object>;
 
   activeTab: number = 0;
 
   columns: IColumn[] = [
     {
+      type: 'text',
+      width: '15%',
+      field: 'cTipoDesercionDescripcion',
+      header: 'Tipo',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
       type: 'date',
       width: '10%',
-      field: 'dtCreado',
-      header: 'Asignado',
+      field: 'dInicioDesercion',
+      header: 'Desde',
       text_header: 'left',
       text: 'left',
     },
     {
-      type: 'text',
-      width: '15%',
-      field: 'cPersDocumento',
-      header: 'Documento',
-      text_header: 'left',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '35%',
-      field: 'cPersNombreCompleto',
-      header: 'Apoderado',
-      text_header: 'left',
-      text: 'left',
-    },
-    {
-      type: 'text',
-      width: '15%',
-      field: 'cTipoFamiliarDescripcion',
-      header: 'Relación',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
+      type: 'date',
       width: '10%',
-      field: 'cPersTelefono',
-      header: 'Teléfono',
+      field: 'dFinDesercion',
+      header: 'Hasta',
       text_header: 'left',
       text: 'left',
     },
     {
       type: 'tag',
-      width: '10%',
-      field: 'cHabilitadoNombre',
+      width: '15%',
+      field: 'bActivaNombre',
       header: 'Estado',
       text_header: 'center',
       text: 'center',
       styles: {
-        ACTIVO: 'success',
-        INACTIVO: 'secondary',
+        ACTIVA: 'success',
+        INACTIVA: 'secondary',
       },
     },
     {
+      type: 'text',
+      width: '40%',
+      field: 'cMotivoDesercion',
+      header: 'Motivo',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
       type: 'actions',
-      width: '5%',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'right',
@@ -135,24 +122,11 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       class: 'p-button-rounded p-button-warning p-button-text',
     },
     {
-      labelTooltip: 'Deshabilitar',
-      icon: 'pi pi-times',
-      accion: 'deshabilitar',
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'borrar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
-      isVisible: rowData => {
-        return Number(rowData.iHabilitado) === 1;
-      },
-    },
-    {
-      labelTooltip: 'Habilitar',
-      icon: 'pi pi-check',
-      accion: 'habilitar',
-      type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-      isVisible: rowData => {
-        return Number(rowData.iHabilitado) === 0;
-      },
     },
   ];
 
@@ -168,39 +142,30 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['visible'] && changes['visible'].currentValue === true && this.iEstudianteId) {
+    if (changes['visible'] && changes['visible'].currentValue === true && this.iMatrId) {
       this.activeTab = 0;
       this.solo_ver = true;
-      this.apoderados = [];
-      this.iApoderadoId = null;
-      this.formApoderado.reset({
-        iEstudianteId: this.iEstudianteId,
+      this.deserciones = [];
+      this.iDesercionId = null;
+      this.formDesercion.reset({
+        iMatrId: this.iMatrId,
       });
-      this.listarApoderados();
+      this.listarDeserciones();
     }
   }
 
   ngOnInit(): void {
     try {
-      this.formApoderado = this.fb.group({
-        iApoderadoId: [null],
-        iTipoFamiliarId: [null, Validators.required],
-        iEstudianteId: [this.iEstudianteId],
-        iPersId: [null],
-        cPersPaterno: ['', Validators.required],
-        cPersMaterno: [''],
-        cPersNombre: ['', Validators.required],
-        iTipoIdentId: [null, Validators.required],
-        cPersDocumento: ['', Validators.required],
-        cPersSexo: [null, Validators.required],
-        iNacionId: [null],
-        dPersNacimiento: [null, Validators.required],
-        cPersTelefono: [''],
-        cPersCorreo: [''],
-        cObservacion: [''],
+      this.formDesercion = this.fb.group({
+        iDesercionId: [null],
+        iTipoDesercionId: [null, Validators.required],
+        iMatrId: [this.iMatrId],
+        cMotivoDesercion: [''],
+        dInicioDesercion: [null, Validators.required],
+        dFinDesercion: [null, Validators.required],
       });
     } catch (error) {
-      console.log(error, 'error de variables');
+      console.error(error, 'error de variables');
     }
 
     this.matriculaService
@@ -209,60 +174,57 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
         iYAcadId: this.iYAcadId,
       })
       .subscribe((data: any) => {
-        this.tipos_documentos = this.matriculaService.getTiposDocumentos(data?.tipos_documentos);
-        this.nacionalidades = this.matriculaService.getNacionalidades(data?.nacionalidades);
-        this.tipos_familiares = this.matriculaService.getTiposFamiliares(data?.tipos_familiares);
-        this.sexos = this.matriculaService.getSexos();
+        this.tipos_deserciones = this.matriculaService.getTiposDeserciones(data?.tipos_deserciones);
       });
   }
 
-  listarApoderados() {
-    this.apoderados = [];
-    this.apoderado = null;
-    this.iApoderadoId = null;
-    this.formApoderado.reset({
-      iEstudianteId: this.iEstudianteId,
+  listarDeserciones() {
+    this.deserciones = [];
+    this.desercion = null;
+    this.iDesercionId = null;
+    this.formDesercion.reset({
+      iMatrId: this.iMatrId,
     });
     this.matriculaService
-      .listarApoderados({
-        iEstudianteId: this.iEstudianteId,
+      .listarDeserciones({
+        iMatrId: this.iMatrId,
       })
       .subscribe({
         next: (data: any) => {
-          this.apoderados = data.data;
+          this.deserciones = data.data;
         },
         error: error => {
-          console.error('Error obteniendo apoderados:', error);
+          console.error('Error obteniendo deserciones:', error);
           this.messageService.add({
             severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Error, no se obtuvieron conexión: ' + error.error.message,
+            summary: 'Error',
+            detail: error.error.message ?? 'Error al obtener datos',
           });
         },
       });
   }
 
-  nuevoApoderado() {
-    this.apoderado = null;
-    this.iApoderadoId = null;
-    this.formApoderado.reset({
-      iEstudianteId: this.iEstudianteId,
+  nuevaDesercion() {
+    this.desercion = null;
+    this.iDesercionId = null;
+    this.formDesercion.reset({
+      iMatrId: this.iMatrId,
     });
     this.solo_ver = false;
     this.activeTab = 1;
   }
 
-  verTodosApoderados() {
+  verTodasDeserciones() {
     if (!this.solo_ver) {
       this.confirmService.openConfirm({
         header: 'Confirmación',
         message: '¿Realmente desea salir sin guardar los cambios?',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.formApoderado.reset({
-            iEstudianteId: this.iEstudianteId,
+          this.formDesercion.reset({
+            iMatrId: this.iMatrId,
           });
-          this.iApoderadoId = null;
+          this.iDesercionId = null;
           this.solo_ver = false;
           this.activeTab = 0;
         },
@@ -270,105 +232,63 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
     }
   }
 
-  searchPersona() {
-    this.formApoderado.patchValue({
-      iPersId: null,
-    });
-    this.matriculaService
-      .buscarPersonaApoderado({
-        iEstudianteId: this.iEstudianteId,
-        iTipoIdentId: this.formApoderado.value.iTipoIdentId,
-        cPersDocumento: this.formApoderado.value.cPersDocumento,
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.setFormApoderado(data.data);
-        },
-        error: error => {
-          console.error('Error obteniendo datos:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error.message,
-          });
-        },
-      });
-  }
-
-  setFormApoderado(apoderado) {
-    apoderado.iEstudianteId = this.iEstudianteId;
-    this.formApoderado.patchValue(apoderado);
+  setformDesercion(desercion) {
+    desercion.iMatrId = this.iMatrId;
+    this.formDesercion.patchValue(desercion);
     this.matriculaService.formatearFormControl(
-      this.formApoderado,
-      'iTipoFamiliarId',
-      apoderado.iTipoFamiliarId,
+      this.formDesercion,
+      'iTipoDesercionId',
+      desercion.iTipoDesercionId,
       'number'
     );
     this.matriculaService.formatearFormControl(
-      this.formApoderado,
-      'iTipoIdentId',
-      apoderado.iTipoIdentId,
-      'number'
+      this.formDesercion,
+      'dInicioDesercion',
+      desercion.dInicioDesercion,
+      'date'
     );
     this.matriculaService.formatearFormControl(
-      this.formApoderado,
-      'iNacionId',
-      apoderado.iNacionId,
-      'number'
-    );
-    this.matriculaService.formatearFormControl(
-      this.formApoderado,
-      'dPersNacimiento',
-      apoderado.dPersNacimiento,
+      this.formDesercion,
+      'dFinDesercion',
+      desercion.dFinDesercion,
       'date'
     );
     if (this.solo_ver) {
-      this.formApoderado.disable();
+      this.formDesercion.disable();
     }
   }
 
   accionBtnItemTable(event: any) {
     switch (event.accion) {
       case 'editar':
-        this.apoderado = event.item;
-        this.iApoderadoId = this.apoderado.iApoderadoId;
-        this.verApoderado();
+        this.desercion = event.item;
+        this.iDesercionId = this.desercion.iDesercionId;
+        this.verDesercion();
         this.activeTab = 1;
         this.solo_ver = false;
         break;
-      case 'habilitar':
-        this.iApoderadoId = event.item.iApoderadoId;
+      case 'borrar':
+        this.iDesercionId = event.item.iDesercionId;
         this.confirmService.openConfirm({
           header: 'Confirmación',
-          message: '¿Realmente desea habilitar al apoderado?',
+          message: '¿Realmente desea borrar la desercion?',
           icon: 'pi pi-exclamation-triangle',
           accept: () => {
-            this.cambiarEstadoApoderado(1);
-          },
-        });
-        break;
-      case 'deshabilitar':
-        this.iApoderadoId = event.item.iApoderadoId;
-        this.confirmService.openConfirm({
-          header: 'Confirmación',
-          message: '¿Realmente desea deshabilitar al apoderado?',
-          icon: 'pi pi-exclamation-triangle',
-          accept: () => {
-            this.cambiarEstadoApoderado(0);
+            this.borrarDesercion();
           },
         });
         break;
     }
   }
 
-  verApoderado() {
+  verDesercion() {
     this.matriculaService
-      .verApoderado({
-        iApoderadoId: this.iApoderadoId,
+      .verDesercion({
+        iDesercionId: this.iDesercionId,
       })
       .subscribe({
         next: (data: any) => {
-          this.setFormApoderado(data.data);
+          this.setformDesercion(data.data);
         },
         error: error => {
           console.error('Error obteniendo datos:', error);
@@ -381,14 +301,14 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       });
   }
 
-  guardarApoderado() {
-    this.matriculaService.guardarApoderado(this.formApoderado.value).subscribe({
+  guardarDesercion() {
+    this.matriculaService.guardarDesercion(this.formDesercion.value).subscribe({
       next: () => {
-        this.formApoderado.reset({
-          iEstudianteId: this.iEstudianteId,
+        this.formDesercion.reset({
+          iMatrId: this.iMatrId,
         });
         this.solo_ver = false;
-        this.listarApoderados();
+        this.listarDeserciones();
         this.activeTab = 0;
         this.messageService.add({
           severity: 'success',
@@ -406,19 +326,19 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
     });
   }
 
-  actualizarApoderado() {
+  actualizarDesercion() {
     this.confirmService.openConfiSave({
       header: 'Confirmación',
       message: '¿Desea actualizar los datos?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.matriculaService.actualizarApoderado(this.formApoderado.value).subscribe({
+        this.matriculaService.actualizarDesercion(this.formDesercion.value).subscribe({
           next: () => {
-            this.formApoderado.reset({
-              iEstudianteId: this.iEstudianteId,
+            this.formDesercion.reset({
+              iMatrId: this.iMatrId,
             });
             this.solo_ver = false;
-            this.listarApoderados();
+            this.listarDeserciones();
             this.activeTab = 0;
             this.messageService.add({
               severity: 'success',
@@ -438,21 +358,20 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
     });
   }
 
-  cambiarEstadoApoderado(estado: number) {
+  borrarDesercion() {
     this.matriculaService
-      .actualizarApoderado({
-        iApoderadoId: this.iApoderadoId,
-        iHabilitado: estado,
+      .borrarDesercion({
+        iDesercionId: this.iDesercionId,
       })
       .subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
-            detail: 'Datos actualizados con éxito',
+            detail: 'Deserción borrada con éxito',
           });
           this.solo_ver = false;
-          this.listarApoderados();
+          this.listarDeserciones();
         },
         error: error => {
           this.messageService.add({
@@ -464,34 +383,33 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       });
   }
 
-  exportarApoderados() {
+  exportarDeserciones() {
     // Crear el libro de trabajo
     const workbook = XLSX.utils.book_new();
 
     // Definir las columnas a exportar
     const columnasExportar = [
-      { key: 'dtCreado', header: 'Asignado' },
-      { key: 'cPersDocumento', header: 'Documento' },
-      { key: 'cPersNombreCompleto', header: 'Apoderado' },
-      { key: 'cTipoFamiliarDescripcion', header: 'Tipo Familiar' },
-      { key: 'cPersTelefono', header: 'Teléfono' },
-      { key: 'cHabilitadoNombre', header: 'Estado' },
+      { key: 'cTipoDesercionDescripcion', header: 'Tipo Deserción' },
+      { key: 'dInicioDesercion', header: 'Desde' },
+      { key: 'dFinDesercion', header: 'Hasta' },
+      { key: 'bActivaNombre', header: 'Estado' },
+      { key: 'cDesercionMotivo', header: 'Motivo' },
     ];
 
     // Crear cabeceras
     const headers = columnasExportar.map(col => col.header);
 
-    // Crear los datos
-    const dataRows = this.apoderados.map(apoderado =>
+    // Crear los datos transformando el iEstado
+    const dataRows = this.deserciones.map(desercion =>
       columnasExportar.map(col => {
-        return apoderado[col.key] || '';
+        return desercion[col.key] || '';
       })
     );
 
     // Combinar todas las filas: Fila 1 (Estudiante label), Fila 2 (Nombre estudiante), Fila 3 (Cabeceras), Fila 4+ (Datos)
     const data = [
-      ['Estudiante:', this.estudiante?.cPersNombreCompleto, '', '', '', ''], // Fila 1
-      ['', '', '', '', '', ''], // Fila 2
+      ['Estudiante:', this.estudiante?.cPersNombreCompleto, '', '', ''], // Fila 1
+      ['', '', '', '', ''], // Fila 2
       headers, // Fila 3 - Cabeceras
       ...dataRows, // Fila 4+ - Datos
     ];
@@ -557,8 +475,8 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
 
       const maxLength = Math.max(
         col.header.length,
-        ...this.apoderados.map(apoderado => {
-          const valor = apoderado[col.key];
+        ...this.deserciones.map(desercion => {
+          const valor = desercion[col.key];
           return String(valor || '').length;
         })
       );
@@ -567,16 +485,17 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
     worksheet['!cols'] = colWidths;
 
     // Agregar la hoja al libro
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'APODERADOS');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'DESERCIONES');
 
     // Generar el archivo Excel
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
+
     const fechaHora = formatDate(new Date(), 'yyyyMMdd_HHmmss', 'es-ES');
     const nombreSubguiones = this.estudiante.cPersNombreCompleto.replace(' ', '_');
-    const nombreArchivo = `APODERADOS_${nombreSubguiones}_${fechaHora}.xlsx`;
+    const nombreArchivo = `DESERCIONES_${nombreSubguiones}_${fechaHora}.xlsx`;
     saveAs(blob, nombreArchivo);
   }
 }

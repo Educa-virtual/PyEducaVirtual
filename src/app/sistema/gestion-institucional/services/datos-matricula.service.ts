@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@/environments/environment';
-import { map, of, Subject } from 'rxjs';
+import { map, Observable, of, shareReplay, Subject } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 const baseUrl = environment.backendApi;
@@ -24,6 +24,7 @@ export class DatosMatriculaService {
   public readonly TIPO_EXTEMPORANEA = 3;
 
   parametros: any;
+  parametros$?: Observable<any>;
 
   grado_seccion_turno: Array<object>;
   tipos_documentos: Array<object>;
@@ -34,19 +35,25 @@ export class DatosMatriculaService {
   secciones: Array<object>;
   turnos: Array<object>;
   tipos_matriculas: Array<object>;
+  tipos_deserciones: Array<object>;
   estados_matriculas: Array<object>;
 
-  crearMatricula(data: any) {
-    if (!this.parametros) {
-      this.parametros = this.http.post(`${baseUrl}/acad/matricula/crearMatricula`, data).pipe(
+  crearMatricula(data: any): Observable<any> {
+    if (this.parametros) {
+      return of(this.parametros);
+    }
+
+    if (!this.parametros$) {
+      this.parametros$ = this.http.post(`${baseUrl}/acad/matricula/crearMatricula`, data).pipe(
         map((data: any) => {
           this.parametros = data.data;
           return this.parametros;
-        })
+        }),
+        shareReplay(1)
       );
-      return this.parametros;
     }
-    return of(this.parametros);
+
+    return this.parametros$;
   }
 
   getGradoSeccionTurno(data: any) {
@@ -75,7 +82,7 @@ export class DatosMatriculaService {
           return prev.concat([
             {
               value: Number(current.iNivelGradoId),
-              label: current.cGradoNombre,
+              label: current.cGradoAbreviacion + ' ' + current.cGradoNombre,
             },
           ]);
         } else {
@@ -176,6 +183,18 @@ export class DatosMatriculaService {
     return this.tipos_familiares;
   }
 
+  getTiposDeserciones(data: any) {
+    if (!this.tipos_deserciones && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_deserciones = items.map(tipo => ({
+        value: Number(tipo.iTipoDesercionId),
+        label: tipo.cDescripcion,
+      }));
+      return this.tipos_deserciones;
+    }
+    return this.tipos_deserciones;
+  }
+
   getSexos() {
     if (!this.sexos) {
       this.sexos = [
@@ -240,9 +259,32 @@ export class DatosMatriculaService {
   actualizarApoderado(data: any) {
     return this.http.post(`${baseUrl}/apo/actualizarApoderado`, data);
   }
+  actualizarApoderadoEstado(data: any) {
+    return this.http.post(`${baseUrl}/apo/actualizarApoderadoEstado`, data);
+  }
 
   borrarApoderado(data: any) {
     return this.http.post(`${baseUrl}/apo/borrarApoderado`, data);
+  }
+
+  listarDeserciones(data: any) {
+    return this.http.post(`${baseUrl}/acad/desercion/listarDeserciones`, data);
+  }
+
+  verDesercion(data: any) {
+    return this.http.post(`${baseUrl}/acad/desercion/verDesercion`, data);
+  }
+
+  guardarDesercion(data: any) {
+    return this.http.post(`${baseUrl}/acad/desercion/guardarDesercion`, data);
+  }
+
+  actualizarDesercion(data: any) {
+    return this.http.post(`${baseUrl}/acad/desercion/actualizarDesercion`, data);
+  }
+
+  borrarDesercion(data: any) {
+    return this.http.post(`${baseUrl}/acad/desercion/borrarDesercion`, data);
   }
 
   /**
@@ -279,7 +321,7 @@ export class DatosMatriculaService {
       if (!value || isNaN(Number(value))) {
         value = null;
       } else {
-        value = +value;
+        value = Number(value);
       }
       form.get(formControl).patchValue(value);
     } else if (tipo === 'boolean') {

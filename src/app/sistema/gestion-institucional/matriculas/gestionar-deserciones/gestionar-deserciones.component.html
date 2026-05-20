@@ -1,0 +1,116 @@
+<p-tabView [(activeIndex)]="activeTab">
+  <p-toast />
+  <p-tabPanel header="Historial de Deserciones" *ngIf="activeTab === 0" [disabled]="true">
+    <div class="flex justify-content-end gap-2 mb-2">
+      <p-button
+        size="small"
+        icon="pi pi-plus"
+        label="Nuevo"
+        severity="success"
+        (click)="nuevaDesercion()"
+      />
+      <p-button
+        size="small"
+        icon="pi pi-download"
+        label="Exportar"
+        severity="secondary"
+        (click)="exportarDeserciones()"
+      />
+    </div>
+    <app-table-primeng
+      [columnas]="columns"
+      [data]="deserciones"
+      [showCaption]="false"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showPaginator]="true"
+      [(selectedRowData)]="selectedItems"
+      [actions]="actions"
+    >
+    </app-table-primeng>
+  </p-tabPanel>
+  <p-tabPanel header="Detalle de desercion" *ngIf="activeTab === 1" [disabled]="true">
+    <form [formGroup]="formDesercion">
+      <div class="grid p-fluid">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Tipo de deserción *</p-inputGroupAddon>
+            <p-dropdown
+              [options]="tipos_deserciones"
+              formControlName="iTipoDesercionId"
+              [filter]="true"
+              styleClass="group-element"
+              [appendTo]="'body'"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Desde *</p-inputGroupAddon>
+            <p-calendar
+              formControlName="dInicioDesercion"
+              [iconDisplay]="'input'"
+              [showIcon]="true"
+              inputId="dInicioDesercion"
+              [appendTo]="'body'"
+              inputStyleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Hasta *</p-inputGroupAddon>
+            <p-calendar
+              formControlName="dFinDesercion"
+              [iconDisplay]="'input'"
+              [showIcon]="true"
+              inputId="dFinDesercion"
+              [appendTo]="'body'"
+              inputStyleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Motivo</p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cMotivoDesercion"
+              aria-describedby="cMotivoDesercion-help"
+              class="group-element"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2 justify-content-end">
+        <p-button
+          label="Ver todos"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          (click)="verTodasDeserciones()"
+        />
+        <p-button
+          *ngIf="!iDesercionId && !solo_ver"
+          label="Registrar"
+          icon="pi pi-save"
+          severity="success"
+          (click)="guardarDesercion()"
+          [disabled]="formDesercion.invalid"
+        />
+        <p-button
+          *ngIf="iDesercionId && !solo_ver"
+          label="Actualizar"
+          icon="pi pi-save"
+          severity="warning"
+          (click)="actualizarDesercion()"
+          [disabled]="formDesercion.invalid"
+        />
+      </div>
+    </form>
+  </p-tabPanel>
+</p-tabView>

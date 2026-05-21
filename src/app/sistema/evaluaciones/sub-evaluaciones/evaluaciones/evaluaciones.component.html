@@ -15,7 +15,7 @@
         tooltipPosition="top"
         (click)="agregarEditarPregunta(null)"
         size="small"
-        *ngIf="es_especialista"
+        *ngIf="esEspecialistaUgel || esAdministradorDremo"
       >
         <i class="pi pi-fw pi-plus"></i>
         <span class="hidden md:inline ml-2">Nueva</span>

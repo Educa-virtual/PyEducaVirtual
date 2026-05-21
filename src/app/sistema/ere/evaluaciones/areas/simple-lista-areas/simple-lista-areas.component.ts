@@ -95,26 +95,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     private areasService: AreasService
   ) {}
   ngOnInit(): void {
-    if (this.evaluacion.iUgelId !== null && this.esEspecialistaUgel) {
-      this.colsEspecialista.push(
-        {
-          field: 'activarDescargas',
-          header: 'Estado descarga matriz',
-          width: '10%',
-        },
-        {
-          field: 'acciones',
-          header: 'Acciones',
-          width: '10%',
-        }
-      );
-    } else {
-      this.colsEspecialista.push({
-        field: 'acciones',
-        header: 'Acciones',
-        width: '10%',
-      });
-    }
     this.initializeBreadcrumb();
     this.initializeColumns();
   }
@@ -189,6 +169,27 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
       },
       { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
     ];
+
+    if (this.evaluacion && this.evaluacion.iUgelId !== null && this.esEspecialistaUgel) {
+      this.colsEspecialista.push(
+        {
+          field: 'activarDescargas',
+          header: 'Estado descarga matriz',
+          width: '10%',
+        },
+        {
+          field: 'acciones',
+          header: 'Acciones',
+          width: '10%',
+        }
+      );
+    } else {
+      this.colsEspecialista.push({
+        field: 'acciones',
+        header: 'Acciones',
+        width: '10%',
+      });
+    }
 
     this.colsAdministradorDremo = [
       { field: 'id', header: 'Nº', width: '5%' },

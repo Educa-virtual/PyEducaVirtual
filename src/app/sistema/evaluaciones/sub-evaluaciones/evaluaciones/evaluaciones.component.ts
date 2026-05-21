@@ -68,6 +68,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
   breadCrumbHome: MenuItem;
 
   es_especialista: boolean = false;
+  esEspecialistaUgel: boolean = false;
+  esAdministradorDremo: boolean = false;
 
   private _dialogService = inject(DialogService);
   private _apiEre = inject(ApiEvaluacionesRService);
@@ -108,6 +110,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({});
     this.es_especialista = [ESPECIALISTA_UGEL, ESPECIALISTA_DREMO].includes(this.iPerfilId);
+    this.esEspecialistaUgel = [ESPECIALISTA_UGEL].includes(this.iPerfilId);
+    this.esAdministradorDremo = [ADMINISTRADOR_DREMO].includes(this.iPerfilId);
     this.setBreadCrumbs();
   }
   resetSelect: boolean = false;

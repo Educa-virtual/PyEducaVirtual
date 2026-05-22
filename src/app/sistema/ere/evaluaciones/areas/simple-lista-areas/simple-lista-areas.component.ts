@@ -473,29 +473,29 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
   // Descargar hoja de respuestas
   descargarCartillaRespuestas(curso: ICurso) {
-    this.cursoSeleccionado = curso;
-
-    const params = {
-      iEvaluacionId: this.iEvaluacionIdHashed,
-      iCursosNivelGradId: curso.iCursosNivelGradId,
-    };
-    this.evaluacionesService.descargarCartillaRespuestas(params).subscribe({
-      next: (response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Hoja respuestas.docx`; //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al descargar el archivo',
-          detail: error,
-        });
-      },
-    });
+    this.evaluacionesService
+      .descargarCartillaRespuestas({
+        iExamCurId: curso.iExamCurId,
+      })
+      .subscribe({
+        next: response => {
+          const blob = new Blob([response], {
+            type: 'application/pdf',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.click();
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   descargarArchivoPreguntasWord(curso: any) {

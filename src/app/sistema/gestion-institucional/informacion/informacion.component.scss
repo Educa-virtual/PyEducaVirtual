@@ -1,3 +1,10 @@
+:host ::ng-deep {
+  .p-fieldset .p-fieldset-legend {
+    background-color: #295bac;
+    color: white;
+  }
+}
+
 .center-content {
   display: flex;
   justify-content: center;

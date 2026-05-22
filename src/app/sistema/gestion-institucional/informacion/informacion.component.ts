@@ -11,7 +11,8 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { environment } from '@/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
+// import { catchError, map, throwError } from 'rxjs';
+import { InformacionService } from './service/informacion.service';
 
 @Component({
   selector: 'app-informacion',
@@ -29,6 +30,8 @@ export class InformacionComponent implements OnInit {
   registro: any;
   logo: any;
   anioEscolar: string;
+  iYAcadId: string;
+  escudo: any;
 
   //Para importar imagen
   typesFiles = {
@@ -38,7 +41,7 @@ export class InformacionComponent implements OnInit {
     repository: false,
     image: false,
   };
-  filesUrl = [];
+  filesUrl: any;
   ruta_imagen: string;
 
   private _confirmService = inject(ConfirmationModalService);
@@ -48,15 +51,16 @@ export class InformacionComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     public query: GeneralService,
-    private store: LocalStoreService
+    private store: LocalStoreService,
+    private informacionService: InformacionService
   ) {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.perfil = this.store.getItem('dremoPerfil');
     this.anioEscolar = this.store.getItem('dremoYear');
   }
 
   ngOnInit(): void {
     // throw new Error('Method not implemented.')
-    this.perfil = this.store.getItem('dremoPerfil');
-
     //const iNivelTipoId = this.perfil.iNivelTipoId
     this.logo = this.perfil.cIieeLogo || 'assets/images/logo-proyecto.svg'; // cambia la imagen si esta vacio
     this.iIieeId = this.perfil.iIieeId;
@@ -82,13 +86,13 @@ export class InformacionComponent implements OnInit {
   }
 
   accionesPrincipal: IActionContainer[] = [
-    {
-      labelTooltip: 'Actualizar información de la Institución',
-      text: 'Actualizar datos',
-      icon: 'pi pi-save',
-      accion: 'update',
-      class: 'p-button-primary',
-    },
+    // {
+    //   labelTooltip: 'Actualizar información de la Institución',
+    //   text: 'Actualizar datos',
+    //   icon: 'pi pi-save',
+    //   accion: 'update',
+    //   class: 'p-button-primary',
+    // },
   ];
   getInstitucion() {
     const params = ' iIieeId = ' + this.iIieeId;
@@ -102,7 +106,6 @@ export class InformacionComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.registro = data.data;
-          console.log(this.registro);
         },
         error: error => {
           console.error('Error fetching institucion educativa:', error);
@@ -113,26 +116,28 @@ export class InformacionComponent implements OnInit {
           });
         },
         complete: () => {
-          // console.log('Request completed')
           this.form.controls['cIieeRUC'].setValue(this.registro[0].cIieeRUC);
           this.form.controls['cIieeRslCreacion'].setValue(this.registro[0].cIieeRslCreacion);
           this.form.controls['cIieeDireccion'].setValue(this.registro[0].cIieeDireccion);
-          this.form.controls['cIieeUrlReglamentoInterno'].setValue(
-            this.registro[0].cIieeUrlReglamentoInterno
-          ),
-            (this.filesUrl = []);
-          if ((this.registro[0].cIieeUrlReglamentoInterno ?? '').length > 0) {
-            this.filesUrl.push({
-              name: 'Reglamento interno cargado',
-              ruta: this.registro[0].cIieeUrlReglamentoInterno,
-            });
-          }
+          this.filesUrl = this.registro[0].cIieeUrlReglamentoInterno
+            ? JSON.parse(this.registro[0].cIieeUrlReglamentoInterno)
+            : null;
         },
       });
   }
+
+  obtenerArchivo(url: string): string {
+    try {
+      const parsed = new URL(url);
+      return parsed.pathname.split('/').filter(Boolean).pop() || '';
+    } catch {
+      return url.split('/').pop() || '';
+    }
+  }
+
   btnItem(elemento) {
-    const { accion } = elemento;
-    switch (accion) {
+    //const { accion } = elemento;
+    switch (elemento) {
       case 'update':
         if (this.form.valid) {
           const params = {
@@ -141,22 +146,15 @@ export class InformacionComponent implements OnInit {
             json: JSON.stringify({
               cIieeRslCreacion: this.form.value.cIieeRslCreacion,
               cIieeDireccion: this.form.value.cIieeDireccion,
-              cIieeUrlReglamentoInterno: this.form.value.cIieeUrlReglamentoInterno,
             }),
             campo: 'iIieeId',
             condicion: this.iIieeId,
           };
 
-          console.log(params, 'parametros dem uodate');
           this.query.updateAcademico(params).subscribe({
-            next: (data: any) => {
-              console.log(data.data);
-            },
+            next: () => {},
             error: error => {
               console.log(error, 'error al actualizar');
-              // if(error && error.message){
-              //   //  console.error(error?.message || 'Error en la respuesta del servicio');
-              // }
             },
             complete: () => {
               this.messageService.add({
@@ -195,40 +193,6 @@ export class InformacionComponent implements OnInit {
     });
   }
 
-  async onUploadChange(evt: any, tipo: any) {
-    alert(this.ruta_imagen);
-    const file = evt.target.files[0];
-    if (file) {
-      const dataFile = await this.objectToFormData({
-        file: file,
-        nameFile: this.ruta_imagen, //ruta de imagen
-      });
-      this.http
-        .post(`${this.backendApi}/general/subir-archivo?` + 'skipSuccessMessage=true', dataFile)
-        .pipe(
-          map((event: any) => {
-            if (event.validated) {
-              switch (tipo) {
-                case 'reglamento':
-                  this.filesUrl = [];
-                  this.filesUrl.push({
-                    name: file.name,
-                    ruta: event.data,
-                  });
-                  this.form.get('cIieeUrlReglamentoInterno')?.setValue(this.filesUrl[0].ruta);
-                  //this.guardarItinerario();
-                  break;
-              }
-            }
-          }),
-          catchError((error: any) => {
-            return throwError(error.error.message);
-          })
-        )
-        .toPromise();
-    }
-  }
-
   objectToFormData(obj: any) {
     const formData = new FormData();
     Object.keys(obj).forEach(key => {
@@ -240,9 +204,76 @@ export class InformacionComponent implements OnInit {
     return formData;
   }
 
-  openLink(item) {
-    if (!item) return;
-    const ruta = environment.backend + '/' + item;
-    window.open(ruta, '_blank');
+  descargarArchivo(item) {
+    const enviar = new FormData();
+    enviar.append('ruta', item);
+
+    this.informacionService.recibirMultimedia(enviar).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.click();
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  subirImagen(event: any, id: any) {
+    const archivo = event.files[0];
+    this.escudo = archivo;
+    id.clear();
+  }
+  guardarEscudo() {
+    const enviar = new FormData();
+    enviar.append('escudo', this.escudo);
+    enviar.append('iYAcadId', this.iYAcadId);
+    enviar.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+
+    this.informacionService.subirImagen(enviar).subscribe({
+      next: (data: any) => {
+        console.log('respuesta', data);
+      },
+    });
+  }
+
+  subirReglamento(evt: any) {
+    const documento = evt.target.files[0];
+    if (documento) {
+      const enviar = new FormData();
+      enviar.append('documento', documento);
+      enviar.append('dremoYear', this.anioEscolar);
+      enviar.append('cIieeCodigoModular', this.perfil.cIieeCodigoModular);
+      enviar.append('iPersId', this.perfil.iPersId);
+      enviar.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+      enviar.append('iYAcadId', this.iYAcadId);
+
+      this.informacionService.subirDcoumento(enviar).subscribe({
+        next: (respuesta: any) => {
+          const nombre = respuesta.data.nombre;
+          const enlace = respuesta.data.enlace;
+
+          this.filesUrl = {
+            nombre: nombre,
+            enlace: enlace,
+          };
+        },
+        error: respuesta => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje',
+            detail: respuesta.error.message,
+          });
+        },
+      });
+    }
   }
 }

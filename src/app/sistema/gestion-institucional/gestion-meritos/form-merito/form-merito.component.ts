@@ -7,19 +7,20 @@ import {
   OnInit,
   signal,
   Input,
+  Output,
+  EventEmitter,
 } from '@angular/core';
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 import { ToastModule } from 'primeng/toast';
 import { PrimengModule } from '@/app/primeng.module';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
+import { CalendarioService } from './service/calendario.service';
 
 @Component({
   selector: 'app-form-merito',
   standalone: true,
-  imports: [ContainerPageComponent, PrimengModule, ToastModule],
+  imports: [PrimengModule, ToastModule],
   templateUrl: './form-merito.component.html',
   styleUrl: './form-merito.component.scss',
 })
@@ -28,6 +29,8 @@ export class FormMeritoComponent implements OnInit, OnChanges {
   @Input() data: any = {};
   dremoiYAcadId = input<number>(null);
   @Input() bUpdate: boolean = false;
+  @Input() mostrar: boolean = false;
+  @Output() mostrarChange = new EventEmitter<boolean>();
   closeModal = output<{ accion: string; item: any[] }>();
 
   formMerito: FormGroup;
@@ -42,7 +45,8 @@ export class FormMeritoComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService
+    private query: GeneralService,
+    private calendario: CalendarioService
   ) {}
   ngOnInit() {
     this.getTipoDocumento();
@@ -92,6 +96,11 @@ export class FormMeritoComponent implements OnInit, OnChanges {
     }
   }
 
+  onHideDialog() {
+    this.mostrar = false;
+    this.mostrarChange.emit(false);
+  }
+
   initi(): void {
     try {
       this.formMerito = this.fb.group({
@@ -103,7 +112,7 @@ export class FormMeritoComponent implements OnInit, OnChanges {
         iMeritoPuesto: [0, [Validators.max(100)]],
         iEstado: [1, Validators.required],
         cMeritoRef: [null],
-        dMeritoFecha: [null, Validators.required],
+        dtMeritoFecha: [null, Validators.required],
         iYAcadId: [this.dremoiYAcadId],
         iSedeId: [null],
         iSesionId: [null, Validators.required],
@@ -124,25 +133,18 @@ export class FormMeritoComponent implements OnInit, OnChanges {
 
   getTipoDocumento(): void {
     //const params :string = `iYAcadId=${this.dremoiYAcadId} AND iSedeId=${this.perfil.iSedeId}`;
-    this.query
-      .searchCalAcademico({
-        esquema: 'grl',
-        tabla: 'tipos_Identificaciones',
-        campos: '*',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.tipo_documento = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error. al cargar tipo de documentos: ' + error.error.message,
-          });
-        },
-      });
+    this.calendario.selTipoIdentificacion().subscribe({
+      next: (data: any) => {
+        this.tipo_documento = data.data;
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'danger',
+          summary: 'Mensaje del Sistema',
+          detail: 'Error. al cargar tipo de documentos: ' + error.error.message,
+        });
+      },
+    });
   }
 
   getTipoMerito() {
@@ -190,7 +192,6 @@ export class FormMeritoComponent implements OnInit, OnChanges {
       .subscribe({
         next: (data: any) => {
           this.persona = data.data;
-          console.log(this.persona);
         },
         error: error => {
           let message = error?.error?.message || 'Sin conexión a la bd';
@@ -220,7 +221,6 @@ export class FormMeritoComponent implements OnInit, OnChanges {
               iCredEntPerfId: Number(this.perfil.iCredEntPerfId),
               iSedeId: Number(this.perfil.iSedeId),
             });
-            console.log(this.formMerito.value);
             const nombre =
               this.persona[0].cPersPaterno +
               ' ' +
@@ -231,10 +231,10 @@ export class FormMeritoComponent implements OnInit, OnChanges {
             this.mensaje = nombre;
             this._severity = 'success';
           } else {
-            this._severity = 'warn';
+            this._severity = 'danger';
             this.mensaje = 'La persona no se encuentra registrada en el sistema.';
             this.messageService.add({
-              severity: 'warn',
+              severity: 'danger',
               summary: 'Mensaje del Sistema',
               detail: 'La persona no se encuentra registrada en el sistema.',
             });
@@ -256,18 +256,13 @@ export class FormMeritoComponent implements OnInit, OnChanges {
       iMeritoPuesto: data?.iMeritoPuesto || 0,
       iEstado: Number(data?.iEstado) || 1,
       cMeritoRef: data?.cMeritoRef || null,
-      dMeritoFecha: data?.dMeritoFecha ? new Date(data.dMeritoFecha) : new Date(),
+      dtMeritoFecha: data?.dtMeritoFecha ? new Date(data.dtMeritoFecha) : new Date(),
       iYAcadId: data?.iYAcadId || this.dremoiYAcadId,
 
       iSesionId: Number(this.perfil.iCredId),
       iCredEnt: Number(this.perfil.iCredEntId),
       iCredEntPerfId: Number(this.perfil.iCredEntPerfId),
       iSedeId: Number(this.perfil.iSedeId),
-
-      //iTipoIdentId: data?.iTipoIdentId || null,
-      // cDocumento: data?.cDocumento || null,
-      //bDocumentoVerificado: data?.bDocumentoVerificado || false,
-      //cNombre: data?.cNombre || null,
     });
 
     this.getPersona(data?.iPersId || 0);
@@ -291,7 +286,7 @@ export class FormMeritoComponent implements OnInit, OnChanges {
 
       // 🔹 Mostrar mensaje de advertencia
       this.messageService.add({
-        severity: 'warn',
+        severity: 'danger',
         summary: 'Mensaje del Sistema',
         detail: 'Por favor, complete todos los campos requeridos antes de guardar.',
       });
@@ -301,36 +296,28 @@ export class FormMeritoComponent implements OnInit, OnChanges {
     // 🔹 Si el formulario es válido, puedes continuar con tu lógica de guardado
     //const payload = this.formMerito.value;
 
-    //ejecutamos CRUD
+    this.calendario.insCalendarioAcademico(payload).subscribe({
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Mensaje del Sistema',
+          detail: error.error.message,
+        });
 
-    this.query
-      .addCalAcademico({
-        json: JSON.stringify(payload),
-        _opcion: 'addMerito',
-      })
-      .subscribe({
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del Sistema',
-            detail: error.error.message,
-          });
-        },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del Sistema',
-            detail: 'Registro exitoso',
-          });
+        this.mostrar = false;
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del Sistema',
+          detail: 'Registro exitoso',
+        });
 
-          const param = { accion: 'merito', item: [] };
-
-          this.closeModal.emit(param);
-        },
-      });
-
-    // Aquí iría tu llamada al servicio o lógica de guardado
-    // this._GeneralService.saveMerito(payload).subscribe({...})
+        this.mostrar = false;
+        const param = { accion: 'merito', item: [] };
+        this.closeModal.emit(param);
+      },
+    });
   }
 
   esInvalido(control: string): boolean {

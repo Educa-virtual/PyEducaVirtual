@@ -33,7 +33,6 @@ export class FormPerfilesComponent {
 
     const perfil = this.store.getItem('dremoPerfil');
     this.ModalPermanente = perfil ? true : false;
-    console.log('Perfil guardado', user);
   }
 
   changePerfil(perfiles: any): void {

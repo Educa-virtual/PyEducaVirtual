@@ -34,14 +34,14 @@ export class importantDayService {
   }
 
   getDependenciaFechas(data) {
-    return this.http.get(`${this.endPoint}/getDependenciaFechas/${data.iFechaImpId}`);
+    return this.http.get(`${this.endPoint}/selDependenciaFechas/${data.iFechaImpId}`);
   }
 
   getFechasImportantes() {
     const iYAcadId = JSON.parse(localStorage.getItem('dremoiYAcadId'));
     const iSedeId = JSON.parse(localStorage.getItem('dremoPerfil'))?.iSedeId;
 
-    return this.http.get(`${this.endPoint}/getFechasImportantes/${iYAcadId}/${iSedeId}`);
+    return this.http.get(`${this.endPoint}/selFechasImportantes/${iYAcadId}/${iSedeId}`);
   }
 
   insFechasImportantes(data) {
@@ -53,6 +53,6 @@ export class importantDayService {
   }
 
   deleteFechasImportantes(data) {
-    return this.http.delete(`${this.endPoint}/deleteFechasImportantes/${data.iFechaImpId}`);
+    return this.http.delete(`${this.endPoint}/delFechasImportantes/${data.iFechaImpId}`);
   }
 }

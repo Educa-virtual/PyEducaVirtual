@@ -1,7 +1,7 @@
 <p-table
   #dt
   [columns]="columnas"
-  [value]="data"
+  [value]="filteredData"
   [loading]="loading"
   responsiveLayout="scroll"
   styleClass="p-datatable-sm"
@@ -25,7 +25,7 @@
   [selectionMode]="selectionMode"
 >
   <ng-container *ngIf="showCaption">
-    <ng-template pTemplate="caption">
+    <ng-template pTemplate="caption" class="p-0 b-0 m-0">
       @if (caption) {
         <div class="grid">
           <div class="p-2 w-full text-center" style="background-color: #e6e6ee">
@@ -34,7 +34,7 @@
         </div>
       } @else {
         <div class="grid">
-          <div class="col-10" style="margin-left: -0.5rem">
+          <div class="col-12">
             <app-search-words
               [placeholder]="searchPlaceholder"
               (searchChange)="buscarPalabras($event)"
@@ -71,10 +71,13 @@
                 [pSortableColumnDisabled]="enableCellSelection"
                 [class]="getCellClass(col)"
               >
-                <div [style.text-align]="col.text_header" class="">
+                <div
+                  [style.text-align]="col.text_header"
+                  class="flex flex-nowrap text-center justify-content-center"
+                >
                   <span> {{ col.header }}</span>
                   @if (showSortIcon) {
-                    <p-sortIcon [field]="col.header"></p-sortIcon>
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
                   }
                   @if (showAdvancedFilter) {
                     <p-columnFilter
@@ -133,10 +136,13 @@
                   </div>
                 }
                 @default {
-                  <div [style.text-align]="col.text_header">
+                  <div
+                    [style.text-align]="col.text_header"
+                    class="flex flex-nowrap text-center justify-content-center"
+                  >
                     <span> {{ col.header }}</span>
                     @if (showSortIcon) {
-                      <p-sortIcon [field]="col.header"></p-sortIcon>
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
                     }
                     @if (showAdvancedFilter) {
                       <p-columnFilter
@@ -420,10 +426,11 @@
                   (click)="menu.toggle($event)"
                   (keydown.space)="menu.toggle($event)"
                   class="p-1 z-0"
-                  ngClass="p-button-rounded p-button-secondary p-button-text"
-                  aria-label="Desplegar acciones"
+                  ngClass="p-button-rounded p-button-primary p-button-text"
+                  pTooltip="Desplegar acciones"
+                  tooltipPosition="top"
                 >
-                  <i class="pi pi-ellipsis-v"></i>
+                  <i class="pi pi-ellipsis-v mx-2"></i>
                 </button>
               </div>
             }
@@ -533,7 +540,7 @@
                             <i
                               [pTooltip]="item.name"
                               tooltipPosition="top"
-                              class="pi pi-upload"
+                              class="pi pi-download"
                               style="color: #333437"
                             ></i>
                           }

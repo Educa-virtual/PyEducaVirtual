@@ -114,7 +114,7 @@
 </div>
 
 <!-- Especialista -->
-<div *ngIf="esEspecialista || esEspecialistaUgel" class="mb-4">
+<div *ngIf="esEspecialistaDremo || esEspecialistaUgel" class="mb-4">
   <div *ngFor="let grado of gradosOrdenados" class="mb-4">
     <p-panel>
       <ng-template pTemplate="header">
@@ -166,68 +166,74 @@
             </td>
 
             <td style="text-align: center">
-              <p-button
-                label="Pendiente"
-                icon="pi pi-upload"
-                severity="warning"
-                size="small"
-                *ngIf="!curso.bTieneArchivo"
-                pTooltip="Subir cuadernillo"
-                (click)="onDialogSubirArchivo(curso)"
-              ></p-button>
-
-              <div
-                *ngIf="curso.bTieneArchivo"
-                class="flex gap-2 justify-content-center align-items-center"
-              >
-                <span
-                  class="text-primary cursor-pointer underline text-sm font-medium hover:text-primary-700"
-                  pTooltip="Hacer clic para descargar"
+              <div class="flex gap-2 justify-content-center align-items-center">
+                <p-button
+                  *ngIf="
+                    !curso.bTieneArchivo &&
+                    ((evaluacion.iUgelId === null && esEspecialistaDremo) ||
+                      (evaluacion.iUgelId !== null && esEspecialistaUgel))
+                  "
+                  pTooltip="Subir cuadernillo"
+                  tooltipPosition="top"
+                  label="Cuadernillo"
+                  icon="pi pi-upload"
+                  severity="warning"
+                  size="small"
+                  (click)="onDialogSubirArchivo(curso)"
+                />
+                <p-button
+                  *ngIf="!curso.bTieneArchivo && evaluacion.iUgelId === null && esEspecialistaUgel"
+                  [disabled]="true"
+                  label="Sin cuadernillo"
+                  severity="secondary"
+                  size="small"
+                  icon="pi pi-question-mark"
+                />
+                <p-button
+                  *ngIf="curso.bTieneArchivo"
+                  pTooltip="Descargar cuadernillo"
+                  tooltipPosition="top"
+                  label="Cuadernillo"
+                  severity="success"
+                  size="small"
                   (click)="descargarPDF('Cuadernillo', curso)"
-                  (keydown.enter)="descargarPDF('Cuadernillo', curso)"
-                  (keydown.space)="descargarPDF('Cuadernillo', curso)"
-                  tabindex="0"
-                  role="button"
-                  [attr.aria-label]="'Descargar archivo: ' + obtenerNombreArchivo(curso)"
-                >
-                  <i class="pi pi-file-pdf text-red-500 mr-1"></i>
-                  {{ obtenerNombreArchivo(curso) }}
-                </span>
-
-                <i
-                  class="pi pi-trash text-red-500 cursor-pointer hover:text-red-700 text-sm"
-                  pTooltip="Eliminar archivo"
+                  icon="pi pi-download"
+                />
+                <p-button
+                  *ngIf="
+                    curso.bTieneArchivo &&
+                    ((evaluacion.iUgelId === null && esEspecialistaDremo) ||
+                      (evaluacion.iUgelId !== null && esEspecialistaUgel))
+                  "
+                  pTooltip="Eliminar cuadernillo"
+                  tooltipPosition="top"
                   (click)="eliminarArchivoCuadernillo(curso)"
-                  (keydown.enter)="eliminarArchivoCuadernillo(curso)"
-                  (keydown.space)="eliminarArchivoCuadernillo(curso)"
-                  tabindex="0"
-                  role="button"
-                  [attr.aria-label]="'Eliminar archivo de ' + curso.cCursoNombre"
-                ></i>
+                  severity="danger"
+                  size="small"
+                  icon="pi pi-trash"
+                />
               </div>
             </td>
 
             <td style="text-align: center">
               <p-button
-                label="Descargar"
+                label="Hoja de respuestas"
                 icon="pi pi-download"
-                severity="danger"
+                severity="info"
                 size="small"
-                pTooltip="Descargar hoja de respuestas"
                 (click)="descargarPDF('Hoja de respuestas', curso)"
               ></p-button>
             </td>
 
             <td style="text-align: center">
               <p-button
-                label="Descargar"
+                label="Matriz"
                 icon="pi pi-download"
-                severity="danger"
+                severity="primary"
                 size="small"
-                pTooltip="Descargar matriz"
                 (click)="descargarPDF('Matriz', curso)"
                 [disabled]="!(curso.bDescarga === '1')"
-              ></p-button>
+              />
             </td>
 
             <td
@@ -235,18 +241,27 @@
               *ngIf="evaluacion.iUgelId !== null && esEspecialistaUgel"
             >
               <p-inputSwitch
+                pTooltip="Activar visualización de matriz y claves"
+                tooltipPosition="top"
                 [ngModel]="curso.bDescarga === '1'"
                 (click)="actualizarEstadoDescargaMatriz(curso)"
               />
             </td>
 
             <td style="text-align: center">
-              <div class="flex gap-1 justify-content-center">
+              <div
+                class="flex gap-1 justify-content-center"
+                *ngIf="
+                  (evaluacion.iUgelId === null && esEspecialistaDremo) ||
+                  (evaluacion.iUgelId !== null && esEspecialistaUgel)
+                "
+              >
                 <p-button
                   icon="pi pi-list"
                   severity="secondary"
                   size="small"
                   [text]="true"
+                  tooltipPosition="top"
                   pTooltip="Gestionar preguntas"
                   (click)="gestionarPreguntas(curso)"
                 ></p-button>
@@ -255,6 +270,7 @@
                   severity="warning"
                   size="small"
                   [text]="true"
+                  tooltipPosition="top"
                   pTooltip="Configurar nivel de logro"
                   (click)="onDialogConfigurarNivelLogro(curso)"
                 ></p-button>
@@ -262,7 +278,8 @@
                   icon="pi pi-file-word"
                   size="small"
                   [text]="true"
-                  pTooltip="Exportar a Word"
+                  tooltipPosition="top"
+                  pTooltip="Exportar preguntas a Word"
                   (click)="descargarArchivoPreguntasWord(curso)"
                 ></p-button>
               </div>

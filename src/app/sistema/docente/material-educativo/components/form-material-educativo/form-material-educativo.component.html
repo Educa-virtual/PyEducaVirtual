@@ -1,50 +1,90 @@
 <app-modal-primeng
-    [title]="titulo"
-    [showModal]="showModal"
-    [width]="'55rem'"
-    (accionBtnItem)="accionBtn($event)"
-    *ngIf="formMaterialEducativoDocentes"
+  [title]="titulo"
+  [showModal]="showModal"
+  [width]="'55rem'"
+  (accionBtnItem)="accionBtn($event)"
+  *ngIf="formMaterialEducativoDocentes"
 >
-    <form [formGroup]="formMaterialEducativoDocentes" class="mt-4">
-        <div class="grid">
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        Título del Material Educativo
-                    </p-inputGroupAddon>
-                    <input pInputText formControlName="cMatEducativoTitulo" />
-                </p-inputGroup>
+  <form [formGroup]="formMaterialEducativoDocentes" class="mt-4">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Título del Material Educativo </p-inputGroupAddon>
+          <input pInputText formControlName="cMatEducativoTitulo" />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon> Descripción </p-inputGroupAddon>
+          <textarea pInputText formControlName="cMatEducativoDescripcion"></textarea>
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <div class="card">
+          <div class="grid">
+            <div
+              class="col-12 xl:col-4 lg:col-4 md:col-4 sm:col-4 font-bold flex align-items-center"
+            >
+              Adjuntar Archivos:
             </div>
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Descripción </p-inputGroupAddon>
-                    <textarea
-                        pInputText
-                        formControlName="cMatEducativoDescripcion"
-                    ></textarea>
-                </p-inputGroup>
+            <div class="col-12 xl:col-4 lg:col-4 md:col-8 sm:col-8">
+              <p-fileUpload
+                #subir
+                mode="basic"
+                styleClass="w-full"
+                chooseLabel="Seleccionar archivo"
+                [auto]="false"
+                [customUpload]="true"
+                (onSelect)="seleccionarArchivo($event, subir)"
+                accept=".pdf"
+              >
+              </p-fileUpload>
             </div>
-            <div class="col-12 mt-1">
-                <app-types-files-upload-primeng
-                    [nameFile]="'material-educativos'"
-                    [nameOption]="'material-educativos'"
-                    [typesFiles]="typesFiles"
-                    (actionTypesFileUpload)="accionBtn($event)"
-                    [filesUrl]="filesUrl"
-                ></app-types-files-upload-primeng>
-            </div>
+          </div>
         </div>
-    </form>
-    <div class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="showModal = false"
-        />
-        <p-button
-            [label]="opcion"
-            [disabled]="!this.formMaterialEducativoDocentes.valid"
-            (onClick)="accionBtn({ accion: opcion, item: [] })"
-        />
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <input #enlace type="text" pInputText placeholder="Ingresar Enlace" />
+          <button type="button" pButton label="Agregar" (click)="adjuntarEnlace(enlace)"></button>
+        </p-inputGroup>
+      </div>
+      <div class="col-12" *ngIf="archivos.length > 0">
+        <p-table [value]="archivos" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>#</th>
+              <th>Recurso</th>
+              <th>Tamaño</th>
+              <th>Accion</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-i let-rowIndex="rowIndex">
+            <tr>
+              <td>{{ rowIndex + 1 }}</td>
+              <td>{{ i.name }}</td>
+              <td>{{ i.peso }}</td>
+              <td>
+                <p-button
+                  severity="danger"
+                  icon="pi pi-trash"
+                  size="small"
+                  (click)="eliminarArchivo(i)"
+                ></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
     </div>
+  </form>
+  <hr />
+  <div class="flex justify-content-end gap-2 mt-3">
+    <p-button label="Cancelar" severity="secondary" (onClick)="showModal = false" />
+    <p-button
+      [label]="opcion"
+      [disabled]="!this.formMaterialEducativoDocentes.valid"
+      (onClick)="accionBtn({ accion: opcion, item: [] })"
+    />
+  </div>
 </app-modal-primeng>

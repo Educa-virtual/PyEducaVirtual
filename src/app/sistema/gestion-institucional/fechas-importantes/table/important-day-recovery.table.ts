@@ -53,6 +53,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
       this.forms.importantDayRecovery.patchValue({
         iDepFechaImpId: this.forms.importantDayRecovery.value.iFechaImpId,
       });
+
       break;
     case 'editar':
       this.dialogs.importantDayRecovery = {
@@ -131,7 +132,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
 function saveData(this: FechasImportentesComponent) {
   if (!this.importantDay.calendar?.iCalAcadId) {
     this.messageService.add({
-      severity: 'warn',
+      severity: 'error',
       summary: 'Fechas importantes',
       detail: 'No se ha configurado del calendario académico',
       life: 3000,
@@ -152,9 +153,24 @@ function saveData(this: FechasImportentesComponent) {
     cFechaImpURLDocumento: this.forms.importantDayRecovery.value.cFechaImpURLDocumento,
     cFechaImpInfoAdicional: this.forms.importantDayRecovery.value.cFechaImpInfoAdicional,
     iDepFechaImpId: this.forms.importantDay.value.iFechaImpId,
+    iCredEntPerfId: this.perfil?.iCredEntPerfId ?? null,
   };
 
   if (!this.forms.importantDayRecovery.value.iFechaImpId) {
+    const fechaGuardada = this.forms.importantDay.value.dtFechaImpFecha;
+    const fechaIngresada = this.forms.importantDayRecovery.value.dtFechaImpFecha;
+
+    if (fechaGuardada > fechaIngresada) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Fechas importantes',
+        detail: 'La fecha ingresada no puede ser anterior a la fecha guardada',
+        life: 3000,
+      });
+
+      return;
+    }
+
     of(null)
       .pipe(
         switchMap(() => this.importantDayService.insFechasImportantes(data)),
@@ -189,11 +205,13 @@ function saveData(this: FechasImportentesComponent) {
 
           this.dialogs.importantDayRecovery.visible = false;
         },
-        error: error => {
+        error: resultado => {
+          const mensaje = resultado.error.message;
+
           this.messageService.add({
             severity: 'error',
             summary: 'Fechas importantes',
-            detail: error ?? 'Ha ocurrido un error al guardar los fecha importante|',
+            detail: mensaje ?? 'Ha ocurrido un error al guardar los fecha importante|',
             life: 3000,
           });
         },
@@ -203,7 +221,7 @@ function saveData(this: FechasImportentesComponent) {
 
     of(null)
       .pipe(
-        switchMap(() => this.importantDayService.updFechasImportantes(data)),
+        switchMap(() => this.importantDayService.insFechasImportantes(data)),
         tap((res: any) => {
           const result = res.data[0];
           const isSuccess = result.Message === 'true';
@@ -235,11 +253,12 @@ function saveData(this: FechasImportentesComponent) {
 
           this.dialogs.importantDayRecovery.visible = false;
         },
-        error: error => {
+        error: resultado => {
+          const mensaje = resultado.error.message;
           this.messageService.add({
             severity: 'error',
             summary: 'Fechas importantes',
-            detail: error ?? 'Ha ocurrido un error al guardar los fecha importante',
+            detail: mensaje ?? 'Ha ocurrido un error al guardar los fecha importante',
             life: 3000,
           });
         },

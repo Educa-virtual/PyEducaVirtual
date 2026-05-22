@@ -95,26 +95,6 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     private areasService: AreasService
   ) {}
   ngOnInit(): void {
-    if (this.evaluacion.iUgelId !== null && this.esEspecialistaUgel) {
-      this.colsEspecialista.push(
-        {
-          field: 'activarDescargas',
-          header: 'Estado descarga matriz',
-          width: '10%',
-        },
-        {
-          field: 'acciones',
-          header: 'Acciones',
-          width: '10%',
-        }
-      );
-    } else {
-      this.colsEspecialista.push({
-        field: 'acciones',
-        header: 'Acciones',
-        width: '10%',
-      });
-    }
     this.initializeBreadcrumb();
     this.initializeColumns();
   }
@@ -189,6 +169,27 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
       },
       { field: 'matriz', header: 'Matriz de Evaluación', width: '10%' },
     ];
+
+    if (this.evaluacion && this.evaluacion.iUgelId !== null && this.esEspecialistaUgel) {
+      this.colsEspecialista.push(
+        {
+          field: 'activarDescargas',
+          header: 'Habilitar descargas',
+          width: '10%',
+        },
+        {
+          field: 'acciones',
+          header: 'Acciones',
+          width: '10%',
+        }
+      );
+    } else {
+      this.colsEspecialista.push({
+        field: 'acciones',
+        header: 'Acciones',
+        width: '10%',
+      });
+    }
 
     this.colsAdministradorDremo = [
       { field: 'id', header: 'Nº', width: '5%' },
@@ -358,7 +359,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
     return this.iPerfilId === DIRECTOR_IE;
   }
 
-  get esEspecialista(): boolean {
+  get esEspecialistaDremo(): boolean {
     return this.iPerfilId === ESPECIALISTA_DREMO;
   }
   get esAdministradorDremo(): boolean {
@@ -472,29 +473,29 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
 
   // Descargar hoja de respuestas
   descargarCartillaRespuestas(curso: ICurso) {
-    this.cursoSeleccionado = curso;
-
-    const params = {
-      iEvaluacionId: this.iEvaluacionIdHashed,
-      iCursosNivelGradId: curso.iCursosNivelGradId,
-    };
-    this.evaluacionesService.descargarCartillaRespuestas(params).subscribe({
-      next: (response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Hoja respuestas.docx`; //Por si se implementa el cambio de nombre ${this.curso.cCursoNombre} ${this.curso.cGradoAbreviacion} ${this.curso.cNivelTipoNombre.replace('Educación', '')}
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al descargar el archivo',
-          detail: error,
-        });
-      },
-    });
+    this.evaluacionesService
+      .descargarCartillaRespuestas({
+        iExamCurId: curso.iExamCurId,
+      })
+      .subscribe({
+        next: response => {
+          const blob = new Blob([response], {
+            type: 'application/pdf',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.click();
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   descargarArchivoPreguntasWord(curso: any) {

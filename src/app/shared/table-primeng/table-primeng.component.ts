@@ -58,6 +58,7 @@ export interface IColumn {
   inputType?: string;
   outputType?: string;
   isVisible?: boolean | (() => boolean); // 👈 ahora acepta función o boolean
+  searchable?: boolean;
 
   severity?: (
     option
@@ -181,6 +182,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
   // buscador de palabras en el primeng
   @ViewChild('dt') dt!: Table;
   searchTerm: string = '';
+  filteredData: any[] = [];
   buscarPalabras(event: string) {
     //     this.searchTerm = event.trim().toLowerCase();
 
@@ -192,11 +194,25 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     //     });
     // }
     this.searchTerm = event;
-    if (this.dt) {
-      // solo va buscar en el indice(1)
-      // const filas = [this.columnas[1].field, this.columnas[2].field]
-      this.dt.filter(this.searchTerm, this.columnas[this.indiceColumnaBuscar].field, 'contains');
-    }
+    if (!this.searchTerm) this.data;
+
+    const term = this.searchTerm.toLowerCase();
+
+    // Filtrar solo columnas que no tengan searchable: false
+    const searchableCols = this.columnas.filter(col => col.searchable !== false);
+
+    this.filteredData = this.data.filter(row =>
+      searchableCols.some(col => {
+        const value = (row as any)[col.field];
+        return value != null && value.toString().toLowerCase().includes(term);
+      })
+    );
+    // this.searchTerm = event;
+    // if (this.dt) {
+    //   // solo va buscar en el indice(1)
+    //   // const filas = [this.columnas[1].field, this.columnas[2].field]
+    //   this.dt.filter(this.searchTerm, this.columnas[this.indiceColumnaBuscar].field, 'contains');
+    // }
   }
   // otra forma de buscar en la table pero general demora en buscar
   // buscarPalabras(event: string) {
@@ -358,6 +374,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
   ngOnChanges(changes: any) {
     if (changes.data?.currentValue) {
       this.data = changes.data.currentValue;
+      this.filteredData = this.data;
     }
     if (changes.columnas?.currentValue) {
       this.columnas = changes.columnas.currentValue;

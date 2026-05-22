@@ -73,7 +73,7 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
   switch (accion) {
     case 'agregar':
       this.dialogs.importantDay = {
-        title: 'Agregar fecha importante',
+        title: 'Agregar Fecha Importante',
         visible: true,
       };
       break;
@@ -159,7 +159,6 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
         bFechaImpSeraLaborable: Number(item.bFechaImpSeraLaborable),
         cFechaImpInfoAdicional: item.cFechaImpInfoAdicional,
       });
-
       this.importantDayService.getDependenciaFechas(this.forms.importantDay.value).subscribe({
         next: (res: any) => {
           const result = res.data[0];
@@ -180,8 +179,8 @@ function accionBtnItem(this: FechasImportentesComponent, { accion, item }) {
 function saveData(this: FechasImportentesComponent) {
   if (!this.importantDay.calendar?.iCalAcadId) {
     this.messageService.add({
-      severity: 'warn',
-      summary: 'Fechas importantes',
+      severity: 'error',
+      summary: 'Fechas Importantes',
       detail: 'No se ha configurado del calendario académico',
       life: 3000,
     });
@@ -200,9 +199,58 @@ function saveData(this: FechasImportentesComponent) {
     bFechaImpSeraLaborable: Number(this.forms.importantDay.value.bFechaImpSeraLaborable),
     cFechaImpURLDocumento: this.forms.importantDay.value.cFechaImpURLDocumento,
     cFechaImpInfoAdicional: this.forms.importantDay.value.cFechaImpInfoAdicional,
+    iCredEntPerfId: this.perfil?.iCredEntPerfId ?? null,
   };
 
   if (!this.forms.importantDay.value.iFechaImpId) {
+    of(null)
+      .pipe(
+        switchMap(() => this.importantDayService.insFechasImportantes(data)),
+        tap((res: any) => {
+          const result = res.data[0];
+          const isSuccess = result.Message === 'true';
+
+          this.messageService.add({
+            severity: isSuccess ? 'success' : 'warn',
+            summary: 'Fechas Importantes',
+            detail: result.resultado,
+            life: 3000,
+          });
+
+          this.dialogs.importantDay.visible = !isSuccess;
+        }),
+        switchMap(() => this.importantDayService.getFechasImportantes())
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.importantDay.table.data.core = res.data.map(item => ({
+            ...item,
+            dtFechaImpFecha: this.datePipe.transform(item.dtFechaImpFecha, 'dd/MM/yyyy'),
+          }));
+
+          const result = res.data[0];
+          if (result.Message) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Fechas importantes',
+              detail: result.resultado,
+              life: 3000,
+            });
+          }
+        },
+        error: resultado => {
+          const mensaje = resultado.error.message;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Fechas Importantes',
+            detail: mensaje ?? 'Ha ocurrido un error al guardar los fecha importante',
+            life: 3000,
+          });
+        },
+      });
+  } else {
+    data.iFechaImpId = this.forms.importantDay.value.iFechaImpId;
+
     of(null)
       .pipe(
         switchMap(() => this.importantDayService.insFechasImportantes(data)),
@@ -227,60 +275,13 @@ function saveData(this: FechasImportentesComponent) {
             ...item,
             dtFechaImpFecha: this.datePipe.transform(item.dtFechaImpFecha, 'dd/MM/yyyy'),
           }));
-
-          const result = res.data[0];
-
-          if (result.Message) {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Fechas importantes',
-              detail: result.resultado,
-              life: 3000,
-            });
-          }
         },
-        error: error => {
+        error: resultado => {
+          const mensaje = resultado.error.message;
           this.messageService.add({
             severity: 'error',
             summary: 'Fechas importantes',
-            detail: error ?? 'Ha ocurrido un error al guardar los fecha importante|',
-            life: 3000,
-          });
-        },
-      });
-  } else {
-    data.iFechaImpId = this.forms.importantDay.value.iFechaImpId;
-
-    of(null)
-      .pipe(
-        switchMap(() => this.importantDayService.updFechasImportantes(data)),
-        tap((res: any) => {
-          const result = res.data[0];
-          const isSuccess = result.Message === 'true';
-
-          this.messageService.add({
-            severity: isSuccess ? 'success' : 'warn',
-            summary: 'Fechas importantes',
-            detail: result.resultado,
-            life: 3000,
-          });
-
-          this.dialogs.importantDay.visible = !isSuccess;
-        }),
-        switchMap(() => this.importantDayService.getFechasImportantes())
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.importantDay.table.data.core = res.data.map(item => ({
-            ...item,
-            dtFechaImpFecha: this.datePipe.transform(item.dtFechaImpFecha, 'dd/MM/yyyy'),
-          }));
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Fechas importantes',
-            detail: error ?? 'Ha ocurrido un error al guardar los fecha importante',
+            detail: mensaje ?? 'Ha ocurrido un error al guardar los fecha importante',
             life: 3000,
           });
         },

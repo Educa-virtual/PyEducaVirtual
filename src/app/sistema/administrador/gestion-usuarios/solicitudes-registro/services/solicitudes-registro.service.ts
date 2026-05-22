@@ -15,7 +15,7 @@ export class SolicitudesRegistroService {
   }
 
   obtenerListaSolicitudes(params: any) {
-    return this.http.get(`${this.urlBackendApi}/seg/usuarios`, {
+    return this.http.get(`${this.urlBackendApi}/seg/listarUsuarios`, {
       params,
     });
   }

@@ -91,6 +91,7 @@ export class RecoverPasswordComponent implements OnChanges, OnInit {
           this.paso = 2;
           if (mostrarMensaje) {
             this.messageService.add({
+              key: 'recover-password',
               severity: 'success',
               summary: 'Código enviado',
               detail: response.message,
@@ -99,6 +100,7 @@ export class RecoverPasswordComponent implements OnChanges, OnInit {
         },
         error: error => {
           this.messageService.add({
+            key: 'recover-password',
             severity: 'error',
             summary: 'Problema al enviar código',
             detail: error.error.message || 'Problema al enviar código',
@@ -122,6 +124,7 @@ export class RecoverPasswordComponent implements OnChanges, OnInit {
         },
         error: error => {
           this.messageService.add({
+            key: 'recover-password',
             severity: 'error',
             summary: 'Problema al validar código',
             detail: error.error.message || 'Problema al enviar código',
@@ -142,6 +145,7 @@ export class RecoverPasswordComponent implements OnChanges, OnInit {
         },
         error: error => {
           this.messageService.add({
+            key: 'recover-password',
             severity: 'error',
             summary: 'Problema al validar código',
             detail: error.error.message || 'Problema al enviar código',

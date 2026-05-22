@@ -83,7 +83,26 @@ export class ListaAreasComponent implements OnInit {
     private route: ActivatedRoute,
     private evaluacionesService: ApiEvaluacionesRService,
     private areasService: AreasService
-  ) {}
+  ) {
+    this.setBreadCrumbs();
+  }
+
+  setBreadCrumbs(evaluacion: any | null = null) {
+    this.breadCrumbItems = [
+      { label: 'ERE' },
+      { label: 'Evaluaciones', routerLink: '/ere/evaluaciones' },
+      {
+        label: evaluacion
+          ? evaluacion.cEvaluacionNombre + ' - ' + evaluacion.cNivelEvalNombre
+          : 'EVALUACION',
+      },
+      { label: 'Lista de áreas' },
+    ];
+    this.breadCrumbHome = {
+      icon: 'pi pi-home',
+      routerLink: '/',
+    };
+  }
 
   public onFilter(dv: DataView, event: Event) {
     //Elimina acentos (á, é, etc.) y convierte a minúsculas
@@ -193,23 +212,7 @@ export class ListaAreasComponent implements OnInit {
     this.evaluacionesService.obtenerEvaluacionPorId(this.iEvaluacionIdHashed).subscribe({
       next: (resp: unknown) => {
         this.evaluacion = resp;
-        this.breadCrumbItems = [
-          {
-            label: 'ERE',
-          },
-          {
-            label: 'Evaluaciones',
-            routerLink: '/ere/evaluaciones',
-          },
-          {
-            label: this.evaluacion.cEvaluacionNombre + ' - ' + this.evaluacion.cNivelEvalNombre,
-          },
-          { label: 'Lista de áreas' },
-        ];
-        this.breadCrumbHome = {
-          icon: 'pi pi-home',
-          routerLink: '/',
-        };
+        this.setBreadCrumbs(this.evaluacion);
       },
       error: error => {
         console.error('Error obteniendo datos', error);

@@ -142,35 +142,40 @@ export class InstructorFormComponent implements OnChanges, OnInit {
             });
             return;
           } else {
-            this._GestionUsuariosService.buscarPersonaPorDocumento(idtipoDocumento, dni).subscribe({
-              next: (data: any) => {
-                console.log(data.data);
-                this.persona = data.data;
-                this.instructorForm.patchValue({
-                  iPersId: this.persona.iPersId,
-                  cPersNombre: this.persona.cPersNombre,
-                  cPersPaterno: this.persona.cPersMaterno,
-                  cPersMaterno: this.persona.cPersPaterno,
-                  cPersDireccion: this.persona.cPersDomicilio,
-                  cPersTelefono: this.persona.cPersTelefono,
-                  cPersCorreo: this.persona.cPersCorreo,
-                });
-                this.messageService.add({
-                  severity: 'success',
-                  summary: 'Datos encontrados',
-                  detail: 'Se obtuvo la información de la persona',
-                });
-              },
-              error: error => {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Problema al obtener datos',
-                  detail:
-                    'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
-                });
-                console.error('Error obteniendo datos:', error);
-              },
-            });
+            this._GestionUsuariosService
+              .buscarPersona({
+                iTipoIdentId: idtipoDocumento,
+                cPersDocumento: dni,
+              })
+              .subscribe({
+                next: (data: any) => {
+                  console.log(data.data);
+                  this.persona = data.data;
+                  this.instructorForm.patchValue({
+                    iPersId: this.persona.iPersId,
+                    cPersNombre: this.persona.cPersNombre,
+                    cPersPaterno: this.persona.cPersMaterno,
+                    cPersMaterno: this.persona.cPersPaterno,
+                    cPersDireccion: this.persona.cPersDomicilio,
+                    cPersTelefono: this.persona.cPersTelefono,
+                    cPersCorreo: this.persona.cPersCorreo,
+                  });
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Datos encontrados',
+                    detail: 'Se obtuvo la información de la persona',
+                  });
+                },
+                error: error => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Problema al obtener datos',
+                    detail:
+                      'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
+                  });
+                  console.error('Error obteniendo datos:', error);
+                },
+              });
             // const data = {
             //     iTipoIdentId: idtipoDocumento,
             //     iPersId: '',

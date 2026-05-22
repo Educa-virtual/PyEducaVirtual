@@ -5,17 +5,7 @@
 >
   <p-toast />
   <div class="grid">
-    <div class="col-12 lg:col-4 mt-3">
-      <app-form-merito
-        [perfil]="perfil"
-        [data]="selecionado"
-        [dremoiYAcadId]="dremoiYAcadId"
-        [bUpdate]="bUpdate"
-        (closeModal)="accionBtnItem($event)"
-      >
-      </app-form-merito>
-    </div>
-    <div class="col-12 lg:col-8 mt-3">
+    <div class="col-12">
       <app-table-primeng
         [columnas]="columns"
         [data]="meritos()"
@@ -30,4 +20,14 @@
       </app-table-primeng>
     </div>
   </div>
+
+  <app-form-merito
+    [perfil]="perfil"
+    [data]="selecionado"
+    [dremoiYAcadId]="dremoiYAcadId"
+    [bUpdate]="bUpdate"
+    [(mostrar)]="mostrar"
+    (closeModal)="accionBtnItem($event)"
+  >
+  </app-form-merito>
 </app-container-page>

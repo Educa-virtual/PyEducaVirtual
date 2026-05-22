@@ -1,165 +1,135 @@
-import { MessageService, SelectItem } from 'primeng/api'
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { GeneralService } from '@/app/servicios/general.service'
-import { PrimengModule } from '@/app/primeng.module'
-import { GestionUsuariosService } from '../services/gestion-usuarios.service'
+import { MessageService } from 'primeng/api';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PrimengModule } from '@/app/primeng.module';
+import { GestionUsuariosService } from '../services/gestion-usuarios.service';
 
 @Component({
-    selector: 'app-agregar-usuario',
-    standalone: true,
-    imports: [PrimengModule],
-    templateUrl: './agregar-usuario.component.html',
-    styleUrl: './agregar-usuario.component.scss',
+  selector: 'app-agregar-usuario',
+  standalone: true,
+  imports: [PrimengModule],
+  templateUrl: './agregar-usuario.component.html',
+  styleUrl: './agregar-usuario.component.scss',
 })
 export class AgregarUsuarioComponent implements OnInit {
-    formUsuario!: FormGroup
-    dataSexos: SelectItem[] = []
-    dataTiposDocumento: SelectItem[] = []
-    botonRegistrarDesactivado: boolean = true
+  formUsuario!: FormGroup;
+  sexos: Array<object> = [
+    { label: 'MASCULINO', value: 'M' },
+    { label: 'FEMENINO', value: 'F' },
+  ];
+  tipos_documentos: Array<object>;
+  botonRegistrarDesactivado: boolean = true;
 
-    constructor(
-        private fb: FormBuilder,
-        private usuariosService: GestionUsuariosService,
-        private generalService: GeneralService,
-        private messageService: MessageService
-    ) {}
+  longitud_documento: number = 8;
+  formato_documento: string = '99999999';
 
-    // Propiedades para el diálogo
-    @Input() visible: boolean = false
-    //@Input()
-    dataResultadoBusquedaUsuario: any = null
-    @Input() dataUsuarios: any[] = []
-    @Output() visibleChange = new EventEmitter<boolean>()
-    @Output() usuarioRegistradoEvent = new EventEmitter<any>()
+  constructor(
+    private fb: FormBuilder,
+    private usuariosService: GestionUsuariosService,
+    private messageService: MessageService
+  ) {}
 
-    ngOnInit() {
-        this.initForm()
-    }
+  // Propiedades para el diálogo
+  @Input() visible: boolean = false;
+  @Input() dataUsuarios: any[] = [];
+  @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() usuarioRegistradoEvent = new EventEmitter<any>();
 
-    initForm() {
-        this.dataSexos = [
-            { label: 'Masculino', value: 'M' },
-            { label: 'Femenino', value: 'F' },
-        ]
-        this.dataTiposDocumento = [
-            { label: 'DNI', value: 1 },
-            { label: 'RUC', value: 2 },
-            { label: 'Carnet ', value: 3 },
-        ]
-        this.formUsuario = this.fb.group({
-            iPersId: [''],
-            iTipoIdentId: [1, [Validators.required]],
-            cPersDocumento: ['', [Validators.required]],
-            cPersNombre: ['', [Validators.required]],
-            cPersMaterno: [''],
-            cPersPaterno: ['', [Validators.required]],
-            cPersSexo: ['M', [Validators.required]],
-        })
-    }
+  ngOnInit() {
+    this.formUsuario = this.fb.group({
+      iPersId: [null],
+      iTipoIdentId: [1, [Validators.required]],
+      cPersDocumento: ['', [Validators.required]],
+      cPersNombre: ['', [Validators.required]],
+      cPersMaterno: [''],
+      cPersPaterno: ['', [Validators.required]],
+      cPersSexo: ['M', [Validators.required]],
+      cPersCorreo: [''],
+      cPersTelefono: [''],
+      dPersNacimiento: [null],
+    });
 
-    closeDialog() {
-        this.visible = false
-        this.reiniciarFormulario()
-        this.formUsuario.get('cPersDocumento')?.setValue('')
-        this.visibleChange.emit(false)
-    }
+    this.usuariosService.crearUsuario().subscribe((data: any) => {
+      this.tipos_documentos = this.usuariosService.getTiposDocumentos(data?.tipos_documentos);
+    });
+  }
 
-    reiniciarFormulario() {
-        this.formUsuario.get('iPersId')?.setValue('')
-        this.formUsuario.get('cPersNombre')?.setValue('')
-        this.formUsuario.get('cPersPaterno')?.setValue('')
-        this.formUsuario.get('cPersMaterno')?.setValue('')
-    }
+  closeDialog() {
+    this.visible = false;
+    this.reiniciarFormulario();
+    this.formUsuario.get('cPersDocumento')?.setValue('');
+    this.visibleChange.emit(false);
+  }
 
-    buscarPersonaPorDocumento() {
-        this.reiniciarFormulario()
-        this.usuariosService
-            .buscarPersonaPorDocumento(
-                this.formUsuario.get('iTipoIdentId')?.value,
-                this.formUsuario.get('cPersDocumento')?.value
-            )
-            .subscribe({
-                next: (data: any) => {
-                    this.setFormUsuario(data.data)
-                    this.dataResultadoBusquedaUsuario = data.data
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Datos encontrados',
-                        detail: 'Se obtuvo la información de la persona',
-                    })
-                },
-                error: (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Problema al obtener datos',
-                        detail: 'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
-                    })
-                    this.dataResultadoBusquedaUsuario = null
-                    console.error('Error obteniendo datos:', error)
-                },
-            })
-    }
+  reiniciarFormulario() {
+    this.formUsuario.get('iPersId')?.setValue('');
+    this.formUsuario.get('cPersNombre')?.setValue('');
+    this.formUsuario.get('cPersPaterno')?.setValue('');
+    this.formUsuario.get('cPersMaterno')?.setValue('');
+  }
 
-    setFormUsuario(item: any) {
-        this.formUsuario.get('iPersId')?.setValue(item?.iPersId)
-        this.formUsuario.get('cPersDocumento')?.setValue(item?.cPersDocumento)
-        this.formUsuario.get('cPersNombre')?.setValue(item?.cPersNombre)
-        this.formUsuario.get('cPersPaterno')?.setValue(item?.cPersPaterno)
-        this.formUsuario.get('cPersMaterno')?.setValue(item?.cPersMaterno)
-        this.formUsuario.get('cPersSexo')?.setValue(item?.cPersSexo)
-    }
+  buscarPersonaPorDocumento() {
+    this.reiniciarFormulario();
+    this.usuariosService
+      .buscarPersona({
+        iTipoIdentId: this.formUsuario.get('iTipoIdentId')?.value,
+        cPersDocumento: this.formUsuario.get('cPersDocumento')?.value,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.setFormUsuario(data.data);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Datos encontrados',
+            detail: 'Se obtuvo la información de la persona',
+          });
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Problema al obtener datos',
+            detail:
+              'No se pudo obtener la información de la persona. Por favor ingrese los datos manualmente.',
+          });
+          this.formUsuario.reset({
+            iTipoIdentId: 1,
+            cPersSexo: 'M',
+          });
+          console.error('Error obteniendo datos:', error);
+        },
+      });
+  }
 
-    registrarUsuario() {
-        if (this.dataResultadoBusquedaUsuario === null) {
-            this.dataResultadoBusquedaUsuario = this.formUsuario.value
-        }
-        this.usuariosService
-            .registrarUsuario({
-                data: this.dataResultadoBusquedaUsuario,
-                iSedeId: 0,
-                iYAcadId: 0,
-                iPerfilId: 0,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    //this.setFormUsuario(data.data)
-                    this.usuarioRegistradoEvent.emit(data.data)
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: data.message,
-                    })
-                },
-                error: (error) => {
-                    console.error('Error validando persona:', error)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error.error.message,
-                    })
-                },
-            })
-    }
+  setFormUsuario(item: any) {
+    this.formUsuario.get('iPersId')?.setValue(item?.iPersId);
+    this.formUsuario.get('cPersDocumento')?.setValue(item?.cPersDocumento);
+    this.formUsuario.get('cPersNombre')?.setValue(item?.cPersNombre);
+    this.formUsuario.get('cPersPaterno')?.setValue(item?.cPersPaterno);
+    this.formUsuario.get('cPersMaterno')?.setValue(item?.cPersMaterno);
+    this.formUsuario.get('cPersSexo')?.setValue(item?.cPersSexo);
+    this.formUsuario.get('dPersNacimiento')?.setValue(item?.dPersNacimiento);
+    this.formUsuario.get('cPersTelefono')?.setValue(item?.cPersTelefono);
+    this.formUsuario.get('cPersCorreo')?.setValue(item?.cPersCorreo);
+  }
 
-    /*validar() {
-        if (this.personalForm.valid) {
-            console.log('Formulario válido:', this.personalForm.value)
-        } else {
-            console.log('Formulario inválido, complete todos los campos')
-            this.personalForm.markAllAsTouched()
-        }
-    }*/
-
-    /*agregarYAsignarRol() {
-        if (this.personalForm.valid) {
-            console.log(
-                'Agregando personal y asignando rol:',
-                this.personalForm.value
-            )
-        } else {
-            console.log('Formulario inválido, complete todos los campos')
-            this.personalForm.markAllAsTouched()
-        }
-    }*/
+  registrarUsuario() {
+    this.usuariosService.registrarUsuario(this.formUsuario.value).subscribe({
+      next: (data: any) => {
+        this.usuarioRegistradoEvent.emit(data.data);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: data.message,
+        });
+      },
+      error: error => {
+        console.error('Error validando persona:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
 }

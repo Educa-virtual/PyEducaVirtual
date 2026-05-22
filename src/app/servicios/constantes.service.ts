@@ -877,7 +877,7 @@ const administracion = [
         //ConfigGradoSeccion
       },
       {
-        label: 'Mantenimiento de usuarios',
+        label: 'Gestión de usuarios',
         icon: 'pi pi-wrench',
         routerLink: ['/gestion-institucional/mantenimiento-usuario'],
       },

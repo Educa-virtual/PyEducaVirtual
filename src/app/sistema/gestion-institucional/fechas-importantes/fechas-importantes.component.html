@@ -1,6 +1,6 @@
 <p-toast />
 <app-container-page
-  title="Registrar fechas importantes"
+  title="Registrar Fechas Importantes"
   [actions]="importantDay.container.actions"
   (accionBtnItem)="importantDay.table.accionBtnItem.core($event)"
 >
@@ -25,9 +25,9 @@
 >
   <form [formGroup]="forms.importantDay">
     <div class="grid mt-2">
-      <div class="col-12 grid">
-        <div class="col-10 flex flex-column gap-2">
-          <label for="dtFeriado">Fecha</label>
+      <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Fecha</p-inputGroupAddon>
           <p-calendar
             appendTo="body"
             [showOnFocus]="false"
@@ -38,66 +38,65 @@
             [showIcon]="true"
             inputId="dtFeriado"
           />
-        </div>
-        <div class="col flex flex-column gap-2">
-          <label for="bFechaImpSeraLaborable">Es recuperable</label>
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Es recuperable</p-inputGroupAddon>
           <p-toggleButton
             formControlName="bFechaImpSeraLaborable"
             onLabel="Si"
             offLabel="No"
             styleClass="w-full"
           />
-        </div>
+        </p-inputGroup>
       </div>
 
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cFeriadoNombre">Nombre</label>
-        <input
-          pInputText
-          id="cFechaImpNombre"
-          formControlName="cFechaImpNombre"
-          aria-describedby="cFeriadoNombre-help"
-        />
-      </div>
-      <!-- <div class="col-12 grid"> -->
-
-      <!-- <div class="col-6 flex flex-column gap-2">
-                    <label for="cFeriadoNombre">Tipo de fecha</label>
-                    <p-dropdown
-                        styleClass="w-full"
-                        appendTo="body"
-                        formControlName="iTipoFerId"
-                        [options]="importantDay.types"
-                        optionLabel="name"
-                        optionValue="code"
-                        placeholder="Seccione un tipo de fecha"
-                    />
-                </div> -->
-      <!-- </div> -->
-
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cDocumento">URL del documento</label>
-        <input
-          pInputText
-          id="cDocumento"
-          formControlName="cFechaImpURLDocumento"
-          aria-describedby="cDocumento-help"
-        />
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Nombre</p-inputGroupAddon>
+          <input
+            pInputText
+            id="cFechaImpNombre"
+            formControlName="cFechaImpNombre"
+            aria-describedby="cFeriadoNombre-help"
+          />
+        </p-inputGroup>
       </div>
 
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cDocumento">Información adicional</label>
-        <input
-          pInputText
-          id="cDocumento"
-          formControlName="cFechaImpInfoAdicional"
-          aria-describedby="cDocumento-help"
-        />
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold"
+            >URL del documento</p-inputGroupAddon
+          >
+          <input
+            pInputText
+            id="cDocumento"
+            formControlName="cFechaImpURLDocumento"
+            aria-describedby="cDocumento-help"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold"
+            >Información adicional</p-inputGroupAddon
+          >
+          <input
+            pInputText
+            id="cDocumento"
+            formControlName="cFechaImpInfoAdicional"
+            aria-describedby="cDocumento-help"
+          />
+        </p-inputGroup>
       </div>
 
       <div class="col-12">
         <p-button
           label="Guardar"
+          severity="success"
           [disabled]="forms.importantDay.invalid"
           styleClass="w-full"
           (onClick)="importantDay.saveData.core()"
@@ -118,31 +117,36 @@
   <div class="grid mt-2">
     <form [formGroup]="forms.importantDay" class="col-12 grid">
       <div class="col-6 flex flex-column gap-2">
-        <label for="cFeriadoNombre">Nombre</label>
-        <input
-          pInputText
-          id="cFechaImpNombre"
-          formControlName="cFechaImpNombre"
-          aria-describedby="cFeriadoNombre-help"
-        />
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Nombre</p-inputGroupAddon>
+          <input
+            pInputText
+            id="cFechaImpNombre"
+            formControlName="cFechaImpNombre"
+            aria-describedby="cFeriadoNombre-help"
+          />
+        </p-inputGroup>
       </div>
 
       <div class="col-6 flex flex-column gap-2">
-        <label for="dtFeriado">Fecha</label>
-        <p-calendar
-          appendTo="body"
-          [showOnFocus]="false"
-          inputStyleClass="w-full"
-          styleClass="w-full"
-          formControlName="dtFechaImpFecha"
-          [iconDisplay]="'input'"
-          [showIcon]="true"
-          inputId="dtFeriado"
-        />
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Fecha</p-inputGroupAddon>
+          <p-calendar
+            appendTo="body"
+            [showOnFocus]="false"
+            inputStyleClass="w-full"
+            styleClass="w-full"
+            formControlName="dtFechaImpFecha"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            inputId="dtFeriado"
+          />
+        </p-inputGroup>
       </div>
 
       <div class="col-12">
         <p-button
+          severity="success"
           styleClass="w-full"
           icon="pi pi-plus"
           (onClick)="
@@ -177,70 +181,67 @@
 >
   <form [formGroup]="forms.importantDayRecovery">
     <div class="grid mt-2">
-      <div class="col-12 grid">
-        <div class="col-12 flex flex-column gap-2">
-          <label for="dtFeriado">Fecha</label>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Fecha</p-inputGroupAddon>
           <p-calendar
             appendTo="body"
             [showOnFocus]="false"
             inputStyleClass="w-full"
             styleClass="w-full"
+            [minDate]="forms.importantDay.value.dtFechaImpFecha"
             formControlName="dtFechaImpFecha"
             [iconDisplay]="'input'"
             [showIcon]="true"
             inputId="dtFeriado"
           />
-        </div>
+        </p-inputGroup>
       </div>
 
       <div class="col-12 flex flex-column gap-2">
-        <label for="cFeriadoNombre">Nombre</label>
-        <input
-          pInputText
-          id="cFechaImpNombre"
-          formControlName="cFechaImpNombre"
-          aria-describedby="cFeriadoNombre-help"
-        />
-      </div>
-      <!-- <div class="col-12 grid"> -->
-
-      <!-- <div class="col-6 flex flex-column gap-2">
-                    <label for="cFeriadoNombre">Tipo de fecha</label>
-                    <p-dropdown
-                        styleClass="w-full"
-                        appendTo="body"
-                        formControlName="iTipoFerId"
-                        [options]="importantDay.types"
-                        optionLabel="name"
-                        optionValue="code"
-                        placeholder="Seccione un tipo de fecha"
-                    />
-                </div> -->
-      <!-- </div> -->
-
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cDocumento">URL del documento</label>
-        <input
-          pInputText
-          id="cDocumento"
-          formControlName="cFechaImpURLDocumento"
-          aria-describedby="cDocumento-help"
-        />
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold">Nombre</p-inputGroupAddon>
+          <input
+            pInputText
+            id="cFechaImpNombre"
+            formControlName="cFechaImpNombre"
+            aria-describedby="cFeriadoNombre-help"
+          />
+        </p-inputGroup>
       </div>
 
       <div class="col-12 flex flex-column gap-2">
-        <label for="cDocumento">Información adicional</label>
-        <input
-          pInputText
-          id="cDocumento"
-          formControlName="cFechaImpInfoAdicional"
-          aria-describedby="cDocumento-help"
-        />
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold"
+            >URL del documento</p-inputGroupAddon
+          >
+          <input
+            pInputText
+            id="cDocumento"
+            formControlName="cFechaImpURLDocumento"
+            aria-describedby="cDocumento-help"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 flex flex-column gap-2">
+        <p-inputGroup>
+          <p-inputGroupAddon class="mi-addon-primary font-bold"
+            >Información adicional</p-inputGroupAddon
+          >
+          <input
+            pInputText
+            id="cDocumento"
+            formControlName="cFechaImpInfoAdicional"
+            aria-describedby="cDocumento-help"
+          />
+        </p-inputGroup>
       </div>
 
       <div class="col-12">
         <p-button
           label="Guardar"
+          severity="success"
           [disabled]="forms.importantDayRecovery.invalid"
           styleClass="w-full"
           (onClick)="importantDay.saveData.recovery()"

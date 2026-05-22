@@ -191,7 +191,7 @@ export class MeritosComponent implements OnInit {
     {
       type: 'date',
       width: '10%',
-      field: 'dMeritoFecha',
+      field: 'dtMeritoFecha',
       header: 'Fecha',
       text_header: 'center',
       text: 'center',

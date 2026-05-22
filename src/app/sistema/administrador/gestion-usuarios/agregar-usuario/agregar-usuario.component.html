@@ -1,87 +1,152 @@
 <p-dialog
-    [(visible)]="visible"
-    [style]="{ width: '1000px' }"
-    header="Agregar usuario"
-    [modal]="true"
-    styleClass="p-fluid personal-dialog"
-    [draggable]="false"
-    (onHide)="closeDialog()"
+  [(visible)]="visible"
+  [style]="{ width: '75vw' }"
+  [breakpoints]="{ '960px': '100vw', '640px': '100vw' }"
+  header="Agregar usuario"
+  [modal]="true"
+  styleClass="p-fluid"
+  [draggable]="false"
+  (onHide)="closeDialog()"
 >
-    <div class="personal-container">
-        <form [formGroup]="formUsuario">
-            <div class="form-row">
-                <p-dropdown
-                    appendTo="body"
-                    [options]="dataTiposDocumento"
-                    placeholder="Seleccione tipo"
-                    formControlName="iTipoIdentId"
-                    styleClass="dropdown-field"
-                    (onChange)="reiniciarFormulario()"
-                >
-                </p-dropdown>
-
-                <div class="p-inputgroup">
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cPersDocumento"
-                        placeholder="Número"
-                    />
-                </div>
-
-                <p-button
-                    label="Buscar"
-                    icon="pi pi-search"
-                    severity="warning"
-                    (onClick)="buscarPersonaPorDocumento()"
-                />
-            </div>
-
-            <div class="form-row">
-                <div class="p-inputgroup">
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cPersPaterno"
-                        placeholder="Apellido paterno"
-                    />
-                </div>
-
-                <div class="p-inputgroup">
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cPersMaterno"
-                        placeholder="Apellido materno"
-                    />
-                </div>
-
-                <div class="p-inputgroup">
-                    <input
-                        type="text"
-                        pInputText
-                        formControlName="cPersNombre"
-                        placeholder="Nombres"
-                    />
-                </div>
-
-                <p-dropdown
-                    formControlName="cPersSexo"
-                    [options]="dataSexos"
-                    placeholder="Seleccione sexo"
-                ></p-dropdown>
-            </div>
-
-            <div class="form-actions">
-                <input type="hidden" formControlName="iPersId" />
-                <p-button
-                    (onClick)="registrarUsuario()"
-                    label="Registrar y continuar"
-                    icon="pi pi-check-circle"
-                    [disabled]="formUsuario.invalid"
-                    severity="success"
-                />
-            </div>
-        </form>
+  <form [formGroup]="formUsuario">
+    <div class="grid p-fluid mt-2">
+      <div class="col-12 md:col-6">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Tipo de documento</p-inputGroupAddon>
+          <p-dropdown
+            [options]="tipos_documentos"
+            placeholder="Seleccione"
+            formControlName="iTipoIdentId"
+            styleClass="group-element"
+            (onChange)="reiniciarFormulario()"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-button
+              size="small"
+              label="Validar"
+              styleClass="p-button-primary"
+              (onClick)="buscarPersonaPorDocumento()"
+              severity="success"
+            />
+            Documento *
+          </p-inputGroupAddon>
+          <p-inputMask
+            formControlName="cPersDocumento"
+            [maxlength]="longitud_documento"
+            [mask]="formato_documento"
+            autoClear="false"
+            slotChar=""
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Primer Apellido *</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersPaterno"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Segundo Apellido *</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersPaterno"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombres *</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersPaterno"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha de nacimiento</p-inputGroupAddon>
+          <p-calendar
+            formControlName="dPersNacimiento"
+            iconDisplay="input"
+            [showIcon]="true"
+            inputStyleClass="group-element"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Género *</p-inputGroupAddon>
+          <p-dropdown
+            formControlName="cPersSexo"
+            [options]="sexos"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Email</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersCorreo"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Teléfono</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersTelefono"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
     </div>
+  </form>
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      (onClick)="registrarUsuario()"
+      label="Registrar y continuar"
+      icon="pi pi-save"
+      [disabled]="formUsuario.invalid"
+      severity="success"
+    />
+  </div>
 </p-dialog>

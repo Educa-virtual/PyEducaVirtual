@@ -2,7 +2,6 @@ import { PrimengModule } from '@/app/primeng.module';
 import { GeneralService } from '@/app/servicios/general.service';
 import { Component, OnInit, Input, inject, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { CalendarOptions, EventClickArg, EventApi } from '@fullcalendar/core';
 import { Data } from '../interfaces/asistencia.interface'; // * exportando intefaces
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -18,12 +17,7 @@ import { FileUpload } from 'primeng/fileupload';
 @Component({
   selector: 'app-asistencia',
   standalone: true,
-  imports: [
-    // ContainerPageComponent,
-    PrimengModule,
-    // TablePrimengComponent,
-    ReporteAsistenciaComponent,
-  ],
+  imports: [PrimengModule, ReporteAsistenciaComponent],
   templateUrl: './asistencia.component.html',
   styleUrl: './asistencia.component.scss',
 })
@@ -56,7 +50,6 @@ export class AsistenciaComponent implements OnInit {
   dialogDateLabel = '';
 
   private GeneralService = inject(GeneralService);
-  private unsubscribe$ = new Subject<boolean>();
   private _LocalStoreService = inject(LocalStoreService);
   private _ConstantesService = inject(ConstantesService);
 

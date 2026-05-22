@@ -174,7 +174,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
       this.colsEspecialista.push(
         {
           field: 'activarDescargas',
-          header: 'Estado descarga matriz',
+          header: 'Habilitar descargas',
           width: '10%',
         },
         {

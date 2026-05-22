@@ -71,10 +71,13 @@
                 [pSortableColumnDisabled]="enableCellSelection"
                 [class]="getCellClass(col)"
               >
-                <div [style.text-align]="col.text_header" class="">
+                <div
+                  [style.text-align]="col.text_header"
+                  class="flex flex-nowrap text-center justify-content-center"
+                >
                   <span> {{ col.header }}</span>
                   @if (showSortIcon) {
-                    <p-sortIcon [field]="col.header"></p-sortIcon>
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
                   }
                   @if (showAdvancedFilter) {
                     <p-columnFilter
@@ -133,10 +136,13 @@
                   </div>
                 }
                 @default {
-                  <div [style.text-align]="col.text_header">
+                  <div
+                    [style.text-align]="col.text_header"
+                    class="flex flex-nowrap text-center justify-content-center"
+                  >
                     <span> {{ col.header }}</span>
                     @if (showSortIcon) {
-                      <p-sortIcon [field]="col.header"></p-sortIcon>
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
                     }
                     @if (showAdvancedFilter) {
                       <p-columnFilter
@@ -422,7 +428,7 @@
                   class="p-1 z-0"
                   ngClass="p-button-rounded p-button-primary p-button-text"
                   pTooltip="Desplegar acciones"
-                  tooltipPosition="left"
+                  tooltipPosition="top"
                 >
                   <i class="pi pi-ellipsis-v mx-2"></i>
                 </button>

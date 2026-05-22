@@ -1054,7 +1054,8 @@ const apoderado = [
       {
         label: 'Mesa de partes GORE',
         icon: 'pi pi-external-link',
-        routerLink: ['/estudiante/mesa-partes-gore'],
+        url: 'http://190.119.150.252/sisgedonew/app/main.php',
+        target: '_blank',
       },
       {
         label: 'Enlaces de ayuda',

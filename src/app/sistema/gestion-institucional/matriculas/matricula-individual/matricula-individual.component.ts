@@ -1,15 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatosMatriculaService } from '../../services/datos-matricula.service';
-import { ConstantesService } from '@/app/servicios/constantes.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { PrimengModule } from '@/app/primeng.module';
-import { DatosEstudianteService } from '../../services/datos-estudiante-service';
-import { GeneralService } from '@/app/servicios/general.service';
-import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
-import { CompartirMatriculaService } from '../../services/compartir-matricula.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MenuItem, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-matricula-individual',
@@ -19,396 +15,379 @@ import { CompartirMatriculaService } from '../../services/compartir-matricula.se
   styleUrl: './matricula-individual.component.scss',
 })
 export class MatriculaIndividualComponent implements OnInit {
-  form: FormGroup;
+  formMatricula: FormGroup;
 
-  iSedeId: number;
+  perfil: any;
   iYAcadId: number;
-  bEditar: boolean = false;
+  solo_ver: boolean = false;
+  iMatrId: number;
 
-  grados_secciones_turnos: Array<object>;
-  tipos_matriculas: Array<object>;
+  grado_seccion_turno: Array<object>;
+  tipos_matricula: Array<object>;
   nivel_grados: Array<object>;
   secciones: Array<object>;
   turnos: Array<object>;
+  tipos_documentos: Array<object>;
+  nacionalidades: Array<object>;
+  sexos: Array<object>;
+  estados_matricula: Array<object>;
+  tipos_familiares: Array<object>;
+
+  longitud_documento: number;
+  formato_documento: string = '99999999';
+
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [
+    {
+      label: 'Gestionar matrículas',
+      routerLink: ['/gestion-institucional/gestionar-matriculas'],
+    },
+    {
+      label: 'Matricula',
+    },
+  ];
 
   private _confirmService = inject(ConfirmationModalService); // componente de dialog mensaje
 
   constructor(
-    private datosMatriculaService: DatosMatriculaService,
-    private datosEstudianteService: DatosEstudianteService,
-    private compartirMatriculaService: CompartirMatriculaService,
-    private constantesService: ConstantesService,
+    private matriculaService: DatosMatriculaService,
     private store: LocalStoreService,
     private fb: FormBuilder,
-    private query: GeneralService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private route: ActivatedRoute
   ) {
-    const perfil = this.store.getItem('dremoPerfil');
-    console.log(perfil, 'perfil dremo', this.store);
-    this.iSedeId = perfil.iSedeId;
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.route.paramMap.subscribe((params: any) => {
+      this.iMatrId = params.params.iMatrId || null;
+    });
+    this.route.data.subscribe((data: any) => {
+      this.solo_ver = Boolean(data.solo_ver);
+    });
   }
 
   ngOnInit(): void {
-    this.iYAcadId = this.constantesService.iYAcadId;
-
     try {
-      this.form = this.fb.group({
-        iMatrId: [0],
-        iTipoMatrId: [null, Validators.required],
-        dtMatrFecha: [Date(), Validators.required],
+      this.formMatricula = this.fb.group({
+        iMatrId: [this.iMatrId],
+        iPersId: [null],
+        iYAcadId: [this.iYAcadId],
+        cPersPaterno: ['', Validators.required],
+        cPersMaterno: [''],
+        cPersNombre: ['', Validators.required],
+        iTipoIdentId: [null, Validators.required],
+        cPersDocumento: ['', Validators.required],
+        cPersSexo: [null, Validators.required],
+        iNacionId: [null],
+        dPersNacimiento: [null, Validators.required],
+        iTipoMatrId: [null],
+        dtMatrFecha: [null, Validators.required],
         iNivelGradoId: [null, [Validators.required]],
-        iSeccionId: [null],
+        iSeccionId: [null, [Validators.required]],
         iTurnoId: [null, [Validators.required]],
-        iEstudianteId: [null, [Validators.required]],
+        iEstudianteId: [null],
         cEstCodigo: ['', [Validators.required]],
-        apenomEstudiante: [{ value: '', disabled: true }],
         cMatrObservaciones: [''],
+        iMatrEstado: [null],
+        iMatrNEE: [false],
+        iPersIdApoderado: [null],
+        iTipoIdentIdApoderado: [null],
+        cPersDocumentoApoderado: [''],
+        iTipoFamiliarId: [null],
+        cApoderadoApenom: [''],
       });
     } catch (error) {
-      console.log(error, 'error de variables');
+      console.error(error, 'Error de formulario');
     }
-    this.searchGradoSeccionTurno();
-    this.getTiposMatriculas();
 
-    this.form.get('iNivelGradoId').valueChanges.subscribe(value => {
+    this.matriculaService
+      .crearMatricula({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe((data: any) => {
+        this.grado_seccion_turno = this.matriculaService.getGradoSeccionTurno(
+          data?.grado_seccion_turno
+        );
+        this.nivel_grados = this.matriculaService.getNivelGrados(data?.grado_seccion_turno);
+        this.tipos_documentos = this.matriculaService.getTiposDocumentos(data?.tipos_documentos);
+        this.estados_matricula = this.matriculaService.getEstadosMatriculas(
+          data?.estados_matricula
+        );
+        this.tipos_matricula = this.matriculaService.getTiposMatriculas(data?.tipos_matricula);
+        this.nacionalidades = this.matriculaService.getNacionalidades(data?.nacionalidades);
+        this.tipos_familiares = this.matriculaService.getTiposFamiliares(data?.tipos_familiares);
+        this.sexos = this.matriculaService.getSexos();
+      });
+
+    this.formMatricula.get('iNivelGradoId').valueChanges.subscribe(value => {
       this.secciones = [];
       this.turnos = [];
-      this.form.get('iTurnoId')?.setValue(null);
-      this.form.get('iSeccionId')?.setValue(null);
       if (value) {
-        this.filterTurnos(value);
+        this.secciones = this.matriculaService.filterSecciones(this.grado_seccion_turno, value);
+        if (this.secciones.length === 1) {
+          this.formMatricula.get('iSeccionId')?.setValue(this.secciones[0]['value']);
+        }
       }
     });
 
-    this.form.get('iTurnoId').valueChanges.subscribe(value => {
-      this.secciones = [];
-      this.form.get('iSeccionId')?.setValue(null);
+    this.formMatricula.get('iSeccionId').valueChanges.subscribe(value => {
+      this.turnos = [];
+      const iNivelGradoId = this.formMatricula.get('iNivelGradoId')?.value;
       if (value) {
-        const iNivelGradoId = this.form.get('iNivelGradoId')?.value;
-        this.filterSecciones(iNivelGradoId, value);
+        this.turnos = this.matriculaService.filterTurnos(
+          this.grado_seccion_turno,
+          iNivelGradoId,
+          value
+        );
+        if (this.turnos.length === 1) {
+          this.formMatricula.get('iTurnoId')?.setValue(this.turnos[0]['value']);
+        }
       }
     });
-    this.setFormMatricula();
-    this.setEstudiante();
-  }
 
-  searchGradoSeccionTurno() {
-    this.datosMatriculaService
-      .searchGradoSeccionTurno({
-        opcion: 'TODO',
-        iSedeId: this.iSedeId,
-        iYAcadId: this.iYAcadId,
-        iCredSesionId: this.constantesService.iCredId,
-      })
-      .subscribe({
-        next: (data: any) => {
-          console.log(data.data);
-          this.grados_secciones_turnos = data.data;
-          this.filterGrados();
-        },
-        error: error => {
-          console.error('Error consultando nivel grados:', error);
-        },
-        complete: () => {
-          console.log('Request completed');
-        },
-      });
-  }
-
-  filterGrados() {
-    this.nivel_grados = this.grados_secciones_turnos.reduce((prev: any, current: any) => {
-      const x = prev.find(
-        item => item.id === current.iNivelGradoId && item.nombre === current.cGradoNombre
-      );
-      if (!x) {
-        return prev.concat([
-          {
-            id: current.iNivelGradoId,
-            nombre: current.cGradoNombre,
-          },
-        ]);
-      } else {
-        return prev;
-      }
-    }, []);
-    // console.log(this.nivel_grados, 'nivel grados')
-  }
-
-  filterTurnos(iNivelGradoId: any) {
-    this.turnos = this.grados_secciones_turnos.reduce((prev: any, current: any) => {
-      const x = prev.find(
-        item => item.id === current.iTurnoId && item.nombre === current.cTurnoNombre
-      );
-      if (!x && current.iNivelGradoId === iNivelGradoId) {
-        return prev.concat([
-          {
-            id: current.iTurnoId,
-            nombre: current.cTurnoNombre,
-          },
-        ]);
-      } else {
-        return prev;
-      }
-    }, []);
-    if (this.turnos.length === 1) {
-      this.form.get('iTurnoId')?.setValue(this.turnos[0]['id']);
+    if (this.iMatrId) {
+      this.verMatricula();
     }
-    console.log(this.turnos, 'turnos');
   }
 
-  filterSecciones(iNivelGradoId: any, iTurnoId: any) {
-    this.secciones = this.grados_secciones_turnos.reduce((prev: any, current: any) => {
-      const x = prev.find(
-        item => item.id === current.iSeccionId && item.nombre === current.cSeccionNombre
-      );
-      if (!x && current.iNivelGradoId === iNivelGradoId && current.iTurnoId === iTurnoId) {
-        return prev.concat([
-          {
-            id: current.iSeccionId,
-            nombre: current.cSeccionNombre,
-          },
-        ]);
-      } else {
-        return prev;
-      }
-    }, []);
-    if (this.turnos.length === 1) {
-      this.form.get('iSeccionId')?.setValue(this.secciones[0]['id']);
-    }
-    console.log(this.secciones, 'secciones');
-  }
-
-  getTiposMatriculas() {
-    this.query
-      .searchTablaXwhere({
-        esquema: 'acad',
-        tabla: 'tipo_matriculas',
-        campos: '*',
-        condicion: '1=1',
+  /* BUSCAR DATOS POR CODIGO DE ESTUDIANTE */
+  searchCodigoEstudiante() {
+    this.formMatricula.patchValue({
+      iEstudianteId: null,
+      iPersId: null,
+    });
+    this.matriculaService
+      .verEstudiante({
+        cEstCodigo: this.formMatricula.value.cEstCodigo,
       })
       .subscribe({
         next: (data: any) => {
-          const item = data.data;
-          this.tipos_matriculas = item.map(tipo => ({
-            id: tipo.iTipoMatrId,
-            nombre: tipo.cTipoMatrNombre,
-          }));
-          console.log(this.tipos_matriculas, 'tipos de matriculas');
+          this.setFormMatricula(data.data);
         },
         error: error => {
-          console.error('Error consultando tipos de matriculas:', error);
-        },
-        complete: () => {
-          console.log('Request completed');
-        },
-      });
-  }
-
-  searchEstudiante() {
-    this.datosEstudianteService
-      .searchEstudiante({
-        cEstCodigo: this.form.get('cEstCodigo')?.value,
-      })
-      .subscribe({
-        next: (data: any) => {
-          const item = data.data[0];
-          if (!item) {
-            this.messageService.add({
-              severity: 'info',
-              summary: 'Información',
-              detail: 'No se encontró el estudiante',
-            });
-          } else {
-            this.form.get('iEstudianteId')?.setValue(item.iEstudianteId);
-            this.form.get('apenomEstudiante')?.setValue(item._cPersApenom);
-          }
-        },
-        error: error => {
-          console.error('Error buscando estudiante:', error);
+          console.error('Error obteniendo datos:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error,
+            detail: error.error.message,
           });
-        },
-        complete: () => {
-          console.log('Request completed');
         },
       });
   }
 
-  setFormMatricula() {
-    if (this.compartirMatriculaService.getiMatrId() == null) {
-      return null;
-    }
-    const params = {
-      iMatrId: this.compartirMatriculaService.getiMatrId(),
-      iCredSesionId: this.constantesService.iCredId,
-    };
-
-    this.query
-      .searchCalendario({
-        json: JSON.stringify(params),
-        _opcion: 'getMatricula',
+  searchPersonaEstudiante() {
+    this.formMatricula.patchValue({
+      iPersId: null,
+    });
+    this.matriculaService
+      .verEstudiante({
+        iTipoIdentId: this.formMatricula.value.iTipoIdentId,
+        cPersDocumento: this.formMatricula.value.cPersDocumento,
       })
       .subscribe({
         next: (data: any) => {
-          const item = data.data[0];
-
-          this.form.get('iEstudianteId')?.setValue(item.iEstudianteId);
-          this.form.get('iTipoMatrId')?.setValue(item.iTipoMatrId);
-          this.form.get('iNivelGradoId')?.setValue(item.iNivelGradoId);
-          this.form.get('iSeccionId')?.setValue(item.iSeccionId);
-          this.form.get('iTurnoId')?.setValue(item.iTurnoId);
-          this.form.get('iEstudianteId')?.setValue(item.iEstudianteId);
-          this.form.get('cEstCodigo')?.setValue(item.cEstCodigo);
-          this.form.get('apenomEstudiante')?.setValue(item.apenomEstudiante);
-          this.form.get('cMatrObservaciones')?.setValue(item.cMatrObservaciones);
-          this.form
-            .get('dtMatrFecha')
-            ?.setValue(item.dtMatrFecha ? new Date(item.dtMatrFecha) : null);
+          this.setFormMatricula(data.data);
         },
         error: error => {
-          console.error('Error obteniendo matricula:', error);
+          console.error('Error obteniendo datos:', error);
           this.messageService.add({
             severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'Error, no se obtuvieron conexión: ' + error.error.message,
+            summary: 'Error',
+            detail: error.error.message,
           });
-        },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del sistema',
-            detail: 'Se obtuvo información de matrícula para actualizar',
-          });
-          this.bEditar = true;
         },
       });
   }
 
-  updMatricula() {
+  searchPersonaApoderado() {
+    this.formMatricula.patchValue({
+      cApoderadoApenom: '',
+      iPersIdApoderado: null,
+    });
+    this.matriculaService
+      .verEstudiante({
+        iTipoIdentId: this.formMatricula.value.iTipoIdentIdApoderado,
+        cPersDocumento: this.formMatricula.value.cPersDocumentoApoderado,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.formMatricula.patchValue({
+            cApoderadoApenom: data.data.cPersNombreCompleto,
+            iPersIdApoderado: data.data.iPersId,
+          });
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  verMatricula() {
+    this.matriculaService
+      .verMatricula({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iYAcadId: this.iYAcadId,
+        iMatrId: this.iMatrId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.setFormMatricula(data.data);
+        },
+        error: error => {
+          console.error('Error obteniendo datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  setFormMatricula(matricula: any) {
+    this.formMatricula.reset({
+      iYAcadId: this.iYAcadId,
+      iMatrId: this.iMatrId,
+    });
+    this.formMatricula.patchValue(matricula);
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iTipoIdentId',
+      matricula.iTipoIdentId,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iNivelGradoId',
+      matricula.iNivelGradoId,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iSeccionId',
+      matricula.iSeccionId,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iTurnoId',
+      matricula.iTurnoId,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iNacionId',
+      matricula.iNacionId,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'dPersNacimiento',
+      matricula.dPersNacimiento,
+      'date'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iTipoMatrId',
+      matricula.iTipoMatrId,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'dtMatrFecha',
+      matricula.dtMatrFecha,
+      'date'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iMatrEstado',
+      matricula.iMatrEstado,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iMatrNEE',
+      matricula.iMatrNEE,
+      'boolean'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iTipoIdentIdApoderado',
+      matricula.iTipoIdentIdApoderado,
+      'number'
+    );
+    this.matriculaService.formatearFormControl(
+      this.formMatricula,
+      'iTipoFamiliarId',
+      matricula.iTipoFamiliarId,
+      'number'
+    );
+    if (this.solo_ver) {
+      this.formMatricula.disable();
+    }
+  }
+
+  actualizarMatricula() {
     this._confirmService.openConfirm({
       header: 'Actualizar matrícula',
-      message: `¿Está seguro de que desea actualizar la matricula de  ${this.form.get('apenomEstudiante').value}?`,
+      message: `¿Realmente desea actualizar la matricula?`,
       accept: () => {
-        const params = {
-          iTipoMatrId: this.form.get('iTipoMatrId')?.value,
-          cMatrObservaciones: this.form.get('cMatrObservaciones')?.value,
-          iCredId: this.constantesService.iCredId,
-          iMatrId: this.compartirMatriculaService.getiMatrId(),
-        };
-
-        this.query
-          .updateCalAcademico({
-            json: JSON.stringify(params),
-            _opcion: 'updMatricula',
-          })
-          .subscribe({
-            error: error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Mensaje de sistema',
-                detail: 'Error. No se proceso petición ' + error.message,
-              });
-            },
-            complete: () => {
-              this.messageService.add({
-                summary: 'Mensaje del sistema',
-                severity: 'success',
-                detail: 'Se actualizo el registro de matrícula',
-              });
-            },
-          });
+        this.matriculaService.actualizarMatricula(this.formMatricula.value).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Matrícula registrada',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/gestion-institucional/gestionar-matriculas']);
+            }, 1000);
+          },
+          error: error => {
+            console.error('Error guardando matricula:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.error.message,
+            });
+          },
+        });
       },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
+      reject: () => {},
+    });
+  }
+
+  guardarMatricula() {
+    this.matriculaService.guardarMatricula(this.formMatricula.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Matrícula registrada',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/gestion-institucional/gestionar-matriculas']);
+        }, 1000);
+      },
+      error: error => {
+        console.error('Error guardando matricula:', error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
+          summary: 'Error',
+          detail: error.error.message,
         });
       },
     });
   }
 
-  setEstudiante() {
-    if (
-      this.compartirMatriculaService.getiEstudianteId() == null ||
-      this.compartirMatriculaService.getiMatrId() !== null
-    ) {
-      return null;
-    }
-    this.datosEstudianteService
-      .searchEstudiante({
-        iEstudianteId: this.compartirMatriculaService.getiEstudianteId(),
-      })
-      .subscribe({
-        next: (data: any) => {
-          const item = data.data[0];
-          if (item) {
-            this.form.get('iEstudianteId')?.setValue(item.iEstudianteId);
-            this.form.get('cEstCodigo')?.setValue(item.cEstCodigo);
-            this.form.get('apenomEstudiante').setValue(item._cEstApenom);
-          }
-        },
-        error: error => {
-          console.error('Error obteniendo matricula:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error,
-          });
-        },
-        complete: () => {
-          console.log('Request completed');
-        },
-      });
-  }
-
-  guardarMatricula() {
-    this.datosMatriculaService
-      .guardarMatricula({
-        iSedeId: this.iSedeId,
-        iYAcadId: this.iYAcadId,
-        iCredSesionId: this.constantesService.iCredId,
-        iEstudianteId: this.form.get('iEstudianteId')?.value,
-        iNivelGradoId: this.form.get('iNivelGradoId')?.value,
-        iTurnoId: this.form.get('iTurnoId')?.value,
-        iSeccionId: this.form.get('iSeccionId')?.value,
-        dtMatrFecha: this.form.get('dtMatrFecha')?.value,
-        iTipoMatrId: this.form.get('iTipoMatrId')?.value,
-        cMatrObservaciones: this.form.get('cMatrObservaciones')?.value,
-      })
-      .subscribe({
-        next: (data: any) => {
-          console.log(data, 'guardar matricula');
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Matrícula registrada',
-          });
-          setTimeout(() => {
-            this.router.navigate(['/gestion-institucional/gestion-matriculas']);
-          }, 1000);
-        },
-        error: error => {
-          console.error('Error guardando matricula:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error,
-          });
-        },
-        complete: () => {
-          console.log('Request completed');
-        },
-      });
-  }
-
   salir() {
-    this.compartirMatriculaService.clearData();
-    this.router.navigate(['/gestion-institucional/gestion-matriculas']);
+    this.router.navigate(['/gestion-institucional/gestionar-matriculas']);
   }
 }

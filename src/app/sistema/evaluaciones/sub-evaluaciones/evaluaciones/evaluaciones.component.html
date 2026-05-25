@@ -1,12 +1,28 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
-<app-container-page-accionb
-  [title]="'Lista de evaluaciones ERE'"
-  [titleBtn]="'Nueva'"
-  [actions]="accionesPrincipal"
-  [showActions]="showActions"
-  (accionBtnItem)="accionBtnItem($event)"
-  class="custom-container-page"
->
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Lista de evaluaciones</div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <div class="flex gap-2">
+      <p-button
+        severity="success"
+        pTooltip="Nueva evaluación"
+        tooltipPosition="top"
+        (click)="agregarEditarPregunta(null)"
+        size="small"
+        *ngIf="esEspecialistaUgel || esAdministradorDremo"
+      >
+        <i class="pi pi-fw pi-plus"></i>
+        <span class="hidden md:inline ml-2">Nueva</span>
+      </p-button>
+    </div>
+  </ng-template>
+
   <app-table-primeng
     [columnas]="columnas"
     [data]="data"
@@ -18,13 +34,7 @@
   >
     <input type="text" />
   </app-table-primeng>
-</app-container-page-accionb>
-<p-toast> </p-toast>
+</p-panel>
+<p-toast key="evaluaciones"></p-toast>
 
 <app-asignar-horas-areas></app-asignar-horas-areas>
-
-<app-form-liberar-areas-ugel
-  [showModal]="showModalLiberarUgel"
-  [data]="areas"
-  [titulo]="'Liberar áreas para la evaluación: '"
-></app-form-liberar-areas-ugel>

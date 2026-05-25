@@ -228,12 +228,7 @@ export class ListaUsuariosComponent implements OnInit {
 
   realizarBusqueda() {
     this.first = 0;
-    this.loadUsuariosLazy({
-      first: this.first,
-      rows: this.rows,
-      columnaOrdenar: this.columnaOrdenar,
-      direccionOrdenar: this.direccionOrdenar,
-    });
+    this.loadUsuariosLazy(null);
   }
 
   usuarioRegistrado(data) {
@@ -245,12 +240,14 @@ export class ListaUsuariosComponent implements OnInit {
 
   loadUsuariosLazy(event: any) {
     if (!event) {
-      event = {
+      // Si no hay evento (ej: búsqueda/filtro), usar el último evento almacenado o uno por defecto
+      event = this.lastLazyEvent || {
         first: 0,
         rows: 20,
-        columnaOrdenar: this.columnaOrdenar,
-        direccionOrdenar: this.direccionOrdenar,
+        sortField: this.columnaOrdenar,
+        sortOrder: this.direccionOrdenar,
       };
+      event.first = 0; // Reset a la primera página al buscar/filtrar
     }
 
     event.sortField = event.sortField ?? this.columnaOrdenar;
@@ -274,8 +271,6 @@ export class ListaUsuariosComponent implements OnInit {
       columnaOrdenar: event.sortField,
       direccionOrdenar: event.sortOrder,
     };
-    this.columnaOrdenar = params.columnaOrdenar;
-    this.direccionOrdenar = params.direccionOrdenar;
     this.obtenerListaUsuarios(params);
   }
 

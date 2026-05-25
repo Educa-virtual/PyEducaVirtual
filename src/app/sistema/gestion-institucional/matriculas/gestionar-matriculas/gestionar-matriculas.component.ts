@@ -134,8 +134,8 @@ export class GestionMatriculasComponent implements OnInit {
     {
       type: 'text',
       width: '10%',
-      field: 'cTurnoNombre',
-      header: 'Turno',
+      field: 'cTieneNEE',
+      header: 'NEE',
       text_header: 'center',
       text: 'center',
     },

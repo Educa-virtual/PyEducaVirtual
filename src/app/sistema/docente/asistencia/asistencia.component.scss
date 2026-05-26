@@ -4,6 +4,39 @@
     * * vendana modal
 */
 :host ::ng-deep {
+  // @media screen and (max-width: 750px) {
+
+  //   .dos-columnas.p-selectbutton {
+  //     display: flex !important;
+  //     flex-wrap: wrap;
+  //     gap: .5rem;
+  //   }
+
+  //   .dos-columnas.p-selectbutton .p-button {
+  //     flex: 0 0 calc(50% - .25rem);
+  //     max-width: calc(50% - .25rem);
+  //     border-radius: 2px !important;
+  //     border: 0.5px solid !important;
+  //     margin: 0;
+  //     text-align: center !important;
+  //   }
+
+  // }
+  // .dos-columnas.p-selectbutton {
+  //   display: flex !important;
+  //   flex-wrap: wrap;
+  //   gap: .5rem;
+  // }
+
+  // .dos-columnas.p-selectbutton .p-button {
+  //   flex: 0 0 calc(50% - .25rem);
+  //   max-width: calc(50% - .25rem);
+  //   border-radius: 2px !important;
+  //   border: 0.5px solid !important;
+  //   margin: 0;
+  //   text-align: center !important;
+  // }
+
   .p-selectbutton .p-button.p-highlight {
     background: #b8d7ff;
     border-color: #b8d7ff;

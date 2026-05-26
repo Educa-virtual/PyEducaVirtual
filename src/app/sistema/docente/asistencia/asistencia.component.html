@@ -60,98 +60,45 @@
 </div>
 
 <p-dialog
-  header="ASISTENCIA DEL DÍA : {{ fechaEspecifica }}"
   [modal]="true"
   class="asistenciaModal"
   [(visible)]="verAsistencia"
   position="top"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [breakpoints]="{ '1750px': '65vw', '1199px': '75vw', '575px': '90vw' }"
 >
+  <ng-template pTemplate="header">
+    <div class="w-full">
+      <h4 class="font-bold text-white">ASISTENCIA DEL DÍA : {{ fechaEspecifica }}</h4>
+      <div class="font-bold uppercase text-sm">
+        {{ cNivelNombre }} : {{ encabezado[0]?.cCursoNombre }} | Nivel : {{ cNivelTipoNombre }}
+      </div>
+      <div class="font-bold uppercase text-sm">
+        Ciclo : {{ encabezado[0]?.cCicloRomanos }} | Grado :
+        {{ encabezado[0]?.cGradoAbreviacion }} | Sección : {{ encabezado[0]?.cSeccionNombre }}
+      </div>
+    </div>
+  </ng-template>
   <div class="grid mt-4">
     <div class="col-12">
-      <span class="font-bold white-space-nowrap m-0">
-        Detalles del {{ encabezado[0]?.cNivelNombreCursos }}
-      </span>
-    </div>
-    <div class="col-12 xl:col-4 md:col-6">
-      <p-inputGroup>
-        <p-inputGroupAddon
-          [ngStyle]="{
-            backgroundColor: 'var(--primary-700)',
-            color: 'var(--primary-color-text)',
-          }"
-        >
-          {{ cNivelNombre }}
-        </p-inputGroupAddon>
-        <input pInputText disabled [value]="encabezado[0]?.cCursoNombre" />
-      </p-inputGroup>
-    </div>
-    <div class="col-12 xl:col-4 md:col-6">
-      <p-inputGroup>
-        <p-inputGroupAddon
-          [ngStyle]="{
-            backgroundColor: 'var(--primary-700)',
-            color: 'var(--primary-color-text)',
-          }"
-        >
-          Nivel
-        </p-inputGroupAddon>
-        <input pInputText disabled [value]="cNivelTipoNombre" />
-      </p-inputGroup>
-    </div>
-    <div class="col-12 xl:col-4 md:col-4">
-      <p-inputGroup>
-        <p-inputGroupAddon
-          [ngStyle]="{
-            backgroundColor: 'var(--primary-700)',
-            color: 'var(--primary-color-text)',
-          }"
-        >
-          Ciclo
-        </p-inputGroupAddon>
-        <input pInputText disabled [value]="encabezado[0]?.cCicloRomanos" />
-      </p-inputGroup>
-    </div>
-    <div class="col-12 xl:col-6 md:col-4">
-      <p-inputGroup>
-        <p-inputGroupAddon
-          [ngStyle]="{
-            backgroundColor: 'var(--primary-700)',
-            color: 'var(--primary-color-text)',
-          }"
-        >
-          Grado
-        </p-inputGroupAddon>
-        <input pInputText disabled [value]="encabezado[0]?.cGradoAbreviacion" />
-      </p-inputGroup>
-    </div>
-    <div class="col-12 xl:col-6 md:col-4">
-      <p-inputGroup>
-        <p-inputGroupAddon
-          [ngStyle]="{
-            backgroundColor: 'var(--primary-700)',
-            color: 'var(--primary-color-text)',
-          }"
-        >
-          Sección
-        </p-inputGroupAddon>
-        <input pInputText disabled [value]="encabezado[0]?.cSeccionNombre" />
-      </p-inputGroup>
-    </div>
-    <div class="col-12">
-      <p-table class="mt-1 block w-full" [value]="data" [scrollable]="true" scrollHeight="400px">
+      <p-table
+        class="mt-1"
+        [value]="data"
+        [scrollable]="true"
+        scrollHeight="400px"
+        [tableStyle]="{ 'min-width': '800px' }"
+      >
         <ng-template pTemplate="header">
-          <tr style="height: 12px">
-            <th style="width: auto">N°</th>
-            <th style="width: auto">Nombres y Apellidos</th>
-            <th style="width: auto">Marcar Asistencia</th>
-            <th style="width: auto">Subir Documento</th>
+          <tr>
+            <th>N°</th>
+            <th>Nombres y Apellidos</th>
+            <th>Marcar Asistencia</th>
+            <th>Subir Documento</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
           <tr>
             <td>{{ rowIndex + 1 }}</td>
-            <td>{{ item.nombrecompleto }}</td>
+            <td class="text-sm">{{ item.nombrecompleto }}</td>
             <td>
               <p-selectButton
                 [options]="estados"
@@ -161,7 +108,7 @@
                 (onChange)="seleccionarEstado($event, rowIndex)"
               >
                 <ng-template let-item pTemplate="item">
-                  <div class="text-center font-bold transition-all" [ngClass]="[item.bgColor]">
+                  <div class="text-center font-bold" [ngClass]="[item.bgColor]">
                     {{ item.cTipoAsiLetra }}
                   </div>
                 </ng-template>
@@ -219,6 +166,7 @@
   [modal]="true"
   [closable]="true"
   [style]="{ width: '620px' }"
+  [maximizable]="true"
 >
   <div *ngIf="dialogEvents.length === 0" class="no-events">No hay eventos.</div>
 

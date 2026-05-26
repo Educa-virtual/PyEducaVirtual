@@ -3,6 +3,7 @@
   <p-tabPanel header="Historial de Apoderados" *ngIf="activeTab === 0" [disabled]="true">
     <div class="flex justify-content-end gap-2 mb-2">
       <p-button
+        *ngIf="esDirector"
         size="small"
         icon="pi pi-plus"
         label="Nuevo"

@@ -18,6 +18,7 @@ import { FormDesercionComponent } from '../../gestion-desercion/form-desercion/f
 import { HistorialDesercionComponent } from '../../gestion-desercion/historial-desercion/historial-desercion.component';
 import { GestionarDesercionesComponent } from '../gestionar-deserciones/gestionar-deserciones.component';
 import { formatDate } from '@angular/common';
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-gestionar-matriculas',
@@ -68,6 +69,8 @@ export class GestionMatriculasComponent implements OnInit {
   desercion: any = {};
   activeIndex: number = 0;
   deserciones: any[] = [];
+
+  es_director: boolean = false;
 
   breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
   breadCrumbItems: MenuItem[] = [
@@ -183,6 +186,7 @@ export class GestionMatriculasComponent implements OnInit {
     this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.iSedeId = this.perfil.iSedeId;
+    this.soloLectura = ![DIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -216,6 +220,9 @@ export class GestionMatriculasComponent implements OnInit {
       this.form.get('iSeccionId')?.setValue(null);
       if (value) {
         this.filterSecciones(value);
+        if (this.secciones.length === 1) {
+          this.form.get('iSeccionId')?.setValue(this.secciones[0]['value']);
+        }
       }
     });
     this.form.get('iSeccionId').valueChanges.subscribe(value => {

@@ -112,6 +112,11 @@
                     {{ col.header }}
                   </div>
                 }
+                @case ('dropdown-actions') {
+                  <div [style.text-align]="col.text_header">
+                    {{ col.header }}
+                  </div>
+                }
                 @case ('item') {
                   <div [style.text-align]="col.text_header">
                     {{ col.header }}

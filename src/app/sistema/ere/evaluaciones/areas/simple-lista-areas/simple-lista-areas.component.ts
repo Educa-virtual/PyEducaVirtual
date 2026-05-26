@@ -121,6 +121,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
       this.cursos = [...this.cursosFromParent];
       this.agruparCursosPorGrado();
     }
+    this.initializeColumns();
   }
 
   ngOnDestroy(): void {
@@ -183,7 +184,7 @@ export class SimpleListaAreasComponent implements OnInit, OnChanges, OnDestroy {
           width: '10%',
         }
       );
-    } else {
+    } else if (this.evaluacion && this.evaluacion.iUgelId === null && !this.esEspecialistaUgel) {
       this.colsEspecialista.push({
         field: 'acciones',
         header: 'Acciones',

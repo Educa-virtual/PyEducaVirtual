@@ -248,14 +248,14 @@
               />
             </td>
 
-            <td style="text-align: center">
-              <div
-                class="flex gap-1 justify-content-center"
-                *ngIf="
-                  (evaluacion.iUgelId === null && esEspecialistaDremo) ||
-                  (evaluacion.iUgelId !== null && esEspecialistaUgel)
-                "
-              >
+            <td
+              style="text-align: center"
+              *ngIf="
+                (evaluacion.iUgelId === null && esEspecialistaDremo) ||
+                (evaluacion.iUgelId !== null && esEspecialistaUgel)
+              "
+            >
+              <div class="flex gap-1 justify-content-center">
                 <p-button
                   icon="pi pi-list"
                   severity="secondary"

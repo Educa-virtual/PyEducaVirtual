@@ -53,25 +53,45 @@
           ></p-dropdown>
         </p-inputGroup>
       </div>
+      <div class="col-12 md:col-10 m-0">
+        <p-inputGroup>
+          <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            placeholder="Buscar"
+            formControlName="textoBusqueda"
+            (input)="filtrarTabla()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-2 m-0 flex justify-content-center align-items-center">
+        <div class="inline md:hidden mr-2">Matriculados / Vacantes:</div>
+        <div
+          #vacantesSeccion
+          pTooltip="Matriculas activas / Vacantes en sección"
+          tooltipPosition="top"
+          class="text-center font-bold text-2xl text-primary"
+        >
+          {{ cantMatriculasFiltradas }} / {{ cantVacantesSeccion }}
+        </div>
+      </div>
     </div>
   </form>
 
   <app-table-primeng
     [columnas]="columns"
-    [showCaption]="true"
+    [showCaption]="false"
     [data]="matriculas_filtradas"
     (accionBtnItem)="accionBtnItemTable($event)"
     [showPaginator]="true"
     sortMode="single"
     sortField="dtMatrFecha"
-    [sortOrder]="0"
+    [sortOrder]="-1"
     [(selectedRowData)]="selectedItems"
     [actions]="actions"
-    [showSearchTable]="false"
-    [indiceColumnaBuscar]="3"
   >
   </app-table-primeng>
-  <ng-container slot="caption-content"> </ng-container>
 </p-panel>
 
 <p-dialog

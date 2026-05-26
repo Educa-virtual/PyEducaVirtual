@@ -67,6 +67,7 @@ export class DatosMatriculaService {
         cSeccionNombre: item.cSeccionNombre,
         iTurnoId: Number(item.iTurnoId),
         cTurnoNombre: item.cTurnoNombre,
+        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
       }));
       return this.grado_seccion_turno;
     }
@@ -101,6 +102,7 @@ export class DatosMatriculaService {
         label: item.cSeccionNombre,
         value: item.iSeccionId,
         iNivelGradoId: item.iNivelGradoId,
+        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
       }));
       return this.secciones;
     }
@@ -117,6 +119,7 @@ export class DatosMatriculaService {
         value: item.iTurnoId,
         iNivelGradoId: item.iNivelGradoId,
         iSeccionId: item.iSeccionId,
+        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
       }));
       return this.turnos;
     }

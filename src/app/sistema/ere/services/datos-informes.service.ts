@@ -48,7 +48,7 @@ export class DatosInformesService {
     if (!this.parametros) {
       return this.http.post(`${baseUrl}/ere/reportes/obtenerEvaluacionesCursosIes`, data).pipe(
         map((data: any) => {
-          this.parametros = data.data[0];
+          this.parametros = data.data;
           return this.parametros;
         })
       );
@@ -230,9 +230,6 @@ export class DatosInformesService {
     iUgelId: any
   ) {
     let ies_tmp: Array<object> = this.instituciones_educativas;
-    if (!iNivelTipoId) {
-      return null;
-    }
     if (iNivelTipoId) {
       ies_tmp = ies_tmp.filter((ie: any) => {
         if (ie.iNivelTipoId == iNivelTipoId) {

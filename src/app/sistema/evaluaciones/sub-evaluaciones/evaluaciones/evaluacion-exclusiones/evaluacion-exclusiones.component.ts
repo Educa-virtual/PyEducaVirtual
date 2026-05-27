@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EvaluacionExclusionesService } from '../../../services/evaluacion-exclusiones.service';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -12,6 +12,8 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.service';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-evaluacion-exclusiones',
@@ -22,11 +24,17 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 })
 export class EvaluacionExclusionesComponent implements OnInit {
   @ViewChild('filtro') filtro: any;
+  @ViewChild('filtros') filtros: OverlayPanel;
+  @ViewChild('overlayAnchor') overlayAnchorRef: ElementRef;
   cEvaluacionKey: string;
   evaluacion: any;
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
   perfil: any;
+  iYAcadId: number;
+
+  formFiltros: FormGroup;
+  filtros_aplicados: number = 0;
 
   formExclusion: FormGroup;
   exclusiones: Array<any>;
@@ -43,17 +51,29 @@ export class EvaluacionExclusionesComponent implements OnInit {
   formato_documento = '99999999';
   tipos_documentos: Array<object>;
 
+  nivel_tipos: Array<object>;
+  nivel_grados: Array<object>;
+  distritos: Array<object>;
+  ies: Array<object>;
+  secciones: Array<object>;
+  sexos: Array<object>;
+  zonas: Array<object>;
+  tipo_sectores: Array<object>;
+  ugeles: Array<object>;
+
   private _messageService = inject(MessageService);
   private _confirmService = inject(ConfirmationModalService);
 
   constructor(
     private exclusionesService: EvaluacionExclusionesService,
+    private datosInformes: DatosInformesService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private store: LocalStoreService,
     private cf: ChangeDetectorRef
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.es_director = Number(this.perfil.iPerfilId) === Number(DIRECTOR_IE);
     this.route.paramMap.subscribe(params => {
       this.cEvaluacionKey = params.get('iEvaluacionId');
@@ -131,6 +151,116 @@ export class EvaluacionExclusionesComponent implements OnInit {
         this.formato_documento = '9'.repeat(this.longitud_documento);
       }
     });
+
+    try {
+      this.formFiltros = this.fb.group({
+        iNivelTipoId: [null],
+        iNivelGradoId: [null],
+        iZonaId: [null],
+        iTipoSectorId: [null],
+        iUgelId: [null],
+        iDsttId: [null],
+        iIieeId: [null],
+        iSeccionId: [null],
+        cPersSexo: [null],
+      });
+    } catch (error) {
+      console.error(error, 'error de formulario');
+    }
+
+    this.sexos = this.datosInformes.getSexos();
+    this.datosInformes
+      .obtenerParametros({
+        iYAcadId: this.iYAcadId,
+        iEvaluacionId: this.cEvaluacionKey,
+      })
+      .subscribe((data: any) => {
+        this.distritos = this.datosInformes.getDistritos(data?.distritos);
+        this.secciones = this.datosInformes.getSecciones(data?.secciones);
+        this.zonas = this.datosInformes.getZonas(data?.zonas);
+        this.tipo_sectores = this.datosInformes.getTipoSectores(data?.tipo_sectores);
+        this.ugeles = this.datosInformes.getUgeles(data?.ugeles);
+        this.nivel_tipos = this.datosInformes.getNivelesTipos(data?.nivel_tipos);
+        this.ies = this.datosInformes.getInstitucionesEducativas(data?.instituciones_educativas);
+        this.datosInformes.getNivelesGrados(data?.nivel_grados);
+        this.datosInformes.getAreas(data?.areas);
+
+        if (this.nivel_tipos.length == 1) {
+          this.formFiltros.get('iNivelTipoId')?.setValue(this.nivel_tipos[0]['value']);
+        }
+        if (this.ugeles.length == 1) {
+          this.formFiltros.get('iUgelId')?.setValue(this.ugeles[0]['value']);
+        }
+        if (this.ies.length == 1) {
+          this.formFiltros.get('iIieeId')?.setValue(this.ies[0]['value']);
+        }
+        this.contarFiltros();
+      });
+
+    this.formFiltros.get('iNivelTipoId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iNivelGradoId')?.setValue(null);
+      this.nivel_grados = null;
+      this.filterNivelesGrados(value);
+
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.ies = null;
+      this.filterInstitucionesEducativas();
+      if (this.ies.length == 1) {
+        this.formFiltros.get('iNiviIieeIdelGradoId')?.setValue(this.ies[0]['value']);
+      }
+    });
+    this.formFiltros.get('iDsttId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.ies = null;
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iZonaId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.ies = null;
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iTipoSectorId').valueChanges.subscribe(() => {
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.ies = null;
+      this.filterInstitucionesEducativas();
+    });
+    this.formFiltros.get('iUgelId').valueChanges.subscribe(value => {
+      this.formFiltros.get('iDsttId')?.setValue(null);
+      this.formFiltros.get('iIieeId')?.setValue(null);
+      this.ies = null;
+      this.distritos = null;
+      this.filterInstitucionesEducativas();
+      this.filterDistritos(value);
+    });
+  }
+
+  filterNivelesTipos() {
+    this.nivel_tipos = this.datosInformes.filterNivelesTipos();
+  }
+
+  filterNivelesGrados(iNivelTipoId: number) {
+    this.nivel_grados = this.datosInformes.filterNivelesGrados(iNivelTipoId);
+  }
+
+  filterDistritos(iUgelId: number) {
+    this.distritos = this.datosInformes.filterDistritos(iUgelId);
+  }
+
+  filterInstitucionesEducativas() {
+    const iEvaluacionId = this.formFiltros.get('iEvaluacionId')?.value;
+    const iNivelTipoId = this.formFiltros.get('iNivelTipoId')?.value;
+    const iDsttId = this.formFiltros.get('iDsttId')?.value;
+    const iZonaId = this.formFiltros.get('iZonaId')?.value;
+    const iTipoSectorId = this.formFiltros.get('iTipoSectorId')?.value;
+    const iUgelId = this.formFiltros.get('iUgelId')?.value;
+    this.ies = this.datosInformes.filterInstitucionesEducativas(
+      iEvaluacionId,
+      iNivelTipoId,
+      iDsttId,
+      iZonaId,
+      iTipoSectorId,
+      iUgelId
+    );
   }
 
   obtenerEvaluacion() {
@@ -188,7 +318,27 @@ export class EvaluacionExclusionesComponent implements OnInit {
 
   filtrarExclusiones() {
     const filtro = this.filtro.nativeElement.value.toLowerCase();
+    const iNivelTipoId = this.formFiltros.value.iNivelTipoId;
+    const iNivelGradoId = this.formFiltros.value.iNivelGradoId;
+    const iTipoSectorId = this.formFiltros.value.iTipoSectorId;
+    const iZonaId = this.formFiltros.value.iZonaId;
+    const iUgelId = this.formFiltros.value.iUgelId;
+    const iDsttId = this.formFiltros.value.iDsttId;
+    const iIieeId = this.formFiltros.value.iIieeId;
+    const iSeccionId = this.formFiltros.value.iSeccionId;
+    const cPersSexo = this.formFiltros.value.cPersSexo;
+
     this.exclusiones_filtradas = this.exclusiones.filter(ex => {
+      if (iNivelTipoId && Number(iNivelTipoId) !== Number(ex.iNivelTipoId)) return null;
+      if (iNivelGradoId && Number(iNivelGradoId) !== Number(ex.iNivelGradoId)) return null;
+      if (iTipoSectorId && Number(iTipoSectorId) !== Number(ex.iTipoSectorId)) return null;
+      if (iZonaId && Number(iZonaId) !== Number(ex.iZonaId)) return null;
+      if (iUgelId && Number(iUgelId) !== Number(ex.iUgelId)) return null;
+      if (iDsttId && Number(iDsttId) !== Number(ex.iDsttId)) return null;
+      if (iIieeId && Number(iIieeId) !== Number(ex.iIieeId)) return null;
+      if (iSeccionId && Number(iSeccionId) !== Number(ex.iSeccionId)) return null;
+      if (cPersSexo && cPersSexo !== ex.cPersSexo) return null;
+      if (ex.cPersTipoDocumento.toLowerCase().includes(filtro)) return ex;
       if (ex.cEstCodigo.toLowerCase().includes(filtro)) return ex;
       if (ex.cPersNombreApellidos.toLowerCase().includes(filtro)) return ex;
       if (ex.cGradoNombre.toLowerCase().includes(filtro)) return ex;
@@ -197,6 +347,13 @@ export class EvaluacionExclusionesComponent implements OnInit {
       if (ex.cIieeNombre.toLowerCase().includes(filtro)) return ex;
       return null;
     });
+    this.contarFiltros();
+  }
+
+  contarFiltros() {
+    this.filtros_aplicados = Object.values(this.formFiltros.value).filter(
+      (value: any) => value !== null && value !== ''
+    ).length;
   }
 
   editarExclusion(data: any) {
@@ -260,6 +417,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
       iTipoIdentId: data ? (es_codigo ? 0 : data?.iTipoIdentId) : null,
       cPersDocumento: data ? (es_codigo ? data?.cEstCodigo : data?.cPersDocumento) : null,
     });
+    console.log(data ? (es_codigo ? data?.cEstCodigo : data?.cPersDocumento) : null);
     this.exclusion_registrada = this.formExclusion.value.iEvalExcluId ? true : false;
     this.exclusionesService.formMarkAsDirty(this.formExclusion);
     if (this.exclusion_bloqueada) {
@@ -431,9 +589,18 @@ export class EvaluacionExclusionesComponent implements OnInit {
       class: 'hidden md:table-cell',
     },
     {
+      field: 'cPersTipoDocumento',
+      type: 'text',
+      width: '10%',
+      header: 'Documento',
+      text_header: 'center',
+      text: 'center',
+      class: 'hidden md:table-cell',
+    },
+    {
       field: 'cPersNombreApellidos',
       type: 'text',
-      width: '35%',
+      width: '25%',
       header: 'Estudiante',
       text_header: 'left',
       text: 'left',
@@ -441,7 +608,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
     {
       field: 'cGradoNombre',
       type: 'text',
-      width: '10%',
+      width: '5%',
       header: 'Grado',
       text_header: 'center',
       text: 'center',
@@ -449,7 +616,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
     {
       field: 'cSeccionNombre',
       type: 'text',
-      width: '10%',
+      width: '5%',
       header: 'Sección',
       text_header: 'center',
       text: 'center',
@@ -466,16 +633,16 @@ export class EvaluacionExclusionesComponent implements OnInit {
     {
       field: 'cIieeNombre',
       type: 'text',
-      width: '20%',
+      width: '35%',
       header: 'I.E. Nombre',
       text_header: 'center',
-      text: 'center',
+      text: 'left',
       class: 'hidden md:table-cell',
     },
     {
       field: '',
       type: 'actions',
-      width: '10%',
+      width: '5%',
       header: 'Acciones',
       text_header: 'right',
       text: 'right',

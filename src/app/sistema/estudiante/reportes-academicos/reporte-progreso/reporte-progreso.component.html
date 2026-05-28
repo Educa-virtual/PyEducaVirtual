@@ -2,26 +2,33 @@
 
 <p-panel>
   <ng-template pTemplate="header">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Reporte académico de progreso</h3>
-    </div>
+    <span class="text-2xl text-uppercase">Reporte académico de progreso</span>
   </ng-template>
+
+  <p-messages severity="secondary">
+    <ng-template pTemplate>
+      Para cambiar el año académico, dirijase a la barra superior y debajo de "Año Escolar"
+      seleccione otro año de la lista desplegable.
+    </ng-template>
+  </p-messages>
+
   <ng-template pTemplate="body">
-    <div class="grid p-fluid mt-3">
-      <div class="field col-12 md:col-4">
+    <div class="grid p-fluid">
+      <div class="col-12 md:col-4">
         <p-inputGroup>
-          <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
-          <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
+          <p-inputGroupAddon>Año académico:</p-inputGroupAddon>
+          <input
+            pInputText
+            [value]="anioEscolar"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+            appendTo="body"
+            disabled
+          />
         </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-3"></div>
     </div>
-    <p>
-      <small class="mb-3"
-        >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar,
-        seleccione otra opción</small
-      >
-    </p>
+
     <p-tabView>
       <p-tabPanel header="Resumen">
         <app-tabla-reporte-progreso
@@ -33,4 +40,5 @@
     </p-tabView>
   </ng-template>
 </p-panel>
+
 <p-toast></p-toast>

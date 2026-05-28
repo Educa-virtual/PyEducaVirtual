@@ -5,20 +5,14 @@
 
 .curso-table {
   width: 100%;
-  font-family: var(--font-family, Arial, sans-serif);
-
-  border-collapse: separate; /* Necesario para bordes redondeados */
+  font-size: 0.75rem;
   border-spacing: 0;
-  border: 1px solid #d1d5db; /* gris claro */
-  border-radius: 8px; /* esquinas redondeadas */
-  overflow: hidden; /* asegura que las esquinas se vean redondeadas */
 }
 
 .curso-table thead th {
   text-align: left;
   padding: 0.75rem 1rem;
-  background: #e8e4ec;
-  border-bottom: 1px solid #d1d5db;
+  background-color: #e6e6ee;
 }
 
 .curso-table tbody td {
@@ -67,7 +61,7 @@ ol {
   margin-bottom: 2px;
 }
 
-tr.fondo-gris td {
+tr.main-row td {
   background-color: #fafafa;
 }
 

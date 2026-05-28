@@ -1,70 +1,121 @@
 <p-dialog
-    [header]="'Configurar nivel de logro'"
-    [modal]="true"
-    [(visible)]="visible"
-    [style]="{ width: '40rem' }"
-    (onHide)="onDialogHide()"
+  header="Configurar nivel de logro"
+  [modal]="true"
+  [(visible)]="visible"
+  (onHide)="onDialogHide()"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
 >
-    <br />
-    <p><strong>Área: </strong> {{ titulo }}</p>
-    <p style="margin-bottom: 1.5rem">
-        <strong>Ctd. preguntas: </strong>{{ curso?.iCantidadPreguntas }}
-    </p>
-
-    <form [formGroup]="formlogros">
-        <div formArrayName="logros">
-            <div
-                *ngFor="let logro of logros.controls; let i = index"
-                [formGroupName]="i"
-                class="p-fluid grid fila"
-            >
-                <div class="col-12 md:col-4">
-                    <div class="p-field">
-                        <label for="inicial">Desde:</label>
-                        <input
-                            type="number"
-                            formControlName="iDesde"
-                            pInputText
-                        />
-                    </div>
-                </div>
-                <div class="col-12 md:col-4">
-                    <div class="p-field">
-                        <label for="final">Hasta:</label>
-                        <input
-                            type="number"
-                            formControlName="iHasta"
-                            pInputText
-                        />
-                    </div>
-                </div>
-                <div class="col-12 md:col-4">
-                    <div class="p-field">
-                        <label for="resultado">Resultado:</label>
-                        <p-dropdown
-                            formControlName="iNivelLogroId"
-                            styleClass="w-full"
-                            placeholder="Seleccione..."
-                            optionValue="iNivelLogroId"
-                            [options]="nivelLogros"
-                            optionLabel="cNivelLogroNombre"
-                            [showClear]="true"
-                            appendTo="body"
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-    <br />
-    <div class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="visible = false"
+  <br />
+  <div class="grid p-fluid">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon>Área</p-inputGroupAddon>
+        <input
+          pInputText
+          [value]="titulo"
+          disabled
+          class="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
         />
-        <p-button label="Registrar" (onClick)="registrarLogros()" />
+      </p-inputGroup>
     </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Ctd. preguntas</p-inputGroupAddon>
+        <input
+          pInputText
+          [value]="curso?.iCantidadPreguntas"
+          disabled
+          class="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Suma puntajes</p-inputGroupAddon>
+        <input
+          pInputText
+          [value]="curso?.iPuntajeSum"
+          disabled
+          class="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+        />
+      </p-inputGroup>
+    </div>
+  </div>
+
+  <br />
+
+  <form [formGroup]="formlogros">
+    <div formArrayName="logros">
+      <div
+        *ngFor="let logro of logros.controls; let i = index"
+        [formGroupName]="i"
+        class="p-fluid grid mt-5 md:mt-1"
+      >
+        <div class="col-6 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>Desde</p-inputGroupAddon>
+            <input
+              type="number"
+              formControlName="iDesde"
+              pInputText
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+              appendTo="body"
+              (blur)="onInputBlur('iDesde', $event, i)"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-6 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>Hasta</p-inputGroupAddon>
+            <input
+              type="number"
+              formControlName="iHasta"
+              pInputText
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+              appendTo="body"
+              (blur)="onInputBlur('iHasta', $event, i)"
+              pTooltip="El valor de Hasta desde ser mayor que el valor de Desde"
+              [tooltipDisabled]="!errores[i]"
+              tooltipPosition="top"
+              tooltipStyleClass="error-tooltip"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>Resultado</p-inputGroupAddon>
+            <p-dropdown
+              formControlName="iNivelLogroId"
+              styleClass="group-element"
+              optionValue="iNivelLogroId"
+              [options]="nivelLogros"
+              optionLabel="cNivelLogroNombre"
+              [showClear]="true"
+              appendTo="body"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+    </div>
+  </form>
+  <br />
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancelar" severity="secondary" (onClick)="visible = false" />
+    <p-button label="Registrar" (onClick)="registrarLogros()" />
+  </div>
 </p-dialog>
 
 <p-toast></p-toast>

@@ -1,10 +1,9 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ResultadosEreService } from './services/resultados-ere.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { ChartConfiguration, ChartOptions } from 'chart.js';
-import { UIChart } from 'primeng/chart';
+import { ChartOptions } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
@@ -17,41 +16,37 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 export class ResultadosEreComponent implements OnInit {
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
-  //resultadoAreas: any = [];
-  //dropdownOptions: Array<{ label: string; value: CourseRow }> = [];
-  //selectedCourse: CourseRow | null = null;
+
   areaSeleccionada: any = null;
   anioEscolar: number;
   resultado: any = [];
   evaluaciones: any = [];
   evaluacionSeleccionada: any = null;
   chartPlugins = [ChartDataLabels];
+  rindioEvaluaciones: boolean = null;
 
-  @ViewChild('uiChart') uiChart?: UIChart;
+  data_bar: any;
+  options_bar: ChartOptions;
 
-  chartData: ChartConfiguration['data'] = { labels: [], datasets: [] };
-  chartOptions: ChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: { stacked: false },
-      y: { beginAtZero: true, ticks: { precision: 0 } },
-    },
-    plugins: {
-      title: {
-        display: false,
-      },
-      legend: {
-        display: false,
-      },
-      datalabels: {
-        anchor: 'end',
-        align: 'end',
-        offset: -6,
-        color: '#000',
+  barPlugin = [
+    {
+      afterDraw: chart => {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset, i) => {
+          if (dataset.data.length == 0) return;
+          const isHidden = chart.legend.legendItems[i]?.hidden;
+          if (isHidden) return;
+          chart.getDatasetMeta(i).data.forEach((bar, index) => {
+            const data = dataset.data[index];
+            if (Number(data) == 0 || isHidden) return;
+            ctx.font = '0.75em Arial';
+            ctx.fillStyle = dataset.backgroundColor[index];
+            ctx.fillText(data, bar.x - 15, bar.y - 5);
+          });
+        });
       },
     },
-  };
+  ];
 
   constructor(
     private resultadosEreService: ResultadosEreService,
@@ -70,7 +65,7 @@ export class ResultadosEreComponent implements OnInit {
         label: 'Reportes académicos',
       },
       {
-        label: 'Progreso',
+        label: 'Resultados ERE',
         active: true,
       },
     ];
@@ -81,8 +76,7 @@ export class ResultadosEreComponent implements OnInit {
     this.resultadosEreService.obtenerEvaluacionesEstudiantePorAnio(this.anioEscolar).subscribe({
       next: (response: any) => {
         this.evaluaciones = response.data;
-        //this.evaluaciones = this.transform(response.data);
-        //this.dropdownOptions = this.resultadoAreas.map(t => ({ label: t.curso, value: t }));
+        this.rindioEvaluaciones = this.evaluaciones.length > 0;
       },
       error: err => {
         this.messageService.add({
@@ -100,7 +94,7 @@ export class ResultadosEreComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.resultado = response.data;
-          //this.dropdownOptions = this.resultadoAreas.map(t => ({ label: t.curso, value: t }));
+          this.mostrarEstadisticaCursos();
         },
         error: err => {
           this.messageService.add({
@@ -112,40 +106,67 @@ export class ResultadosEreComponent implements OnInit {
       });
   }
 
-  onCourseChange(): void {
-    const cursoSeleccionado = this.resultado.find(
-      (curso: any) => curso.iCursosNivelGradId === this.areaSeleccionada
-    );
-    if (!cursoSeleccionado) {
-      this.clearChart();
+  mostrarEstadisticaCursos() {
+    if (this.resultado.length == 0) {
       return;
     }
-    this.buildChartData(cursoSeleccionado);
-    setTimeout(() => this.uiChart?.refresh(), 0);
-  }
 
-  private buildChartData(curso: any) {
-    const labels = ['Aciertos', 'Desaciertos', 'En blanco'];
-    const correctas = [curso?.iCantidadCorrectas, curso?.iCantidadIncorrectas, curso?.iEnBlanco];
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
 
-    this.chartData = {
-      labels,
+    const areas = [];
+    const aciertos = [];
+    const desaciertos = [];
+    const blancos = [];
+    this.resultado.forEach((item: any) => {
+      areas.push(item['cCursoNombre']);
+      aciertos.push(item['iCantidadCorrectas']);
+      desaciertos.push(item['iCantidadIncorrectas']);
+      blancos.push(item['iEnBlanco']);
+    });
+
+    this.data_bar = {
+      labels: areas,
       datasets: [
         {
-          data: correctas,
-          backgroundColor: [
-            'rgba(220, 20, 60, 0.6)', // rojo suave
-            'rgba(30, 144, 255, 0.6)', // azul suave
-            'rgba(255, 165, 0, 0.6)', // naranja suave
-          ],
-          borderColor: ['rgba(220, 20, 60, 1)', 'rgba(30, 144, 255, 1)', 'rgba(255, 165, 0, 1)'],
-          borderWidth: 1,
+          label: 'ACIERTOS',
+          backgroundColor: documentStyle.getPropertyValue('--blue-500'),
+          hoverBackgroundColor: documentStyle.getPropertyValue('--blue-400'),
+          data: aciertos,
+        },
+        {
+          label: 'DESACIERTOS',
+          backgroundColor: documentStyle.getPropertyValue('--red-500'),
+          hoverBackgrounfColor: documentStyle.getPropertyValue('--red-400'),
+          data: desaciertos,
+        },
+        {
+          label: 'EN BLANCO',
+          backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
+          hoverBackgroundColor: documentStyle.getPropertyValue('--yellow-400'),
+          data: blancos,
         },
       ],
     };
-  }
 
-  private clearChart() {
-    this.chartData = { labels: [], datasets: [] };
+    this.options_bar = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            color: textColor,
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+    };
   }
 }

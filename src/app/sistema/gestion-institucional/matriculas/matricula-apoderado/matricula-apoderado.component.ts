@@ -13,6 +13,7 @@ import {
 import { DatosMatriculaService } from '../../services/datos-matricula.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { formatDate } from '@angular/common';
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-matricula-apoderado',
@@ -60,6 +61,8 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
   nacionalidades: Array<object>;
   longitud_documento: number;
   formato_documento: string = '99999999';
+
+  esDirector: boolean = false;
 
   activeTab: number = 0;
 
@@ -133,6 +136,9 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       accion: 'editar',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
+      isVisible: () => {
+        return !this.soloLectura;
+      },
     },
     {
       labelTooltip: 'Deshabilitar',
@@ -141,7 +147,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: rowData => {
-        return Number(rowData.iHabilitado) === 1;
+        return !this.soloLectura && Number(rowData.iHabilitado) === 1;
       },
     },
     {
@@ -151,7 +157,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: rowData => {
-        return Number(rowData.iHabilitado) === 0;
+        return !this.soloLectura && Number(rowData.iHabilitado) === 0;
       },
     },
   ];
@@ -165,6 +171,7 @@ export class MatriculaApoderadoComponent implements OnChanges, OnInit {
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
+    this.esDirector = [DIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

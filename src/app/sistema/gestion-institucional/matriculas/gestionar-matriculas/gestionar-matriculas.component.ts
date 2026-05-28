@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import {
   IActionTable,
@@ -17,6 +17,8 @@ import { MatriculaApoderadoComponent } from '../matricula-apoderado/matricula-ap
 import { FormDesercionComponent } from '../../gestion-desercion/form-desercion/form-desercion.component';
 import { HistorialDesercionComponent } from '../../gestion-desercion/historial-desercion/historial-desercion.component';
 import { GestionarDesercionesComponent } from '../gestionar-deserciones/gestionar-deserciones.component';
+import { formatDate } from '@angular/common';
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes';
 
 @Component({
   selector: 'app-gestionar-matriculas',
@@ -36,6 +38,8 @@ import { GestionarDesercionesComponent } from '../gestionar-deserciones/gestiona
 export class GestionMatriculasComponent implements OnInit {
   @Input() soloLectura: boolean = false;
   @Input() titulo: string;
+  @ViewChild('vacantesSeccion') vacantesSeccion: ElementRef;
+
   form: FormGroup;
   sede: any[];
   iSedeId: number;
@@ -66,6 +70,8 @@ export class GestionMatriculasComponent implements OnInit {
   activeIndex: number = 0;
   deserciones: any[] = [];
 
+  es_director: boolean = false;
+
   breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
   breadCrumbItems: MenuItem[] = [
     {
@@ -76,6 +82,11 @@ export class GestionMatriculasComponent implements OnInit {
   selectedItems = [];
   estudianteSeleccionado: any;
   estudianteNombreCompleto: string;
+  cantMatriculasFiltradas: number = 0;
+  cantVacantesSeccion: number = 0;
+
+  ESTADO_DEFINITIVA = this.matriculaService.ESTADO_DEFINITIVA;
+  ESTADO_PROCESO = this.matriculaService.ESTADO_PROCESO;
 
   actionsLista: IActionTable[];
 
@@ -175,6 +186,7 @@ export class GestionMatriculasComponent implements OnInit {
     this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.iSedeId = this.perfil.iSedeId;
+    this.soloLectura = ![DIRECTOR_IE].includes(Number(this.perfil.iPerfilId));
   }
 
   ngOnInit(): void {
@@ -184,9 +196,10 @@ export class GestionMatriculasComponent implements OnInit {
       this.form = this.fb.group({
         iNivelGradoId: [null],
         iSeccionId: [null],
+        textoBusqueda: [null],
       });
     } catch (error) {
-      console.log(error, 'error de formulario');
+      console.error(error, 'error de formulario');
     }
 
     this.matriculaService
@@ -207,10 +220,21 @@ export class GestionMatriculasComponent implements OnInit {
       this.form.get('iSeccionId')?.setValue(null);
       if (value) {
         this.filterSecciones(value);
+        if (this.secciones.length === 1) {
+          this.form.get('iSeccionId')?.setValue(this.secciones[0]['value']);
+        }
       }
     });
-    this.form.get('iSeccionId').valueChanges.subscribe(() => {
+    this.form.get('iSeccionId').valueChanges.subscribe(value => {
       this.filtrarTabla();
+      if (value) {
+        const seccion = this.secciones.find(
+          (seccion: any) => Number(seccion.value) === Number(value)
+        );
+        this.cantVacantesSeccion = seccion['iDetConfCantEstudiantes'] ?? 0;
+      } else {
+        this.cantVacantesSeccion = 0;
+      }
     });
 
     this.listarMatriculas();
@@ -250,11 +274,19 @@ export class GestionMatriculasComponent implements OnInit {
           type: 'item',
           class: 'p-menuitem-link text-primary',
         },
+        {
+          labelTooltip: 'Anular matrícula',
+          icon: 'pi pi-trash',
+          accion: 'anular',
+          type: 'item',
+          class: 'p-menuitem-link text-red-500',
+        },
       ];
     }
   }
 
   filtrarTabla() {
+    const textoBusqueda = this.form.get('textoBusqueda')?.value;
     if (!this.matriculas) {
       return [];
     }
@@ -267,9 +299,65 @@ export class GestionMatriculasComponent implements OnInit {
       if (iSeccionId && Number(matricula.iSeccionId) !== Number(iSeccionId)) {
         return null;
       }
-      return matricula;
+      if (textoBusqueda) {
+        if (
+          matricula.cEstCodigo &&
+          matricula.cEstCodigo.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        if (
+          matricula.cPersTipoNumDocumento &&
+          matricula.cPersTipoNumDocumento.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        if (
+          matricula.cPersNombreCompleto &&
+          matricula.cPersNombreCompleto.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        if (
+          matricula.cGrado &&
+          matricula.cGrado.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        if (
+          matricula.cSeccionNombre &&
+          matricula.cSeccionNombre.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        if (
+          matricula.cTieneNEE &&
+          matricula.cTieneNEE.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        if (
+          matricula.cTipoEstadoMatricula &&
+          matricula.cTipoEstadoMatricula.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return matricula;
+        const dtMatrFecha = formatDate(matricula.dtMatrFecha, 'dd/MM/yyyy', 'es-PE');
+        if (matricula.dtMatrFecha && dtMatrFecha.includes(textoBusqueda)) return matricula;
+        return null;
+      } else {
+        return matricula;
+      }
     });
+    this.cantMatriculasFiltradas = this.contarMatriculas();
     return null;
+  }
+
+  contarMatriculas() {
+    let cantMatriculasFiltradas = 0;
+    this.matriculas_filtradas.map(matricula => {
+      if (
+        [Number(this.ESTADO_DEFINITIVA), Number(this.ESTADO_PROCESO)].includes(
+          Number(matricula.iMatrEstado)
+        )
+      ) {
+        cantMatriculasFiltradas++;
+      }
+    });
+    return cantMatriculasFiltradas ?? 0;
   }
 
   accionBtnItemTable({ accion, item }) {
@@ -327,6 +415,7 @@ export class GestionMatriculasComponent implements OnInit {
         next: (data: any) => {
           this.matriculas = data.data;
           this.matriculas_filtradas = this.matriculas;
+          this.cantMatriculasFiltradas = this.contarMatriculas();
         },
         error: error => {
           console.error('Error al obtener matriculas:', error);
@@ -345,6 +434,7 @@ export class GestionMatriculasComponent implements OnInit {
           {
             value: current.iSeccionId,
             label: current.cSeccionNombre,
+            iDetConfCantEstudiantes: current.iDetConfCantEstudiantes,
           },
         ]);
       } else {

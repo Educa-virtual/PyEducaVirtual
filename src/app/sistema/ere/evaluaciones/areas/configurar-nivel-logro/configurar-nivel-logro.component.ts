@@ -76,6 +76,10 @@ export class ConfigurarNivelLogroComponent implements OnInit {
         summary: 'Error',
         detail: 'Complete todos los campos obligatorios (resaltados en rojo)',
       });
+      const formArray = this.formlogros.get('logros') as FormArray;
+      formArray.controls.forEach((form: FormGroup, index: number) => {
+        console.log(form.controls, 'invalid' + index);
+      });
       return;
     }
     this.nivelLogrosService
@@ -101,9 +105,13 @@ export class ConfigurarNivelLogroComponent implements OnInit {
 
   mostrarDialog(datos: { curso: ICurso }) {
     this.curso = datos.curso;
+    this.formlogros.reset();
 
-    this.titulo = `${this.stringCasePipe.transform(this.curso.cCursoNombre)} - ${this.curso.cGradoAbreviacion.toString().substring(0, 1)}° Grado
-            - ${this.curso.cNivelTipoNombre.toString().replace('Educación ', '')}`;
+    this.titulo =
+      this.stringCasePipe.transform(this.curso.cCursoNombre) +
+      this.curso.cGradoAbreviacion.toString().substring(0, 1) +
+      '° Grado - ' +
+      this.curso.cNivelTipoNombre.toString().replace('Educación ', '');
     this.obtenerNivelLogrosArea();
     this.visible = true;
   }
@@ -168,6 +176,7 @@ export class ConfigurarNivelLogroComponent implements OnInit {
         iNivelLogroControl?.setValidators([Validators.required]);
         iNivelLogroControl?.updateValueAndValidity();
         iNivelLogroControl?.markAsTouched();
+        iNivelLogroControl?.markAsDirty();
 
         if (iNivelLogroControl?.invalid) {
           iNivelLogroControl?.markAsTouched();
@@ -181,8 +190,9 @@ export class ConfigurarNivelLogroComponent implements OnInit {
           this.errores[index] = false;
         }
       } else {
-        console.log(index, 'iDesde o iHasta nulos');
-        iNivelLogroControl?.setValidators(null);
+        form.get('iDesde')?.setErrors(null);
+        form.get('iHasta')?.setErrors(null);
+        iNivelLogroControl?.clearValidators();
         iNivelLogroControl?.setErrors(null);
         iNivelLogroControl?.updateValueAndValidity();
       }

@@ -72,32 +72,32 @@ export class ConfigurarNivelLogroComponent implements OnInit {
     this.messageService.clear();
     if (this.formlogros.invalid) {
       this.messageService.add({
+        key: 'configurarNivelLogro',
         severity: 'error',
         summary: 'Error',
         detail: 'Complete todos los campos obligatorios (resaltados en rojo)',
-      });
-      const formArray = this.formlogros.get('logros') as FormArray;
-      formArray.controls.forEach((form: FormGroup, index: number) => {
-        console.log(form.controls, 'invalid' + index);
       });
       return;
     }
     this.nivelLogrosService
       .registrarNivelLogrosArea(this.curso, this.formlogros.value.logros)
       .subscribe({
-        next: respuesta => {
+        next: () => {
           this.messageService.add({
-            severity: respuesta['status'].toLowerCase(),
-            detail: respuesta['message'],
+            key: 'configurarNivelLogro',
+            severity: 'success',
+            summary: 'Registro exitoso',
+            detail: 'Se han registrado los niveles de logro',
           });
           this.visible = false;
         },
-        error: respuesta => {
-          console.log(respuesta);
+        error: error => {
+          console.error(error);
           this.messageService.add({
+            key: 'configurarNivelLogro',
             severity: 'error',
             summary: 'Error',
-            detail: respuesta.error.message,
+            detail: error.error.message,
           });
         },
       });
@@ -120,23 +120,31 @@ export class ConfigurarNivelLogroComponent implements OnInit {
     this.nivelLogrosService.obtenerNivelLogrosArea(this.curso).subscribe({
       next: respuesta => {
         this.logros.clear();
-        respuesta.data.forEach((nivelLogro: any) => {
-          const logroForm = this.fb.group({
-            iDesde: [nivelLogro.nNivelLCDesde],
-            iHasta: [nivelLogro.nNivelLCHasta],
-            iNivelLogroId: [nivelLogro.iNivelLogroId],
+        if (respuesta.data.length > 0) {
+          respuesta.data.forEach((nivelLogro: any) => {
+            const logroForm = this.fb.group({
+              iDesde: [nivelLogro.nNivelLCDesde],
+              iHasta: [nivelLogro.nNivelLCHasta],
+              iNivelLogroId: [nivelLogro.iNivelLogroId],
+            });
+            this.logros.push(logroForm);
           });
-          this.logros.push(logroForm);
-        });
+        }
         for (let i = respuesta.data.length; i < this.maxFilas; i++) {
           this.addFilaLogro();
         }
+        if (this.logros.length > 0 && respuesta.data.length == 0) {
+          this.logros.at(0).get('iDesde')?.setValue(0);
+        }
+        this.validarFormulario();
       },
-      error: respuesta => {
+      error: error => {
+        console.error(error);
         this.messageService.add({
+          key: 'configurarNivelLogro',
           severity: 'error',
           summary: 'Error',
-          detail: respuesta,
+          detail: error.error.message,
         });
       },
     });
@@ -168,21 +176,28 @@ export class ConfigurarNivelLogroComponent implements OnInit {
   validarFormulario() {
     const formArray = this.formlogros.get('logros') as FormArray;
     formArray.controls.forEach((form: FormGroup, index: number) => {
-      const iDesde = form.get('iDesde')?.value;
-      const iHasta = form.get('iHasta')?.value;
-      const iNivelLogroControl = form.get('iNivelLogroId');
+      const iDesde = Number(form.get('iDesde')?.value);
+      const iHasta = Number(form.get('iHasta')?.value);
+      const iNivelLogroId = Number(form.get('iNivelLogroId')?.value);
 
-      if (iDesde || iHasta) {
-        iNivelLogroControl?.setValidators([Validators.required]);
-        iNivelLogroControl?.updateValueAndValidity();
-        iNivelLogroControl?.markAsTouched();
-        iNivelLogroControl?.markAsDirty();
+      if (iDesde || iHasta || iNivelLogroId) {
+        form?.markAsTouched();
+        ['iDesde', 'iHasta', 'iNivelLogroId'].forEach(control => {
+          form.get(control)?.setValidators([Validators.required]);
+          form.get(control)?.updateValueAndValidity();
+          form.get(control)?.markAsTouched();
+          form.get(control)?.markAsDirty();
+          form.get(control)?.updateValueAndValidity();
+        });
 
-        if (iNivelLogroControl?.invalid) {
-          iNivelLogroControl?.markAsTouched();
-        }
-
-        if (iDesde >= iHasta) {
+        const iSumaPuntajes = Number(this.curso?.iPuntajeSum) ?? iHasta;
+        if (
+          iDesde >= iHasta ||
+          iDesde < 0 ||
+          iHasta < 0 ||
+          iHasta > iSumaPuntajes ||
+          iDesde > iSumaPuntajes
+        ) {
           form.get('iHasta')?.setErrors({ error: true });
           this.errores[index] = true;
         } else {
@@ -190,11 +205,14 @@ export class ConfigurarNivelLogroComponent implements OnInit {
           this.errores[index] = false;
         }
       } else {
-        form.get('iDesde')?.setErrors(null);
-        form.get('iHasta')?.setErrors(null);
-        iNivelLogroControl?.clearValidators();
-        iNivelLogroControl?.setErrors(null);
-        iNivelLogroControl?.updateValueAndValidity();
+        ['iDesde', 'iHasta', 'iNivelLogroId'].forEach(control => {
+          form.get(control)?.setErrors(null);
+          form.get(control)?.clearValidators();
+          form.get(control)?.updateValueAndValidity();
+        });
+        form?.clearValidators();
+        form?.setErrors(null);
+        form?.updateValueAndValidity();
       }
     });
   }

@@ -86,7 +86,7 @@
               [style]="{ flex: '1', width: '100%' }"
               appendTo="body"
               (blur)="onInputBlur('iHasta', $event, i)"
-              pTooltip="El valor de Hasta desde ser mayor que el valor de Desde"
+              pTooltip="El número debe ser menor que la suma de puntajes y mayor que el número de Desde"
               [tooltipDisabled]="!errores[i]"
               tooltipPosition="top"
               tooltipStyleClass="error-tooltip"
@@ -118,4 +118,4 @@
   </div>
 </p-dialog>
 
-<p-toast></p-toast>
+<p-toast key="configurarNivelLogro"></p-toast>

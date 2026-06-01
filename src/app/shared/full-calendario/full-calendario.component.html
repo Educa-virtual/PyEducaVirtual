@@ -1,71 +1,64 @@
 <div class="grid">
-  <div class="xl:col-3 sm:col-12 md:col-12">
+  <div class="col-12 xl:col-4 lg:col-5 md:col-12 sm:col-12">
     <div class="card m-2">
-      <div class="grid">
-        <div class="col-12">
-          <p-accordion [multiple]="true" [activeIndex]="[0, 1, 2]">
-            <p-accordionTab header="Fechas Importantes">
-              <div class="flex flex-column">
-                <div *ngFor="let festividad of festividades" class="flex p-1">
-                  <p-checkbox
-                    (onChange)="eventoFestividades(festividad)"
-                    [(ngModel)]="festividad.mostrar"
-                    [label]="festividad.cTipoFechaNombre"
-                    name="group"
-                    [binary]="true"
-                    [styleClass]="festividad.estilo"
-                  />
-                </div>
-              </div>
-            </p-accordionTab>
+      <p-accordion [multiple]="true" [activeIndex]="[0, 1, 2]">
+        <p-accordionTab header="Fechas Importantes">
+          <div class="flex flex-column">
+            <div *ngFor="let festividad of festividades" class="flex p-1">
+              <p-checkbox
+                (onChange)="eventoFestividades(festividad)"
+                [(ngModel)]="festividad.mostrar"
+                [label]="festividad.cTipoFechaNombre"
+                name="group"
+                [binary]="true"
+                [styleClass]="festividad.estilo"
+              />
+            </div>
+          </div>
+        </p-accordionTab>
 
-            <p-accordionTab header="Actividades Académicas">
-              <div class="flex flex-column">
-                <div *ngFor="let actividad of actividades" class="flex p-1">
-                  <p-checkbox
-                    (onChange)="eventoActividad(actividad)"
-                    [(ngModel)]="actividad.mostrar"
-                    [label]="actividad.cActTipoNombre"
-                    name="group"
-                    [binary]="true"
-                    [styleClass]="actividad.estilo"
-                  />
-                </div>
-              </div>
-            </p-accordionTab>
-            <p-accordionTab header="Áreas Curriculares">
-              <div class="flex flex-column">
-                <div *ngFor="let curricular of curricula" class="flex p-1">
-                  <p-checkbox
-                    (onChange)="eventoCurricular(curricular)"
-                    [(ngModel)]="curricular.mostrar"
-                    [label]="curricular.cCursoNombre"
-                    name="group"
-                    [binary]="true"
-                    [styleClass]="curricular.estilo"
-                  />
-                </div>
-              </div>
-            </p-accordionTab>
-          </p-accordion>
-        </div>
-      </div>
+        <p-accordionTab header="Actividades Académicas">
+          <div class="flex flex-column">
+            <div *ngFor="let actividad of actividades" class="flex p-1">
+              <p-checkbox
+                (onChange)="eventoActividad(actividad)"
+                [(ngModel)]="actividad.mostrar"
+                [label]="actividad.cActTipoNombre"
+                name="group"
+                [binary]="true"
+                [styleClass]="actividad.estilo"
+              />
+            </div>
+          </div>
+        </p-accordionTab>
+
+        <p-accordionTab header="Áreas Curriculares">
+          <div class="flex flex-column">
+            <div *ngFor="let curricular of curricula" class="flex p-1">
+              <p-checkbox
+                (onChange)="eventoCurricular(curricular)"
+                [(ngModel)]="curricular.mostrar"
+                [label]="curricular.cCursoNombre"
+                name="group"
+                [binary]="true"
+                [styleClass]="curricular.estilo"
+              />
+            </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
     </div>
   </div>
-  <div class="xl:col-9 sm:col-12 md:col-12">
+  <div class="col-12 xl:col-8 lg:col-7 md:col-12 sm:col-12">
     <div class="card m-2">
-      <div class="grid">
-        <div class="col-12">
-          <full-calendar #calendar [options]="calendarOptions">
-            <ng-template #eventContent let-arg>
-              <div class="fc-event-time">{{ formatearHora(arg.event.start) }}</div>
-              <div class="fc-event-title">
-                {{ arg.event.title }}
-              </div>
-            </ng-template>
-          </full-calendar>
-        </div>
-      </div>
+      <full-calendar #calendar [options]="calendarOptions">
+        <ng-template #eventContent let-arg>
+          <div class="fc-event-time">{{ formatearHora(arg.event.start) }}</div>
+          <div class="fc-event-title">
+            {{ arg.event.title }}
+          </div>
+        </ng-template>
+      </full-calendar>
     </div>
   </div>
 </div>
@@ -83,7 +76,7 @@
     <thead>
       <tr>
         <th class="col-index">#</th>
-        <th class="col-time">Fecha</th>
+        <th class="col-time">Hora</th>
         <th class="col-event">Evento</th>
       </tr>
     </thead>
@@ -93,31 +86,29 @@
         class="event-row"
         [style.background-color]="ev.backgroundColor"
       >
-        <td class="index-cell">{{ i + 1 }}</td>
+        <td class="index-cell text-white">{{ i + 1 }}</td>
         <td class="time-cell">
           <ng-container *ngIf="ev.allDay; else timed">
-            <div *ngIf="ev.start">{{ ev.start | date: 'dd/MMM' : undefined : 'es' }}</div>
-            <div *ngIf="ev.end">- {{ ev.end | date: 'dd/MMM' : undefined : 'es' }}</div>
+            <div *ngIf="ev.start">{{ ev.start | date: 'HH:mm' : undefined : 'es' }}</div>
+            <div *ngIf="ev.end">- {{ ev.end | date: 'HH:mm' : undefined : 'es' }}</div>
           </ng-container>
 
           <!-- Evento con horario -->
           <ng-template #timed>
-            <div *ngIf="ev.start">
-              Inicio: {{ ev.start | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
-            </div>
+            <div *ngIf="ev.start">Inicio: {{ ev.start | date: 'HH:mm' : undefined : 'es' }}</div>
             <div *ngIf="ev.end">
-              Fin: &nbsp;&nbsp;&nbsp;&nbsp;{{ ev.end | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
+              Fin: &nbsp;&nbsp;&nbsp;&nbsp;{{ ev.end | date: 'HH:mm' : undefined : 'es' }}
             </div>
 
             <!-- Si no tiene end, solo muestra inicio (hora y fecha) -->
             <div *ngIf="!ev.end && ev.start">
-              {{ ev.start | date: 'dd/MMM - HH:mm' : undefined : 'es' }}
+              {{ ev.start | date: 'HH:mm' : undefined : 'es' }}
             </div>
           </ng-template>
         </td>
 
         <td class="event-cell">
-          <div class="event-title">{{ ev.title }}</div>
+          <div class="event-title text-white">{{ ev.title }}</div>
           <div *ngIf="ev.extendedProps?.['cCursoNombre']" class="event-course">
             -Área: {{ ev.extendedProps?.['cCursoNombre'] }}
           </div>

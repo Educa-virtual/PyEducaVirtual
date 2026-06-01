@@ -46,19 +46,16 @@ export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit
     const calendarApi = this.calendarComponent.getApi();
     const currentDate = calendarApi.getDate();
     this.mesSeleccionado = currentDate.getMonth();
-    this.fixCalendar();
+    // this.fixCalendar();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
       this.calendarOptions.events = changes['events'].currentValue;
-      this.fixCalendar();
-      //this.filtrarMes(this.capturar);
-      ///this.calendarOptions.events = changes['events'].currentValue;
+      // this.fixCalendar();
     }
   }
 
   filtrarMes(eventos: any) {
-    //const datos = eventos.filter(index => index.mes == this.mesSeleccionado);
     this.calendarOptions.events = eventos[this.mesSeleccionado];
   }
 
@@ -80,13 +77,14 @@ export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit
     dayMaxEvents: true,
     displayEventTime: true,
     displayEventEnd: true,
-    //datesSet: this.handleDatesSet.bind(this),
     //navLinks: true,
-    height: 600,
+    height: 500,
     dayCellDidMount: data => {
       // Si el día es sábado o domingo
       if (data.dow === 6 || data.dow === 0) {
         data.el.style.backgroundColor = '#ffd7d7';
+      } else {
+        data.el.style.backgroundColor = '#f5f4f4';
       }
     },
     moreLinkClick: this.handleMoreLinkClick.bind(this),

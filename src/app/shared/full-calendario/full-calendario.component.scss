@@ -1,3 +1,23 @@
+:host ::ng-deep {
+  .fc-daygrid-day-number {
+    color: black !important;
+  }
+
+  .fc-col-header-cell-cushion {
+    color: rgb(54, 54, 54) !important;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .fc-theme-standard td {
+    border: 1px solid rgb(56, 56, 56);
+  }
+
+  .fc-daygrid-day-bottom a {
+    color: rgb(110, 110, 110) !important;
+    font-weight: bold;
+  }
+}
 /* calendar.component.css */
 .no-events {
   padding: 1rem;
@@ -57,7 +77,7 @@
 
 /* Estilos particulares */
 .time-cell {
-  color: #1f2d3d;
+  color: #ffffff;
   white-space: nowrap;
 }
 

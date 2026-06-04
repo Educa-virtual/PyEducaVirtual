@@ -57,7 +57,6 @@ export class ConfigHoraDocenteComponent implements OnInit {
     private msg: StepConfirmationService
   ) {
     this.form = this.fb.group({}); // evita undefined
-    this.items = this.stepService.itemsStep;
     this.configuracion = this.stepService.configuracion;
   }
 

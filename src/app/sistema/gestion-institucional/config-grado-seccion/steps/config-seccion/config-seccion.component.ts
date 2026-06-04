@@ -73,10 +73,7 @@ export class ConfigSeccionComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     private query: GeneralService,
-    private msg: StepConfirmationService
-    // private nodeService: NodeService
   ) {
-    this.items = this.stepService.itemsStep;
     this.perfil = this.stepService.perfil;
     this.configuracion = this.stepService.configuracion;
   }

@@ -76,7 +76,6 @@ export class ConfigAsignarGradoComponent implements OnInit {
     private messageService: MessageService,
     private query: GeneralService
   ) {
-    this.items = this.stepService.itemsStep;
     this.configuracion = this.stepService.configuracion;
     this.sede = this.stepService.sede;
   }

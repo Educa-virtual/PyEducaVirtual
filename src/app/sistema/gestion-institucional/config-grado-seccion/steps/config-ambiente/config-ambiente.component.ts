@@ -91,7 +91,6 @@ export class ConfigAmbienteComponent implements OnInit {
     private query: GeneralService
   ) {
     //this.iSedeId = this.stepService.iSedeId
-    this.items = this.stepService.itemsStep;
     this.perfil = this.stepService.perfil;
 
     //this.iYAcadId = this.stepService.iYAcadId

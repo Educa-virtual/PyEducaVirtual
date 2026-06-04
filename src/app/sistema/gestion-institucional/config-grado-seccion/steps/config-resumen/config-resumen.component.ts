@@ -67,7 +67,6 @@ export class ConfigResumenComponent implements OnInit {
     private query: GeneralService,
     private store: LocalStoreService
   ) {
-    this.items = this.stepService.itemsStep;
     this.configuracion = this.stepService.configuracion;
     this.perfil = this.stepService.perfil;
     console.log(this.perfil, 'this.perfil');

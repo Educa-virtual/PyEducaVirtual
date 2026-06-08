@@ -1,6 +1,6 @@
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ContainerPageComponent,
@@ -13,7 +13,6 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { PrimengModule } from '@/app/primeng.module';
-//import { StepsModule } from 'primeng/steps'
 import { StepperModule } from 'primeng/stepper';
 import { DialogModule } from 'primeng/dialog';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -51,19 +50,21 @@ import { catchError, map, throwError } from 'rxjs';
 })
 export class ConfigAmbienteComponent implements OnInit {
   form: FormGroup;
-  // iSedeId: number
-  //iYAcadId: number
+  iConfigId: number;
+
   items: MenuItem[];
   caption: string;
   visible: boolean = false;
   mensaje: string;
   option: string;
   anio: [];
-  tipo_ambiente: [];
-  tipo_ubicacion: [];
-  uso_ambientes: [];
-  piso_ambiente: [];
-  condicion_ambiente: [];
+
+  tipos_ambientes: Array<object>;
+  estados_ambientes: Array<object>;
+  pisos_ambientes: Array<object>;
+  usos_ambientes: Array<object>;
+  ubicaciones_ambientes: Array<object>;
+
   configuracion: any[];
   perfil: any = [];
 
@@ -88,24 +89,22 @@ export class ConfigAmbienteComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService
+    private query: GeneralService,
+    private route: ActivatedRoute
   ) {
-    //this.iSedeId = this.stepService.iSedeId
     this.perfil = this.stepService.perfil;
-
-    //this.iYAcadId = this.stepService.iYAcadId
     this.anio = this.stepService.anio;
-    this.configuracion = this.stepService.configuracion;
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iConfigId = params.get('id') ? Number(params.get('id')) : null;
+    });
   }
 
   async ngOnInit(): Promise<void> {
-    try {
-      const codigoModular = this.perfil.cIieeCodigoModular;
-      const cYAcadNombre = this.configuracion[0].cYAcadNombre;
+    const codigoModular = this.perfil.cIieeCodigoModular;
+    const cYAcadNombre = this.configuracion[0].cYAcadNombre;
+    this.ruta_imagen = String(cYAcadNombre + '/' + codigoModular + '/ambientes');
 
-      this.ruta_imagen = String(cYAcadNombre + '/' + codigoModular + '/ambientes');
-      //bd iiee_ambientes
-      //this.visible = true
+    try {
       this.form = this.fb.group({
         iIieeAmbienteId: [0], //codigo de tabla_iiee_ambientes
         iTipoAmbienteId: [0, Validators.required], // tabla_iiee_ambientes (FK)
@@ -122,184 +121,27 @@ export class ConfigAmbienteComponent implements OnInit {
         iAmbienteAforo: [0, Validators.required],
         cAmbienteObs: [''],
         cImagen: [''],
-        // ambiente: [''],
         cYAcadNombre: [this.configuracion[0].cYAcadNombre],
-        // campo adicional para la vista
       });
     } catch (error) {
-      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+      console.error(error, 'Error al inicializar el formulario');
     }
 
-    this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes()); // devuelve arrays de tabla acad.ambientes
-    this.tipo_ambiente =
-      this.stepService.tipo_ambiente ?? (await this.stepService.getTipoAmbiente());
-    this.tipo_ubicacion =
-      this.stepService.tipo_ubicacion ?? (await this.stepService.getTipoUbicacion());
-    this.uso_ambientes =
-      this.stepService.uso_ambientes ?? (await this.stepService.getUsoAmbiente());
-    this.piso_ambiente =
-      this.stepService.piso_ambiente ?? (await this.stepService.getPisoAmbiente());
-    this.condicion_ambiente =
-      this.stepService.condicion_ambiente ?? (await this.stepService.getCondicionAmbiente());
+    this.stepService
+      .crearConfiguracion({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iConfigId: this.iConfigId,
+      })
+      .subscribe((data: any) => {
+        this.tipos_ambientes = this.stepService.getTiposAmbientes(data?.tipos_ambientes);
+        this.estados_ambientes = this.stepService.getEstadosAmbientes(data?.estados_ambientes);
+        this.pisos_ambientes = this.stepService.getPisosAmbientes(data?.pisos_ambientes);
+        this.usos_ambientes = this.stepService.getUsosAmbientes(data?.usos_ambientes);
+        this.ubicaciones_ambientes = this.stepService.getUbicacionesAmbientes(
+          data?.ubicaciones_ambientes
+        );
+      });
   }
-  // //Consultyas a tablas
-  // getAmbientes() {
-  //   this.query
-  //     .searchAmbienteAcademico({
-  //       json: JSON.stringify({
-  //         iSedeId: this.stepService.configuracion[0].iSedeId,
-  //         iYAcadId: this.stepService.configuracion[0].iYAcadId,
-  //       }),
-  //       _opcion: 'getAmbientesSedeYear',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.ambientes = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'danger',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Error en lista de configuraciones:' + error.error.message,
-  //         });
-  //       },
-  //       complete: () => {
-  //         this.messageService.add({
-  //           severity: 'success',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Lista de ambientes obtenida correctamente',
-  //         });
-  //         this.stepService.ambientes = this.ambientes; //SE ACTUALIZA EL ARRAY DE AMBIENTES
-  //         // this.getYearCalendarios(this.formCalendario.value)
-  //       },
-  //     });
-  // }
-  // getTipoAmbiente() {
-
-  //   this.query
-  //     .searchCalAcademico({
-  //       esquema: 'acad',
-  //       tabla: 'tipo_ambientes',
-  //       campos: 'iTipoAmbienteId, cTipoAmbienteNombre',
-  //       condicion: '1=1',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.tipo_ambiente = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'danger',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Error en lista de tipos de ambientes:' + error.error.message,
-  //         });
-  //         // Manejo de error
-  //       },
-  //       complete: () => {
-  //         this.stepService.tipo_ambiente = this.tipo_ambiente;
-  //       },
-  //     });
-  // }
-
-  // getTipoUbicacion() {
-  //   this.query
-  //     .searchCalAcademico({
-  //       esquema: 'acad',
-  //       tabla: 'ubicacion_ambientes',
-  //       campos: 'iUbicaAmbId, cUbicaAmbNombre',
-  //       condicion: '1=1',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.tipo_ubicacion = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'danger',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Error en lista de ubicaciones de ambientes:' + error.error.message,
-  //         });
-  //       },
-  //       complete: () => {
-  //         this.stepService.tipo_ubicacion = this.tipo_ubicacion;
-  //       },
-  //     });
-  // }
-
-  // getUsoAmbiente() {
-  //   this.query
-  //     .searchCalAcademico({
-  //       esquema: 'acad',
-  //       tabla: 'uso_ambientes',
-  //       campos: 'iUsoAmbId, cUsoAmbNombre, cUsoAmbDescripcion',
-  //       condicion: '1=1',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.uso_ambientes = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'danger',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Error en lista de usos de ambientes:' + error.error.message,
-  //         });
-  //       },
-  //       complete: () => {
-  //         this.stepService.uso_ambientes = this.uso_ambientes;
-  //       },
-  //     });
-  // }
-
-  // getCondicionAmbiente() {
-  //   this.query
-  //     .searchCalAcademico({
-  //       esquema: 'acad',
-  //       tabla: 'estado_ambientes',
-  //       campos: 'iEstadoAmbId, cEstadoAmbNombre',
-  //       condicion: '1=1',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.condicion_ambiente = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'danger',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Error en lista de condiciones de ambientes:' + error.error.message,
-  //         });
-  //       },
-  //       complete: () => {
-  //         this.stepService.condicion_ambiente = this.condicion_ambiente;
-  //       },
-  //     });
-  // }
-
-  // getPisoAmbiente() {
-  //   this.query
-  //     .searchCalAcademico({
-  //       esquema: 'acad',
-  //       tabla: 'piso_ambientes',
-  //       campos: 'iPisoAmbid, cPisoAmbNombre, cPisoAmbDescripcion',
-  //       condicion: '1=1',
-  //     })
-  //     .subscribe({
-  //       next: (data: any) => {
-  //         this.piso_ambiente = data.data;
-  //       },
-  //       error: error => {
-  //         this.messageService.add({
-  //           severity: 'danger',
-  //           summary: 'Mensaje del Sistema',
-  //           detail: 'Error en lista de pisos de ambientes:' + error.error.message,
-  //         });
-  //       },
-  //       complete: () => {
-  //         this.stepService.piso_ambiente = this.piso_ambiente;
-  //       },
-  //     });
-  // }
 
   // eventos de record set
   confirm() {

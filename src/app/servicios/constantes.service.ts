@@ -373,7 +373,7 @@ const administracion = [
           {
             label: 'Configurar año académico',
             icon: 'pi pi-fw pi-building-columns',
-            routerLink: ['/gestion-institucional/configGradoSeccion'],
+            routerLink: ['/gestion-institucional/config'],
           },
           {
             label: 'Personal de IE',

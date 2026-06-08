@@ -119,11 +119,9 @@
       <div class="field col-12 md:col-3">
         <span class="p-float-label">
           <p-dropdown
-            [options]="grados"
+            [options]="nivel_grados"
             formControlName="iNivelGradoId"
-            optionLabel="cGradoNombre"
             [checkmark]="true"
-            optionValue="iNivelGradoId"
             [showClear]="true"
             (onChange)="onChange($event, 'grado')"
           />

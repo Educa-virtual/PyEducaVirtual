@@ -1,177 +1,148 @@
-<app-container-page
-  title="Registro de Institución Educativa"
-  [actions]="accionesPrincipal"
-  (accionBtnItem)="accionBtnItemTable($event)"
->
-  <div class="card">
-    <p-steps [model]="items" [readonly]="false"></p-steps>
-  </div>
-  <br />
-  <div class="card">
-    <form [formGroup]="form">
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-3">
-          <span class="p-float-label">
-            <input type="hidden" formControlName="iConfigId" aria-describedby="iConfigId-help" />
+
+<form [formGroup]="form">
+  <div class="grid p-fluid mt-3">
+    <div class="col-12 md:col-6">
+      <div class="grid p-fluid">
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Año escolar</p-inputGroupAddon>
             <input
               pInputText
               formControlName="cYAcadNombre"
-              readOnly="false"
-              aria-describedby="cYAcadNombre-help"
+              class="group-element"
             />
-
-            <label for="cYAcadNombre">Año escolar:</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-3">
-          <span class="p-float-label">
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Modalidad educativa</p-inputGroupAddon>
             <input
               pInputText
-              formControlName="cModalServId"
-              readOnly="false"
-              aria-describedby="cModalServId-help"
+              formControlName="cNivelNombre"
+              class="group-element"
             />
-            <label for="iModalServId">Modalidad educativa</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Nivel modular</p-inputGroupAddon>
             <input
               pInputText
               formControlName="cNivelTipoNombre"
-              readOnly="false"
-              aria-describedby="cNivelTipoNombre-help"
+              class="group-element"
             />
-
-            <input
-              type="hidden"
-              formControlName="iNivelTipoId"
-              aria-describedby="iNivelTipoId-help"
-            />
-
-            <label for="cNivelTipoNombre">Niveles Modulares</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Modelo de servicio de atención</p-inputGroupAddon>
             <input
               pInputText
               formControlName="cServEdNombre"
-              aria-describedby="cServEdNombre-help"
-              readOnly="false"
+              class="group-element"
             />
-            <label for="cServEdNombre">Modelo de servicio de atención</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Estado *</p-inputGroupAddon>
+            <p-dropdown
+              [options]="estados_configuracion"
+              formControlName="iEstadoConfigId"
+              styleClass="group-element"
+              [style]="{ flex: 1, width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 md:col-6">
+      <div class="grid p-fluid">
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Observaciones</p-inputGroupAddon>
             <input
               pInputText
               formControlName="cConfigDescripcion"
-              aria-describedby="cConfigDescripcion-help"
+              class="group-element"
             />
-            <label for="cConfigDescripcion">Descripcion</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
+        <div class="col-12">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon>
+              <p-inputSwitch formControlName="bConfigEsBilingue" />
+              <span>IE Educación Intercultural Bilingüe (EIB)</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Resolución Directoral de aprobación</p-inputGroupAddon>
             <input
               pInputText
               formControlName="cConfigNroRslAprobacion"
-              aria-describedby="cConfigNroRslAprobacion-help"
+              class="group-element"
             />
-            <label for="cConfigNroRslAprobacion">Resolución Directoral de aprobación</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <div class="field col-12 md:col-4">
-          <label for="bConfigEsBilingue">IE Educación intercultural Bilingüe </label>
-        </div>
-        <div class="field col-12 md:col-1">
-          <span class="p-float-label">
-            Si
-
-            <p-radioButton [value]="true" formControlName="bConfigEsBilingue" />
-          </span>
-        </div>
-        <div class="field col-12 md:col-1">
-          <span class="p-float-label"
-            >No
-
-            <p-radioButton [value]="false" formControlName="bConfigEsBilingue" />
-          </span>
-        </div>
-        <div class="field col-12 md:col-3">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="configTipo"
-              optionLabel="cEstadoConfigNombre"
-              optionValue="iEstadoConfigId"
-              formControlName="iEstadoConfigId"
-            />
-            <label for="iTipoAmbienteId">Estado:</label>
-          </span>
-        </div>
-        <div class="col-3">
-          <app-types-files-upload-primeng
-            [nameFile]="'configuracion-iiee'"
-            [nameOption]="'configuracion-iiee'"
-            [typesFiles]="typesFiles"
-            (actionTypesFileUpload)="accionBtn($event)"
-            [filesUrl]="filesUrl"
-          >
-          </app-types-files-upload-primeng>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span>
-            <p>
-              <strong>Consideraciones al adjuntar archivos</strong>
-            </p>
-            <li>Solo se permite las extensiones : JPG, JPEG, PNG, PDF</li>
-            <li>El tamaño maximo permitido es de 10 MB</li>
-            <li>Puede agregar solo un archivos</li>
-          </span>
-        </div>
-        <div class="field col-12 md:col-2">
-          <span>
-            @if (!enlace || enlace.trim() === '') {
-              <p>No existe archivo adjunto</p>
-            } @else {
-              <p>Existe Archivo</p>
-              <a
-                [href]="enlace"
-                download="archivo.pdf"
-                class="custom-download-link"
-                target="_blank"
-              >
-                <i class="pi pi-download"></i> Descargar Archivo
-              </a>
-            }
-          </span>
+        @if (hay_archivo) {
+          <div class="col-12">
+            <p-inputGroup styleClass="vertical-group">
+              <p-inputGroupAddon>
+                <a
+                  type="button"
+                  href="#"
+                  class="underline text-white"
+                  (click)="descargarArchivo(null, $event)"
+                >
+                  <i class="pi pi-fw pi-download mr-2"></i>
+                  <span>Descargar Resolución Directorial</span>
+                </a>
+              </p-inputGroupAddon>
+            </p-inputGroup>
+          </div>
+        }
+        <div class="col-12">
+          <p-inputGroup styleClass="vertical-group">
+            <p-inputGroupAddon>
+              <span>Cargar Resolución Directorial (PDF máximo 10MB)</span>
+            </p-inputGroupAddon>
+            <p-fileUpload
+              #fileUpload
+              chooseLabel="Subir PDF"
+              name="archivo"
+              [multiple]="false"
+              accept=".pdf"
+              fileLimit="1"
+              showUploadButton="false"
+              invalidFileSizeMessageSummary="{0}: Tamaño de archivo inválido, "
+              invalidFileSizeMessageDetail="el máximo tamaño permitido es {0}."
+              invalidFileTypeMessageSummary="{0}: Tipo de archivo inválido, "
+              invalidFileTypeMessageDetail="el tipo de archivo permitido es: {0}."
+              invalidFileLimitMessageDetail="solo debe subir {0} archivo."
+              invalidFileLimitMessageSummary="Excedió el límite de archivos permitidos, "
+              maxFileSize="10485760"
+              (onSelect)="handleArchivo($event)"
+              (onClear)="handleArchivo($event)"
+              (onRemove)="handleArchivo($event)"
+            >
+            </p-fileUpload>
+          </p-inputGroup>
         </div>
       </div>
-      <!-- <p-button label="Guardar" [disabled]="form.invalid" (onClick)="accionBtnItem('guardar')"
-                styleClass="p-button-danger" /><p-toast /> -->
-    </form>
+    </div>
   </div>
-  <!-- <div class="col-12">
-        <p-messages [(value)]="mensaje" [enableService]="false" [closable]="true" />
-    </div> -->
-  <div class="flex justify-content-end">
-    @if (btnNuevo) {
-      <p-button (onClick)="confirm()" [disabled]="!form.valid" label="Registrar configuración" />
-    } @else {
-      <p-button
-        (onClick)="confirm()"
-        [disabled]="!form.valid"
-        label="Actualizar configuración"
-        severity="warning"
-      />
-    }
-  </div>
-</app-container-page>
+</form>
+
+
+<div class="flex justify-content-end">
+  <p-button
+    (onClick)="confirmarCambios()"
+    [disabled]="!form.valid"
+    label="Actualizar"
+    severity="warning"
+  />
+</div>
+
+<p-toast></p-toast>

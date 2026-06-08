@@ -2,14 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { StepsModule } from 'primeng/steps';
 import { PrimengModule } from '@/app/primeng.module';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuItem, MessageService, TreeNode } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
-import { StepConfirmationService } from '@/app/servicios/confirm.service';
-//import { TreeModule } from 'primeng/tree'
 import { MultiSelectModule } from 'primeng/multiselect';
-//import { TreeViewPrimengComponent } from '@/app/shared/tree-view-primeng/tree-view-primeng.component'
 import {
   ContainerPageComponent,
   IActionContainer,
@@ -29,9 +26,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     ContainerPageComponent,
     TablePrimengComponent,
     ReactiveFormsModule,
-    //  TreeModule,
     MultiSelectModule,
-    // TreeViewPrimengComponent,
   ],
   templateUrl: './config-seccion.component.html',
   styleUrl: './config-seccion.component.scss',
@@ -46,11 +41,12 @@ export class ConfigSeccionComponent implements OnInit {
 
   files!: TreeNode[];
   selectedFiles!: TreeNode[];
-  perfil: [];
+  perfil: any;
   serv_atencion: [];
   configuracion: any[];
 
-  grados: any[] = [];
+  grado_seccion_turno: Array<object>;
+  nivel_grados: any[] = [];
   ciclos: any[];
   ambientes: any[];
 
@@ -66,6 +62,8 @@ export class ConfigSeccionComponent implements OnInit {
   lista: any = {};
   bActualizar: boolean = false;
 
+  iConfigId: number;
+
   private _confirmService = inject(ConfirmationModalService);
   constructor(
     private stepService: AdmStepGradoSeccionService,
@@ -73,9 +71,13 @@ export class ConfigSeccionComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     private query: GeneralService,
+    private route: ActivatedRoute
   ) {
     this.perfil = this.stepService.perfil;
     this.configuracion = this.stepService.configuracion;
+    this.route.paramMap.subscribe((params: any) => {
+      this.iConfigId = params.params.id || null;
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -84,19 +86,14 @@ export class ConfigSeccionComponent implements OnInit {
         iDetConfId: [0],
         iConfigId: [this.configuracion[0].iConfigId],
         iTurnoId: [this.configuracion[0].iTurnoId],
-
         iServEdId: [{ value: this.configuracion[0].iServEdId, disabled: true }],
         iIieeAmbienteId: [null, Validators.required],
-
         iAmbienteAforo: [{ value: '', disabled: true }],
         iUsoAmbId: [{ value: '', disabled: true }],
-
         iYAcadId: [{ value: this.configuracion[0].iYAcadId, disabled: true }],
         iSeccionId: [null, Validators.required],
         iNivelGradoId: [null, Validators.required],
-
         cDiasLaborables: [{ value: '', disabled: true }],
-
         cModalServId: [
           {
             value: this.configuracion[0].cModalServId,
@@ -132,24 +129,58 @@ export class ConfigSeccionComponent implements OnInit {
         ], // Control para "Descripcion año"
       });
     } catch (error) {
-      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+      console.error(error, 'Error al inicializar el formulario');
     }
 
-    this.grados = await this.stepService.getGrado();
+    this.stepService
+      .crearConfiguracion({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iConfigId: this.iConfigId,
+      })
+      .subscribe((data: any) => {
+        this.grado_seccion_turno = this.stepService.getGradoSeccionTurno(data?.grado_seccion_turno);
+        this.nivel_grados = this.stepService.getNivelGrados(data?.grado_seccion_turno);
+      });
 
-    //this.stepService.getFilesPrimaria().then((data) => (this.files = data));
-    this.ambientes = this.stepService.ambientes ?? (await this.stepService.getAmbientes());
-    //this.serv_atencion = this.stepService.serv_atencion
-    this.uso = this.stepService.uso_ambientes ?? (await this.stepService.getUsoAmbiente()); // this.getUsoAmbientes()
-    this.secciones = this.stepService.secciones ?? (await this.stepService.getSecciones());
-    this.seccionesAsignadas =
-      this.stepService.seccionesAsignadas ?? (await this.stepService.getSeccionesAsignadas());
-    const dias = await this.stepService.getDiasCalendario();
-    this.form.get('cDiasLaborables').setValue(dias);
-    //this.getTutor()
+    this.form.get('iNivelGradoId').valueChanges.subscribe(value => {
+      this.secciones = [];
+      this.form.get('iSeccionId')?.setValue(null);
+      if (value) {
+        this.filterSecciones(value);
+        if (this.secciones.length === 1) {
+          this.form.get('iSeccionId')?.setValue(this.secciones[0]['value']);
+        }
+      }
+    });
+    this.form.get('iSeccionId').valueChanges.subscribe(value => {
+      if (value) {
+        const seccion = this.secciones.find(
+          (seccion: any) => Number(seccion.value) === Number(value)
+        );
+      }
+    });
+  }
 
-    // this.rawData = this.stepService.listaGrados
-    //  this.updateData() ;
+  filterSecciones(iNivelGradoId: any) {
+    this.secciones = this.grado_seccion_turno.reduce((prev: any, current: any) => {
+      const x = prev.find(
+        item => item.id === current.iSeccionId && item.nombre === current.cSeccionNombre
+      );
+      if (!x && Number(current.iNivelGradoId) === Number(iNivelGradoId)) {
+        return prev.concat([
+          {
+            value: current.iSeccionId,
+            label: current.cSeccionNombre,
+            iDetConfCantEstudiantes: current.iDetConfCantEstudiantes,
+          },
+        ]);
+      } else {
+        return prev;
+      }
+    }, []);
+    if (this.secciones.length === 1) {
+      this.form.get('iSeccionId')?.setValue(this.secciones[0]['id']);
+    }
   }
 
   accionBtnItemTable({ accion, item }) {
@@ -185,7 +216,7 @@ export class ConfigSeccionComponent implements OnInit {
       this.bActualizar = true;
       this.caption = 'Actualizar grados y secciones';
       // +++++++++++++++++++++++actualizar
-      const found1 = this.grados.find(item1 => item1.iNivelGradoId === item.iNivelGradoId);
+      const found1 = this.nivel_grados.find(item1 => item1.iNivelGradoId === item.iNivelGradoId);
       this.form.get('cCicloNombre')?.setValue(found1.cCicloNombre);
       this.form.get('cNivelNombre')?.setValue(found1.cNivelNombre);
       this.form.get('cNivelTipoNombre')?.setValue(found1.cNivelTipoNombre);
@@ -357,7 +388,7 @@ export class ConfigSeccionComponent implements OnInit {
     const selected = event.value;
     if (cbo === 'grado') {
       // Encuentra el objeto
-      const found = this.grados.find(item => item.iNivelGradoId === selected);
+      const found = this.nivel_grados.find(item => item.iNivelGradoId === selected);
       // Encuentra el índice del objeto si existe
       this.form.get('cCicloNombre')?.setValue(found.cCicloNombre);
       this.form.get('cNivelNombre')?.setValue(found.cNivelNombre);

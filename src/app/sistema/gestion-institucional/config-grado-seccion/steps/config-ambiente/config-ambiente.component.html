@@ -69,9 +69,7 @@
           <span class="p-float-label">
             <p-dropdown
               [style]="{ width: '100%' }"
-              [options]="tipo_ambiente"
-              optionLabel="cTipoAmbienteNombre"
-              optionValue="iTipoAmbienteId"
+              [options]="tipos_ambientes"
               formControlName="iTipoAmbienteId"
               appendTo="body"
             />
@@ -82,10 +80,8 @@
           <span class="p-float-label">
             <p-dropdown
               [style]="{ width: '100%' }"
-              [options]="tipo_ubicacion"
+              [options]="ubicaciones_ambientes"
               [selectOnFocus]="1"
-              optionLabel="cUbicaAmbNombre"
-              optionValue="iUbicaAmbId"
               formControlName="iUbicaAmbId"
               appendTo="body"
             />
@@ -96,10 +92,8 @@
           <span class="p-float-label">
             <p-dropdown
               [style]="{ width: '100%' }"
-              [options]="uso_ambientes"
+              [options]="usos_ambientes"
               [selectOnFocus]="1"
-              optionLabel="cUsoAmbNombre"
-              optionValue="iUsoAmbId"
               formControlName="iUsoAmbId"
               appendTo="body"
             />
@@ -110,10 +104,8 @@
           <span class="p-float-label">
             <p-dropdown
               [style]="{ width: '100%' }"
-              [options]="condicion_ambiente"
+              [options]="estados_ambientes"
               [selectOnFocus]="1"
-              optionLabel="cEstadoAmbNombre"
-              optionValue="iEstadoAmbId"
               formControlName="iEstadoAmbId"
               appendTo="body"
             />
@@ -149,10 +141,8 @@
           <span class="p-float-label">
             <p-dropdown
               [style]="{ width: '100%' }"
-              [options]="piso_ambiente"
+              [options]="pisos_ambientes"
               [selectOnFocus]="1"
-              optionLabel="cPisoAmbNombre"
-              optionValue="iPisoAmbid"
               formControlName="iPisoAmbid"
               appendTo="body"
             />

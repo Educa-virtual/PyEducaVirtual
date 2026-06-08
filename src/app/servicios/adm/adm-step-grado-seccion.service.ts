@@ -1,6 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { GeneralService } from '../general.service';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, shareReplay } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
+
+const baseUrl = environment.backendApi;
 
 export interface ConfigTipo {
   iEstadoConfigId: number;
@@ -68,6 +72,7 @@ export interface ListaConfig {
 })
 export class AdmStepGradoSeccionService {
   private query = inject(GeneralService);
+
   // Propiedades
   configTipo: ConfigTipo[] = [];
   ambientes: Ambientes[] = null;
@@ -79,56 +84,30 @@ export class AdmStepGradoSeccionService {
   perfil: [];
   anio: [];
   listaGrados: [];
-  itemsStep = [
-    {
-      label: 'Configuración',
-      routerLink: '/gestion-institucional/config',
-    },
-    {
-      label: 'Ambientes',
-      routerLink: '/gestion-institucional/ambiente',
-    },
-    // {
-    //     label: 'Grados',
-    //     routerLink: '/gestion-institucional/grado',
-    // },
-    {
-      label: 'Grados y secciones',
-      routerLink: '/gestion-institucional/seccion',
-    },
-    {
-      label: 'Plan de estudios',
-      routerLink: '/gestion-institucional/plan-estudio',
-    },
-    {
-      label: 'Horas del docente',
-      routerLink: '/gestion-institucional/hora-docente',
-    },
-    {
-      label: 'Asignar grados y secciones',
-      routerLink: '/gestion-institucional/asignar-grado',
-    },
-    {
-      label: 'Resumen',
-      routerLink: '/gestion-institucional/resumen',
-    },
-  ];
 
   iSedeId: number;
   iYAcadId: number;
   iNivelTipoId: number;
   iCredId: number;
 
+  parametros: any;
+  parametros$?: Observable<any>;
+
   //Variables requeridas para el step de ambientes
-  tipo_ambiente: any[] = null;
-  tipo_ubicacion: any[] = null;
-  uso_ambientes: any[] = null;
-  condicion_ambiente: any[] = null;
-  piso_ambiente: any[] = null;
+  grado_seccion_turno: Array<object>;
+  tipos_documentos: Array<object>;
+  sexos: Array<object>;
+  nivel_grados: Array<object>;
+  secciones: Array<object>;
+  turnos: Array<object>;
+  estados_configuracion: Array<object>;
+  tipos_ambientes: Array<object>;
+  estados_ambientes: Array<object>;
+  pisos_ambientes: Array<object>;
+  usos_ambientes: Array<object>;
+  ubicaciones_ambientes: Array<object>;
 
   //variables de secciones
-  secciones: any[] = null;
-  seccionesAsignadas: any[] = null;
   diasLaborables: any[] = null;
 
   //variables de plan de estudios
@@ -138,218 +117,241 @@ export class AdmStepGradoSeccionService {
   //variables de horas del docente
   docentes: any = [];
 
-  constructor() {
-    //  this.initializeData()
-  }
+  private activeIndex = new BehaviorSubject<number | null>(null);
 
-  setEstadoConfig(value: any) {
-    // informacion de tabla estado de configuraciones
-    this.configTipo = value;
-  }
-  getEstadoConfig() {
-    return this.configTipo;
-  }
+  constructor(private http: HttpClient) {}
 
-  getConfig() {
-    return this.configuracion;
-  }
+  crearConfiguracion(data: any): Observable<any> {
+    if (this.parametros) {
+      return of(this.parametros);
+    }
 
-  setListaConfig(item: any) {
-    this.listaConfig = item.data;
-  }
-
-  getListaConfig() {
-    return this.listaConfig;
-  }
-  // grados
-  // Obtener grados
-  // getGrados(): Grado[] {
-  //   return this.grados;
-  // }
-
-  // Agregar un nuevo grado
-  // addGrado(newGrado: Grado): void {
-  //   this.grados.push(newGrado);
-  // }
-
-  // Actualizar un grado por ID
-  // updateGrado(id: number, updatedGrado: Partial<Grado>): void {
-  //   const index = this.grados.findIndex(g => g.iConfigGradoId === id);
-  //   if (index !== -1) {
-  //     this.grados[index] = { ...this.grados[index], ...updatedGrado };
-  //   }
-  // }
-
-  // // Eliminar un grado por ID
-  // deleteGrado(id: number): void {
-  //   this.grados = this.grados.filter(g => g.iConfigGradoId !== id);
-  // }
-
-  // metodos para consumo
-  //////////////  ambientes //////////////////////////
-  async getAmbientes() {
-    const resp: any = await firstValueFrom(
-      this.query.searchAmbienteAcademico({
-        json: JSON.stringify({
-          iSedeId: this.configuracion[0].iSedeId,
-          iYAcadId: this.configuracion[0].iYAcadId,
+    if (!this.parametros$) {
+      this.parametros$ = this.http.post(`${baseUrl}/acad/crearConfiguracion`, data).pipe(
+        map((data: any) => {
+          this.parametros = data.data;
+          return this.parametros;
         }),
-        _opcion: 'getAmbientesSedeYear',
-      })
-    );
-    this.ambientes = resp.data;
-    return resp.data;
+        shareReplay(1)
+      );
+    }
+
+    return this.parametros$;
+  }
+
+  getGradoSeccionTurno(data: any) {
+    if (!this.grado_seccion_turno && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.grado_seccion_turno = items.map(item => ({
+        iNivelGradoId: Number(item.iNivelGradoId),
+        cGradoAbreviacion: item.cGradoAbreviacion,
+        cGradoNombre: item.cGradoNombre,
+        iSeccionId: Number(item.iSeccionId),
+        cSeccionNombre: item.cSeccionNombre,
+        iTurnoId: Number(item.iTurnoId),
+        cTurnoNombre: item.cTurnoNombre,
+        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
+      }));
+      return this.grado_seccion_turno;
+    }
+    return this.grado_seccion_turno;
+  }
+
+  getNivelGrados(data: any) {
+    if (!this.nivel_grados && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.nivel_grados = items.reduce((prev: any, current: any) => {
+        const x = prev.find(item => item.value === current.iNivelGradoId);
+        if (!x) {
+          return prev.concat([
+            {
+              value: Number(current.iNivelGradoId),
+              label: current.cGradoAbreviacion + ' ' + current.cGradoNombre,
+            },
+          ]);
+        } else {
+          return prev;
+        }
+      }, []);
+      return this.nivel_grados;
+    }
+    return this.nivel_grados;
+  }
+
+  filterSecciones(data: any, iNivelGradoId: any) {
+    if (data) {
+      const secciones = data.filter(item => item.iNivelGradoId === iNivelGradoId);
+      this.secciones = secciones.map(item => ({
+        label: item.cSeccionNombre,
+        value: item.iSeccionId,
+        iNivelGradoId: item.iNivelGradoId,
+        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
+      }));
+      return this.secciones;
+    }
+    return this.secciones;
+  }
+
+  filterTurnos(data: any, iNivelGradoId: any, iSeccionId: any) {
+    if (data) {
+      const turnos = data.filter(
+        item => item.iNivelGradoId === iNivelGradoId && item.iSeccionId === iSeccionId
+      );
+      this.turnos = turnos.map(item => ({
+        label: item.cTurnoNombre,
+        value: item.iTurnoId,
+        iNivelGradoId: item.iNivelGradoId,
+        iSeccionId: item.iSeccionId,
+        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
+      }));
+      return this.turnos;
+    }
+    return this.turnos;
+  }
+
+  getEstadosConfiguracion(data: any) {
+    if (!this.estados_configuracion && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.estados_configuracion = items.map(tipo => ({
+        value: Number(tipo.iEstadoConfigId),
+        label: tipo.cEstadoConfigNombre,
+      }));
+      return this.estados_configuracion;
+    }
+    return this.estados_configuracion;
+  }
+
+  getTiposAmbientes(data: any) {
+    if (!this.tipos_ambientes && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_ambientes = items.map(estado => ({
+        value: Number(estado.iTipoAmbienteId),
+        label: estado.cTipoAmbienteNombre,
+      }));
+      return this.tipos_ambientes;
+    }
+    return this.tipos_ambientes;
+  }
+
+  getEstadosAmbientes(data: any) {
+    if (!this.estados_ambientes && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.estados_ambientes = items.map(tipo => ({
+        value: Number(tipo.iTipoAmbienteId),
+        label: tipo.cTipoAmbienteNombre,
+      }));
+      return this.estados_ambientes;
+    }
+    return this.estados_ambientes;
+  }
+
+  getPisosAmbientes(data: any) {
+    if (!this.pisos_ambientes && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.pisos_ambientes = items.map(nacionalidad => ({
+        value: Number(nacionalidad.iPisoAmbid),
+        label: nacionalidad.cPisoAmbNombre,
+      }));
+      return this.pisos_ambientes;
+    }
+    return this.pisos_ambientes;
+  }
+
+  getUsosAmbientes(data: any) {
+    if (!this.usos_ambientes && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.usos_ambientes = items.map(tipo => ({
+        value: Number(tipo.iUsoAmbId),
+        label: tipo.cUsoAmbNombre,
+      }));
+      return this.usos_ambientes;
+    }
+    return this.usos_ambientes;
+  }
+
+  getUbicacionesAmbientes(data: any) {
+    if (!this.ubicaciones_ambientes && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.ubicaciones_ambientes = items.map(tipo => ({
+        value: Number(tipo.iUbicaAmbId),
+        label: tipo.cUbicaAmbNombre,
+      }));
+      return this.ubicaciones_ambientes;
+    }
+    return this.ubicaciones_ambientes;
+  }
+
+  getSexos() {
+    if (!this.sexos) {
+      this.sexos = [
+        { label: 'MASCULINO', value: 'M' },
+        { label: 'FEMENINO', value: 'F' },
+      ];
+    }
+    return this.sexos;
+  }
+
+  async getAmbientes() {
+    return null;
   }
 
   async getTipoAmbiente() {
-    // devuelve arrays de tabla acad.tipo_ambientes
-    const resp: any = await firstValueFrom(
-      this.query.searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'tipo_ambientes',
-        campos: 'iTipoAmbienteId, cTipoAmbienteNombre',
-        condicion: '1=1',
-      })
-    );
-    this.tipo_ambiente = resp.data;
-    return resp.data;
+    return null;
   }
   async getTipoUbicacion() {
-    //devuelve arrays de tabla acad.ubiccion_ambientes
-    const resp: any = await firstValueFrom(
-      this.query.searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'ubicacion_ambientes',
-        campos: 'iUbicaAmbId, cUbicaAmbNombre',
-        condicion: '1=1',
-      })
-    );
-    this.tipo_ubicacion = resp.data;
-    return resp.data;
+    return null;
   }
   async getUsoAmbiente() {
-    // devuelve arrays de tabla acad.uso_ambientes
-    const resp: any = await firstValueFrom(
-      this.query.searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'uso_ambientes',
-        campos: 'iUsoAmbId, cUsoAmbNombre, cUsoAmbDescripcion',
-        condicion: '1=1',
-      })
-    );
-    this.uso_ambientes = resp.data;
-    return resp.data;
+    return null;
   }
   async getPisoAmbiente() {
-    // devuelve arrays de tabla acad.piso_ambientes
-    const resp: any = await firstValueFrom(
-      this.query.searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'piso_ambientes',
-        campos: 'iPisoAmbid, cPisoAmbNombre, cPisoAmbDescripcion',
-        condicion: '1=1',
-      })
-    );
-    this.piso_ambiente = resp.data;
-    return resp.data;
+    return null;
   }
   async getCondicionAmbiente() {
-    // devuelve arrays de tabla acad.estado_ambientes
-    const resp: any = await firstValueFrom(
-      this.query.searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'estado_ambientes',
-        campos: 'iEstadoAmbId, cEstadoAmbNombre',
-        condicion: '1=1',
-      })
-    );
-    this.condicion_ambiente = resp.data;
-    return resp.data;
+    return null;
   }
-  //////////////  ambientes //////////////////////////
 
-  //////////////  secciones //////////////////////////
   async getSecciones() {
-    const resp: any = await firstValueFrom(
-      this.query.searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'secciones',
-        campos: 'iSeccionId, cSeccionNombre,cSeccionDescripcion',
-        condicion: '1=1',
-      })
-    );
-    this.secciones = resp.data;
-    return resp.data;
+    return null;
   }
 
   async getSeccionesAsignadas() {
-    const resp: any = await firstValueFrom(
-      this.query.searchAmbienteAcademico({
-        json: JSON.stringify({
-          iConfigId: this.configuracion[0].iConfigId,
-        }),
-        _opcion: 'getSeccionesConfig',
-      })
-    );
-    this.seccionesAsignadas = resp.data.map((ambiente: any) => {
-      return {
-        ...ambiente, // Mantén todos los campos originales
-        arrayAmbientes: {
-          ciclo: ambiente.cCicloRomanos,
-          grado: ambiente.cGradoNombre,
-          seccion: ambiente.cSeccionNombre,
-          estudiantes: ambiente.iDetConfCantEstudiantes,
-          ambiente: ambiente.cAmbienteNombre,
-        },
-      };
-    });
-    /*
-      const gradosMap = new Map();
-
-      this.seccionesAsignadas.forEach((a: any) => {
-        const gradoId = a.iGradoId ?? '';
-        const gradoNombre = a.arrayAmbientes.grado ?? '';
-        if (!gradosMap.has(gradoId)) {
-          gradosMap.set(gradoId, {
-            iGradoId: gradoId,
-            grado: gradoNombre,
-          });
-        }
-      });
-
-      this.grados = Array.from(gradosMap.values()).sort((a, b) =>
-          a.iGradoId.localeCompare(b.iGradoId)
-      );
-        //ordenar
-      this.grados = this.grados.sort((a, b) => Number(a.iGradoId) - Number(b.iGradoId));
-      */
-    return this.seccionesAsignadas;
+    return null;
   }
+
   async getGrado() {
-    const resp: any = await firstValueFrom(
-      this.query.searchGradoCiclo({
-        iNivelTipoId: this.iNivelTipoId,
-      })
-    );
-    this.grados = resp.data;
-    return resp.data;
+    return null;
   }
 
   async getDiasCalendario() {
-    const resp: any = await firstValueFrom(
-      this.query.searchCalendario({
-        json: JSON.stringify({
-          iCalAcadId: this.configuracion[0].iCalAcadId,
-        }),
-        _opcion: 'getCalendarioDiasLaborables',
-      })
-    );
-    // Parseamos el JSON original una sola vez
+    return null;
+  }
 
-    const dias_json = JSON.parse(resp.data[0].calDiasDatos);
-    // Concatenamos los nombres en una sola cadena
-    this.diasLaborables = dias_json.map((dia: any) => dia.cDiaNombre).join(', ');
+  /**
+   * FUNCIONES PARA GESTIONAR CONFIGURACIONES DE IE
+   */
 
-    return this.diasLaborables;
+  descargarAprobacion(data: any) {
+    return this.http.post(`${baseUrl}/acad/descargarAprobacion`, data);
+  }
+
+  verConfiguracion(data) {
+    return this.http.post(`${baseUrl}/acad/verConfiguracion`, data);
+  }
+
+  guardarConfiguracion(data) {
+    return this.http.post(`${baseUrl}/acad/guardarConfiguracion`, data);
+  }
+
+  actualizarConfiguracion(data) {
+    return this.http.post(`${baseUrl}/acad/actualizarConfiguracion`, data);
+  }
+
+  setActiveIndex(index: number) {
+    this.activeIndex.next(index);
+  }
+
+  getActiveIndex(): Observable<any> {
+    return this.activeIndex.asObservable();
   }
 }

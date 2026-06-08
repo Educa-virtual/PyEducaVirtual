@@ -1,19 +1,14 @@
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
-import { Component, inject, OnInit } from '@angular/core';
-
-import {
-  ContainerPageComponent,
-  IActionContainer,
-} from '@/app/shared/container-page/container-page.component';
-import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MenuItem, Message } from 'primeng/api';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
 import { HttpEvent } from '@angular/common/http';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { FileUpload } from 'primeng/fileupload';
 
 interface UploadEvent {
   originalEvent: HttpEvent<any> | Event;
@@ -23,349 +18,192 @@ interface UploadEvent {
 @Component({
   selector: 'app-config',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    ContainerPageComponent,
-    PrimengModule,
-    TypesFilesUploadPrimengComponent,
-  ],
+  imports: [PrimengModule],
   providers: [MessageService],
   templateUrl: './config.component.html',
   styleUrl: './config.component.scss',
 })
 export class ConfigComponent implements OnInit {
-  mensaje: Message[] = [
-    {
-      severity: 'info',
-      detail: 'En esta sección podrá visualizar la configuración de los ambientes',
-    },
-  ];
-
+  @ViewChild('fileUpload') fileUpload: FileUpload;
   form: FormGroup;
-
-  items: MenuItem[];
-  perfil: any[]; // almacenar variables locales
-  sede: any[];
-  opcion: string;
-  iSedeId: number;
-  uploadedFiles: any[] = [];
-  iServId: number;
-  configTipo: any[];
-  enlace: string = '';
-  event: [];
-
+  iConfigId: number = null;
+  iYAcadId: number = null;
   btnNuevo: boolean;
 
-  typesFiles = {
-    //archivos
-    file: true,
-    url: false,
-    youtube: false,
-    repository: false,
-    image: false,
-  };
-  filesUrl = []; //archivos
-
-  serv_atencion: {
-    iServEdId: number;
-    iNivelTipoId: number;
-    cServEdNombre: string;
-  }[];
+  perfil: any;
   configuracion: any = {};
-  // private confirmationService = inject(ConfirmationService)
-  private _confirmService = inject(ConfirmationModalService);
+
+  archivoSeleccionado: File | null = null;
+  hay_archivo: boolean = false;
+
+  estados_configuracion: Array<object>;
 
   constructor(
     private stepService: AdmStepGradoSeccionService,
     private router: Router,
     private fb: FormBuilder,
     private messageService: MessageService,
-    public query: GeneralService
+    private query: GeneralService,
+    private store: LocalStoreService,
+    private confirmService: ConfirmationModalService,
+    private route: ActivatedRoute
   ) {
-    this.items = this.stepService.itemsStep;
-    this.perfil = this.stepService.perfil;
-    this.configuracion = this.stepService.configuracion;
-    this.sede = this.stepService.sede;
-    this.iSedeId = this.stepService.iSedeId;
-    this.configTipo = this.stepService.configTipo;
+    this.stepService.setActiveIndex(0);
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iConfigId = params.get('id') ? Number(params.get('id')) : null;
+    });
   }
+
   ngOnInit(): void {
     try {
-      console.log(this.configuracion[0]);
-
-      if (!this.configuracion) {
-        this.router.navigate(['/gestion-institucional/configGradoSeccion']);
-        return;
-      }
-
-      // Si llegas aquí, `configuracion` sí existe
-      this.mensajeInformativo();
-      this.inicializarFormulario();
-    } catch (error) {
-      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
-    }
-  }
-
-  inicializarFormulario() {
-    const url = this.query.baseUrlPublic();
-    try {
       this.form = this.fb.group({
-        iConfigId: [this.configuracion[0].iConfigId], // tabla acad.configuraciones
-        iYAcadId: [this.configuracion[0].iYAcadId], //(*) tabla acad.configuraciones FK acad.calemdario_academicos
-        cModalServId: [this.configuracion[0].cModalServId], //(*) Agregar tabla acad.configuraciones (FK) acad.calendario_academicos
-        iNivelTipoId: [this.configuracion[0].iNivelTipoId], // tabla acad.configuraciones (FK) session
-        iServEdId: [this.configuracion[0].iServEdId, Validators.required], //(*) tabla acad.configuraciones (FK) acad.calendario_academicos
-
-        cServEdNombre: [this.configuracion[0].cServEdNombre],
-        cConfigDescripcion: [this.configuracion[0].cConfigDescripcion, Validators.required], //tabla acad.configuraciones Control para descripción"
-        iEstadoConfigId: [this.configuracion[0].iEstadoConfigId], //tabla acad.configuraciones Control para estado
-        cConfigNroRslAprobacion: [
-          this.configuracion[0].cConfigNroRslAprobacion,
-          Validators.required,
-        ], // tabla acad.configuraciones
-        cConfigUrlRslAprobacion: [this.configuracion[0].cConfigUrlRslAprobacion], // tabla acad.configuraciones
-
-        iSedeId: [this.configuracion[0].iSedeId], // tabla acad.configuraciones (session)
-        bConfigEsBilingue: [this.configuracion[0].bConfigEsBilingue, Validators.required], // tabla acad.configuraciones
-        cNivelTipoNombre: [this.configuracion[0].cNivelTipoNombre],
-        cYAcadNombre: [this.configuracion[0].cYAcadNombre],
-        iProgId: [this.configuracion[0].iProgId],
+        iConfigId: [null],
+        iYAcadId: [null],
+        cYAcadNombre: [{ value: '', disabled: true }],
+        cServEdNombre: [{ value: '', disabled: true }],
+        cNivelTipoNombre: [{ value: '', disabled: true }],
+        cNivelNombre: [{ value: '', disabled: true }],
+        iServEdId: [null],
+        cConfigDescripcion: [null],
+        iEstadoConfigId: [null, Validators.required],
+        cConfigNroRslAprobacion: [null],
+        cConfigUrlRslAprobacion: [null],
+        bConfigEsBilingue: [null],
+        archivo: [null],
       });
     } catch (error) {
-      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+      console.error(error, 'Error al inicializar el formulario');
     }
-    if (
-      !this.configuracion[0].cConfigUrlRslAprobacion ||
-      this.configuracion[0].cConfigUrlRslAprobacion.trim() === ''
-    ) {
-      this.enlace = '';
-    } else {
-      this.enlace = url + '/' + this.configuracion[0].cConfigUrlRslAprobacion;
-    }
+    this.stepService
+      .crearConfiguracion({
+        iCredEntPerfId: this.perfil.iCredEntPerfId,
+        iConfigId: this.iConfigId,
+      })
+      .subscribe((data: any) => {
+        this.estados_configuracion = this.stepService.getEstadosConfiguracion(
+          data?.estados_configuracion
+        );
+      });
 
-    // this.getServicioAtencion()
+    this.verConfiguracion();
   }
 
-  mensajeInformativo() {
-    const option = Number(this.configuracion[0].iEstado);
-    let title: string;
-    if (option === 0) {
-      title = 'Registro nuevo';
-      this.btnNuevo = true;
-    } else {
-      title = 'Editar registro';
-      this.btnNuevo = false;
-    }
-
-    this._confirmService.openConfiSave({
-      message: '¿Está seguro de que desea configurar los ambientes?',
-      header: title,
-      icon: 'pi pi-exclamation-triangle',
-      reject: () => {
-        this.router.navigate(['/gestion-institucional/configGradoSeccion']);
-      },
-    });
-  }
-
-  accionBtn(elemento): void {
-    const { accion } = elemento;
-    const { item } = elemento;
-
-    switch (accion) {
-      case 'close-modal':
-        // this.accionBtnItem.emit({ accion, item })
-        break;
-
-      case 'subir-file-configuracion-iiee':
-        const url = this.query.baseUrlPublic();
-        if (this.filesUrl.length < 1) {
-          this.filesUrl.push({
-            type: 1, //1->file
-            nameType: 'file',
-            name: item.file.name,
-            size: item.file.size,
-            ruta: item.name,
-          });
-
-          this.form.get('cConfigUrlRslAprobacion')?.setValue(this.filesUrl[0].ruta);
-
-          this.enlace = url + '/' + this.filesUrl[0].ruta;
-        } else {
-          alert('No puede subir mas de un archivo');
-        }
-        break;
-    }
-  }
-
-  onUpload(event: UploadEvent) {
-    for (const file of event.files) {
-      this.uploadedFiles.push(file);
-    }
-
-    this.messageService.add({
-      severity: 'info',
-      summary: 'File Uploaded',
-      detail: '',
-    });
-  }
-
-  accionBtnItemTable({ accion, item }) {
-    this.event = item;
-    if (accion === 'retornar') {
-      this._confirmService.openConfiSave({
-        message: '¿Estás seguro de que deseas guardar y continuar?',
-        header: 'Advertencia de autoguardado',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          // Acción para eliminar el registro
-          this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+  verConfiguracion() {
+    this.stepService
+      .verConfiguracion({
+        iConfigId: this.iConfigId,
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.setFormConfiguracion(data.data);
         },
-        reject: () => {
-          // Mensaje de cancelación (opcional)
+        error: error => {
+          console.error('Error obteniendo datos:', error);
           this.messageService.add({
             severity: 'error',
-            summary: 'Cancelado',
-            detail: 'Acción cancelada',
+            summary: 'Error',
+            detail: error.error.message,
           });
         },
       });
+  }
+
+  setFormConfiguracion(data: any) {
+    this.form.reset();
+    this.form.patchValue(data);
+    const iEstadoConfigId = data.iEstadoConfigId ? Number(data.iEstadoConfigId) : null;
+    this.form.get('iEstadoConfigId').setValue(iEstadoConfigId);
+    this.hay_archivo = data?.cConfigUrlRslAprobacion ? true : false;
+  }
+
+  handleArchivo(event: any) {
+    const file = event.files && event.files.length > 0 ? event.files[0] : null;
+    if (file) {
+      this.archivoSeleccionado = file;
+      this.form.get('archivo').setValue(file);
+    } else {
+      this.hay_archivo = false;
+      this.archivoSeleccionado = null;
+      this.form.get('cConfigUrlRslAprobacion').setValue(null);
+      this.form.get('archivo').setValue(null);
     }
   }
-  /* getServicioAtencion() {
-        //alert(this.configuracion[0].iNivelTipoId)
-        if (Number(this.configuracion[0].iNivelTipoId) > 0) {
-            const where = 'iNivelTipoId =' + this.configuracion[0].iNivelTipoId
 
-            this.query
-                .searchCalAcademico({
-                    esquema: 'acad',
-                    tabla: 'servicio_educativos',
-                    campos: 'iServEdId, iNivelTipoId,cServEdNombre',
-                    condicion: where,
-                })
-                .subscribe({
-                    next: (data: any) => {
-                        this.serv_atencion = data.data
-                        this.iServId = this.serv_atencion[0].iServEdId
-                        this.form.controls['iServEdId'].setValue(
-                            this.serv_atencion[0].iServEdId
-                        )
-                        console.log(this.serv_atencion)
-                    },
-                    error: (error) => {
-                        console.error(
-                            'Error fetching Servicios de Atención:',
-                            error
-                        )
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
-        } else {
-            alert(
-                'Deben registrar el Tipo de de Nivel en los registros de la Institución Educatica'
-            )
-        }
+  descargarArchivo(item: any = null, event = null) {
+    event?.preventDefault();
+    if (!item) {
+      item = {
+        iConfigId: this.iConfigId,
+        iYAcadId: this.iYAcadId,
+        cConfigUrlRslAprobacion: this.form.value.cConfigUrlRslAprobacion,
+      };
     }
-*/
-  // confirmar() {
-  //   this._confirmService.openConfiSave({
-  //     message: '¿Está seguro de que desea eliminar este elemento?',
-  //     header: 'Confirmación de eliminación',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       // Acción a realizar al confirmar
-  //       console.log('Eliminado');
-  //     },
-  //     reject: () => {
-  //       // Acción a realizar al rechazar
-  //       console.log('Acción cancelada');
-  //     },
-  //   });
-  // }
-
-  confirm() {
-    this._confirmService.openConfiSave({
-      message: '¿Estás seguro de que deseas guardar y continuar?',
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // Acción para eliminar el registro
-        this.actualizar();
+    this.stepService.descargarAprobacion(item).subscribe({
+      next: (response: any) => {
+        const blob = new Blob([response], {
+          type: 'application/pdf',
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.click();
       },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
+      error: error => {
+        console.error('Error descargando archivo:', error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
+          summary: 'Error',
+          detail: error.error.message ?? 'No se pudo descargar el archivo',
         });
       },
     });
-
-    // this.router.navigate(['/gestion-institucional/ambiente'])
   }
 
-  actualizar() {
-    if (this.form.valid) {
-      this.query
-        .addAmbienteAcademico({
-          json: JSON.stringify(this.form.value),
-          _opcion: 'addConfig',
-        })
-        .subscribe({
-          next: (data: any) => {
-            this.form.get('iConfigId')?.setValue(data.data[0].id);
-            this.configuracion[0] = this.form.getRawValue();
-            this.stepService.configuracion[0] = this.configuracion[0];
-          },
-          error: error => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Mensaje',
-              detail: 'Error. No se proceso petición ' + error.error.message,
-            });
-          },
-          complete: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Mensaje',
-              detail: 'Proceso exitoso',
-            });
+  confirmarCambios() {
+    this.confirmService.openConfiSave({
+      header: 'Confirmación',
+      message: '¿Realmente desea actualizar la configuración?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.actualizarConfiguracion();
+      },
+    });
+  }
 
-            this.router.navigate(['/gestion-institucional/ambiente']);
-          },
+  actualizarConfiguracion() {
+    const formData: FormData = new FormData();
+    formData.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
+    formData.append('iConfigId', this.form.value.iConfigId);
+    formData.append('iEstadoConfigId', this.form.value.iEstadoConfigId);
+    formData.append('cConfigNroRslAprobacion', this.form.value.cConfigNroRslAprobacion);
+    formData.append('cConfigUrlRslAprobacion', this.form.value.cConfigUrlRslAprobacion);
+    formData.append('cConfigDescripcion', this.form.value.cConfigDescripcion);
+    formData.append('bConfigEsBilingue', this.form.value.bConfigEsBilingue);
+    if (this.archivoSeleccionado) {
+      formData.append('archivo', this.form.value.archivo);
+    }
+
+    this.stepService.actualizarConfiguracion(formData).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Configuración actualizada',
         });
-    } else {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Mensaje',
-        detail: 'Llenado de formulario invalido',
-      });
-    }
+        this.router.navigate([`/gestion-institucional/config/${this.iConfigId}/academico`]);
+      },
+      error: error => {
+        console.error('Error guardando configuracion:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
-
-  accionBtnItem(accion) {
-    if (accion === 'guardar') {
-      this.actualizar();
-    }
-  }
-
-  accionesPrincipal: IActionContainer[] = [
-    // {
-    //     labelTooltip: 'Crear Ambiente',
-    //     text: 'Crear ambientes',
-    //     icon: 'pi pi-plus',
-    //     accion: 'agregar',
-    //     class: 'p-button-primary',
-    // },
-    {
-      labelTooltip: 'Retornar',
-      text: 'Retornar',
-      icon: 'pi pi-arrow-circle-left',
-      accion: 'retornar',
-      class: 'p-button-warning',
-    },
-  ];
 }

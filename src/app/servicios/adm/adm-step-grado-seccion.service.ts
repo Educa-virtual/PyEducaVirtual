@@ -121,6 +121,14 @@ export class AdmStepGradoSeccionService {
 
   constructor(private http: HttpClient) {}
 
+  setActiveIndex(index: number) {
+    this.activeIndex.next(index);
+  }
+
+  getActiveIndex(): Observable<any> {
+    return this.activeIndex.asObservable();
+  }
+
   crearConfiguracion(data: any): Observable<any> {
     if (this.parametros) {
       return of(this.parametros);
@@ -237,8 +245,8 @@ export class AdmStepGradoSeccionService {
     if (!this.estados_ambientes && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.estados_ambientes = items.map(tipo => ({
-        value: Number(tipo.iTipoAmbienteId),
-        label: tipo.cTipoAmbienteNombre,
+        value: Number(tipo.iEstadoAmbId),
+        label: tipo.cEstadoAmbNombre,
       }));
       return this.estados_ambientes;
     }
@@ -347,11 +355,23 @@ export class AdmStepGradoSeccionService {
     return this.http.post(`${baseUrl}/acad/actualizarConfiguracion`, data);
   }
 
-  setActiveIndex(index: number) {
-    this.activeIndex.next(index);
+  listarAmbientes(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarAmbientes`, data);
   }
 
-  getActiveIndex(): Observable<any> {
-    return this.activeIndex.asObservable();
+  verAmbiente(data: any) {
+    return this.http.post(`${baseUrl}/acad/verAmbiente`, data);
+  }
+
+  guardarAmbiente(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarAmbiente`, data);
+  }
+
+  actualizarAmbiente(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarAmbiente`, data);
+  }
+
+  borrarAmbiente(data: any) {
+    return this.http.post(`${baseUrl}/acad/borrarAmbiente`, data);
   }
 }

@@ -4,7 +4,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { TabMenu } from 'primeng/tabmenu';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-config-grado-seccion',
@@ -37,6 +37,7 @@ export class ConfigGradoSeccionComponent implements OnInit, AfterViewInit {
     private stepService: AdmStepGradoSeccionService,
     private messageService: MessageService,
     private router: Router,
+    private route: ActivatedRoute,
     private cf: ChangeDetectorRef
   ) {
     const perfil = this.store.getItem('dremoPerfil');
@@ -69,7 +70,7 @@ export class ConfigGradoSeccionComponent implements OnInit, AfterViewInit {
             route: `/gestion-institucional/config/${this.iConfigId}/seccion`,
           },
           {
-            label: 'Plan de estudios',
+            label: 'Currícula',
             icon: 'pi pi-fw pi-book',
             route: `/gestion-institucional/config/${this.iConfigId}/plan-estudio`,
           },
@@ -84,7 +85,24 @@ export class ConfigGradoSeccionComponent implements OnInit, AfterViewInit {
             route: `/gestion-institucional/config/${this.iConfigId}/asignar-grados`,
           },
         ];
-        this.router.navigate([`/gestion-institucional/config/${this.iConfigId}/academico`]);
+
+        // Obtener la ruta actual del usuario
+        const urlSegments = this.router.url.split('/');
+        const currentSegment = urlSegments[urlSegments.length - 1];
+
+        // Validar que el segment sea una ruta válida
+        const validSegments = [
+          'academico',
+          'ambiente',
+          'seccion',
+          'plan-estudio',
+          'hora-docente',
+          'asignar-grados',
+        ];
+        const targetSegment = validSegments.includes(currentSegment) ? currentSegment : 'academico';
+
+        // Navegar a la ruta actual o a academico como default
+        this.router.navigate([`/gestion-institucional/config/${this.iConfigId}/${targetSegment}`]);
       });
   }
 

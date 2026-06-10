@@ -1,55 +1,27 @@
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import {
-  ContainerPageComponent,
-  IActionContainer,
-} from '@/app/shared/container-page/container-page.component';
-import { GeneralService } from '@/app/servicios/general.service';
-
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { PrimengModule } from '@/app/primeng.module';
-import { StepperModule } from 'primeng/stepper';
-import { DialogModule } from 'primeng/dialog';
-import { InputSwitchModule } from 'primeng/inputswitch';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
-import { environment } from '@/environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-config-ambiente',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    //StepsModule,
-    StepperModule,
-    ContainerPageComponent,
-    TablePrimengComponent,
-    DialogModule,
-    DropdownModule,
-    InputTextModule,
-    ButtonModule,
-    InputSwitchModule,
-    PrimengModule,
-    TypesFilesUploadPrimengComponent,
-  ],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './config-ambiente.component.html',
   styleUrl: './config-ambiente.component.scss',
 })
 export class ConfigAmbienteComponent implements OnInit {
   form: FormGroup;
+  formBusqueda: FormGroup;
   iConfigId: number;
 
   items: MenuItem[];
@@ -64,64 +36,55 @@ export class ConfigAmbienteComponent implements OnInit {
   pisos_ambientes: Array<object>;
   usos_ambientes: Array<object>;
   ubicaciones_ambientes: Array<object>;
+  estados: Array<object> = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
 
   configuracion: any[];
   perfil: any = [];
 
   ambientes: any[];
-  typesFiles = {
-    file: false,
-    url: false,
-    youtube: false,
-    repository: false,
-    image: true,
-  };
-  filesUrl = [];
-  ruta_imagen: string;
-
-  private _confirmService = inject(ConfirmationModalService);
-  private http = inject(HttpClient);
-  backend = environment.backend;
-  private backendApi = environment.backendApi;
+  ambientes_filtrados: any[];
 
   constructor(
     private stepService: AdmStepGradoSeccionService,
     private router: Router,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: LocalStoreService,
+    private confirmService: ConfirmationModalService
   ) {
-    this.perfil = this.stepService.perfil;
-    this.anio = this.stepService.anio;
+    this.stepService.setActiveIndex(1);
+    this.perfil = this.store.getItem('dremoPerfil');
     this.route.parent?.paramMap.subscribe(params => {
       this.iConfigId = params.get('id') ? Number(params.get('id')) : null;
     });
   }
 
-  async ngOnInit(): Promise<void> {
-    const codigoModular = this.perfil.cIieeCodigoModular;
-    const cYAcadNombre = this.configuracion[0].cYAcadNombre;
-    this.ruta_imagen = String(cYAcadNombre + '/' + codigoModular + '/ambientes');
-
+  ngOnInit() {
     try {
       this.form = this.fb.group({
-        iIieeAmbienteId: [0], //codigo de tabla_iiee_ambientes
-        iTipoAmbienteId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-        iEstadoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-        iUbicaAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-        iUsoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-        iPisoAmbid: [0, Validators.required], // tabla_iiee_ambientes (FK)
-        iYAcadId: [this.configuracion[0].iYAcadId], // tabla_iiee_ambientes (FK)
-        iSedeId: [this.configuracion[0].iSedeId], // tabla_iiee_ambientes (FK)
-        bAmbienteEstado: [0],
-        cAmbienteNombre: ['', Validators.required],
-        cAmbienteDescripcion: ['', Validators.required],
-        iAmbienteArea: [0, Validators.required],
-        iAmbienteAforo: [0, Validators.required],
+        iConfigId: [this.iConfigId],
+        iIieeAmbienteId: [null],
+        iTipoAmbienteId: [null],
+        iEstadoAmbId: [null],
+        iUbicaAmbId: [null],
+        iUsoAmbId: [null],
+        iPisoAmbid: [null],
+        bAmbienteEstado: [null, [Validators.required]],
+        cAmbienteNombre: ['', [Validators.required]],
+        cAmbienteDescripcion: [''],
+        iAmbienteArea: [null],
+        iAmbienteAforo: ['', [Validators.required]],
         cAmbienteObs: [''],
         cImagen: [''],
-        cYAcadNombre: [this.configuracion[0].cYAcadNombre],
+      });
+
+      this.formBusqueda = this.fb.group({
+        textoBusqueda: [''],
+        bAmbienteEstado: [null],
       });
     } catch (error) {
       console.error(error, 'Error al inicializar el formulario');
@@ -141,347 +104,204 @@ export class ConfigAmbienteComponent implements OnInit {
           data?.ubicaciones_ambientes
         );
       });
+
+    this.listarAmbientes();
   }
 
-  // eventos de record set
-  confirm() {
-    this._confirmService.openConfiSave({
-      message: '¿Estás seguro de que deseas guardar y continuar?',
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // Acción para eliminar el registro
-        this.router.navigate(['/gestion-institucional/seccion']);
-      },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
-        });
-      },
+  listarAmbientes() {
+    this.stepService
+      .listarAmbientes({
+        iConfigId: this.iConfigId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.ambientes = data.data;
+          this.ambientes_filtrados = this.ambientes;
+        },
+        error: error => {
+          console.error('Error al obtener datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  siguienteTab() {
+    this.router.navigate([`/gestion-institucional/config/${this.iConfigId}/seccion`]);
+  }
+
+  filtrarTabla() {
+    const textoBusqueda = this.formBusqueda.get('textoBusqueda')?.value.toLowerCase();
+    const bAmbienteEstado = this.formBusqueda.get('bAmbienteEstado')?.value;
+    this.ambientes_filtrados = this.ambientes.filter(ambiente => {
+      if (
+        bAmbienteEstado == null ||
+        (ambiente.bAmbienteEstado && ambiente.bAmbienteEstado == bAmbienteEstado)
+      ) {
+        if (
+          ambiente.cAmbienteNombre &&
+          ambiente.cAmbienteNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return ambiente;
+        if (
+          ambiente.iAmbienteAforo &&
+          ambiente.iAmbienteAforo.toLowerCase().includes(textoBusqueda)
+        )
+          return ambiente;
+        if (
+          ambiente.cTipoAmbienteNombre &&
+          ambiente.cTipoAmbienteNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return ambiente;
+        if (
+          ambiente.cPisoAmbNombre &&
+          ambiente.cPisoAmbNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return ambiente;
+        if (
+          ambiente.cAmbienteEstado &&
+          ambiente.cAmbienteEstado.toLowerCase().includes(textoBusqueda)
+        )
+          return ambiente;
+      } else {
+        return null;
+      }
     });
+  }
+
+  agregarAmbiente() {
+    this.limpiarFormulario();
+    this.visible = true;
+    this.caption = 'Registrar ambientes';
+    this.option = 'crear';
+    this.setFormAmbiente({});
+  }
+
+  setFormAmbiente(item: any) {
+    this.form.patchValue(item);
+    this.form
+      .get('iTipoAmbienteId')
+      ?.setValue(item.iTipoAmbienteId ? Number(item.iTipoAmbienteId) : null);
+    this.form.get('iEstadoAmbId')?.setValue(item.iEstadoAmbId ? Number(item.iEstadoAmbId) : null);
+    this.form.get('iUbicaAmbId')?.setValue(item.iUbicaAmbId ? Number(item.iUbicaAmbId) : null);
+    this.form.get('iUsoAmbId')?.setValue(item.iUsoAmbId ? Number(item.iUsoAmbId) : null);
+    this.form.get('iPisoAmbid')?.setValue(item.iPisoAmbid ? Number(item.iPisoAmbid) : null);
+    this.form
+      .get('bAmbienteEstado')
+      ?.setValue(item.bAmbienteEstado ? Number(item.bAmbienteEstado) : null);
+    this.form.get('cAmbienteNombre').markAsDirty();
+    this.form.get('iAmbienteAforo').markAsDirty();
+  }
+
+  editarAmbiente(item: any) {
+    this.limpiarFormulario();
+    this.visible = true;
+    this.caption = 'Editar ambientes';
+    this.option = 'editar';
+    this.setFormAmbiente(item);
+  }
+
+  eliminarAmbiente(item: any) {
+    this.stepService
+      .borrarAmbiente({
+        iIieeAmbienteId: item.iIieeAmbienteId,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Eliminado',
+            detail: 'Ambiente eliminado exitosamente',
+          });
+          this.listarAmbientes();
+        },
+        error: error => {
+          console.error('Error al eliminar ambiente:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
   }
 
   accionBtnItemTable({ accion, item }) {
-    console.log(accion, 'accion', item, 'item');
     if (accion === 'editar') {
-      this.visible = true;
-      this.caption = 'Editar ambientes';
-      this.option = 'editar';
-      this.form.get('iIieeAmbienteId')?.setValue(item.iIieeAmbienteId);
-      this.form.get('cAmbienteNombre')?.setValue(item.cAmbienteNombre);
-      this.form.get('cAmbienteDescripcion')?.setValue(item.cAmbienteDescripcion);
-      this.form.get('iTipoAmbienteId')?.setValue(item.iTipoAmbienteId);
-      this.form.get('iUbicaAmbId')?.setValue(item.iUbicaAmbId);
-      this.form.get('iUsoAmbId')?.setValue(item.iUsoAmbId);
-      this.form.get('iEstadoAmbId')?.setValue(item.iEstadoAmbId);
-      this.form.get('iAmbienteAforo')?.setValue(item.iAmbienteAforo);
-      this.form.get('iAmbienteArea')?.setValue(item.iAmbienteArea);
-      this.form.get('iPisoAmbid')?.setValue(item.iPisoAmbid);
-      this.form.get('cAmbienteObs')?.setValue(item.cAmbienteObs);
-      this.form.get('bAmbienteEstado')?.setValue(item.bAmbienteEstado);
-      this.form.get('cImagen')?.setValue(item.cImagen), (this.filesUrl = []);
-      if ((item.cImagen ?? '').length > 0) {
-        this.filesUrl.push({
-          name: 'imagen',
-          ruta: item.cImagen,
-        });
-      }
-
-      //console.log(item.cImagen, 'item.cImagen', this.filesUrl);
-      if (item.bAmbienteEstado == 1) {
-        this.form.get('bAmbienteEstado')?.setValue(1);
-      } else {
-        this.form.get('bAmbienteEstado')?.setValue(0);
-      }
+      this.editarAmbiente(item);
     }
-    if (accion === 'agregar') {
-      this.visible = true;
-      this.caption = 'Registrar ambientes';
-      this.option = 'crear';
-      this.clearForm();
-    }
-
     if (accion === 'eliminar') {
-      this._confirmService.openConfirm({
-        message: '¿Está seguro de que desea eliminar este elemento?',
-        header: 'Confirmación de eliminación',
+      this.confirmService.openConfirm({
+        message: '¿Realmente desea eliminar este elemento?',
+        header: 'Confirmación',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          // Acción a realizar al confirmar
-          const params = {
-            esquema: 'acad',
-            tabla: 'iiee_ambientes',
-            campo: 'iIieeAmbienteId',
-            valorId: item.iIieeAmbienteId,
-          };
-          this.query.deleteAcademico(params).subscribe({
-            // next: (data: any) => {
-            //   console.log(data.data);
-            // },
-            error: error => {
-              this.messageService.add({
-                severity: 'danger',
-                summary: 'Mensaje de sistema',
-                detail: 'Error en el proceso de eliminar: ' + error.error.message,
-              });
-            },
-            complete: async () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje',
-                detail: 'Proceso exitoso',
-              });
-
-              this.ambientes = await this.stepService.getAmbientes();
-              this.visible = false;
-              this.clearForm();
-            },
-          });
-        },
-        reject: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje',
-            detail: 'Proceso cancelado',
-          });
-        },
-      });
-    }
-
-    if (accion === 'retornar') {
-      this._confirmService.openConfiSave({
-        message: '¿Estás seguro de que deseas regresar al paso anterior?',
-        header: 'Advertencia de autoguardado',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          // Acción para eliminar el registro
-          this.router.navigate(['/gestion-institucional/config']);
-        },
-        reject: () => {
-          // Mensaje de cancelación (opcional)
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Cancelado',
-            detail: 'Acción cancelada',
-          });
+          this.eliminarAmbiente(item);
         },
       });
     }
   }
 
-  accionBtnItem(event: any) {
-    if (event === 'guardar') {
-      this.visible = true;
-      this.caption = 'Registrar ambientes';
-      if (this.form.valid) {
-        //ALMACENAR LA INFORMACION
-        this.query
-          .addAmbienteAcademico({
-            json: JSON.stringify(this.form.value),
-            _opcion: 'addAmbiente',
-          })
-          .subscribe({
-            error: error => {
-              this.messageService.add({
-                severity: 'danger',
-                summary: 'Mensaje de sistema',
-                detail: 'Error en el proceso: ' + error.error.message,
-              });
-            },
-            complete: async () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje',
-                detail: 'Proceso exitoso',
-              });
-
-              this.ambientes = await this.stepService.getAmbientes();
-              this.visible = false;
-              this.clearForm();
-            },
-          });
-      } else {
+  guardarAmbiente() {
+    console.log(this.form.value);
+    this.stepService.guardarAmbiente(this.form.value).subscribe({
+      next: () => {
+        this.cerrarDialogo();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registrado',
+          detail: 'Ambiente registrado exitosamente',
+        });
+        this.listarAmbientes();
+      },
+      error: error => {
+        console.error('Error al registrar ambiente:', error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Mensaje',
-          detail: 'Llenado de formulario incorrecto',
+          summary: 'Error',
+          detail: error.error.message,
         });
-      }
-    }
-    //updateAcademico
-    if (event === 'editar') {
-      if (this.form.valid) {
-        const params = {
-          esquema: 'acad',
-          tabla: 'iiee_ambientes',
-          json: JSON.stringify({
-            iTipoAmbienteId: this.form.get('iTipoAmbienteId')?.value,
-            iEstadoAmbId: this.form.get('iEstadoAmbId')?.value,
-            iUbicaAmbId: this.form.get('iUbicaAmbId')?.value,
-            iUsoAmbId: this.form.get('iUsoAmbId')?.value,
-            iPisoAmbid: this.form.get('iPisoAmbid')?.value,
-            iYAcadId: this.form.get('iYAcadId')?.value,
-            iSedeId: this.form.get('iSedeId')?.value,
-            bAmbienteEstado: this.form.get('bAmbienteEstado')?.value,
-            cAmbienteNombre: this.form.get('cAmbienteNombre')?.value,
-            cAmbienteDescripcion: this.form.get('cAmbienteDescripcion')?.value,
-            iAmbienteArea: this.form.get('iAmbienteArea')?.value,
-            iAmbienteAforo: this.form.get('iAmbienteAforo')?.value,
-            cAmbienteObs: this.form.get('cAmbienteObs')?.value,
-            cImagen: this.form.get('cImagen')?.value,
-          }),
-          campo: 'iIieeAmbienteId',
-          condicion: this.form.get('iIieeAmbienteId')?.value,
-        };
-
-        this.query.updateAcademico(params).subscribe({
-          error: error => {
-            this.messageService.add({
-              severity: 'danger',
-              summary: 'Mensaje de sistema',
-              detail: 'Error en el proceso de actualizar: ' + error.error.message,
-            });
-          },
-          complete: async () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Mensaje de sistema',
-              detail: 'Proceso exitoso',
-            });
-
-            this.ambientes = await this.stepService.getAmbientes();
-            this.visible = false;
-            this.clearForm();
-          },
-        });
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje',
-          detail: 'Llenado de formulario incorrecto',
-        });
-      }
-    }
-  }
-  async onUploadChange(evt: any, tipo: any) {
-    const file = evt.target.files[0];
-    if (file) {
-      const dataFile = await this.objectToFormData({
-        file: file,
-        nameFile: this.ruta_imagen, //ruta de imagen
-      });
-      this.http
-        .post(`${this.backendApi}/general/subir-archivo?` + 'skipSuccessMessage=true', dataFile)
-        .pipe(
-          map((event: any) => {
-            if (event.validated) {
-              switch (tipo) {
-                case 'ambiente':
-                  this.filesUrl = [];
-                  this.filesUrl.push({
-                    name: file.name,
-                    ruta: event.data,
-                  });
-                  this.form.get('cImagen')?.setValue(this.filesUrl[0].ruta);
-                  //this.guardarItinerario();
-                  break;
-              }
-            }
-          }),
-          catchError((error: any) => {
-            return throwError(error.error.message);
-          })
-        )
-        .toPromise();
-    }
-  }
-
-  objectToFormData(obj: any) {
-    const formData = new FormData();
-    Object.keys(obj).forEach(key => {
-      if (obj[key] !== '') {
-        formData.append(key, obj[key]);
-      }
+      },
     });
-
-    return formData;
   }
 
-  guardarItinerario() {}
-
-  clearForm() {
-    this.form.get('iIieeAmbienteId')?.setValue(0);
-    this.form.get('cAmbienteNombre')?.setValue('');
-    this.form.get('cAmbienteDescripcion')?.setValue('');
-    this.form.get('iTipoAmbienteId')?.setValue(0);
-    this.form.get('iUbicaAmbId')?.setValue(0);
-    this.form.get('iUsoAmbId')?.setValue(0);
-    this.form.get('iEstadoAmbId')?.setValue(0);
-    this.form.get('iAmbienteAforo')?.setValue('');
-    this.form.get('iAmbienteArea')?.setValue('');
-    this.form.get('iPisoAmbid')?.setValue(0);
-    this.form.get('cAmbienteObs')?.setValue('');
-    this.form.get('bAmbienteEstado')?.setValue(0);
-    this.form.get('cImagen')?.setValue('');
+  actualizarAmbiente() {
+    this.stepService.actualizarAmbiente(this.form.value).subscribe({
+      next: () => {
+        this.cerrarDialogo();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: 'Ambiente actualizado exitosamente',
+        });
+        this.listarAmbientes();
+      },
+      error: error => {
+        console.error('Error al actualizar ambiente:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 
-  openLink(item) {
-    if (!item) return;
-    const ruta = environment.backend + '/' + item;
-    window.open(ruta, '_blank');
+  cerrarDialogo() {
+    this.visible = false;
+    this.limpiarFormulario();
   }
 
-  // saveInformation() {
-  //   if (this.caption == 'create') {
-  //     alert('Mensaje 0 save');
-  //   } else {
-  //     alert('Mensaje 1 save');
-  //   }
-  // }
-  // nextPage() {
-  //   alert('mensaje de next');
-  // }
+  limpiarFormulario() {
+    this.form.reset();
+    this.form.get('iConfigId')?.setValue(this.iConfigId);
+  }
 
-  //ESTRUCTURASS DE TABLA
-  //Maquetar tablas
-  // handleActions(actions) {
-  //   console.log(actions);
-  // }
-  accionesPrincipal: IActionContainer[] = [
-    {
-      labelTooltip: 'Retornar',
-      text: 'Retornar',
-      icon: 'pi pi-arrow-circle-left',
-      accion: 'retornar',
-      class: 'p-button-warning',
-    },
-    {
-      labelTooltip: 'Crear Ambiente',
-      text: 'Crear ambientes',
-      icon: 'pi pi-plus',
-      accion: 'agregar',
-      class: 'p-button-primary',
-    },
-
-    // {
-    //     labelTooltip: 'Unificar Ambiente',
-    //     text: 'Unificar ambientes',
-    //     icon: 'pi pi-arrow-down-left-and-arrow-up-right-to-center',
-    //     accion: 'unificar',
-    //     class: 'p-button-secondary',
-    // },
-    // {
-    //     labelTooltip: 'Dividir Ambiente',
-    //     text: 'Dividir ambientes',
-    //     icon: 'pi pi-arrow-up-right-and-arrow-down-left-from-center',
-    //     accion: 'dividir',
-    //     class: 'p-button-secondary',
-    // },
-  ];
   selectedItems = [];
+
   actions: IActionTable[] = [
     {
       labelTooltip: 'Editar',
@@ -490,51 +310,27 @@ export class ConfigAmbienteComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Eliminar',
-    //   icon: 'pi pi-trash',
-    //   accion: 'eliminar',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+    },
   ];
 
   columns = [
-    // {
-    //     type: 'checkbox',
-    //     width: '2rem',
-    //     field: 'checked',
-    //     header: '',
-    //     text_header: '',
-    //     text: 'left',
-    // },
-    {
-      type: 'item',
-      width: '5rem',
-      field: 'item',
-      header: 'N°',
-      text_header: 'center',
-      text: 'center',
-    },
     {
       type: 'text',
-      width: '5rem',
+      width: '45%',
       field: 'cAmbienteNombre',
       header: 'Ambiente',
       text_header: 'center',
-      text: 'center',
+      text: 'left',
     },
     {
       type: 'text',
-      width: '5rem',
-      field: 'iAmbienteArea',
-      header: 'Area m2',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '5rem',
+      width: '10%',
       field: 'iAmbienteAforo',
       header: 'Aforo',
       text_header: 'center',
@@ -542,7 +338,7 @@ export class ConfigAmbienteComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '15%',
       field: 'cTipoAmbienteNombre',
       header: 'Tipo',
       text_header: 'center',
@@ -550,32 +346,23 @@ export class ConfigAmbienteComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '5rem',
-      field: 'cEstadoAmbNombre',
-      header: 'Condición',
+      width: '10%',
+      field: 'cPisoAmbNombre',
+      header: 'Piso',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '5rem',
-      field: 'cUbicaAmbNombre',
-      header: 'Ubicación',
+      width: '10%',
+      field: 'cAmbienteEstado',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },
-    {
-      type: 'estado-activo',
-      width: '5rem',
-      field: 'bAmbienteEstado',
-      header: 'Activo',
-      text_header: 'center',
-      text: 'center',
-    },
-
     {
       type: 'actions',
-      width: '3rem',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
@@ -583,17 +370,3 @@ export class ConfigAmbienteComponent implements OnInit {
     },
   ];
 }
-
-// "{"iTipoAmbienteId":"1",
-// "iEstadoAmbId":"1",
-// "iUbicaAmbId":"1",
-// "iUsoAmbId":"1",
-// "iPisoAmbid":"2",
-// "iYAcadId":"3",
-// "iSedeId":"1",
-// "bAmbienteEstado":0,
-// "cAmbienteNombre":"aula 104",
-// "cAmbienteDescripcion":"de primaria",
-// "iAmbienteArea":"50",
-// "iAmbienteAforo":"30",
-// "cAmbienteObs":"ninguna"}"

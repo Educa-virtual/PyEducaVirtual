@@ -1,235 +1,223 @@
-<app-container-page
-  title="Registro de ambientes"
-  [actions]="accionesPrincipal"
+<form [formGroup]="formBusqueda">
+  <div class="grid p-fluid mt-4">
+    <div class="col-12 md:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Estado</p-inputGroupAddon>
+        <p-dropdown
+          [options]="estados"
+          styleClass="group-element"
+          formControlName="bAmbienteEstado"
+          [style]="{ flex: 1, width: '100%' }"
+          showClear="true"
+          appendTo="body"
+          (onChange)="filtrarTabla()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-7">
+      <p-inputGroup>
+        <p-inputGroupAddon>Buscar</p-inputGroupAddon>
+        <input
+          pInputText
+          type="text"
+          formControlName="textoBusqueda"
+          (keyup)="filtrarTabla()"
+          class="group-element"
+          [style]="{ flex: 1, width: '100%' }"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-2">
+      <p-button
+        icon="pi pi-fw pi-plus"
+        label="Agregar"
+        (onClick)="agregarAmbiente()"
+        severity="success"
+        class="w-full"
+      />
+    </div>
+  </div>
+</form>
+
+<app-table-primeng
+  [columnas]="columns"
+  [showCaption]="false"
+  [data]="ambientes_filtrados"
   (accionBtnItem)="accionBtnItemTable($event)"
+  [showPaginator]="true"
+  [(selectedRowData)]="accionBtnItemTable"
+  [actions]="actions"
 >
-  <p-toast />
+  <ng-container slot="caption-content"> </ng-container>
+</app-table-primeng>
 
-  <div class="card">
-    <p-steps [model]="items" [readonly]="true" class="basis-[50rem]"></p-steps>
-  </div>
-  <div class="card">
-    <app-table-primeng
-      [columnas]="columns"
-      [showCaption]="true"
-      [data]="ambientes"
-      (accionBtnItem)="accionBtnItemTable($event)"
-      [showPaginator]="true"
-      [(selectedRowData)]="accionBtnItemTable"
-      [actions]="actions"
-      [showAdvancedFilter]="true"
-    >
-      <ng-container slot="caption-content"> </ng-container>
-    </app-table-primeng>
-  </div>
+<div class="flex justify-content-end">
+  <p-button (onClick)="siguienteTab()" label="Siguiente" />
+</div>
 
-  <p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-  >
-    <form [formGroup]="form">
-      <input pInputText type="hidden" formControlName="iIieeAmbienteId" class="p-inputtext-sm" />
-      <div class="grid p-fluid mt-3">
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input
-              pInputText
-              id="cYAcadNombre"
-              formControlName="cYAcadNombre"
-              aria-describedby="cYAcadNombre-help"
-            />
-            <label for="cYAcadNombre">Descripcion año:</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input
-              pInputText
-              id="cAmbienteNombre"
-              formControlName="cAmbienteNombre"
-              aria-describedby="cAmbienteNombre-help"
-            />
-            <label for="cAmbienteNombre">Nombre ambiente:</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input
-              pInputText
-              id="cAmbienteDescripcion"
-              formControlName="cAmbienteDescripcion"
-              aria-describedby="cAmbienteDescripcion-help"
-            />
-            <label for="cAmbienteDescripcion">Descripción:</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="tipos_ambientes"
-              formControlName="iTipoAmbienteId"
-              appendTo="body"
-            />
-            <label for="iTipoAmbienteId">Tipo de ambiente:</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="ubicaciones_ambientes"
-              [selectOnFocus]="1"
-              formControlName="iUbicaAmbId"
-              appendTo="body"
-            />
-            <label for="iUbicaAmbId">Ubicación:</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="usos_ambientes"
-              [selectOnFocus]="1"
-              formControlName="iUsoAmbId"
-              appendTo="body"
-            />
-            <label for="cUsoAmbNombre">Uso del ambiente</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="estados_ambientes"
-              [selectOnFocus]="1"
-              formControlName="iEstadoAmbId"
-              appendTo="body"
-            />
-            <label for="iEstadoAmbId">Condición de ambiente</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input
-              pInputText
-              type="number"
-              formControlName="iAmbienteAforo"
-              aria-describedby="iAmbienteAforo-help"
-            />
-            <label for="iAmbienteAforo">Aforo máximo</label>
-          </span>
-        </div>
-
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input
-              pInputText
-              type="number"
-              formControlName="iAmbienteArea"
-              aria-describedby="iAmbienteArea-help"
-              id="iAmbienteArea"
-            />
-
-            <label for="iAmbienteArea">Área (m2) </label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="pisos_ambientes"
-              [selectOnFocus]="1"
-              formControlName="iPisoAmbid"
-              appendTo="body"
-            />
-            <label for="iPisoAmbid">Piso</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            <input
-              pInputText
-              formControlName="cAmbienteObs"
-              aria-describedby="cAmbienteObs-help"
-              id="cAmbienteObs"
-            />
-            <label for="cAmbienteObs">Observación </label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-2">
-          <span>
-            <h3>Estado</h3>
-          </span>
-        </div>
-
-        <div class="field col-12 md:col-2">
-          <span class="p-float-label">
-            <p-inputSwitch formControlName="bAmbienteEstado" [trueValue]="1" [falseValue]="0" />
-          </span>
-        </div>
-        <div class="field col-12 md:col-8">
-          <p-inputGroup>
-            <p-inputGroupAddon>
-              <i class="pi pi-link" style="color: #333437"></i>
-            </p-inputGroupAddon>
-            <input
-              type="text"
-              pInputText
-              [placeholder]="filesUrl.length ? filesUrl[0]['name'] : 'seleccionar imagen'"
-              class="w-full p-inputtext-sm opacity-100"
-              pInputText
-              readonly
-            />
-            <button
-              pButton
-              pRipple
-              type="button"
-              severity="primary"
-              class="p-button-primary btn-file-image"
-            >
-              <i class="pi pi-upload"></i
-              ><input type="file" (change)="onUploadChange($event, 'ambiente')" accept=".png " />
-            </button>
-            <button
-              type="button"
-              (click)="openLink(filesUrl.length ? filesUrl[0]['ruta'] : null)"
-              [disabled]="!filesUrl"
-              pButton
-              icon="pi pi-eye"
-              class="p-button-info"
-            >
-              &nbsp;
-            </button>
-          </p-inputGroup>
-        </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
-            @if (option === 'crear') {
-              <p-button
-                label="Guardar"
-                [disabled]="form.invalid"
-                (onClick)="accionBtnItem('guardar')"
-              />
-            }
-            @if (option === 'editar') {
-              <p-button
-                label="Editar"
-                [disabled]="form.invalid"
-                (onClick)="accionBtnItem('editar')"
-                styleClass="p-button-warning"
-              />
-            }
-          </span>
-        </div>
+<p-dialog
+  header="{{ caption }}"
+  [(visible)]="visible"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
+  [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  (onHide)="cerrarDialogo()"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
+          <input
+            pInputText
+            type="text"
+            formControlName="cAmbienteNombre"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
       </div>
-    </form>
-  </p-dialog>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Aforo *</p-inputGroupAddon>
+          <input
+            pInputText
+            type="number"
+            formControlName="iAmbienteAforo"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Estado *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="estados"
+            formControlName="bAmbienteEstado"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Tipo</p-inputGroupAddon>
+          <p-dropdown
+            [options]="tipos_ambientes"
+            formControlName="iTipoAmbienteId"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+            showClear="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Ubicación</p-inputGroupAddon>
+          <p-dropdown
+            [options]="ubicaciones_ambientes"
+            formControlName="iUbicaAmbId"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Piso</p-inputGroupAddon>
+          <p-dropdown
+            [options]="pisos_ambientes"
+            [style]="{ width: '100%' }"
+            formControlName="iPisoAmbid"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Uso</p-inputGroupAddon>
+          <p-dropdown
+            [options]="usos_ambientes"
+            formControlName="iUsoAmbId"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Condición</p-inputGroupAddon>
+          <p-dropdown
+            [options]="estados_ambientes"
+            formControlName="iEstadoAmbId"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Área (m2)</p-inputGroupAddon>
+          <input
+            pInputText
+            type="number"
+            formControlName="iAmbienteArea"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+          <input pInputText formControlName="cAmbienteDescripcion" class="group-element" />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>Observaciones</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cAmbienteObs"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
 
   <div class="flex justify-content-end">
-    <p-button (onClick)="confirm()" label="Siguiente" />
+    <p-button
+      *ngIf="option === 'crear'"
+      label="Guardar"
+      [disabled]="form.invalid"
+      (onClick)="guardarAmbiente()"
+    />
+    <p-button
+      *ngIf="option === 'editar'"
+      label="Editar"
+      [disabled]="form.invalid"
+      (onClick)="actualizarAmbiente()"
+      styleClass="p-button-warning"
+    />
   </div>
-</app-container-page>
+</p-dialog>

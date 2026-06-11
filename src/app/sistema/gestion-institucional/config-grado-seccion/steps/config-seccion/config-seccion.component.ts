@@ -1,33 +1,21 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { StepsModule } from 'primeng/steps';
+import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MenuItem, MessageService, TreeNode } from 'primeng/api';
-import { GeneralService } from '@/app/servicios/general.service';
-import { MultiSelectModule } from 'primeng/multiselect';
-import {
-  ContainerPageComponent,
-  IActionContainer,
-} from '@/app/shared/container-page/container-page.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MenuItem, MessageService } from 'primeng/api';
+import { IActionContainer } from '@/app/shared/container-page/container-page.component';
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-config-seccion',
   standalone: true,
-  imports: [
-    StepsModule,
-    PrimengModule,
-    ContainerPageComponent,
-    TablePrimengComponent,
-    ReactiveFormsModule,
-    MultiSelectModule,
-  ],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './config-seccion.component.html',
   styleUrl: './config-seccion.component.scss',
   providers: [],
@@ -36,97 +24,57 @@ export class ConfigSeccionComponent implements OnInit {
   items: MenuItem[];
   caption: string;
   visible: boolean = false;
-  iServId: number;
+
   form: FormGroup;
-
-  files!: TreeNode[];
-  selectedFiles!: TreeNode[];
-  perfil: any;
-  serv_atencion: [];
-  configuracion: any[];
-
-  grado_seccion_turno: Array<object>;
-  nivel_grados: any[] = [];
-  ciclos: any[];
-  ambientes: any[];
-
-  secciones: any[];
-  seccionesAsignadas: any[];
-  uso: any[];
-  sede: any[];
-
-  diasSelecionados: any[];
-  tutores: any[];
-  formValues: any[];
-  rawData: any[] = [];
-  lista: any = {};
-  bActualizar: boolean = false;
+  formBusqueda: FormGroup;
 
   iConfigId: number;
+  perfil: any;
 
-  private _confirmService = inject(ConfirmationModalService);
+  grados_secciones: any[] = [];
+  grados_secciones_filtrados: any[] = [];
+
+  nivel_grados: any[] = [];
+  secciones: any[] = [];
+  turnos: any[] = [];
+  modalidades_servicio: any[] = [];
+  ambientes: any[] = [];
+
+  bActualizar: boolean = false;
+
   constructor(
+    private confirmService: ConfirmationModalService,
     private stepService: AdmStepGradoSeccionService,
     private router: Router,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: LocalStoreService
   ) {
-    this.perfil = this.stepService.perfil;
-    this.configuracion = this.stepService.configuracion;
-    this.route.paramMap.subscribe((params: any) => {
-      this.iConfigId = params.params.id || null;
+    this.stepService.setActiveIndex(2);
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iConfigId = params.get('id') ? Number(params.get('id')) : null;
     });
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
     try {
       this.form = this.fb.group({
-        iDetConfId: [0],
-        iConfigId: [this.configuracion[0].iConfigId],
-        iTurnoId: [this.configuracion[0].iTurnoId],
-        iServEdId: [{ value: this.configuracion[0].iServEdId, disabled: true }],
+        iConfigId: [this.iConfigId],
+        iDetConfId: [null],
+        iTurnoId: [null, [Validators.required]],
+        iModalServId: [null, [Validators.required]],
         iIieeAmbienteId: [null, Validators.required],
-        iAmbienteAforo: [{ value: '', disabled: true }],
-        iUsoAmbId: [{ value: '', disabled: true }],
-        iYAcadId: [{ value: this.configuracion[0].iYAcadId, disabled: true }],
         iSeccionId: [null, Validators.required],
         iNivelGradoId: [null, Validators.required],
-        cDiasLaborables: [{ value: '', disabled: true }],
-        cModalServId: [
-          {
-            value: this.configuracion[0].cModalServId,
-            disabled: true,
-          },
-        ],
-        cPrograma: [{ value: 'No APLICA', disabled: true }],
-        cServEdNombre: [
-          {
-            value: this.configuracion[0].cServEdNombre,
-            disabled: true,
-          },
-        ],
-        cCicloNombre: [{ value: '', disabled: true }],
-        cFase: [{ value: 'FASE REGULAR', disabled: true }],
-        cNivelNombre: [{ value: '', disabled: true }], //modalidad de servicio
-        cNivelTipoNombre: [{ value: '', disabled: true }],
-        cAmbienteDescripcion: [{ value: '', disabled: true }],
         cDetConfNombreSeccion: ['', Validators.required],
-        iDetConfCantEstudiantes: [0, Validators.required],
+        iDetConfCantEstudiantes: [1, Validators.required],
         cDetConfObs: [''],
-        cTurnoNombre: [
-          {
-            value: this.configuracion[0].cTurnoNombre,
-            disabled: true,
-          },
-        ],
-        cYAcadNombre: [
-          {
-            value: this.configuracion[0].cYAcadNombre,
-            disabled: true,
-          },
-        ], // Control para "Descripcion año"
+      });
+      this.formBusqueda = this.fb.group({
+        textoBusqueda: [''],
+        iNivelGradoId: [null],
       });
     } catch (error) {
       console.error(error, 'Error al inicializar el formulario');
@@ -138,356 +86,262 @@ export class ConfigSeccionComponent implements OnInit {
         iConfigId: this.iConfigId,
       })
       .subscribe((data: any) => {
-        this.grado_seccion_turno = this.stepService.getGradoSeccionTurno(data?.grado_seccion_turno);
-        this.nivel_grados = this.stepService.getNivelGrados(data?.grado_seccion_turno);
+        this.nivel_grados = this.stepService.getNivelGrados(data?.nivel_grados);
+        this.secciones = this.stepService.getSecciones(data?.secciones);
+        this.turnos = this.stepService.getTurnos(data?.turnos);
+        this.modalidades_servicio = this.stepService.getModalidades(data?.modalidades_servicio);
       });
-
-    this.form.get('iNivelGradoId').valueChanges.subscribe(value => {
-      this.secciones = [];
-      this.form.get('iSeccionId')?.setValue(null);
-      if (value) {
-        this.filterSecciones(value);
-        if (this.secciones.length === 1) {
-          this.form.get('iSeccionId')?.setValue(this.secciones[0]['value']);
-        }
-      }
-    });
-    this.form.get('iSeccionId').valueChanges.subscribe(value => {
-      if (value) {
-        const seccion = this.secciones.find(
-          (seccion: any) => Number(seccion.value) === Number(value)
-        );
-      }
-    });
+    this.getAmbientes();
+    this.listarGradosSecciones();
   }
 
-  filterSecciones(iNivelGradoId: any) {
-    this.secciones = this.grado_seccion_turno.reduce((prev: any, current: any) => {
-      const x = prev.find(
-        item => item.id === current.iSeccionId && item.nombre === current.cSeccionNombre
-      );
-      if (!x && Number(current.iNivelGradoId) === Number(iNivelGradoId)) {
-        return prev.concat([
-          {
-            value: current.iSeccionId,
-            label: current.cSeccionNombre,
-            iDetConfCantEstudiantes: current.iDetConfCantEstudiantes,
-          },
-        ]);
-      } else {
-        return prev;
-      }
-    }, []);
-    if (this.secciones.length === 1) {
-      this.form.get('iSeccionId')?.setValue(this.secciones[0]['id']);
-    }
-  }
-
-  accionBtnItemTable({ accion, item }) {
-    if (accion === 'agregar') {
-      this.visible = true;
-      this.bActualizar = false;
-      this.caption = 'Configurar grados y secciones';
-      this.form.get('iNivelGradoId')?.enable();
-      this.form.get('iSeccionId')?.enable();
-    }
-    if (accion === 'retornar') {
-      this._confirmService.openConfiSave({
-        message: '¿Estás seguro de que deseas regresar al paso anterior?',
-        header: 'Advertencia de autoguardado',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          // Acción para eliminar el registro
-          this.router.navigate(['/gestion-institucional/ambiente']);
-        },
-        reject: () => {
-          // Mensaje de cancelación (opcional)
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Cancelado',
-            detail: 'Acción cancelada',
-          });
-        },
-      });
-    }
-
-    if (accion === 'editar') {
-      this.visible = true;
-      this.bActualizar = true;
-      this.caption = 'Actualizar grados y secciones';
-      // +++++++++++++++++++++++actualizar
-      const found1 = this.nivel_grados.find(item1 => item1.iNivelGradoId === item.iNivelGradoId);
-      this.form.get('cCicloNombre')?.setValue(found1.cCicloNombre);
-      this.form.get('cNivelNombre')?.setValue(found1.cNivelNombre);
-      this.form.get('cNivelTipoNombre')?.setValue(found1.cNivelTipoNombre);
-      const found2 = this.ambientes.find(item2 => item2.iIieeAmbienteId === item.iIieeAmbienteId);
-
-      this.form.get('iAmbienteAforo')?.setValue(found2.iAmbienteAforo);
-      this.form.get('cAmbienteDescripcion')?.setValue(found2.cAmbienteDescripcion);
-      this.form.get('iUsoAmbId')?.setValue(found2.iUsoAmbId);
-
-      //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      this.form.patchValue({
-        iDetConfId: item.iDetConfId,
-        //iConfigId: item.iConfigId,
-        // iTurnoId: item.iTurnoId,
-        iIieeAmbienteId: item.iIieeAmbienteId,
-        cDetConfNombreSeccion: item.cDetConfNombreSeccion,
-        iDetConfCantEstudiantes: item.iDetConfCantEstudiantes,
-        cDetConfObs: item.cDetConfObs,
-        iSeccionId: item.iSeccionId,
-        iNivelGradoId: item.iNivelGradoId,
-        cPrograma: 'No APLICA',
-        // iServEdId: this.configuracion[0].iServEdId,
-        cCicloNombre: item.cCicloNombre,
-        cFase: 'FASE REGULAR',
-        iYAcadId: this.configuracion[0].iYAcadId,
-        cYAcadNombre: this.configuracion[0].cYAcadNombre,
-      });
-
-      this.form.get('iNivelGradoId')?.disable();
-      this.form.get('iSeccionId')?.disable();
-    }
-    if (accion === 'eliminar') {
-      const id = Number(item.iIieeAmbienteId);
-      this._confirmService.openConfiSave({
-        header: 'Advertencia de autoguardado',
-        message:
-          'No podrá eliminar si existen grados asignados al ambiente. ¿Estás seguro de que deseas eliminar ambiente?,',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          // Acción para eliminar el registro
-          this.deleteAmbiente(id);
-        },
-        reject: () => {
-          // Mensaje de cancelación (opcional)
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Cancelado',
-            detail: 'Acción cancelada',
-          });
-        },
-      });
-    }
-  }
-
-  validarSeccion() {
-    //comparar la lista de secciones
-    const iNivelGradoId: number = this.form.value.iNivelGradoId;
-    const iSeccionId: number = this.form.value.iSeccionId;
-
-    const registro = this.seccionesAsignadas.some(
-      item =>
-        Number(item.iNivelGradoId) === Number(iNivelGradoId) &&
-        Number(item.iSeccionId) === Number(iSeccionId)
-    );
-    return registro;
-  }
-
-  accionBtnItem(accion) {
-    if (accion === 'guardar') {
-      if (this.validarSeccion()) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail: 'Ya existe nivel grado y sección en la IE',
-        });
-        return;
-      }
-      if (this.form.valid) {
-        this.formValues = this.form.getRawValue();
-        //ALMACENAR LA INFORMACION
-        this.query
-          .addAmbienteAcademico({
-            json: JSON.stringify(this.formValues),
-            _opcion: 'addDetGradoSecciones',
-          })
-          .subscribe({
-            next: (data: any) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje de sistema',
-                detail: 'Se guardó correctamente la sección asignada. ' + data.data[0].id,
-              });
-            },
-            error: error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Mensaje de sistema',
-                detail: 'Error. No se proceso petición: ' + error.error.message,
-              });
-            },
-            complete: async () => {
-              this.seccionesAsignadas = await this.stepService.getSeccionesAsignadas();
-              this.visible = false;
-              // this.clearForm()
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje',
-                detail: 'Proceso exitoso',
-              });
-            },
-          });
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje',
-          detail: 'Llenado incorrecto de formulario',
-        });
-      }
-    }
-    if (accion === 'editar') {
-      if (this.form.valid) {
-        this.formValues = this.form.getRawValue();
-        //ALMACENAR LA INFORMACION
-
-        this.query
-          .addAmbienteAcademico({
-            json: JSON.stringify(this.formValues),
-            _opcion: 'addDetGradoSecciones',
-          })
-          .subscribe({
-            next: (data: any) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje de sistema',
-                detail: 'Se guardó correctamente la sección asignada. ' + data.data[0].id,
-              });
-            },
-            error: error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Mensaje de sistema',
-                detail: 'Error. No se proceso petición: ' + error.error.message,
-              });
-            },
-            complete: async () => {
-              this.seccionesAsignadas = await this.stepService.getSeccionesAsignadas();
-              this.visible = false;
-              // this.clearForm()
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje',
-                detail: 'Proceso exitoso',
-              });
-            },
-          });
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje',
-          detail: 'Llenado incorrecto de formulario',
-        });
-      }
-    }
-  }
-
-  //evento del dropdown
-  onChange(event: any, cbo: string): void {
-    // Captura el valor seleccionado
-    const selected = event.value;
-    if (cbo === 'grado') {
-      // Encuentra el objeto
-      const found = this.nivel_grados.find(item => item.iNivelGradoId === selected);
-      // Encuentra el índice del objeto si existe
-      this.form.get('cCicloNombre')?.setValue(found.cCicloNombre);
-      this.form.get('cNivelNombre')?.setValue(found.cNivelNombre);
-      this.form.get('cNivelTipoNombre')?.setValue(found.cNivelTipoNombre);
-    }
-
-    if (cbo === 'ambiente') {
-      const found = this.ambientes.find(item => item.iIieeAmbienteId === selected);
-      // Encuentra el índice del objeto si existe
-
-      this.form.get('iAmbienteAforo')?.setValue(found.iAmbienteAforo);
-      this.form.get('cAmbienteDescripcion')?.setValue(found.cAmbienteDescripcion);
-      this.form.get('iUsoAmbId')?.setValue(found.iUsoAmbId);
-    }
-  }
-
-  /*getGrado() {
-    
-    this.query
-      .searchGradoCiclo({
-        iNivelTipoId: this.stepService.iNivelTipoId,
+  getAmbientes() {
+    this.stepService
+      .listarAmbientes({
+        iConfigId: this.iConfigId,
       })
       .subscribe({
         next: (data: any) => {
-          this.grados = data.data;
+          if (data.data) {
+            this.ambientes = data.data.map(ambiente => {
+              return {
+                value: Number(ambiente.iIieeAmbienteId),
+                label:
+                  ambiente.cAmbienteNombre + ' (AFORO: ' + (ambiente.iAmbienteAforo ?? 'S/N') + ')',
+              };
+            });
+          }
         },
         error: error => {
+          console.error('Error al obtener datos:', error);
           this.messageService.add({
             severity: 'error',
-            summary: 'Mensaje de sistema',
-            detail: 'Error al cargar los grados:' + error.error.message,
+            summary: 'Error',
+            detail: error.error.message,
           });
-        },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje de sistema',
-            detail: 'Se cargaron los grados correctamente',
-          });
-
-          this.stepService.grados = this.grados;
         },
       });
-  }*/
-  confirm() {
-    this._confirmService.openConfiSave({
-      message: '¿Estás seguro de que deseas guardar y continuar?',
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // Acción para eliminar el registro
-        this.router.navigate(['/gestion-institucional/plan-estudio']);
+  }
+
+  listarGradosSecciones() {
+    this.stepService
+      .listarGradosSecciones({
+        iConfigId: this.iConfigId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.grados_secciones = data.data;
+          this.grados_secciones_filtrados = this.grados_secciones;
+        },
+        error: error => {
+          console.error('Error al obtener datos:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  agregarGradoSeccion() {
+    this.visible = true;
+    this.bActualizar = false;
+    this.caption = 'Configurar grados y secciones';
+  }
+
+  editarGradoSeccion(item: any) {
+    this.visible = true;
+    this.bActualizar = true;
+    this.caption = 'Actualizar grados y secciones';
+    this.setFormGradoSeccion(item);
+  }
+
+  setFormGradoSeccion(item: any) {
+    this.form.patchValue(item);
+    this.form
+      .get('iNivelGradoId')
+      ?.setValue(item.iNivelGradoId ? Number(item.iNivelGradoId) : null);
+    this.form.get('iSeccionId')?.setValue(item.iSeccionId ? Number(item.iSeccionId) : null);
+    this.form.get('iTurnoId')?.setValue(item.iTurnoId ? Number(item.iTurnoId) : null);
+    this.form.get('iModalServId')?.setValue(item.iModalServId ? Number(item.iModalServId) : null);
+    this.form
+      .get('iIieeAmbienteId')
+      ?.setValue(item.iIieeAmbienteId ? Number(item.iIieeAmbienteId) : null);
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      control?.markAsDirty();
+    });
+    this.form.updateValueAndValidity();
+  }
+
+  accionBtnItemTable({ accion, item }) {
+    switch (accion) {
+      case 'editar':
+        this.editarGradoSeccion(item);
+        break;
+      case 'eliminar':
+        this.confirmService.openConfiSave({
+          header: 'Confirmación',
+          message: '¿Realmente desea eliminar este elemento?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.borrarGradoSeccion(item.iDetConfId);
+          },
+        });
+        break;
+    }
+  }
+
+  guardarGradoSeccion() {
+    if (this.form.invalid) {
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Advertencia',
+        detail: 'Complete todos los campos requeridos',
+      });
+      return;
+    }
+
+    this.stepService.guardarGradoSeccion(this.form.value).subscribe({
+      next: () => {
+        this.cerrarDialogo();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registrado',
+          detail: 'Grado seccion registrado exitosamente',
+        });
+        this.listarGradosSecciones();
       },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
+      error: error => {
+        console.error('Error al registrar grado seccion:', error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
+          summary: 'Error',
+          detail: error.error.message,
         });
       },
     });
   }
 
-  deleteAmbiente(id: number) {
-    const params = {
-      esquema: 'acad',
-      tabla: 'iiee_ambientes',
-      campo: 'iIieeAmbienteId',
-      valorId: id,
-    };
-    this.query.deleteAcademico(params).subscribe({
-      next: (data: any) => {
-        const registro = data.data[0];
-        if (registro.result > 0) {
+  actualizarGradoSeccion() {
+    if (this.form.invalid) {
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Advertencia',
+        detail: 'Complete todos los campos requeridos',
+      });
+      return;
+    }
+
+    this.stepService.actualizarGradoSeccion(this.form.value).subscribe({
+      next: () => {
+        this.cerrarDialogo();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Actualizado',
+          detail: 'Grado seccion actualizado exitosamente',
+        });
+        this.listarGradosSecciones();
+      },
+      error: error => {
+        console.error('Error al actualizar grado seccion:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  borrarGradoSeccion(id: number) {
+    this.stepService
+      .borrarGradoSeccion({
+        iDetConfigId: id,
+      })
+      .subscribe({
+        next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Eliminado',
-            detail: 'Registro eliminado correctamente',
+            detail: 'Registro eliminado exitosamente',
           });
-        } else {
+          this.listarGradosSecciones();
+        },
+        error: error => {
+          console.error('Error al eliminar grado seccion:', error);
           this.messageService.add({
             severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: 'No se puede eliminar, ya existen matrículas relacionadas.', //registro.mensaje,
+            summary: 'Error',
+            detail: error.error.message,
           });
-        }
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de error',
-          detail: 'No se pudo eliminar registro' + error.error.message,
-        });
-      },
-      // complete: () => {
-      //   console.log('Request completed');
-      // },
+        },
+      });
+  }
+
+  filtrarTabla() {
+    const textoBusqueda = this.formBusqueda.get('textoBusqueda')?.value.toLowerCase();
+    const iNivelGradoId = this.formBusqueda.get('iNivelGradoId')?.value;
+    this.grados_secciones_filtrados = this.grados_secciones.filter(grado_seccion => {
+      if (
+        iNivelGradoId == null ||
+        (grado_seccion.iNivelGradoId &&
+          Number(grado_seccion.iNivelGradoId) === Number(iNivelGradoId))
+      ) {
+        if (
+          grado_seccion.cGradoNombre &&
+          grado_seccion.cGradoNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+        if (
+          grado_seccion.cSeccionNombre &&
+          grado_seccion.cSeccionNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+        if (
+          grado_seccion.cAmbienteNombre &&
+          grado_seccion.cAmbienteNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+        if (
+          grado_seccion.cTurnoNombre &&
+          grado_seccion.cTurnoNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+        if (
+          grado_seccion.cModalServNombre &&
+          grado_seccion.cModalServNombre.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+        if (
+          grado_seccion.cDetConfNombreSeccion &&
+          grado_seccion.cDetConfNombreSeccion.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+        if (
+          grado_seccion.iDetConfCantEstudiantes &&
+          grado_seccion.iDetConfCantEstudiantes.toLowerCase().includes(textoBusqueda)
+        )
+          return grado_seccion;
+      } else {
+        return null;
+      }
     });
+  }
+
+  siguienteTab() {
+    this.router.navigate([`/gestion-institucional/config/${this.iConfigId}/ambiente`]);
+  }
+
+  cerrarDialogo() {
+    this.visible = false;
+    this.limpiarFormulario();
+  }
+
+  limpiarFormulario() {
+    this.form.reset();
+    this.form.get('iConfigId')?.setValue(this.iConfigId);
   }
 
   accionesPrincipal: IActionContainer[] = [
@@ -505,18 +359,9 @@ export class ConfigSeccionComponent implements OnInit {
       accion: 'agregar',
       class: 'p-button-primary',
     },
-    // {
-    //     labelTooltip: 'Generar reporte',
-    //     text: 'Reporte',
-    //     icon: 'pi pi-file-pdf',
-    //     accion: 'reporte',
-    //     class: 'p-button-danger',
-    // },
   ];
 
-  accionesTable: IActionContainer[] = [
-    //
-  ];
+  accionesTable: IActionContainer[] = [];
 
   selectedItems = [];
 
@@ -528,107 +373,76 @@ export class ConfigSeccionComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Eliminar',
-    //   icon: 'pi pi-trash',
-    //   accion: 'eliminar',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+    },
   ];
 
   actionsLista: IActionTable[];
   columns = [
     {
-      type: 'item',
-      width: '1rem',
-      field: 'item',
-      header: '',
-      text_header: 'left',
-      text: 'left',
-    },
-    // {
-    //     type: 'arrayColumn',
-    //     width: '35%',
-    //     field: 'arrayAmbientes',
-    //     header: 'Ambiente',
-    //     text_header: 'center',
-    //     text: 'center',
-    // },
-    {
       type: 'text',
-      width: '5rem',
-      field: 'cAmbienteNombre',
-      header: 'Ambiente',
-      text_header: 'center',
-      text: 'center',
-    },
-
-    {
-      type: 'text',
-      width: '5rem',
+      width: '15%',
       field: 'cGradoNombre',
       header: 'Grado',
       text_header: 'center',
-      text: 'center',
+      text: 'left',
     },
-
     {
       type: 'text',
-      width: '5rem',
-      field: 'cCicloRomanos',
-      header: 'Ciclo',
-      text_header: 'center',
-      text: 'center',
-    },
-
-    {
-      type: 'text',
-      width: '5rem',
+      width: '10%',
       field: 'cSeccionNombre',
       header: 'Sección',
       text_header: 'center',
       text: 'center',
     },
-
     {
       type: 'text',
-      width: '5rem',
+      width: '20%',
+      field: 'cDetConfNombreSeccion',
+      header: 'Nombre',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '20%',
+      field: 'cAmbienteNombre',
+      header: 'Ambiente',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '10%',
       field: 'iDetConfCantEstudiantes',
       header: 'Vacantes',
       text_header: 'center',
       text: 'center',
     },
-
-    // {
-    //   type: 'text',
-    //   width: '30%',
-    //   field: 'nombres',
-    //   header: 'Tutor',
-    //   text_header: 'center',
-    //   text: 'center',
-    // },
-
     {
       type: 'text',
-      width: '5rem',
+      width: '10%',
       field: 'cTurnoNombre',
       header: 'Turno',
       text_header: 'center',
       text: 'center',
     },
-    // {
-    //     type: 'text',
-    //     width: '5rem',
-    //     field: 'cModalServNombre',
-    //     header: 'Servicio',
-    //     text_header: 'center',
-    //     text: 'center',
-    // },
-
+    {
+      type: 'text',
+      width: '10%',
+      field: 'cModalServNombre',
+      header: 'Modalidad',
+      text_header: 'center',
+      text: 'center',
+    },
     {
       type: 'actions',
-      width: '3rem',
+      width: '5%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',

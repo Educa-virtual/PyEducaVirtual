@@ -139,7 +139,7 @@ export class ConfigAmbienteComponent implements OnInit {
     this.ambientes_filtrados = this.ambientes.filter(ambiente => {
       if (
         bAmbienteEstado == null ||
-        (ambiente.bAmbienteEstado && ambiente.bAmbienteEstado == bAmbienteEstado)
+        (ambiente.bAmbienteEstado && Number(ambiente.bAmbienteEstado) == Number(bAmbienteEstado))
       ) {
         if (
           ambiente.cAmbienteNombre &&

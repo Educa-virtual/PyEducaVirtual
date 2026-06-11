@@ -1,325 +1,199 @@
-<app-container-page
-  title="Registrar secciones"
-  [actions]="accionesPrincipal"
-  (accionBtnItem)="accionBtnItemTable($event)"
->
-  <div class="card">
-    <p-steps [model]="items" [readonly]="true"></p-steps>
-  </div>
-</app-container-page>
-
-<!--Bloque para estructura-->
-<!-- <p-splitter
-    [panelSizes]="[30, 70]"
-    [style]="{ height: '400px' }"
-    styleClass="mb-5"
->
-    <ng-template pTemplate>
-        <div class="col flex align-items-top">
-            <div
-                class="card flex flex-column align-items-left justify-content-top"
-            >
-                <div class="align-items-left">
-                    <p><strong>ESTRUCTURA DE GRADOS/EDADES</strong></p>
-                </div>
-                <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
-                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" />
-                <div class="scrollable-panel">
-                    <app-tree-view-primeng
-                        [treeDataRaw]="rawData"
-                        [seccionesPorGrado]="lista"
-                    ></app-tree-view-primeng>
-                </div>
-            </div>
-        </div>
-    </ng-template> -->
-
-<!--Bloque para buscador-->
-<!-- <ng-template pTemplate> -->
-<div class="col flex align-items-top justify-content-center">
-  <div [style]="{ width: '100%' }" class="field col-12 md:col-12">
-    <div class="card">
-      <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="true"
-        [data]="seccionesAsignadas"
-        [scrollable]="true"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        [showAdvancedFilter]="true"
-        [(selectedRowData)]="selectedItems"
-        [actions]="actions"
-      >
-        <!-- <ng-container slot="caption-content"> </ng-container> -->
-      </app-table-primeng>
-      <ng-container slot="caption-content"> </ng-container>
+<form [formGroup]="formBusqueda">
+  <div class="grid p-fluid mt-4">
+    <div class="col-12 md:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Grado</p-inputGroupAddon>
+        <p-dropdown
+          [options]="nivel_grados"
+          styleClass="group-element"
+          formControlName="iNivelGradoId"
+          [style]="{ flex: 1, width: '100%' }"
+          showClear="true"
+          appendTo="body"
+          (onChange)="filtrarTabla()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-7">
+      <p-inputGroup>
+        <p-inputGroupAddon>Buscar</p-inputGroupAddon>
+        <input
+          pInputText
+          type="text"
+          formControlName="textoBusqueda"
+          (keyup)="filtrarTabla()"
+          class="group-element"
+          [style]="{ flex: 1, width: '100%' }"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-2">
+      <p-button
+        icon="pi pi-fw pi-plus"
+        label="Agregar"
+        (onClick)="agregarGradoSeccion()"
+        severity="success"
+        class="w-full"
+      />
     </div>
   </div>
+</form>
+
+<app-table-primeng
+  [columnas]="columns"
+  [showCaption]="false"
+  [data]="grados_secciones_filtrados"
+  (accionBtnItem)="accionBtnItemTable($event)"
+  [showPaginator]="true"
+  [(selectedRowData)]="selectedItems"
+  [actions]="actions"
+/>
+
+<div class="flex justify-content-end">
+  <p-button (onClick)="siguienteTab()" label="Siguiente" />
 </div>
-<!-- </ng-template>
-</p-splitter> -->
 
 <p-dialog
   header="{{ caption }}"
   [(visible)]="visible"
-  [style]="{ width: '80rem' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
   [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  (onHide)="cerrarDialogo()"
   [resizable]="true"
   [maximizable]="true"
 >
   <form [formGroup]="form">
     <div class="grid p-fluid mt-3">
-      <input pInputText type="hidden" formControlName="iConfigId" class="p-inputtext-sm" />
-      <input pInputText type="hidden" formControlName="iDetConfId" class="p-inputtext-sm" />
-
-      <div class="field col-12 md:col-2">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cYAcadNombre"
-            formControlName="cYAcadNombre"
-            aria-describedby="cYAcadNombre-help"
-          />
-          <label for="cYAcadNombre">Año escolar:</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-2">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cPrograma"
-            formControlName="cPrograma"
-            aria-describedby="cPrograma-help"
-          />
-          <label for="cPrograma">Programa:</label>
-        </span>
-      </div>
-      <div class="field col-12 md:col-2">
-        <span class="p-float-label">
-          <input pInputText id="cFase" formControlName="cFase" aria-describedby="cFase-help" />
-          <label for="cFase">Fase regular:</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-6">
-        <span class="p-float-label">
-          <span class="p-float-label">
-            <input
-              pInputText
-              id="cServEdNombre"
-              formControlName="cServEdNombre"
-              aria-describedby="cServEdNombre-help"
-            />
-            <label for="cServEdNombre">Modelo de servicio de atención</label>
-          </span>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Grado *</p-inputGroupAddon>
           <p-dropdown
             [options]="nivel_grados"
             formControlName="iNivelGradoId"
-            [checkmark]="true"
             [showClear]="true"
-            (onChange)="onChange($event, 'grado')"
+            appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
           />
-
-          <label for="iNivelGradoId">Grados</label>
-        </span>
+        </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cCicloNombre"
-            formControlName="cCicloNombre"
-            aria-describedby="cCicloNombre-help"
-          />
-          <label for="cCicloNombre">Ciclo</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cNivelNombre"
-            formControlName="cNivelNombre"
-            aria-describedby="cNivelNombre-help"
-          />
-          <label for="cNivelNombre">Modalidad regular :</label>
-        </span>
-      </div>
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cNivelTipoNombre"
-            formControlName="cNivelTipoNombre"
-            aria-describedby="cNivelTipoNombre-help"
-          />
-          <label for="cNivelTipoNombre">Nivel modular :</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <p-dropdown
-            [options]="ambientes"
-            formControlName="iIieeAmbienteId"
-            optionLabel="cAmbienteNombre"
-            [checkmark]="true"
-            optionValue="iIieeAmbienteId"
-            (onChange)="onChange($event, 'ambiente')"
-            [filter]="true"
-            filterBy="cAmbienteNombre"
-          />
-
-          <label for="iIieeAmbienteId">Asignar ambientes</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cAmbienteDescripcion"
-            formControlName="cAmbienteDescripcion"
-            aria-describedby="cAmbienteDescripcion-help"
-          />
-          <label for="cAmbienteDescripcion">Descripción de ambiente :</label>
-        </span>
-      </div>
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="iAmbienteAforo"
-            formControlName="iAmbienteAforo"
-            aria-describedby="iAmbienteAforo-help"
-          />
-          <label for="iAmbienteAforo">Aforo de ambiente :</label>
-        </span>
-      </div>
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
-          <p-dropdown
-            [options]="uso"
-            formControlName="iUsoAmbId"
-            optionLabel="cUsoAmbNombre"
-            [checkmark]="true"
-            optionValue="iUsoAmbId"
-          />
-          <label for="iUsoAmbId">Uso de ambiente</label>
-        </span>
-      </div>
-
-      <!-- <div class="field col-12 md:col-2">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cTurnoNombre"
-            formControlName="cTurnoNombre"
-            aria-describedby="cTurnoNombre-help"
-          />
-          <label for="cTurnoNombre">Turno</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-4">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cModalServId"
-            formControlName="cModalServId"
-            aria-describedby="cModalServId-help"
-          />
-          <label for="cModalServId">Descripción </label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-6">
-        <span class="p-float-label">
-          <input
-            pInputText
-            id="cDiasLaborables"
-            formControlName="cDiasLaborables"
-            aria-describedby="cDiasLaborables-help"
-          />
-          <label for="cDiasLaborables">Dias laborables </label>
-        </span>
-      </div> -->
-
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Sección *</p-inputGroupAddon>
           <p-dropdown
             [options]="secciones"
             formControlName="iSeccionId"
-            optionLabel="cSeccionDescripcion"
-            [checkmark]="true"
-            optionValue="iSeccionId"
             [showClear]="true"
-            [filter]="true"
-            filterBy="cSeccionDescripcion"
             appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
           />
-
-          <label for="iSeccionId">Nombre sección </label>
-        </span>
+        </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-3">
-        <span class="p-float-label">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Turno *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="turnos"
+            formControlName="iTurnoId"
+            [showClear]="true"
+            appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Modalidad *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="modalidades_servicio"
+            formControlName="iModalServId"
+            [showClear]="true"
+            appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Ambiente *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="ambientes"
+            formControlName="iIieeAmbienteId"
+            [showClear]="true"
+            appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Vacantes *</p-inputGroupAddon>
           <p-inputNumber
             formControlName="iDetConfCantEstudiantes"
-            aria-describedby="iDetConfCantEstudiantes-help"
+            [min]="1"
+            [step]="1"
+            placeholder="Indique"
+            [useGrouping]="false"
+            [showButtons]="true"
+            styleClass="group-element"
           />
-          <label for="iDetConfCantEstudiantes">Cantidad de estudiantes</label>
-        </span>
+        </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-6">
-        <span class="p-float-label">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
           <input
             pInputText
-            id="cDetConfNombreSeccion"
+            type="text"
             formControlName="cDetConfNombreSeccion"
-            aria-describedby="cDetConfNombreSeccion-help"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
           />
-          <label for="cDetConfNombreSeccion">Descripción </label>
-        </span>
+        </p-inputGroup>
       </div>
-
-      <div class="field col-12 md:col-12">
-        <span class="p-float-label">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Observaciones</p-inputGroupAddon>
           <input
             pInputText
-            id="cDetConfObs"
+            type="text"
             formControlName="cDetConfObs"
-            [value]="this.form.get('cDetConfObs')?.value | uppercase"
-            aria-describedby="cDetConfObs-help"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
           />
-          <label for="cDetConfObs">Observacion:</label>
-        </span>
+        </p-inputGroup>
       </div>
     </div>
+  </form>
+
+  <div class="flex justify-content-end">
     <p-button
       label="Guardar"
       [disabled]="form.invalid"
-      (onClick)="accionBtnItem('guardar')"
-      styleClass="p-button-success"
+      (onClick)="guardarGradoSeccion()"
+      severity="success"
       *ngIf="!bActualizar"
     />
     <p-button
       label="Editar"
       [disabled]="form.invalid"
-      (onClick)="accionBtnItem('editar')"
+      (onClick)="actualizarGradoSeccion()"
       styleClass="p-button-warning"
+      severity="warning"
       *ngIf="bActualizar"
     />
-  </form>
+  </div>
 </p-dialog>
-<div class="flex justify-content-end">
-  <p-button (onClick)="confirm()" label="Siguiente" />
-</div>
-<p-toast />
+
+<p-toast></p-toast>

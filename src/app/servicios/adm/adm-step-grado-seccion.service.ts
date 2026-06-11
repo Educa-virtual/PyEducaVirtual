@@ -6,54 +6,6 @@ import { environment } from '@/environments/environment';
 
 const baseUrl = environment.backendApi;
 
-export interface ConfigTipo {
-  iEstadoConfigId: number;
-  cEstadoConfigNombre: string;
-}
-
-export interface Grado {
-  iConfigGradoId: number;
-  iCicloId: number;
-  iGradoId: number;
-  iFasesPromId: number;
-  iYAcadId: number;
-  iSedeId: number;
-  bConfigGradoEstado: number;
-  cConfigGradoObs: string;
-  cYAcadNombre: string;
-  cFase: string;
-  cCiclo: string;
-  cGrado: string;
-}
-
-export interface Ambientes {
-  iIieeAmbienteId: number;
-  iTipoAmbienteId: number;
-  cTipoAmbienteNombre: string;
-  iEstadoAmbId: number;
-  cEstadoAmbNombre: string;
-  iUbicaAmbId: number;
-  cUbicaAmbNombre: string;
-  iUsoAmbId: number;
-  ambiente: string;
-  cUsoAmbNombre: string;
-  cUsoAmbDescripcion: string;
-  iPisoAmbid: number;
-  cPisoAmbNombre: string;
-  cPisoAmbDescripcion: string;
-  iYAcadId: number;
-  cYAcadNombre: string;
-  iSedeId: number;
-  cSedeNombre: string;
-  iIieeId: number;
-  bAmbienteEstado: boolean;
-  cAmbienteNombre: string;
-  cAmbienteObs: string;
-  iAmbienteArea: number;
-  iAmbienteAforo: number;
-  cAmbienteDescripcion: string;
-}
-
 export interface ListaConfig {
   iConfigId: number;
   iEstadoConfigId: number;
@@ -74,8 +26,6 @@ export class AdmStepGradoSeccionService {
   private query = inject(GeneralService);
 
   // Propiedades
-  configTipo: ConfigTipo[] = [];
-  ambientes: Ambientes[] = null;
   grados: any = null;
   listaConfig: ListaConfig[] = [];
 
@@ -100,6 +50,7 @@ export class AdmStepGradoSeccionService {
   nivel_grados: Array<object>;
   secciones: Array<object>;
   turnos: Array<object>;
+  modalidades_servicio: Array<object>;
   estados_configuracion: Array<object>;
   tipos_ambientes: Array<object>;
   estados_ambientes: Array<object>;
@@ -165,27 +116,6 @@ export class AdmStepGradoSeccionService {
     return this.grado_seccion_turno;
   }
 
-  getNivelGrados(data: any) {
-    if (!this.nivel_grados && data) {
-      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.nivel_grados = items.reduce((prev: any, current: any) => {
-        const x = prev.find(item => item.value === current.iNivelGradoId);
-        if (!x) {
-          return prev.concat([
-            {
-              value: Number(current.iNivelGradoId),
-              label: current.cGradoAbreviacion + ' ' + current.cGradoNombre,
-            },
-          ]);
-        } else {
-          return prev;
-        }
-      }, []);
-      return this.nivel_grados;
-    }
-    return this.nivel_grados;
-  }
-
   filterSecciones(data: any, iNivelGradoId: any) {
     if (data) {
       const secciones = data.filter(item => item.iNivelGradoId === iNivelGradoId);
@@ -215,6 +145,54 @@ export class AdmStepGradoSeccionService {
       return this.turnos;
     }
     return this.turnos;
+  }
+
+  getNivelGrados(data: any) {
+    if (!this.nivel_grados && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.nivel_grados = items.map(item => ({
+        value: Number(item.iNivelGradoId),
+        label: item.cGradoAbreviacion + ' ' + item.cGradoNombre,
+      }));
+      return this.nivel_grados;
+    }
+    return this.nivel_grados;
+  }
+
+  getSecciones(data: any) {
+    if (!this.secciones && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.secciones = items.map(item => ({
+        value: Number(item.iSeccionId),
+        label: item.cSeccionNombre,
+      }));
+      return this.secciones;
+    }
+    return this.secciones;
+  }
+
+  getTurnos(data: any) {
+    if (!this.turnos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.turnos = items.map(item => ({
+        value: Number(item.iTurnoId),
+        label: item.cTurnoNombre,
+      }));
+      return this.turnos;
+    }
+    return this.turnos;
+  }
+
+  getModalidades(data: any) {
+    if (!this.modalidades_servicio && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.modalidades_servicio = items.map(item => ({
+        value: Number(item.iModalServId),
+        label: item.cModalServNombre,
+      }));
+      return this.modalidades_servicio;
+    }
+    return this.modalidades_servicio;
   }
 
   getEstadosConfiguracion(data: any) {
@@ -319,10 +297,6 @@ export class AdmStepGradoSeccionService {
     return null;
   }
 
-  async getSecciones() {
-    return null;
-  }
-
   async getSeccionesAsignadas() {
     return null;
   }
@@ -373,5 +347,25 @@ export class AdmStepGradoSeccionService {
 
   borrarAmbiente(data: any) {
     return this.http.post(`${baseUrl}/acad/borrarAmbiente`, data);
+  }
+
+  listarGradosSecciones(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarGradosSecciones`, data);
+  }
+
+  verGradoSeccion(data: any) {
+    return this.http.post(`${baseUrl}/acad/verGradoSeccion`, data);
+  }
+
+  guardarGradoSeccion(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarGradoSeccion`, data);
+  }
+
+  actualizarGradoSeccion(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarGradoSeccion`, data);
+  }
+
+  borrarGradoSeccion(data: any) {
+    return this.http.post(`${baseUrl}/acad/borrarGradoSeccion`, data);
   }
 }

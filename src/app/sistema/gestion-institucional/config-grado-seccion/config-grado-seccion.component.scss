@@ -45,8 +45,8 @@
 }
 
 :host ::ng-deep .p-inputgroup .group-element:last-child,
-:host ::ng-deep .p-inputgroup .p-inputtextarea,
-:host ::ng-deep .p-inputgroup .group-element.p-inputtext {
+:host ::ng-deep .p-inputgroup .p-inputtextarea:last-child,
+:host ::ng-deep .p-inputgroup .group-element.p-inputtext:last-child {
   border-top-right-radius: 0.5rem !important;
   border-bottom-right-radius: 0.5rem !important;
   border-top-left-radius: 0rem !important;

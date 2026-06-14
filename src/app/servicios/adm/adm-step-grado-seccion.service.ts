@@ -47,6 +47,8 @@ export class AdmStepGradoSeccionService {
   grado_seccion_turno: Array<object>;
   tipos_documentos: Array<object>;
   sexos: Array<object>;
+  cursos: Array<object>;
+  cursos_curricula: Array<object>;
   nivel_grados: Array<object>;
   secciones: Array<object>;
   turnos: Array<object>;
@@ -147,12 +149,41 @@ export class AdmStepGradoSeccionService {
     return this.turnos;
   }
 
+  getCursos(data: any) {
+    if (!this.cursos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.cursos = items.map(item => ({
+        value: Number(item.iCursoId),
+        label: item.cCursoNombre,
+      }));
+      return this.cursos;
+    }
+    return this.cursos;
+  }
+
+  getCursosCurricula(data: any) {
+    if (!this.cursos_curricula && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.cursos_curricula = items.map(item => ({
+        value: Number(item.iCursoId),
+        label: item.cCursoNombre,
+        iConfPlanId: item.iConfPlanId,
+        iHorasSemPresencial: item.iHorasSemPresencial,
+        iHorasSemDomicilio: item.iHorasSemDomicilio,
+        iTotalHoras: item.iTotalHoras,
+      }));
+      return this.cursos_curricula;
+    }
+    return this.cursos_curricula;
+  }
+
   getNivelGrados(data: any) {
     if (!this.nivel_grados && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.nivel_grados = items.map(item => ({
         value: Number(item.iNivelGradoId),
         label: item.cGradoAbreviacion + ' ' + item.cGradoNombre,
+        iTotalHorasMinimo: item.iTotalHorasMinimo ?? 0,
       }));
       return this.nivel_grados;
     }
@@ -367,5 +398,25 @@ export class AdmStepGradoSeccionService {
 
   borrarGradoSeccion(data: any) {
     return this.http.post(`${baseUrl}/acad/borrarGradoSeccion`, data);
+  }
+
+  listarIeCursos(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarIeCursos`, data);
+  }
+
+  verIeCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/verIeCurso`, data);
+  }
+
+  guardarIeCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarIeCurso`, data);
+  }
+
+  actualizarIeCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarIeCurso`, data);
+  }
+
+  actualizarIeCursoEstado(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarIeCursoEstado`, data);
   }
 }

@@ -1,346 +1,312 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { StepsModule } from 'primeng/steps';
+import { Component, OnInit } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MenuItem, Message, MessageService } from 'primeng/api';
-import { GeneralService } from '@/app/servicios/general.service';
-
-import {
-  ContainerPageComponent,
-  IActionContainer,
-} from '@/app/shared/container-page/container-page.component';
-import { TypesFilesUploadPrimengComponent } from '../../../../../shared/types-files-upload-primeng/types-files-upload-primeng.component';
+import { MessageService } from 'primeng/api';
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { AsignarHorasComponent } from './asignar-horas/asignar-horas.component';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-config-plan-estudios',
   standalone: true,
-  imports: [
-    StepsModule,
-    PrimengModule,
-    ContainerPageComponent,
-    TablePrimengComponent,
-    TypesFilesUploadPrimengComponent,
-    AsignarHorasComponent,
-  ],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './config-plan-estudios.component.html',
   styleUrl: './config-plan-estudios.component.scss',
 })
 export class ConfigPlanEstudiosComponent implements OnInit {
-  items: MenuItem[];
-  planes: [];
+  perfil: any[] = [];
+  iConfigId: number;
+
   form: FormGroup;
-  formNivelGrado: FormGroup;
-  //formFiltrado: FormGroup;
+  formBusqueda: FormGroup;
 
-  caption: string;
+  mensajeTexto: string = 'Seleccione un grado para ver sus horas';
+  mensajeSeverity: string = 'info';
   visible: boolean = false;
-  configuracion: any[];
-  uploadedFiles: any[] = [];
-  typesFiles = {
-    //archivos
-    file: true,
-    url: false,
-    youtube: false,
-    repository: false,
-    image: false,
-  };
-  filesUrl = []; //archivos
-  enlace: string;
-  event: string;
-  selectedItems = [];
 
-  nivelesCiclos = [];
-  niveles = [];
-  dynamicColumns = [];
-  groupedData = [];
-  lista: any = [];
+  ie_cursos: any[] = [];
+  ie_cursos_filtrado: any[] = [];
 
-  //Validaro para actualiza plan curricular
-  bAgregar: boolean;
-  mensaje: Message[] = [
-    {
-      severity: 'info',
-      detail: 'No cuenta con un servicio educativo asignado a su Institución Educativa.',
-    },
-  ];
+  iTotalHorasMinimo: number = 0;
+  iTotalHorasAprobadas: number = 0;
 
-  private _confirmService = inject(ConfirmationModalService);
+  nivel_grados: any[] = null;
+  areas: any[] = [];
+  areas_curricula: any[] = [];
+
+  gradoSeleccionado: boolean = false;
+
   constructor(
-    private stepService: AdmStepGradoSeccionService,
-    private router: Router,
+    private _confirmService: ConfirmationModalService,
     private fb: FormBuilder,
+    private router: Router,
     private messageService: MessageService,
-    private query: GeneralService
+    private stepService: AdmStepGradoSeccionService,
+    private route: ActivatedRoute,
+    private store: LocalStoreService
   ) {
-    this.configuracion = this.stepService.configuracion;
+    this.stepService.setActiveIndex(3);
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iConfigId = params.get('id') ? Number(params.get('id')) : null;
+    });
   }
 
   ngOnInit(): void {
     try {
-      //bd iiee_ambientes
-      //this.visible = true
-      this.form = this.fb.group({
-        iPlanes: [0], //codigo de tabla_iiee_ambientes
-        cPlanes: ['', Validators.required], // tabla_iiee_ambientes (FK)
-        cUrlPlanes: ['', Validators.required], // tabla_iiee_ambientes (FK)
-        cObsPlanes: [''],
-
-        iYAcadId: [this.configuracion[0].iYAcadId], // tabla_iiee_ambientes (FK)
-        iSedeId: [this.configuracion[0].iSedeId], // tabla_iiee_ambientes (FK)
-
-        // ambiente: [''],
-        cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
+      this.formBusqueda = this.fb.group({
+        iNivelGradoId: [null],
       });
-      this.bAgregar = this.configuracion[0]?.iServEdId != null;
+      this.form = this.fb.group({
+        iIeCursoId: [null],
+        iCursosNivelGradId: [null, Validators.required],
+        iCursoId: [null, Validators.required],
+        iHorasSemPresencial: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
+        iHorasSemDomicilio: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
+        iTotalHoras: [{ value: 0, disabled: true }, Validators.required],
+        iHorasSemPresencialMinedu: [{ value: null, disabled: true }],
+        iHorasSemDomicilioMinedu: [{ value: null, disabled: true }],
+        iTotalHorasMinedu: [{ value: null, disabled: true }],
+        iHorasMiniminas: [0],
+        iConfPlanId: [null],
+        iPorcentajeAporte: [0, [Validators.min(0), Validators.max(100)]],
+      });
     } catch (error) {
-      this.router.navigate(['/gestion-institucional/configGradoSeccion']);
+      console.error('Error al inicializar el formulario:', error);
     }
 
-    // this.formFiltrado = this.fb.group({
-    //   iGradoId: [{value :0, Disable: true}],
-    //   cCurso: [''],
-    // });
+    this.stepService
+      .crearConfiguracion({
+        iConfigId: this.iConfigId,
+      })
+      .subscribe((data: any) => {
+        this.nivel_grados = this.stepService.getNivelGrados(data?.nivel_grados);
+        this.areas = this.stepService.getCursos(data?.cursos);
+        this.areas_curricula = this.stepService.getCursosCurricula(data?.cursos_curricula);
+      });
 
-    this.formNivelGrado = this.fb.group({
-      //   iNivelGradoId : [0],
-      cGradoNombre: [''],
-      cCicloNombre: [''],
-      cNivelNombre: [''],
-      cNivelTipoNombre: [''],
-
-      cDeclaracionJurada: [''],
-      cCursoNombre: [''],
-      iHorasSemPresencial: [0],
-      iHorasSemDomicilio: [0],
-      iTotalHoras: [0],
-    });
-    //  this.getCursosNivelGrado()
+    this.listarIeCursos();
   }
 
-  getCursosNivelGrado() {
-    //alert(this.stepService.iNivelTipoId )
-    this.query
-      .searchAmbienteAcademico({
-        json: JSON.stringify({
-          iNivelGradoId: this.stepService.iNivelTipoId,
-        }),
-        _opcion: 'getCursosNivelGrado',
+  listarIeCursos(iNivelGradoId: any = null) {
+    this.stepService
+      .listarIeCursos({
+        iConfigId: this.iConfigId,
       })
       .subscribe({
         next: (data: any) => {
-          this.lista = this.extraerAsignatura(data.data);
-          this.nivelesCiclos = data.data;
-
-          const grouped = this.nivelesCiclos.reduce((acc, item) => {
-            const curso = item.cCursoNombre;
-            const grado = item.cGradoNombre + '(' + item.cCicloRomanos + ')'; //item.cGradoNombre; // Nombre ded grado
-            const hora = item.nCursoTotalHoras; // hora total
-
-            if (!acc[curso]) {
-              acc[curso] = {
-                iCursoId: item.iCursoId,
-                cCursoNombre: item.cCursoNombre,
-                cNivelNombre: item.cNivelNombre,
-                cNivelTipoNombre: item.cNivelTipoNombre,
-                cCicloNombre: item.cCicloNombre,
-                grades: {},
-              };
-            }
-            acc[curso].grades[grado] = <number>hora;
-            return acc;
-          }, {});
-
-          // this.groupedData  = Object.values(grouped);
-          this.groupedData = Object.values(grouped);
-
-          // Generar columnas dinámicas (grados únicos)
-          const allGrades = this.nivelesCiclos.map(
-            item => item.cGradoNombre + '(' + item.cCicloRomanos + ')'
-          );
-          this.dynamicColumns = Array.from(new Set(allGrades));
+          this.ie_cursos = data.data;
+          if (iNivelGradoId) {
+            this.ie_cursos_filtrado = this.ie_cursos.filter(
+              item => Number(item.iNivelGradoId) === Number(iNivelGradoId)
+            );
+          }
         },
-
         error: error => {
+          console.error('Error al obtener datos:', error);
           this.messageService.add({
             severity: 'error',
-            summary: 'Mensaje',
-            detail: 'Petición denegada. ' + error.error.message,
+            summary: 'Error',
+            detail: error.error.message,
           });
         },
       });
   }
 
-  extraerAsignatura(Asignatura) {
-    // Agrupar las secciones por grado
-    const agruparSeccionesPorGrado = (datos: any[]): Record<string, string[]> => {
-      return datos.reduce(
-        (acumulador, item) => {
-          const curso = item.cCursoNombre; // Nombre del curso
-          const grado = item.cGradoNombre; // Nombre ded grado
-          const hora = item.iCursoTotalHoras; // hora total
-
-          // Si el grado no existe en el acumulador, inicializarlo como un array vacío
-          if (!acumulador[curso]) {
-            acumulador[curso] = [];
-          }
-
-          // Agregar la sección al grado (evitando duplicados)
-          if (!acumulador[curso].includes(grado)) {
-            acumulador[curso].push(grado);
-            acumulador[curso].push(hora);
-          }
-
-          return acumulador;
-        },
-        {} as Record<string, string[]>
-      );
-    };
-
-    // Usar la función para agrupar las secciones
-    const resultado = agruparSeccionesPorGrado(Asignatura);
-    return resultado;
+  validarCursoMinedu() {
+    const iConfPlanId = this.form.value.iConfPlanId;
+    const curso_minedu = this.ie_cursos_filtrado.filter(
+      item => Number(item.iConfPlanId) === Number(iConfPlanId)
+    );
+    this.form.patchValue({
+      iHorasSemPresencialMinedu:
+        curso_minedu.length > 0 ? curso_minedu[0].iHorasSemPresencial : null,
+      iHorasSemDomicilioMinedu: curso_minedu.length > 0 ? curso_minedu[0].iHorasSemDomicilio : null,
+      iTotalHorasMinedu: curso_minedu.length > 0 ? curso_minedu[0].iTotalHoras : null,
+    });
   }
 
-  confirm() {
-    this._confirmService.openConfiSave({
-      message: '¿Estás seguro de que deseas guardar y continuar?',
-      header: 'Advertencia de autoguardado',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // Acción para eliminar el registro
-        this.router.navigate(['/gestion-institucional/hora-docente']);
+  siguienteTab() {
+    this.router.navigate([`/gestion-institucional/config/${this.iConfigId}/seccion`]);
+  }
+
+  setForm(item: any) {
+    this.form.patchValue(item);
+    this.form.get('iCursoId').setValue(item.iCursoId ? Number(item.iCursoId) : null);
+    this.form.get('iConfPlanId').setValue(item.iConfPlanId ? Number(item.iConfPlanId) : null);
+  }
+
+  agregarIeCurso() {
+    this.setForm({ iConfigId: this.iConfigId });
+    this.visible = true;
+  }
+
+  accionBtnItemTable({ accion, item }) {
+    switch (accion) {
+      case 'editar':
+        this.visible = true;
+        this.setForm(item);
+        break;
+      case 'activar':
+        this._confirmService.openConfiSave({
+          header: 'Confirmación',
+          message: '¿Desea activar esta área curricular?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.actualizarEstado(item, 1);
+          },
+        });
+        break;
+      case 'desactivar':
+        this._confirmService.openConfiSave({
+          header: 'Confirmación',
+          message: '¿Desea desactivar esta área curricular?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            this.actualizarEstado(item, 0);
+          },
+        });
+        break;
+    }
+  }
+
+  actualizarEstado(item: any, estado: number) {
+    this.stepService
+      .actualizarIeCursoEstado({
+        iConfigId: this.iConfigId,
+        iIeCursoId: item.iIeCursoId,
+        iEstado: estado,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Exito',
+            detail: 'Registro actualizado exitosamente',
+          });
+          this.listarIeCursos();
+        },
+        error: error => {
+          console.error('Error al actualizar estado:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
+  filtrarTabla() {
+    const iNivelGradoId = Number(this.formBusqueda.value.iNivelGradoId);
+    if (!iNivelGradoId || Number(iNivelGradoId) == 0) {
+      this.gradoSeleccionado = false;
+      this.ie_cursos_filtrado = [];
+      this.iTotalHorasMinimo = 0;
+      this.mensajeSeverity = 'info';
+      this.mensajeTexto = 'Seleccione un grado para ver sus horas';
+    } else {
+      this.gradoSeleccionado = true;
+      this.ie_cursos_filtrado = this.ie_cursos.filter(
+        item => Number(item.iNivelGradoId) === Number(iNivelGradoId)
+      );
+      const nivel_grado = this.nivel_grados.filter(
+        item => Number(item.value) === Number(iNivelGradoId)
+      );
+      this.iTotalHorasMinimo = nivel_grado[0].iTotalHorasMinimo ?? 0;
+      this.contarHorasMinedu();
+    }
+  }
+
+  contarHorasMinedu() {
+    this.iTotalHorasAprobadas = this.ie_cursos_filtrado.reduce((acc, item) => {
+      return acc + Number(item.iTotalHorasMinedu || 0);
+    }, 0);
+    if (this.iTotalHorasAprobadas < this.iTotalHorasMinimo) {
+      this.mensajeSeverity = 'error';
+      this.mensajeTexto = `No llega al mínimo de ${this.iTotalHorasMinimo} horas`;
+    } else {
+      this.mensajeSeverity = 'success';
+      this.mensajeTexto = `Cumple el mínimo de ${this.iTotalHorasMinimo} horas`;
+    }
+  }
+
+  validarPorcentajeAporte() {
+    const iPorcentajeAporte = Number(this.form.value.iPorcentajeAporte);
+    const iPorcentajeActual = this.ie_cursos_filtrado.reduce((acc, item) => {
+      return acc + Number(item.iPorcentajeAporte || 0);
+    }, 0);
+    const diferencia = 100 - iPorcentajeActual;
+    if (iPorcentajeAporte > diferencia) {
+      this.form.get('iPorcentajeAporte').setValidators(Validators.max(diferencia));
+      this.form.get('iPorcentajeAporte').markAsDirty();
+      this.form.get('iPorcentajeAporte').updateValueAndValidity();
+    }
+  }
+
+  validarHorasMinimas() {
+    const iHorasSemPresencial = this.form.value.iHorasSemPresencial ?? 0;
+    const iHorasSemDomicilio = this.form.value.iHorasSemDomicilio ?? 0;
+    this.form.get('iTotalHoras').setValue(iHorasSemPresencial + iHorasSemDomicilio);
+  }
+
+  guardar() {
+    this.stepService.guardarIeCurso(this.form.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Exito',
+          detail: 'Registro guardado exitosamente',
+        });
+        this.cerrarDialogo();
+        const iNivelGradoId = this.form.value.iNivelGradoId;
+        this.listarIeCursos(iNivelGradoId);
       },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
+      error: error => {
+        console.error('Error al guardar:', error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
+          summary: 'Error',
+          detail: error.error.message,
         });
       },
     });
   }
-  accionBtn(elemento): void {
-    const { accion } = elemento;
-    const { item } = elemento;
-    switch (accion) {
-      case 'close-modal':
-        // this.accionBtnItem.emit({ accion, item })
-        break;
 
-      case 'subir-file-configuracion-iiee':
-        const url = this.query.baseUrlPublic();
-        if (this.filesUrl.length < 1) {
-          this.filesUrl.push({
-            type: 1, //1->file
-            nameType: 'file',
-            name: item.file.name,
-            size: item.file.size,
-            ruta: item.name,
-          });
-
-          this.form.get('cConfigUrlRslAprobacion')?.setValue(this.filesUrl[0].ruta);
-
-          this.enlace = url + '/' + this.filesUrl[0].ruta;
-        } else {
-          alert('No puede subir mas de un archivo');
-        }
-
-        break;
-    }
-  }
-
-  accionBtnItemTable(evento: any) {
-    this.event = evento.item;
-    if (evento.accion === 'retornar') {
-      this._confirmService.openConfiSave({
-        message: '¿Estás seguro de que deseas regresar al paso anterior?',
-        header: 'Advertencia de autoguardado',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          // Acción para eliminar el registro
-          this.router.navigate(['/gestion-institucional/seccion']);
-        },
-        reject: () => {
-          // Mensaje de cancelación (opcional)
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Cancelado',
-            detail: 'Acción cancelada',
-          });
-        },
-      });
-    }
-
-    if (evento.accion === 'agregar') {
-      this.visible = true;
-      this.caption = 'Registrar plan de estudios';
-    }
-  }
-
-  accionBtnItem(accion) {
-    if (accion === 'guardar') {
-      if (this.form.valid) {
-        this.query
-          .addAmbienteAcademico({
-            json: JSON.stringify(this.form.value),
-            _opcion: 'addConfig',
-          })
-          .subscribe({
-            next: (data: any) => {
-              this.form.get('iConfigId')?.setValue(data.data[0].id);
-              this.configuracion[0] = this.form.value;
-              this.stepService.configuracion[0] = this.configuracion[0];
-            },
-            error: error => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Mensaje',
-                detail: 'Error. No se proceso petición. ' + error.error.message,
-              });
-            },
-            complete: () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Mensaje',
-                detail: 'Proceso exitoso',
-              });
-            },
-          });
-      } else {
+  actualizar() {
+    this.stepService.actualizarIeCursoEstado(this.form.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Exito',
+          detail: 'Registro actualizado exitosamente',
+        });
+        this.cerrarDialogo();
+        const iNivelGradoId = this.form.value.iNivelGradoId;
+        this.listarIeCursos(iNivelGradoId);
+      },
+      error: error => {
+        console.error('Error al actualizar estado:', error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Mensaje',
-          detail: 'llenado incorrecto del formulario.',
+          summary: 'Error',
+          detail: error.error.message,
         });
-      }
-    }
+      },
+    });
   }
 
-  accionesPrincipal: IActionContainer[] = [
-    {
-      labelTooltip: 'Retornar',
-      text: 'Retornar',
-      icon: 'pi pi-arrow-circle-left',
-      accion: 'retornar',
-      class: 'p-button-warning',
-    },
-    // {
-    //     labelTooltip: 'Crear Plan de estudio',
-    //     text: 'Crear Plan de estudio',
-    //     icon: 'pi pi-plus',
-    //     accion: 'agregar',
-    //     class: 'p-button-primary',
-    // },
-  ];
+  cerrarDialogo() {
+    this.visible = false;
+    this.setForm({ iConfigId: this.iConfigId });
+  }
+
+  selectedItems = [];
 
   actions: IActionTable[] = [
     {
@@ -351,54 +317,83 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       class: 'p-button-rounded p-button-warning p-button-text',
     },
     {
-      labelTooltip: 'Eliminar',
-      icon: 'pi pi-trash',
-      accion: 'eliminar',
+      labelTooltip: 'Desactivar',
+      icon: 'pi pi-times',
+      accion: 'desactivar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
+      isVisible: rowData => {
+        return Number(rowData.bActive) === 1;
+      },
+    },
+    {
+      labelTooltip: 'Activar',
+      icon: 'pi pi-check',
+      accion: 'activar',
+      type: 'item',
+      class: 'p-button-rounded p-button-success p-button-text',
+      isVisible: rowData => {
+        return Number(rowData.bActive) === 0;
+      },
     },
   ];
 
   columns = [
     {
-      type: 'item',
-      width: '1rem',
-      field: 'item',
-      header: '',
+      type: 'text',
+      width: '15%',
+      field: 'cGradoAbreviacionNombre',
+      header: 'Grado',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '5rem',
+      width: '20%',
       field: 'cCursoNombre',
-      header: 'Área curricular',
+      header: 'Área IE',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '20%',
+      field: 'cCursoNombre',
+      header: 'Área MINEDU',
+      text_header: 'center',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'iTotalHoras',
+      header: 'Total',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '3rem',
-      field: 'iHorasSemPresencial',
-      header: '',
+      width: '10%',
+      field: 'iTotalHorasMinedu',
+      header: 'Total',
       text_header: 'center',
       text: 'center',
     },
     {
-      type: 'text',
-      width: '3rem',
-      field: 'iHorasSemDomicilio',
-      header: '',
+      type: 'estado-activo',
+      width: '10%',
+      field: 'iEstado',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'actions',
-      width: '3rem',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
-      text: 'center',
+      text: 'right',
     },
   ];
 }

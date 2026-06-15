@@ -153,10 +153,22 @@ export class AdmStepGradoSeccionService {
     if (!this.cursos && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.cursos = items.map(item => ({
-        value: Number(item.iCursoId),
+        value: Number(item.iCursosNivelGradId),
         label: item.cCursoNombre,
+        iNivelGradoId: item.iNivelGradoId,
+        iCursoId: item.iCursoId,
       }));
       return this.cursos;
+    }
+    return this.cursos;
+  }
+
+  filtrarCursos(iNivelGradoId: any) {
+    if (iNivelGradoId) {
+      const cursos = this.cursos.filter(
+        (item: any) => Number(item.iNivelGradoId) === Number(iNivelGradoId)
+      );
+      return cursos;
     }
     return this.cursos;
   }
@@ -165,14 +177,25 @@ export class AdmStepGradoSeccionService {
     if (!this.cursos_curricula && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.cursos_curricula = items.map(item => ({
-        value: Number(item.iCursoId),
+        value: Number(item.iConfPlanId),
         label: item.cCursoNombre,
-        iConfPlanId: item.iConfPlanId,
+        iCursoId: item.iCursoId,
+        iNivelGradoId: item.iNivelGradoId,
         iHorasSemPresencial: item.iHorasSemPresencial,
         iHorasSemDomicilio: item.iHorasSemDomicilio,
         iTotalHoras: item.iTotalHoras,
       }));
       return this.cursos_curricula;
+    }
+    return this.cursos_curricula;
+  }
+
+  filtrarCursosCurricula(iNivelGradoId: any) {
+    if (iNivelGradoId) {
+      const cursos_curricula = this.cursos_curricula.filter(
+        (item: any) => Number(item.iNivelGradoId) === Number(iNivelGradoId)
+      );
+      return cursos_curricula;
     }
     return this.cursos_curricula;
   }

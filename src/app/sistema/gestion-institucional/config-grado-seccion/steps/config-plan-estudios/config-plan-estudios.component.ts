@@ -28,12 +28,14 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   mensajeTexto: string = 'Seleccione un grado para ver sus horas';
   mensajeSeverity: string = 'info';
   visible: boolean = false;
+  bEditar: boolean = false;
 
   ie_cursos: any[] = [];
   ie_cursos_filtrado: any[] = [];
 
   iTotalHorasMinimo: number = 0;
   iTotalHorasAprobadas: number = 0;
+  esCursoMinedu: boolean = false;
 
   nivel_grados: any[] = null;
   areas: any[] = [];
@@ -64,14 +66,14 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       });
       this.form = this.fb.group({
         iIeCursoId: [null],
+        cGradoAbreviacionNombre: [{ value: null, disabled: true }],
         iCursosNivelGradId: [null, Validators.required],
-        iCursoId: [null, Validators.required],
         iHorasSemPresencial: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
         iHorasSemDomicilio: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
-        iTotalHoras: [{ value: 0, disabled: true }, Validators.required],
-        iHorasSemPresencialMinedu: [{ value: null, disabled: true }],
-        iHorasSemDomicilioMinedu: [{ value: null, disabled: true }],
-        iTotalHorasMinedu: [{ value: null, disabled: true }],
+        iTotalHoras: [{ value: 0, disabled: true }],
+        iHorasSemPresencialAporte: [{ value: null, disabled: true }],
+        iHorasSemDomicilioAporte: [{ value: null, disabled: true }],
+        iTotalHorasAporte: [{ value: null, disabled: true }],
         iHorasMiniminas: [0],
         iConfPlanId: [null],
         iPorcentajeAporte: [0, [Validators.min(0), Validators.max(100)]],
@@ -120,15 +122,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
   validarCursoMinedu() {
     const iConfPlanId = this.form.value.iConfPlanId;
-    const curso_minedu = this.ie_cursos_filtrado.filter(
-      item => Number(item.iConfPlanId) === Number(iConfPlanId)
-    );
-    this.form.patchValue({
-      iHorasSemPresencialMinedu:
-        curso_minedu.length > 0 ? curso_minedu[0].iHorasSemPresencial : null,
-      iHorasSemDomicilioMinedu: curso_minedu.length > 0 ? curso_minedu[0].iHorasSemDomicilio : null,
-      iTotalHorasMinedu: curso_minedu.length > 0 ? curso_minedu[0].iTotalHoras : null,
-    });
+    this.esCursoMinedu = iConfPlanId ? true : false;
   }
 
   siguienteTab() {
@@ -137,18 +131,29 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
   setForm(item: any) {
     this.form.patchValue(item);
-    this.form.get('iCursoId').setValue(item.iCursoId ? Number(item.iCursoId) : null);
+    this.form
+      .get('iCursosNivelGradId')
+      .setValue(item.iCursosNivelGradId ? Number(item.iCursosNivelGradId) : null);
     this.form.get('iConfPlanId').setValue(item.iConfPlanId ? Number(item.iConfPlanId) : null);
+    this.esCursoMinedu = item.iConfPlanId ? true : false;
   }
 
   agregarIeCurso() {
-    this.setForm({ iConfigId: this.iConfigId });
+    this.bEditar = false;
+    const iNivelGradoId = this.formBusqueda.value.iNivelGradoId;
+    const grado = this.nivel_grados.filter(item => Number(item.value) === Number(iNivelGradoId));
+    this.setForm({
+      iConfigId: this.iConfigId,
+      cGradoAbreviacionNombre: grado[0].label,
+    });
     this.visible = true;
   }
 
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'editar':
+        this.bEditar = true;
+        this.areas_curricula = this.stepService.filtrarCursosCurricula(item.iNivelGradoId);
         this.visible = true;
         this.setForm(item);
         break;
@@ -205,12 +210,16 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   filtrarTabla() {
     const iNivelGradoId = Number(this.formBusqueda.value.iNivelGradoId);
     if (!iNivelGradoId || Number(iNivelGradoId) == 0) {
+      this.areas_curricula = this.stepService.filtrarCursosCurricula(null);
+      this.areas = this.stepService.filtrarCursos(null);
       this.gradoSeleccionado = false;
       this.ie_cursos_filtrado = [];
       this.iTotalHorasMinimo = 0;
       this.mensajeSeverity = 'info';
       this.mensajeTexto = 'Seleccione un grado para ver sus horas';
     } else {
+      this.areas_curricula = this.stepService.filtrarCursosCurricula(iNivelGradoId);
+      this.areas = this.stepService.filtrarCursos(iNivelGradoId);
       this.gradoSeleccionado = true;
       this.ie_cursos_filtrado = this.ie_cursos.filter(
         item => Number(item.iNivelGradoId) === Number(iNivelGradoId)
@@ -225,7 +234,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
   contarHorasMinedu() {
     this.iTotalHorasAprobadas = this.ie_cursos_filtrado.reduce((acc, item) => {
-      return acc + Number(item.iTotalHorasMinedu || 0);
+      return acc + Number(item.iTotalHorasAporte || 0);
     }, 0);
     if (this.iTotalHorasAprobadas < this.iTotalHorasMinimo) {
       this.mensajeSeverity = 'error';
@@ -236,23 +245,32 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     }
   }
 
-  validarPorcentajeAporte() {
-    const iPorcentajeAporte = Number(this.form.value.iPorcentajeAporte);
-    const iPorcentajeActual = this.ie_cursos_filtrado.reduce((acc, item) => {
-      return acc + Number(item.iPorcentajeAporte || 0);
-    }, 0);
-    const diferencia = 100 - iPorcentajeActual;
-    if (iPorcentajeAporte > diferencia) {
-      this.form.get('iPorcentajeAporte').setValidators(Validators.max(diferencia));
-      this.form.get('iPorcentajeAporte').markAsDirty();
-      this.form.get('iPorcentajeAporte').updateValueAndValidity();
-    }
-  }
-
   validarHorasMinimas() {
-    const iHorasSemPresencial = this.form.value.iHorasSemPresencial ?? 0;
-    const iHorasSemDomicilio = this.form.value.iHorasSemDomicilio ?? 0;
+    const iHorasSemPresencial = this.form.value.iHorasSemPresencial
+      ? Number(this.form.value.iHorasSemPresencial)
+      : 0;
+    const iHorasSemDomicilio = this.form.value.iHorasSemDomicilio
+      ? Number(this.form.value.iHorasSemDomicilio)
+      : 0;
     this.form.get('iTotalHoras').setValue(iHorasSemPresencial + iHorasSemDomicilio);
+    if (this.esCursoMinedu) {
+      const iPorcentajeAporte = this.form.value.iPorcentajeAporte
+        ? Number(this.form.value.iPorcentajeAporte)
+        : 100;
+      console.log(iPorcentajeAporte, 'iPorcentajeAporte');
+      const iHorasSemPresencialAporte = (iHorasSemPresencial * iPorcentajeAporte) / 100;
+      const iHorasSemDomicilioAporte = (iHorasSemDomicilio * iPorcentajeAporte) / 100;
+      this.form.get('iHorasSemPresencialAporte').setValue(iHorasSemPresencialAporte);
+      this.form.get('iHorasSemDomicilioAporte').setValue(iHorasSemDomicilioAporte);
+      this.form
+        .get('iTotalHorasAporte')
+        .setValue(iHorasSemPresencialAporte + iHorasSemDomicilioAporte);
+    } else {
+      this.form.get('iHorasSemPresencialAporte').setValue(iHorasSemPresencial);
+      this.form.get('iHorasSemDomicilioAporte').setValue(iHorasSemDomicilio);
+      this.form.get('iTotalHorasAporte').setValue(iHorasSemPresencial + iHorasSemDomicilio);
+    }
+    this.form.updateValueAndValidity();
   }
 
   guardar() {
@@ -310,20 +328,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
   actions: IActionTable[] = [
     {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-pencil',
-      accion: 'editar',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
-    {
       labelTooltip: 'Desactivar',
       icon: 'pi pi-times',
       accion: 'desactivar',
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: rowData => {
-        return Number(rowData.bActive) === 1;
+        return Number(rowData.iEstado) === 1;
       },
     },
     {
@@ -333,8 +344,15 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: rowData => {
-        return Number(rowData.bActive) === 0;
+        return Number(rowData.iEstado) === 0;
       },
+    },
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-warning p-button-text',
     },
   ];
 
@@ -357,8 +375,16 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     },
     {
       type: 'text',
+      width: '10%',
+      field: 'iTotalHoras',
+      header: 'Horas',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
       width: '20%',
-      field: 'cCursoNombre',
+      field: 'cCursoNombreMinedu',
       header: 'Área MINEDU',
       text_header: 'center',
       text: 'left',
@@ -366,16 +392,8 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     {
       type: 'text',
       width: '10%',
-      field: 'iTotalHoras',
-      header: 'Total',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
-      type: 'text',
-      width: '10%',
-      field: 'iTotalHorasMinedu',
-      header: 'Total',
+      field: 'iTotalHorasAporte',
+      header: 'Horas MINEDU',
       text_header: 'center',
       text: 'center',
     },

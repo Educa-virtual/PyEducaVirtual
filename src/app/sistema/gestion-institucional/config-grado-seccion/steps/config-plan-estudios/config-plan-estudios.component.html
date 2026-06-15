@@ -65,17 +65,29 @@
     <div class="grid">
       <div class="col-12">
         <p-inputGroup>
+          <p-inputGroupAddon>Grado</p-inputGroupAddon>
+          <input
+            pInputText
+            type="text"
+            formControlName="cGradoAbreviacionNombre"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
           <p-inputGroupAddon>
             <a
               role="button"
               class="p-button p-button-secondary mr-2"
-              (click)="iCursoId.toggle($event)"
-              (keypress)="iCursoId.toggle($event)"
+              (click)="iCursosNivelGradId.toggle($event)"
+              (keypress)="iCursosNivelGradId.toggle($event)"
               tabindex="0"
             >
               <i class="pi pi-question-circle"></i>
             </a>
-            <p-overlayPanel #iCursoId [showCloseIcon]="true" appendTo="body">
+            <p-overlayPanel #iCursosNivelGradId [showCloseIcon]="true" appendTo="body">
               <div class="w-15rem">
                 Seleccione el área curricular que se dictará en su Institución Educativa (IE). Si un
                 área dictada en su IE no aparece en la lista, comuniquese con el administrador del
@@ -86,7 +98,7 @@
           </p-inputGroupAddon>
           <p-dropdown
             [options]="areas"
-            formControlName="iCursoId"
+            formControlName="iCursosNivelGradId"
             [showClear]="true"
             appendTo="body"
             styleClass="group-element"
@@ -127,7 +139,7 @@
           />
         </p-inputGroup>
       </div>
-      <div class="col-12">
+      <div class="col-12" *ngIf="esCursoMinedu">
         <p-inputGroup>
           <p-inputGroupAddon>
             <a
@@ -141,9 +153,9 @@
             </a>
             <p-overlayPanel #iPorcentajeAporte [showCloseIcon]="true" appendTo="body">
               <div class="w-15rem">
-                Porcentaje que el área de su IE aporta al cálculo de horas del área de MINEDU. Este
-                porcentaje también se usará como sugerencia en el cálculo de las calificaciones de
-                estudiantes.
+                Porcentaje que el área de su IE aporta al cálculo de horas del área de la curricula
+                del MINEDU. Este porcentaje también se usará como sugerencia en el cálculo de las
+                calificaciones de estudiantes.
               </div>
             </p-overlayPanel>
             Porcentaje que aporta
@@ -151,13 +163,16 @@
           <p-inputNumber
             [showButtons]="true"
             formControlName="iPorcentajeAporte"
-            [min]="0"
-            [max]="100"
+            [min]="0.0"
+            [max]="100.0"
             [step]="1"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
             suffix="%"
-            (onBlur)="validarPorcentajeAporte()"
             class="group-element"
             [style]="{ flex: 1, width: '100%' }"
+            (onBlur)="validarHorasMinimas()"
           />
         </p-inputGroup>
       </div>
@@ -165,11 +180,12 @@
         <p-inputGroup>
           <p-inputGroupAddon>Horas presenciales</p-inputGroupAddon>
           <input
+            *ngIf="esCursoMinedu"
             pInputText
-            formControlName="iHorasSemPresencialMinedu"
+            formControlName="iHorasSemPresencialAporte"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
-            pTooltip="Mínimo de horas semanales según MINEDU"
+            pTooltip="Horas semanales equivalentes en curricula del MINEDU"
             tooltipPosition="top"
           />
           <input
@@ -178,9 +194,11 @@
             formControlName="iHorasSemPresencial"
             min="0"
             max="10"
-            (onBlur)="validarHorasMinimas()"
+            (change)="validarHorasMinimas()"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales que se dictan en su IE"
+            tooltipPosition="top"
           />
         </p-inputGroup>
       </div>
@@ -188,11 +206,12 @@
         <p-inputGroup>
           <p-inputGroupAddon>Horas virtuales</p-inputGroupAddon>
           <input
+            *ngIf="esCursoMinedu"
             pInputText
-            formControlName="iHorasSemDomicilioMinedu"
+            formControlName="iHorasSemDomicilioAporte"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
-            pTooltip="Mínimo de horas semanales según MINEDU"
+            pTooltip="Horas semanales equivalentes en curricula del MINEDU"
             tooltipPosition="top"
           />
           <input
@@ -201,9 +220,11 @@
             formControlName="iHorasSemDomicilio"
             min="0"
             max="10"
-            (onInput)="validarHorasMinimas()"
+            (change)="validarHorasMinimas()"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales que se dictan en su IE"
+            tooltipPosition="top"
           />
         </p-inputGroup>
       </div>
@@ -211,11 +232,12 @@
         <p-inputGroup>
           <p-inputGroupAddon>Total de horas</p-inputGroupAddon>
           <input
+            *ngIf="esCursoMinedu"
             pInputText
-            formControlName="iTotalHorasMinedu"
+            formControlName="iTotalHorasAporte"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
-            pTooltip="Mínimo de horas semanales según MINEDU"
+            pTooltip="Horas semanales equivalentes en curricula del MINEDU"
             tooltipPosition="top"
           />
           <input
@@ -224,6 +246,8 @@
             formControlName="iTotalHoras"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales que se dictan en su IE"
+            tooltipPosition="top"
           />
         </p-inputGroup>
       </div>
@@ -232,9 +256,18 @@
   <div class="flex justify-content-end gap-2">
     <p-button size="small" (click)="cerrarDialogo()" label="Cerrar" severity="secondary" />
     <p-button
+      *ngIf="bEditar"
       size="small"
       (click)="actualizar()"
       label="Actualizar"
+      [disabled]="form.invalid"
+      severity="warning"
+    />
+    <p-button
+      *ngIf="!bEditar"
+      size="small"
+      (click)="guardar()"
+      label="Guardar"
       [disabled]="form.invalid"
       severity="success"
     />

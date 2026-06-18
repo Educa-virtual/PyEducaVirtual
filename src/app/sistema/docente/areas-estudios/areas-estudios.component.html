@@ -120,13 +120,13 @@
             <td class="font-bold">
               {{ item.cCursoNombre }}
             </td>
-            <td class="font-bold" [class]="item.bDocente === '0' ? 'text-center' : ''">
-              {{ item.bDocente === '1' ? item.cDocente : '-' }}
+            <td class="font-bold" class="text-center">
+              {{ item.idDocCursoId ? item.docenteCompleto : '-' }}
             </td>
             <td style="text-align: center">
               {{ item.cGradoAbreviacion }}
             </td>
-            <td style="text-align: center">{{ item.cSeccion }}</td>
+            <td style="text-align: center">{{ item.cSeccionNombre }}</td>
             <td style="text-align: center">{{ item.pAsistencia }} %</td>
             @if (item.pInasistencia > 33) {
               <td style="text-align: center; color: red">{{ item.pInasistencia }} %</td>
@@ -141,7 +141,7 @@
                   cCursoNombre: item.cCursoNombre,
                   cNivelTipoNombre: item.cNivelTipoNombre,
                   cGradoAbreviacion: item.cGradoAbreviacion,
-                  cSeccionNombre: item.cSeccion,
+                  cSeccionNombre: item.cSeccionNombre,
                   cCicloRomanos: item.cCicloRomanos,
                   cNivelNombreCursos: item.cNivelNombreCursos,
                   iCursoId: item.iCursoId,
@@ -155,6 +155,7 @@
                 label="Acceder"
                 icon="pi pi-arrow-right"
                 iconPos="right"
+                [disabled]="item.idDocCursoId ? false : true"
               />
             </td>
           }

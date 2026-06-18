@@ -1,9 +1,9 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { GeneralService } from '@/app/servicios/general.service';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { ToolbarPrimengComponent } from '../../../shared/toolbar-primeng/toolbar-primeng.component';
 import { FullCalendarioComponent } from '../../../shared/full-calendario/full-calendario.component'; // * traduce el Modulo de calendario a español
 import { ConstantesService } from '@/app/servicios/constantes.service';
+import { CalendarioService } from './services/calendario.service';
 
 @Component({
   selector: 'app-calendario',
@@ -13,7 +13,6 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
   styleUrl: './calendario.component.scss',
 })
 export class CalendarioComponent implements OnInit {
-  private GeneralService = inject(GeneralService);
   private ConstantesService = inject(ConstantesService);
 
   iDocenteId: string;
@@ -29,7 +28,7 @@ export class CalendarioComponent implements OnInit {
   actividades = [];
   events = []; // guarda los eventos para el calendario
   filtro = Array.from({ length: 12 }, () => []);
-  constructor() {
+  constructor(private calendarioService: CalendarioService) {
     this.iDocenteId = this.ConstantesService.iDocenteId;
     this.iYAcadId = this.ConstantesService.iYAcadId;
     this.iIieeId = this.ConstantesService.iIieeId;
@@ -39,113 +38,58 @@ export class CalendarioComponent implements OnInit {
   ngOnInit() {
     this.getObtenerCurriculas();
     this.getObtenerCurriculasHorario();
-    this.getObtenerFestividades();
-    this.getObtenerActividad();
   }
 
   // Obtener Areas curriculares para los checkbox
   getObtenerCurriculas() {
-    const params = {
-      petition: 'post',
-      group: 'docente',
-      prefix: 'buscar_curso',
-      ruta: 'curricula',
-      data: {
-        iDocenteId: this.iDocenteId,
-        iYAcadId: this.iYAcadId,
-        iIieeId: this.iIieeId,
-        iSedeId: this.iSedeId,
-      },
+    const parametros = {
+      iDocenteId: this.iDocenteId,
+      iYAcadId: this.iYAcadId,
+      iSedeId: this.iSedeId,
     };
-    this.getInformation(params, 'curriculas');
-  }
 
-  getObtenerFestividades() {
-    const params = {
-      petition: 'post',
-      group: 'docente',
-      prefix: 'asistencia',
-      ruta: 'obtenerFestividad',
-      data: {},
-    };
-    this.getInformation(params, 'festividades');
-  }
+    this.calendarioService.obtenerCalendarioAcademico(parametros).subscribe({
+      next: (respuesta: any) => {
+        const datos = respuesta.data;
+        const curricula = JSON.parse(datos.curricula);
+        const actividades = JSON.parse(datos.actividades);
+        const festividades = JSON.parse(datos.festividades);
 
-  getObtenerActividad() {
-    const params = {
-      petition: 'post',
-      group: 'docente',
-      prefix: 'buscar_curso',
-      ruta: 'obtenerActividad',
-      data: {},
-    };
-    this.getInformation(params, 'actividades');
-  }
-
-  getObtenerCurriculasHorario() {
-    const params = {
-      petition: 'post',
-      group: 'docente',
-      prefix: 'buscar_curso',
-      ruta: 'curriculaHorario',
-      data: {
-        iDocenteId: this.ConstantesService.iDocenteId,
-        iYAcadId: this.ConstantesService.iYAcadId,
-        iIieeId: this.iIieeId,
-        iSedeId: this.iSedeId,
-      },
-    };
-    this.getInformation(params, 'curriculaHorario');
-  }
-
-  accionBtnItem(event) {
-    const { accion } = event;
-    const { item } = event;
-
-    switch (accion) {
-      case 'curriculas':
-        this.curricula = item;
+        this.curricula = [...curricula];
         this.curricula.forEach(caja => {
           caja.mostrar = true;
         });
-        break;
-      case 'curriculaHorario':
-        this.events = item;
+
+        this.festividades = [...festividades];
+        this.festividades.forEach(caja => {
+          caja.mostrar = true;
+        });
+
+        this.actividades = [...actividades];
+        this.actividades.forEach(caja => {
+          caja.mostrar = true;
+        });
+      },
+    });
+  }
+
+  getObtenerCurriculasHorario() {
+    const parametros = {
+      iDocenteId: this.ConstantesService.iDocenteId,
+      iYAcadId: this.ConstantesService.iYAcadId,
+      iIieeId: this.iIieeId,
+      iSedeId: this.iSedeId,
+    };
+
+    this.calendarioService.obtenerCurriculaHorario(parametros).subscribe({
+      next: (respuesta: any) => {
+        const datos = respuesta.data;
+        this.events = datos;
         this.events.forEach(evento => {
           evento.mostrar = true;
           evento.display = 'block';
         });
-        break;
-      case 'festividades':
-        this.festividades = item;
-        this.festividades.forEach(caja => {
-          caja.mostrar = true;
-        });
-        break;
-      case 'actividades':
-        this.actividades = item;
-        this.actividades.forEach(caja => {
-          caja.mostrar = true;
-        });
-        this.actividades[0].estilo = 'primary-checkbox';
-        this.actividades[1].estilo = 'orange-checkbox';
-        this.actividades[2].estilo = 'bluegray-checkbox';
-        this.actividades[3].estilo = 'gray-checkbox';
-        this.actividades[4].estilo = 'red-claro-checkbox';
-        break;
-      default:
-        this.curricula = [];
-        this.festividades = [];
-        break;
-    }
-  }
-
-  getInformation(params, accion) {
-    this.GeneralService.getGralPrefix(params).subscribe({
-      next: (response: any) => {
-        this.accionBtnItem({ accion, item: response?.data });
       },
-      complete: () => {},
     });
   }
 

@@ -50,6 +50,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
     iTipoPregId: 0,
     iEvaluacionId: 0,
     iGradoId: 0,
+    iNivelGradoId: 0,
   };
 
   private _constantesService = inject(ConstantesService);
@@ -238,9 +239,10 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         this.grados = [
           {
             iGradoId: 0,
+            iNivelGradoId: 0,
             cGrado: 'Todos',
           },
-          ...response.data,
+          ...(response.data ?? []),
         ];
       },
       complete: () => {},

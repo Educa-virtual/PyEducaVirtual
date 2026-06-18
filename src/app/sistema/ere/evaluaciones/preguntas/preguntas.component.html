@@ -275,6 +275,20 @@ html
                                   </div>
 
                                   <div class="col-12">
+                                    <p-inputGroup>
+                                      <p-inputGroupAddon>Puntaje*</p-inputGroupAddon>
+                                      <p-inputNumber
+                                        [disabled]="!isDisabled"
+                                        [(ngModel)]="item.iPreguntaPuntaje"
+                                        mode="decimal"
+                                        [min]="0"
+                                        step="0.01"
+                                        [maxFractionDigits]="2"
+                                      />
+                                    </p-inputGroup>
+                                  </div>
+
+                                  <div class="col-12">
                                     <label for="enunciado" class="mt-1 font-bold"
                                       >Pregunta
                                       <span class="text-red-500 text-xs"
@@ -532,7 +546,7 @@ html
                         />
                       </p-inputGroup>
                     </div>
-                    <div [class]="'col-12 md:col-8'">
+                    <div [class]="'col-12 md:col-6'">
                       <p-inputGroup>
                         <p-inputGroupAddon>Desempeño </p-inputGroupAddon>
                         <input
@@ -545,7 +559,7 @@ html
                       </p-inputGroup>
                     </div>
 
-                    <div class="col-12 md:col-4">
+                    <div class="col-12 md:col-3">
                       <p-inputGroup>
                         <p-inputGroupAddon>Peso*</p-inputGroupAddon>
                         <p-dropdown
@@ -557,6 +571,19 @@ html
                           placeholder="Peso de la pregunta"
                           [style]="{ width: '100%' }"
                         ></p-dropdown>
+                      </p-inputGroup>
+                    </div>
+                    <div class="col-12 md:col-3">
+                      <p-inputGroup>
+                        <p-inputGroupAddon>Puntaje*</p-inputGroupAddon>
+                        <p-inputNumber
+                          [disabled]="!isDisabled"
+                          [(ngModel)]="item.iPreguntaPuntaje"
+                          mode="decimal"
+                          [min]="0"
+                          step="0.01"
+                          [maxFractionDigits]="2"
+                        />
                       </p-inputGroup>
                     </div>
 

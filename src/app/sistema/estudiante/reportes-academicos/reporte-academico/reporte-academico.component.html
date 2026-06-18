@@ -2,48 +2,53 @@
 
 <p-panel>
   <ng-template pTemplate="header">
-    <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Reporte académico</h3>
-    </div>
+    <span class="text-2xl text-uppercase">Reporte académico</span>
   </ng-template>
 
-  <div class="grid p-fluid mt-3">
-    <div class="field col-12 md:col-4">
+  <p-messages severity="secondary">
+    <ng-template pTemplate>
+      Para cambiar el año académico, dirijase a la barra superior y debajo de "Año Escolar"
+      seleccione otro año de la lista desplegable.
+    </ng-template>
+  </p-messages>
+
+  <div class="grid p-fluid">
+    <div class="col-12 md:col-4">
       <p-inputGroup>
-        <p-inputGroupAddon class="mi-addon-primary">Año escolar:</p-inputGroupAddon>
-        <input pInputText [value]="anioEscolar" disabled class="input-disabled" />
+        <p-inputGroupAddon>Año académico:</p-inputGroupAddon>
+        <input
+          pInputText
+          [value]="anioEscolar"
+          disabled
+          class="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+        />
       </p-inputGroup>
     </div>
-    <div class="field col-12 md:col-4">
+    <div class="col-12 md:col-6">
       <p-inputGroup>
-        <p-inputGroupAddon class="mi-addon-primary">Área:</p-inputGroupAddon>
+        <p-inputGroupAddon>Área:</p-inputGroupAddon>
         <p-dropdown
           [options]="cursos"
           optionLabel="cCursoNombre"
-          [checkmark]="true"
           optionValue="iIeCursoId"
-          [appendTo]="'body'"
+          appendTo="body"
           [style]="{ flex: '1', width: '100%' }"
-          placeholder="Seleccione..."
+          styleClass="group-element"
           [(ngModel)]="iIeCursoId"
         />
       </p-inputGroup>
     </div>
-    <div class="field col-12 md:col-2">
-      <button
-        pButton
-        pRipple
+    <div class="col-12 md:col-2">
+      <p-button
         (click)="generarReporte()"
         icon="pi pi-chart-bar"
         label="Generar"
-        class="p-button-success"
-      ></button>
+        severity="primary"
+      />
     </div>
   </div>
-  <small
-    >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
-    otra opción</small
-  >
 
   @if (graficos.length === 0 && mostrarMensajeSinDatos) {
     <br /><br />

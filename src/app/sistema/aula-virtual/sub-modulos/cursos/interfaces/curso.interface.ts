@@ -34,4 +34,5 @@ export interface ICurso {
   bDescarga?: string | number;
   iCapacitacionId?: string | number;
   iExamCurId?: number;
+  iPuntajeSum?: number;
 }

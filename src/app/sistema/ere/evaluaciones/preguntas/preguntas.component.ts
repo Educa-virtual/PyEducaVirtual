@@ -376,6 +376,7 @@ export class PreguntasComponent implements OnInit {
         cPreguntaTextoAyuda: null,
         iPreguntaNivel: null,
         iPreguntaPeso: null,
+        iPreguntaPuntaje: null,
         dtPreguntaTiempo: null,
         bPreguntaEstado: 1,
         cPreguntaClave: null,
@@ -458,12 +459,15 @@ export class PreguntasComponent implements OnInit {
     }
     let contenidoPregunta;
     let preguntaPeso;
+    let preguntaPuntaje;
     if (encabezado) {
       contenidoPregunta = pregunta.cPregunta;
       preguntaPeso = pregunta.iPreguntaPeso;
+      preguntaPuntaje = pregunta.iPreguntaPuntaje;
     } else {
       contenidoPregunta = pregunta.pregunta[0].cPregunta;
       preguntaPeso = pregunta.pregunta[0].iPreguntaPeso;
+      preguntaPuntaje = pregunta.pregunta[0].iPreguntaPuntaje;
     }
 
     if (contenidoPregunta == '' || contenidoPregunta == null) {
@@ -480,6 +484,14 @@ export class PreguntasComponent implements OnInit {
         severity: 'error',
         summary: 'Error',
         detail: 'Ingrese un peso a la pregunta',
+      });
+      return;
+    }
+    if (preguntaPuntaje == '' || preguntaPuntaje == null) {
+      this._MessageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ingrese un puntaje para la pregunta',
       });
       return;
     }

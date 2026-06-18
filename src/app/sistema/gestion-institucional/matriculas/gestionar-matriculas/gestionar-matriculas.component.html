@@ -23,55 +23,59 @@
 
   <form [formGroup]="form">
     <div class="grid">
-      <div class="col-12 md:col-6 m-0">
-        <p-inputGroup>
-          <p-inputGroupAddon>Grado</p-inputGroupAddon>
-          <p-dropdown
-            [options]="nivel_grados"
-            formControlName="iNivelGradoId"
-            styleClass="group-element"
-            [filter]="true"
-            [showClear]="true"
-            [appendTo]="'body'"
-            placeholder="Seleccione un grado para ver secciones"
-            [style]="{ flex: '1', width: '100%' }"
-          />
-        </p-inputGroup>
-      </div>
-      <div class="col-12 md:col-6 m-0">
-        <p-inputGroup>
-          <p-inputGroupAddon>Sección</p-inputGroupAddon>
-          <p-dropdown
-            [options]="secciones"
-            formControlName="iSeccionId"
-            styleClass="group-element"
-            [filter]="true"
-            [showClear]="true"
-            [appendTo]="'body'"
-            placeholder="Seleccione una sección"
-            [style]="{ flex: '1', width: '100%' }"
-          ></p-dropdown>
-        </p-inputGroup>
-      </div>
       <div class="col-12 md:col-10 m-0">
-        <p-inputGroup>
-          <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
-          <input
-            type="text"
-            pInputText
-            placeholder="Buscar"
-            formControlName="textoBusqueda"
-            (input)="filtrarTabla()"
-          />
-        </p-inputGroup>
+        <div class="grid">
+          <div class="col-12 md:col-6 m-0">
+            <p-inputGroup>
+              <p-inputGroupAddon>Grado</p-inputGroupAddon>
+              <p-dropdown
+                [options]="nivel_grados"
+                formControlName="iNivelGradoId"
+                styleClass="group-element"
+                [filter]="true"
+                [showClear]="true"
+                [appendTo]="'body'"
+                placeholder="Seleccione un grado para ver secciones"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6 m-0">
+            <p-inputGroup>
+              <p-inputGroupAddon>Sección</p-inputGroupAddon>
+              <p-dropdown
+                [options]="secciones"
+                formControlName="iSeccionId"
+                styleClass="group-element"
+                [filter]="true"
+                [showClear]="true"
+                [appendTo]="'body'"
+                placeholder="Seleccione una sección"
+                [style]="{ flex: '1', width: '100%' }"
+              ></p-dropdown>
+            </p-inputGroup>
+          </div>
+          <div class="col-12 m-0">
+            <p-inputGroup>
+              <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+              <input
+                type="text"
+                pInputText
+                placeholder="Buscar"
+                formControlName="textoBusqueda"
+                (input)="filtrarTabla()"
+              />
+            </p-inputGroup>
+          </div>
+        </div>
       </div>
       <div class="col-12 md:col-2 m-0 flex justify-content-center align-items-center">
-        <div class="inline md:hidden mr-2">Matriculados / Vacantes:</div>
+        <div class="inline md:hidden mr-2 text-center">Matriculados / Vacantes:</div>
         <div
           #vacantesSeccion
           pTooltip="Matriculas activas / Vacantes en sección"
           tooltipPosition="top"
-          class="text-center font-bold text-2xl text-primary"
+          class="text-center font-bold text-4xl text-primary"
         >
           {{ cantMatriculasFiltradas }} / {{ cantVacantesSeccion }}
         </div>

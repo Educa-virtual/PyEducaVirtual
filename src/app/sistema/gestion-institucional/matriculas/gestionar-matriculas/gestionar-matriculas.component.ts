@@ -12,7 +12,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { DatosMatriculaService } from '../../services/datos-matricula.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { GeneralService } from '@/app/servicios/general.service';
 import { MatriculaApoderadoComponent } from '../matricula-apoderado/matricula-apoderado.component';
 import { FormDesercionComponent } from '../../gestion-desercion/form-desercion/form-desercion.component';
 import { HistorialDesercionComponent } from '../../gestion-desercion/historial-desercion/historial-desercion.component';
@@ -180,8 +179,7 @@ export class GestionMatriculasComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private messageService: MessageService,
-    private confirmationService: ConfirmationModalService,
-    private query: GeneralService
+    private confirmationService: ConfirmationModalService
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');

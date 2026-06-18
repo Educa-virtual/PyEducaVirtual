@@ -185,7 +185,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       .actualizarIeCursoEstado({
         iConfigId: this.iConfigId,
         iIeCursoId: item.iIeCursoId,
-        iEstado: estado,
+        bActivo: estado,
       })
       .subscribe({
         next: () => {
@@ -334,7 +334,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-danger p-button-text',
       isVisible: rowData => {
-        return Number(rowData.iEstado) === 1;
+        return Number(rowData.bActivo) === 1;
       },
     },
     {
@@ -344,7 +344,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-success p-button-text',
       isVisible: rowData => {
-        return Number(rowData.iEstado) === 0;
+        return Number(rowData.bActivo) === 0;
       },
     },
     {
@@ -400,7 +400,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     {
       type: 'estado-activo',
       width: '10%',
-      field: 'iEstado',
+      field: 'bActivo',
       header: 'Estado',
       text_header: 'center',
       text: 'center',

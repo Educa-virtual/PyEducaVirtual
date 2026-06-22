@@ -66,6 +66,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       });
       this.form = this.fb.group({
         iIeCursoId: [null],
+        iConfigId: [this.iConfigId],
         cGradoAbreviacionNombre: [{ value: null, disabled: true }],
         iCursosNivelGradId: [null, Validators.required],
         iHorasSemPresencial: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
@@ -73,7 +74,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         iTotalHoras: [{ value: 0, disabled: true }],
         iHorasSemPresencialAporte: [{ value: null, disabled: true }],
         iHorasSemDomicilioAporte: [{ value: null, disabled: true }],
-        iTotalHorasAporte: [{ value: null, disabled: true }],
+        iTotalHorasAporte: [null, [Validators.min(1)]],
         iHorasMiniminas: [0],
         iConfPlanId: [null],
         iPorcentajeAporte: [0, [Validators.min(0), Validators.max(100)]],
@@ -123,6 +124,8 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   validarCursoMinedu() {
     const iConfPlanId = this.form.value.iConfPlanId;
     this.esCursoMinedu = iConfPlanId ? true : false;
+    this.form.get('iPorcentajeAporte').setValue(iConfPlanId ? 100 : 0);
+    this.validarHorasMinimas();
   }
 
   siguienteTab() {
@@ -257,7 +260,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       const iPorcentajeAporte = this.form.value.iPorcentajeAporte
         ? Number(this.form.value.iPorcentajeAporte)
         : 100;
-      console.log(iPorcentajeAporte, 'iPorcentajeAporte');
       const iHorasSemPresencialAporte = (iHorasSemPresencial * iPorcentajeAporte) / 100;
       const iHorasSemDomicilioAporte = (iHorasSemDomicilio * iPorcentajeAporte) / 100;
       this.form.get('iHorasSemPresencialAporte').setValue(iHorasSemPresencialAporte);
@@ -274,6 +276,14 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   }
 
   guardar() {
+    if (this.form.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Advertencia',
+        detail: 'Por favor revise las indicaciones de cada campo',
+      });
+      return;
+    }
     this.stepService.guardarIeCurso(this.form.value).subscribe({
       next: () => {
         this.messageService.add({
@@ -282,7 +292,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
           detail: 'Registro guardado exitosamente',
         });
         this.cerrarDialogo();
-        const iNivelGradoId = this.form.value.iNivelGradoId;
+        const iNivelGradoId = this.formBusqueda.value.iNivelGradoId;
         this.listarIeCursos(iNivelGradoId);
       },
       error: error => {
@@ -297,7 +307,15 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   }
 
   actualizar() {
-    this.stepService.actualizarIeCursoEstado(this.form.value).subscribe({
+    if (this.form.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Advertencia',
+        detail: 'Por favor revise las indicaciones de cada campo',
+      });
+      return;
+    }
+    this.stepService.actualizarIeCurso(this.form.value).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -305,7 +323,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
           detail: 'Registro actualizado exitosamente',
         });
         this.cerrarDialogo();
-        const iNivelGradoId = this.form.value.iNivelGradoId;
+        const iNivelGradoId = this.formBusqueda.value.iNivelGradoId;
         this.listarIeCursos(iNivelGradoId);
       },
       error: error => {
@@ -321,6 +339,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
 
   cerrarDialogo() {
     this.visible = false;
+    this.form.reset();
     this.setForm({ iConfigId: this.iConfigId });
   }
 

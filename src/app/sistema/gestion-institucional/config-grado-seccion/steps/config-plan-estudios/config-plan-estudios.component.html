@@ -241,6 +241,7 @@
             [style]="{ flex: 1, width: '50%' }"
             pTooltip="Horas semanales equivalentes en curricula del MINEDU"
             tooltipPosition="top"
+            [attr.disabled]="true"
           />
           <input
             pInputText
@@ -248,7 +249,7 @@
             formControlName="iTotalHoras"
             class="group-element"
             [style]="{ flex: 1, width: '50%' }"
-            pTooltip="Horas semanales que se dictan en su IE"
+            pTooltip="Horas semanales que se dictan en su IE. Debe ser mayor a 0"
             tooltipPosition="top"
           />
         </p-inputGroup>

@@ -203,12 +203,40 @@
             <p-overlayPanel #iConfPlanId [showCloseIcon]="true" appendTo="body">
               <div class="w-15rem">Ingrese un valor entre 6 y 48 horas</div>
             </p-overlayPanel>
-            Horas asignadas *
+            Horas laborables *
           </p-inputGroupAddon>
           <p-inputNumber
             formControlName="iHorasLabora"
             min="6"
             max="48"
+            step="1"
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iConfPlanId.toggle($event)"
+              (keypress)="iConfPlanId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iConfPlanId [showCloseIcon]="true" appendTo="body">
+              <div class="w-15rem">Ingrese un valor entre 12 y 31 horas</div>
+            </p-overlayPanel>
+            Horas académicas *
+          </p-inputGroupAddon>
+          <p-inputNumber
+            formControlName="iHorasDictado"
+            min="12"
+            max="31"
             step="1"
             styleClass="group-element"
             appendTo="body"

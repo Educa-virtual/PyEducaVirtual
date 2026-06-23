@@ -119,6 +119,27 @@ export class AdmStepGradoSeccionService {
     return this.grado_seccion_turno;
   }
 
+  filterNivelGrados(data: any) {
+    if (!this.nivel_grados && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.nivel_grados = items.reduce((prev: any, current: any) => {
+        const x = prev.find(item => item.value === current.iNivelGradoId);
+        if (!x) {
+          return prev.concat([
+            {
+              value: Number(current.iNivelGradoId),
+              label: current.cGradoAbreviacion + ' ' + current.cGradoNombre,
+            },
+          ]);
+        } else {
+          return prev;
+        }
+      }, []);
+      return this.nivel_grados;
+    }
+    return this.nivel_grados;
+  }
+
   filterSecciones(data: any, iNivelGradoId: any) {
     if (data) {
       const secciones = data.filter(item => item.iNivelGradoId === iNivelGradoId);
@@ -466,6 +487,34 @@ export class AdmStepGradoSeccionService {
 
   borrarDocente(data: any) {
     return this.http.post(`${baseUrl}/acad/borrarDocente`, data);
+  }
+
+  listarDocenteCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarDocenteCurso`, data);
+  }
+
+  verDocenteCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/verDocenteCurso`, data);
+  }
+
+  guardarDocenteCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarDocenteCurso`, data);
+  }
+
+  actualizarDocenteCurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarDocenteCurso`, data);
+  }
+
+  borrarDocentecurso(data: any) {
+    return this.http.post(`${baseUrl}/acad/borrarDocentecurso`, data);
+  }
+
+  verDocenteCursoHistorial(data: any) {
+    return this.http.post(`${baseUrl}/acad/verDocenteCursoHistorial`, data);
+  }
+
+  listarDocentePersonalIe(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarDocentes`, data);
   }
 
   /**

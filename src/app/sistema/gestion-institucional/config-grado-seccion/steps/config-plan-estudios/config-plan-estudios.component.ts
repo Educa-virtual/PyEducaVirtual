@@ -148,6 +148,8 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     this.setForm({
       iConfigId: this.iConfigId,
       cGradoAbreviacionNombre: grado[0].label,
+      iHorasSemPresencial: 0,
+      iHorasSemDomicilio: 0,
     });
     this.visible = true;
   }

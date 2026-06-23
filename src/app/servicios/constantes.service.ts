@@ -418,22 +418,17 @@ const administracion = [
         icon: 'pi pi-fw pi-cog',
         items: [
           {
+            label: 'Gestionar matrículas',
+            icon: 'pi pi-fw pi-file-edit',
+            badge: '',
+            routerLink: ['/gestion-institucional/gestionar-matriculas'],
+          },
+          {
             label: 'Buzón de sugerencias',
             icon: 'pi pi-fw pi-envelope',
             routerLink: ['/buzon-sugerencias/director'],
           },
-          {
-            label: 'Registro de vacantes',
-            icon: 'pi pi-fw pi-file-import',
-            routerLink: ['/gestion-institucional/gestion-vacantes'],
-          },
         ],
-      },
-      {
-        label: 'Gestionar matrículas',
-        icon: 'pi pi-fw pi-file-edit',
-        badge: '',
-        routerLink: ['/gestion-institucional/gestionar-matriculas'],
       },
       {
         label: 'Reportes y estadísticas',

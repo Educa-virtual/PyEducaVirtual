@@ -82,7 +82,7 @@ export class ConfigGradoSeccionComponent implements OnInit, AfterViewInit {
           {
             label: 'Asignaciones',
             icon: 'pi pi-fw pi-clipboard',
-            route: `/gestion-institucional/config/${this.iConfigId}/asignar-grados`,
+            route: `/gestion-institucional/config/${this.iConfigId}/asignar-grado`,
           },
         ];
 
@@ -97,7 +97,7 @@ export class ConfigGradoSeccionComponent implements OnInit, AfterViewInit {
           'seccion',
           'plan-estudio',
           'hora-docente',
-          'asignar-grados',
+          'asignar-grado',
         ];
         const targetSegment = validSegments.includes(currentSegment) ? currentSegment : 'academico';
 

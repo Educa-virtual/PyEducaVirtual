@@ -41,6 +41,7 @@ export class BancoPreguntasFormComponent implements OnChanges {
         iTipoPregId: Number(this.data?.iTipoPregId),
         cBancoPregunta: this.data?.cBancoPregunta,
         cBancoTextoAyuda: this.data?.cBancoTextoAyuda,
+        iNivelGradoId: this.data?.iNivelGradoId,
       });
       this.alternativas = this.data?.jsonAlternativas || [];
       this.alternativas = this.alternativas.map((alt, index) => ({
@@ -62,6 +63,7 @@ export class BancoPreguntasFormComponent implements OnChanges {
     iTipoPregId: [1, Validators.required],
     iCursoId: [''],
     iNivelCicloId: [''],
+    iNivelGradoId: [''],
     idEncabPregId: [],
     cBancoPregunta: ['', Validators.required],
     cBancoTextoAyuda: [],
@@ -201,6 +203,7 @@ export class BancoPreguntasFormComponent implements OnChanges {
       iDocenteId: this._ConstantesService.iDocenteId,
       iCursoId: this.curso?.iCursoId,
       iNivelCicloId: this.curso?.iNivelCicloId,
+      iNivelGradoId: this.curso?.iNivelGradoId,
       iCredId: this._ConstantesService.iCredId,
       jsonAlternativas: JSON.stringify(this.alternativas),
       idEncabPregId: this.curso?.idEncabPregId,

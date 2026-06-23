@@ -20,8 +20,8 @@
       <p-inputGroup>
         <p-inputGroupAddon> Grado </p-inputGroupAddon>
         <p-dropdown
-          [(ngModel)]="params.iGradoId"
-          optionValue="iGradoId"
+          [(ngModel)]="params.iNivelGradoId"
+          optionValue="iNivelGradoId"
           [options]="grados"
           optionLabel="cGrado"
           styleClass="w-full"
@@ -41,7 +41,7 @@
                 (click)="agregarPreguntas()"
             ></button> -->
       <button
-        [disabled]="params.iCursoId === 0"
+        [disabled]="params.iCursoId === 0 || params.iNivelGradoId === 0"
         pButton
         class="p-button-sm p-button-primary flex align-items-center gap-2 ml-2"
         (click)="menuAgregarPreguntas.toggle($event)"

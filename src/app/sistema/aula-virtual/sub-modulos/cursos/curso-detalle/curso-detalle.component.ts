@@ -19,7 +19,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 import { ContenidoSemanasService } from '@/app/servicios/acad/contenido-semanas.service';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
-
+// import { CursoService } from './tabs/services/curso.service';
 @Component({
   selector: 'app-curso-detalle',
   standalone: true,
@@ -43,6 +43,7 @@ export class CursoDetalleComponent
   private _ChangeDetectorRef = inject(ChangeDetectorRef);
   private _ConstantesService = inject(ConstantesService);
   private _ContenidoSemanasService = inject(ContenidoSemanasService);
+  // private cursoService = inject(CursoService);
   private _Router = inject(Router);
 
   public DOCENTE = DOCENTE;
@@ -103,6 +104,18 @@ export class CursoDetalleComponent
     const iNivelGradoId = this._ActivatedRoute.snapshot.queryParams['iNivelGradoId'];
     const cantidad = this._ActivatedRoute.snapshot.queryParams['cantidad'];
     const iCapacitacionId = this._ActivatedRoute.snapshot.queryParams['iCapacitacionId'];
+
+    // const enviar = {
+    //   iCursoId: iCursoId,
+    //   iSedeId: this._ConstantesService.iSedeId,
+    //   iYAcadId: this._ConstantesService.iYAcadId,
+    // };
+
+    // this.cursoService.obtenerAulaDetalle(enviar).subscribe({
+    //   next: respuesta => {
+    //     console.log(respuesta);
+    //   },
+    // });
 
     this.curso = {
       cCursoNombre,

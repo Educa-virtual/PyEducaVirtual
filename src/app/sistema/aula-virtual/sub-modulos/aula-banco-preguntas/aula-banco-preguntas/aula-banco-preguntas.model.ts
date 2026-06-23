@@ -19,6 +19,22 @@ export const columns: IColumn[] = [
     text_header: 'center',
   },
   {
+    field: 'cGradoAbreviacion',
+    header: 'Grado',
+    type: 'text',
+    width: '4rem',
+    text: 'center',
+    text_header: 'center',
+  },
+  {
+    field: 'cNivelTipoNombre',
+    header: 'Nivel',
+    type: 'text',
+    width: '4rem',
+    text: 'center',
+    text_header: 'center',
+  },
+  {
     field: 'cTipo',
     header: 'Tipo',
     type: 'text',

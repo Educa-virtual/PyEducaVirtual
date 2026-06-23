@@ -2,7 +2,7 @@
   <app-toolbar-primeng [title]="curso?.cCursoNombre || ''"> </app-toolbar-primeng>
 } @else {
   <app-toolbar-primeng
-    [title]="(curso?.cNivelNombreCursos.toUpperCase() || '') + ': ' + (curso?.cCursoNombre || '')"
+    [title]="(curso?.cNivelNombreCursos.toUpperCase() || '') + ' : ' + (curso?.cCursoNombre || '')"
   >
     <div class="text-white font-bold block">
       Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo: {{ curso?.cCicloRomanos }} | Grado:

@@ -38,6 +38,7 @@ export class BancoEncabezadoFormComponent implements OnChanges {
     cEncabPregTitulo: ['', Validators.required],
     cEncabPregContenido: ['', Validators.required],
     iCredId: ['', Validators.required],
+    iNivelGradoId: [''],
   });
 
   ngOnChanges(changes) {
@@ -74,6 +75,7 @@ export class BancoEncabezadoFormComponent implements OnChanges {
       iCursoId: this.curso?.iCursoId,
       iNivelCicloId: this.curso?.iNivelCicloId,
       iCredId: this._ConstantesService.iCredId,
+      iNivelGradoId: this.curso?.iNivelGradoId,
     });
 
     const nombresCampos: Record<string, string> = {

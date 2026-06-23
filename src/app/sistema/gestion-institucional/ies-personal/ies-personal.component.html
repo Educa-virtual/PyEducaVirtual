@@ -9,7 +9,6 @@
       [showCaption]="true"
       [data]="personal_ies"
       (accionBtnItem)="accionBtnItemTable($event)"
-      [showAdvancedFilter]="true"
       [showPaginator]="true"
       [(selectedRowData)]="selectedItems"
       [actions]="actions"
@@ -17,10 +16,6 @@
       <!-- <ng-container slot="caption-content"> </ng-container> -->
     </app-table-primeng>
     <ng-container slot="caption-content"> </ng-container>
-  </div>
-  <div class="card flex justify-content-center gap-2">
-    <p-toast />
-    <!-- <p-confirmDialog /> -->
   </div>
 </app-container-page>
 

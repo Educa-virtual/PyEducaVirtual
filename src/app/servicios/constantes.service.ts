@@ -451,11 +451,11 @@ const administracion = [
           },
         ],
       },
-      {
-        label: 'Descarga de Plantillas',
-        icon: 'pi pi-fw pi-download',
-        routerLink: ['/gestion-institucional/descargar-plantillas'],
-      },
+      // {
+      //   label: 'Descarga de Plantillas',
+      //   icon: 'pi pi-fw pi-download',
+      //   routerLink: ['/gestion-institucional/descargar-plantillas'],
+      // },
     ],
   },
   {

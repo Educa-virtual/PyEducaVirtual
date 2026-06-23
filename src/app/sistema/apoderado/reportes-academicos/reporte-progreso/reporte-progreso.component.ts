@@ -64,7 +64,7 @@ export class ReporteProgresoComponent implements OnInit {
       },
     ];
 
-    this.obtenerEstudiantesApoderado();
+    // this.obtenerEstudiantesApoderado();
   }
 
   obtenerEstudiantesApoderado() {

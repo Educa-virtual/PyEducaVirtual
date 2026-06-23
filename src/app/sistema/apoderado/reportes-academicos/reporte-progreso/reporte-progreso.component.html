@@ -3,19 +3,27 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Reporte académico de progreso</h3>
+      <span class="font-bold white-space-nowrap text-2xl m-0"> Reporte académico de progreso </span>
     </div>
   </ng-template>
+
+  <p-messages severity="secondary">
+    <ng-template pTemplate>
+      Para cambiar el año académico, dirijase a la barra superior y debajo de "Año Escolar"
+      seleccione otro año de la lista desplegable.
+    </ng-template>
+  </p-messages>
   <ng-template pTemplate="body">
     <div class="grid p-fluid mt-4">
-      <div class="field col-12 md:col-4">
+      <div class="field col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon class="mi-addon-primary">Estudiante:</p-inputGroupAddon>
           <p-dropdown
             [options]="dataEstudiantes"
             optionLabel="cNombreCompleto"
             optionValue="iEstudianteId"
-            [appendTo]="'body'"
+            appendTo="body"
+            styleClass="group-element"
             [style]="{ flex: '1', width: '100%' }"
             placeholder="Seleccione..."
             [(ngModel)]="estudianteSeleccionado"
@@ -23,14 +31,15 @@
           />
         </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-4">
+      <div class="field col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon class="mi-addon-primary">Matrícula:</p-inputGroupAddon>
           <p-dropdown
             [options]="dataMatriculas"
             optionLabel="cMatriculaMostrar"
             optionValue="iMatrId"
-            [appendTo]="'body'"
+            appendTo="body"
+            styleClass="group-element"
             [style]="{ flex: '1', width: '100%' }"
             placeholder="Seleccione..."
             [(ngModel)]="matriculaSeleccionada"
@@ -38,38 +47,11 @@
           />
         </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-2">
-        <!-- <p-button
-          type="button"
-          label="Ver horario"
-          icon="pi pi-calendar"
-          class="w-full"
-          severity="warning"
-          (click)="mostrarHorario('Horario')"
-          [disabled]="!matriculaSeleccionada"
-        ></p-button> -->
-      </div>
-      <div class="field col-12 md:col-2">
-        <!-- <p-button
-          type="button"
-          label="Ver calendario"
-          icon="pi pi-calendar"
-          class="w-full"
-          severity="primary"
-          (click)="mostrarHorario('Calendario')"
-          [disabled]="!matriculaSeleccionada"
-        ></p-button> -->
-      </div>
     </div>
   </ng-template>
 </p-panel>
 <p-tabView [(activeIndex)]="activeTab" (onChange)="onTabChange($event)">
   <p-tabPanel header="Logro alcanzado" [headerStyleClass]="activeTab === 0 ? 'tab-activo' : ''">
-    <small
-      >Para cambiar el año escolar: en la barra superior de la pantalla, en Año Escolar, seleccione
-      otra opción</small
-    >
-
     <div class="block mt-3">
       @if (courses.length > 0) {
         <app-tabla-reporte-progreso

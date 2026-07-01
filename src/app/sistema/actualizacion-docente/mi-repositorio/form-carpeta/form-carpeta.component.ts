@@ -14,7 +14,7 @@ interface CarpetaForm {
   iPersId: number;
   iParentCarpetaId: number | null;
   iCredId: number;
-  iId: string;
+  iRegistroId: number;
 }
 
 @Component({
@@ -49,7 +49,7 @@ export class FormCarpetaComponent {
       const d = this.data();
       if (d) {
         this.formCarpetas.patchValue(d);
-        this.formCarpetas.controls.iCarpetaId.setValue(d.iId ?? null);
+        this.formCarpetas.controls.iCarpetaId.setValue(d.iRegistroId ?? null);
       } else {
         this.formCarpetas.reset();
       }

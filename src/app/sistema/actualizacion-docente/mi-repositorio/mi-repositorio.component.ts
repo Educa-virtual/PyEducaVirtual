@@ -2,7 +2,6 @@ import { Component, signal, OnInit } from '@angular/core';
 import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
 import { PrimengModule } from '@/app/primeng.module';
 import { FormCarpetaComponent } from './form-carpeta/form-carpeta.component';
-import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CarpetasService } from '@/app/servicios/repo/carpetas.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { finalize } from 'rxjs';
@@ -30,14 +29,14 @@ export class MiRepositorioComponent implements OnInit {
       type: 'text',
       text: 'left',
       text_header: 'left',
-      width: '35%',
+      width: '50%',
     },
     {
       field: 'dtUltimaModificacion',
       header: 'Última modificación',
-      type: 'text',
-      text: 'center',
-      text_header: 'center',
+      type: 'datetime',
+      text: 'left',
+      text_header: 'left',
       width: '20%',
     },
     {
@@ -46,7 +45,7 @@ export class MiRepositorioComponent implements OnInit {
       type: 'text',
       text: 'center',
       text_header: 'center',
-      width: '15%',
+      width: '10%',
     },
     {
       field: 'iTamano',
@@ -62,7 +61,7 @@ export class MiRepositorioComponent implements OnInit {
       type: 'actions',
       text: 'center',
       text_header: 'center',
-      width: '15%',
+      width: '5%',
     },
   ];
 
@@ -77,7 +76,6 @@ export class MiRepositorioComponent implements OnInit {
     private _CarpetasService: CarpetasService,
     private _ArchivosService: ArchivosService,
     private _ConfirmationModalService: ConfirmationModalService,
-    private _ConstantesService: ConstantesService,
     private store: LocalStoreService,
     private messageService: MessageService
   ) {
@@ -94,6 +92,10 @@ export class MiRepositorioComponent implements OnInit {
     menu.toggle(event);
   }
 
+  editarCarpeta() {
+    this.showModal.set(true);
+  }
+
   configurarMenuAcciones(row: any) {
     if (row.cTipo === 'carpeta') {
       this.items = [
@@ -104,7 +106,7 @@ export class MiRepositorioComponent implements OnInit {
             this.entrarCarpeta(row);
           },
         },
-        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.showModal.set(true) },
+        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.editarCarpeta() },
         {
           label: 'Eliminar',
           icon: 'pi pi-trash',
@@ -137,12 +139,12 @@ export class MiRepositorioComponent implements OnInit {
         next: (resp: any) => {
           const data = (resp?.data ?? []).map((item: any) => {
             item.iTamano = this._CarpetasService.formatearTamanio(item.iTamano);
-            const ext = (item.cExtension ?? '').toLowerCase();
+            const ext = (item.cExtension ?? '').toUpperCase();
 
             if (item.cTipo === 'carpeta') {
               item.cIcono = '📁';
             } else {
-              item.cTipo = ext;
+              item.cExtension = ext;
               const iconMap: Record<string, string> = {
                 pdf: '📄',
                 doc: '📝',
@@ -181,7 +183,8 @@ export class MiRepositorioComponent implements OnInit {
 
   eliminarCarpeta(row): void {
     this._ConfirmationModalService.openConfirm({
-      header: '¿Está seguro de eliminar la carpeta: ' + row.cNombre + ' ?',
+      header: 'Confirmación',
+      message: '¿Está seguro de eliminar la carpeta: ' + row.cNombre + ' ?',
       accept: () => {
         this._CarpetasService
           .eliminarCarpeta({
@@ -354,7 +357,8 @@ export class MiRepositorioComponent implements OnInit {
   eliminarArchivo(row: any) {
     const iArchivoId = row.iRegistroId;
     this._ConfirmationModalService.openConfirm({
-      header: `¿Está seguro de eliminar el archivo: ${row.cNombre}?`,
+      header: 'Confirmación',
+      message: `¿Está seguro de eliminar el archivo: ${row.cNombre}?`,
       accept: () => {
         this._ArchivosService
           .eliminarArchivo({
@@ -414,9 +418,12 @@ export class MiRepositorioComponent implements OnInit {
     this.listarCarpetas(id);
   }
 
-  verificarTipo(row, columna) {
-    if (row.cTipo === 'carpeta' && columna === 'cNombreLabel') {
+  verificarTipo(row, columna, $event, menu) {
+    if (row.cTipo === 'carpeta' && columna !== '') {
       this.entrarCarpeta(row);
+    }
+    if (row.cTipo === 'archivo') {
+      this.abrirMenu($event, row, menu);
     }
   }
 }

@@ -41,7 +41,7 @@ export class MiRepositorioComponent implements OnInit {
       width: '20%',
     },
     {
-      field: 'cTipo',
+      field: 'cExtension',
       header: 'Tipo',
       type: 'text',
       text: 'center',

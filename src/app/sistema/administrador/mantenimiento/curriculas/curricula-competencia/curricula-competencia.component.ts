@@ -12,12 +12,12 @@ import {
   IActionContainer,
   ContainerPageComponent,
 } from '@/app/shared/container-page/container-page.component';
-import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competencia-capacidades/curricula-competencia-capacidades.component';
 import { ActivatedRoute } from '@angular/router';
+import { CurriculasService } from '../config/service/curriculas.service';
 
 @Component({
   selector: 'app-curricula-competencia',
@@ -42,13 +42,12 @@ export class CurriculaCompetenciaComponent implements OnInit {
   bUpdate = false;
   iCompetenciaId: number;
   perfil: any;
-  curriculaDescripcion: string;
   iCurrId: any;
+  curricula: any;
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
   breadCrumbItems: MenuItem[] = [];
 
-  private _ConstantesService = inject(ConstantesService);
   private _confirmService = inject(ConfirmationModalService);
   private _LocalStoreService = inject(LocalStoreService);
 
@@ -57,12 +56,12 @@ export class CurriculaCompetenciaComponent implements OnInit {
     public cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private query: GeneralService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private curriculaService: CurriculasService
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
-    /* obtener del extra de la ruta */
-    this.curriculaDescripcion = this.route.snapshot.paramMap.get('curricula');
     this.iCurrId = this.route.snapshot.paramMap.get('iCurrId');
+    this.curricula = this.curriculaService.getCurricula();
     this.setBreadCrumb();
   }
 
@@ -70,8 +69,7 @@ export class CurriculaCompetenciaComponent implements OnInit {
     this.breadCrumbItems = [
       { label: 'Currículas', routerLink: ['/administrador/mantenimiento-curricula'] },
       {
-        label: this.curriculaDescripcion,
-        routerLink: [`/administrador/mantenimiento-curricula/${this.iCurrId}/areas`],
+        label: this.curricula.cCurrDescripcion ?? '',
       },
       { label: 'Competencias' },
     ];
@@ -143,7 +141,7 @@ export class CurriculaCompetenciaComponent implements OnInit {
       case 'agregar':
         this.titulo =
           'Formulario para agregar competencia curricular (Curricula: ' +
-          this.curriculaDescripcion +
+          this.curricula.cCurrDescripcion +
           ')';
         this.visible_competencia = true;
         this.iCompetenciaId = 0;
@@ -158,7 +156,7 @@ export class CurriculaCompetenciaComponent implements OnInit {
       case 'editar':
         this.titulo =
           'Formulario para editar competencia curricular (Curricula: ' +
-          this.curriculaDescripcion +
+          this.curricula.cCurrDescripcion +
           ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;

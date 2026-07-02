@@ -2,15 +2,7 @@ import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContainerPageComponent,
@@ -23,10 +15,10 @@ import { CurriculaCursoCompetenciasComponent } from '../curricula-curso-competen
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
 import { environment } from '@/environments/environment';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { HttpClient } from '@angular/common/http';
 import imagenesRecursosAreas from '@/app/shared/imagenes/areas';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { CurriculasService } from '../config/service/curriculas.service';
 
 @Component({
   selector: 'app-curricula-curso',
@@ -42,11 +34,8 @@ import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
   templateUrl: './curricula-curso.component.html',
   styleUrl: './curricula-curso.component.scss',
 })
-export class CurriculaCursoComponent implements OnChanges {
+export class CurriculaCursoComponent implements OnInit {
   @Output() asignarCurso = new EventEmitter();
-
-  @Input() iCurrId: number = 0;
-  @Input() curricula: any = [];
   @Input() caption: string = '';
 
   cursos: any[] = [];
@@ -60,6 +49,9 @@ export class CurriculaCursoComponent implements OnChanges {
   capacidadesCurso: any[] = [];
   titulo: string = '';
   curso: any = {};
+
+  iCurrId: any;
+  curricula: any;
 
   perfil: any;
   filesUrl = [];
@@ -93,8 +85,6 @@ export class CurriculaCursoComponent implements OnChanges {
   bUpdate: boolean = false;
 
   backend = environment.backend;
-  private http = inject(HttpClient);
-  private backendApi = environment.backendApi;
   private _LocalStoreService = inject(LocalStoreService);
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
@@ -104,10 +94,15 @@ export class CurriculaCursoComponent implements OnChanges {
     private fb: FormBuilder,
     private messageService: MessageService,
     private query: GeneralService,
-    private router: Router
+    private router: Router,
+    private curriculaService: CurriculasService,
+    private route: ActivatedRoute
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
     this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
+    this.iCurrId = this.route.snapshot.paramMap.get('iCurrId');
+    this.curricula = this.curriculaService.getCurricula();
+    this.setBreadCrumb();
   }
 
   frmCursos = this.fb.group({
@@ -133,27 +128,13 @@ export class CurriculaCursoComponent implements OnChanges {
     this.breadCrumbItems = [
       { label: 'Currículas', routerLink: ['/administrador/mantenimiento-curricula'] },
       {
-        label: this.curricula.cCurrDescripcion,
-        routerLink: [`/administrador/mantenimiento-curricula/${this.iCurrId}/areas`],
+        label: this.curricula.cCurrDescripcion ?? '',
       },
       { label: 'Áreas curriculares' },
     ];
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
-      // Si iCurrId cambió y tiene valor válido
-      this.iCurrId = changes['iCurrId'].currentValue;
-      this.inicializacion();
-      this.getTipoCurso();
-    }
-
-    if (changes['curricula'] && changes['curricula'].currentValue) {
-      this.setBreadCrumb();
-    }
-  }
-
-  inicializacion() {
+  ngOnInit(): void {
     //const item = event.item || this.cursos || null
     this.cursos = [];
     this.query
@@ -192,6 +173,7 @@ export class CurriculaCursoComponent implements OnChanges {
           }
         },
       });
+    this.getTipoCurso();
   }
 
   getTipoCurso() {
@@ -485,7 +467,6 @@ export class CurriculaCursoComponent implements OnChanges {
           this.frmCursos.reset();
         }
         this.visible = false;
-        this.inicializacion();
       },
     });
   }
@@ -535,50 +516,42 @@ export class CurriculaCursoComponent implements OnChanges {
     {
       type: 'item',
       width: '5%',
-      field: '',
+      field: '#',
       header: 'Item',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '60%',
+      width: '65%',
       field: 'cCursoNombre',
       header: 'Área curricular',
       text_header: 'center',
       text: 'left',
     },
-    // {
-    //   type: 'text',
-    //   width: '5rem',
-    //   field: 'nCursoTotalCreditos',
-    //   header: 'Créditos',
-    //   text_header: 'center',
-    //   text: 'center',
-    // },
-    // {
-    //   type: 'text',
-    //   width: '5rem',
-    //   field: 'iCursoTotalHoras',
-    //   header: 'Horas',
-    //   text_header: 'center',
-    //   text: 'center',
-    // },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'iCursoTotalHoras',
+      header: 'Horas',
+      text_header: 'center',
+      text: 'center',
+    },
     {
       type: 'estado-activo',
-      width: '5%',
+      width: '10%',
       field: 'iCursoEstado',
-      header: '',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'actions',
-      width: '30%',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
-      text: 'center',
+      text: 'right',
     },
   ];
 }

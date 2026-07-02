@@ -55,7 +55,8 @@ export class CurriculasComponent implements OnInit {
     public cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private query: GeneralService,
-    private router: Router
+    private router: Router,
+    private curriculaService: CurriculasService
   ) {
     this.iPerfilId = this._ConstantesService.iPerfilId;
   }
@@ -97,6 +98,7 @@ export class CurriculasComponent implements OnInit {
         break;
 
       case 'ver_areas':
+        this.curriculaService.setCurricula(item);
         this.router.navigate([
           `/administrador/mantenimiento-curricula/${item.iCurrId}/areas`,
           { curricula: item.cCurrDescripcion },
@@ -104,6 +106,7 @@ export class CurriculasComponent implements OnInit {
         break;
 
       case 'ver_competencias':
+        this.curriculaService.setCurricula(item);
         this.router.navigate([
           `/administrador/mantenimiento-curricula/${item.iCurrId}/competencias`,
           { curricula: item.cCurrDescripcion },

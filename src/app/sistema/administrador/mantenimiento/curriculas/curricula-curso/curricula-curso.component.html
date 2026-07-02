@@ -1,29 +1,50 @@
 <p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 
-<app-container-page
-  title="Lista de áreas"
-  [actions]="accionesCursos"
-  (accionBtnItem)="accionBtnItem($event)"
->
-  <div class="grid">
-    <div class="col-12 mt-3">
-      @if (cursos.length > 0) {
-        <app-table-primeng
-          class="w-full"
-          [columnas]="cursosColumns"
-          [data]="cursos"
-          [actions]="accionesTablaCurso"
-          (accionBtnItem)="accionBtnItem($event)"
-        />
-      } @else {
-        <app-no-data
-          [showIcon]="'NO-DATA'"
-          mensaje="No se encontraron áreas curriculares asignadas"
-        />
-      }
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">
+        Áreas curriculares de: {{ curricula.cCurrDescripcion ?? '' }}
+      </div>
     </div>
-  </div>
-</app-container-page>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        size="small"
+        pTooltip="Agregar"
+        tooltipPosition="top"
+        (click)="accionBtnItem({ accion: 'agregar' })"
+        severity="success"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Agregar</span>
+      </p-button>
+      <p-button
+        size="small"
+        pTooltip="Regresar"
+        tooltipPosition="top"
+        (click)="accionBtnItem({ accion: 'regresar' })"
+        severity="secondary"
+      >
+        <i class="pi pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Regresar</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  @if (cursos.length > 0) {
+    <app-table-primeng
+      class="w-full"
+      [columnas]="cursosColumns"
+      [data]="cursos"
+      [actions]="accionesTablaCurso"
+      (accionBtnItem)="accionBtnItem($event)"
+    />
+  } @else {
+    <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron áreas curriculares asignadas" />
+  }
+</p-panel>
 
 <!-- </app-container-page> -->
 

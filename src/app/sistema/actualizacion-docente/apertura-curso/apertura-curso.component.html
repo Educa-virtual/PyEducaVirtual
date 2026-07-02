@@ -61,12 +61,14 @@
           <p-inputGroupAddon>Tipo de Capacitación:</p-inputGroupAddon>
           <p-dropdown
             [options]="tipoCapacitacion"
-            styleClass="w-full"
+            styleClass="group-element"
             formControlName="iTipoCapId"
             placeholder="Seleccione el tipo"
             optionValue="iTipoCapId"
             optionLabel="cTipoCapNombre"
             (onChange)="capacitacionExterna($event.value)"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
           ></p-dropdown>
         </p-inputGroup>
       </div>
@@ -78,11 +80,13 @@
             pInputText
             placeholder="Ingresar nombre...."
             formControlName="cCapTitulo"
+            class="group-element"
             [ngClass]="{
               'p-invalid':
                 formNuevaCapacitacion.get('cCapTitulo')?.invalid &&
                 formNuevaCapacitacion.get('cCapTitulo')?.touched,
             }"
+            [style]="{ flex: '1', width: '100%' }"
           />
         </p-inputGroup>
         <small
@@ -97,29 +101,33 @@
       </div>
       <div class="col">
         <div class="grid">
-          <div class="col-6">
+          <div class="col-12 md:col-6">
             <p-inputGroup>
               <p-inputGroupAddon>Nivel Pedagógico:</p-inputGroupAddon>
               <p-dropdown
                 [options]="nivelPedagogico"
-                styleClass="w-full"
+                styleClass="group-element"
                 formControlName="iNivelPedId"
                 optionValue="iNivelPedId"
                 optionLabel="cNivelPedNombre"
                 placeholder="Seleccione Nivel"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
               ></p-dropdown>
             </p-inputGroup>
           </div>
-          <div class="col-6">
+          <div class="col-12 md:col-6">
             <p-inputGroup>
               <p-inputGroupAddon>Dirigido para:</p-inputGroupAddon>
               <p-dropdown
                 [options]="publicoObjetivo"
-                styleClass="w-full"
+                styleClass="group-element"
                 formControlName="iTipoPubId"
                 placeholder="Seleccione Publico"
                 optionValue="iTipoPubId"
                 optionLabel="cTipoPubNombre"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
               ></p-dropdown>
             </p-inputGroup>
           </div>
@@ -150,11 +158,13 @@
                 min="1"
                 placeholder="0"
                 formControlName="iTotalHrs"
+                class="group-element"
                 [ngClass]="{
                   'p-invalid':
                     formNuevaCapacitacion.get('iTotalHrs')?.invalid &&
                     formNuevaCapacitacion.get('iTotalHrs')?.touched,
                 }"
+                [style]="{ flex: '1', width: '100%' }"
               />
             </p-inputGroup>
             <small
@@ -177,6 +187,9 @@
                 [iconDisplay]="'input'"
                 [showIcon]="true"
                 inputId="icondisplay"
+                inputStyleClass="group-element"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
               ></p-calendar>
             </p-inputGroup>
           </div>
@@ -190,6 +203,9 @@
                 [iconDisplay]="'input'"
                 [showIcon]="true"
                 inputId="icondisplay"
+                inputStyleClass="group-element"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
               ></p-calendar>
             </p-inputGroup>
           </div>
@@ -205,11 +221,13 @@
               placeholder="Ingresar url...."
               formControlName="cLink"
               pattern="https?://.+"
+              class="group-element"
               [ngClass]="{
                 'p-invalid':
                   formNuevaCapacitacion.get('cLink')?.invalid &&
                   formNuevaCapacitacion.get('cLink')?.touched,
               }"
+              [style]="{ flex: '1', width: '100%' }"
             />
           </p-inputGroup>
           <small
@@ -225,7 +243,7 @@
       } @else {
         <div class="col">
           <div class="grid">
-            <div class="col-7">
+            <div class="col-12 md:col-7">
               <p-inputGroup>
                 <p-inputGroupAddon>Instructor: </p-inputGroupAddon>
                 <p-dropdown
@@ -233,11 +251,13 @@
                   formControlName="iInstId"
                   optionLabel="nombreLargo"
                   optionValue="iInstId"
-                  styleClass="w-full"
+                  styleClass="group-element"
                   [filter]="true"
                   filterBy="nombreLargo"
                   [showClear]="true"
                   placeholder="Seleccionar instructor"
+                  appendTo="body"
+                  [style]="{ flex: '1', width: '100%' }"
                 >
                 </p-dropdown>
               </p-inputGroup>
@@ -251,7 +271,8 @@
                   type="text"
                   formControlName="nCosto"
                   placeholder="S/.0.0"
-                  class="p-inputtext p-component w-10rem"
+                  class="group-element p-inputtext p-component"
+                  [style]="{ flex: '1', width: '100%' }"
                 />
               </div>
             </div>

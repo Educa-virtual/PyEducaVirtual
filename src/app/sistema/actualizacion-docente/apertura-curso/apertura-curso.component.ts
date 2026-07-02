@@ -77,6 +77,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   isDisabled: boolean = this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO;
 
   modoFormulario: 'crear' | 'editar' = 'crear';
+  modoVista: boolean = false;
 
   public formNuevaCapacitacion = this._formBuilder.group({
     iCapacitacionId: [''],
@@ -157,7 +158,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   public columnasTabla: IColumn[] = [
     {
       type: 'item',
-      width: '0.5rem',
+      width: '10%',
       field: 'index',
       header: 'Nro',
       text_header: 'center',
@@ -165,7 +166,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     },
     {
       type: 'text',
-      width: '8rem',
+      width: '35%',
       field: 'cCapTitulo',
       header: 'Título del curso',
       text_header: 'left',
@@ -173,15 +174,31 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     },
     {
       type: 'text',
-      width: '2rem',
+      width: '25%',
+      field: 'cPersNombreCompleto',
+      header: 'Instructor',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'iAprobadas',
+      header: 'Participantes',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '10%',
       field: 'dFechaFin',
-      header: 'Fecha Fin',
+      header: 'Fecha cierre',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'dropdown-actions',
-      width: '1rem',
+      width: '10%',
       field: '',
       header: 'Acciones',
       text_header: 'center',
@@ -192,12 +209,20 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   // mostrar los botones de la tabla (dropdown)
   public accionesTabla: IActionTable[] = [
     {
+      labelTooltip: 'Ver',
+      icon: 'pi pi-eye',
+      accion: 'ver',
+      type: 'item',
+      class: 'p-menuitem-link text-blue-500',
+      isVisible: row => ['2'].includes(row.iEstado),
+    },
+    {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
       class: 'p-menuitem-link text-orange-500',
-      isVisible: row => ['1', '2'].includes(row.iEstado),
+      isVisible: row => ['1'].includes(row.iEstado),
     },
     {
       labelTooltip: 'Configurar horarios',
@@ -237,18 +262,15 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   // asignar la accion a los botones de la tabla
   accionBnt({ accion, item }): void {
     switch (accion) {
+      case 'ver':
+        this.modoFormulario = 'editar';
+        this.modoVista = true;
+        this.cargarDatosEnFormulario(item);
+        break;
       case 'editar':
         this.modoFormulario = 'editar';
-        const itemFormateado = {
-          ...item,
-          iCosto: Number(item.iCosto) === 1 ? true : false,
-          dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
-          dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
-        };
-        this.formNuevaCapacitacion.patchValue(itemFormateado);
-        this.selectedImageId = item.cImagenUrl ? JSON.parse(item.cImagenUrl).id : null;
-        this.capacitacionExterna(item.iTipoCapId);
-        this.showModalFormulario = true;
+        this.modoVista = false;
+        this.cargarDatosEnFormulario(item);
         break;
       case 'configurarHorarios':
         this.datosFormulario = {
@@ -266,6 +288,22 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
         item.bEstado = accion === 'publicar' ? false : true;
         this.cambiarEstadoPublicacionCapacitacion(item);
         break;
+    }
+  }
+
+  private cargarDatosEnFormulario(item: any) {
+    const itemFormateado = {
+      ...item,
+      iCosto: Number(item.iCosto) === 1 ? true : false,
+      dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
+      dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
+    };
+    this.formNuevaCapacitacion.patchValue(itemFormateado);
+    this.selectedImageId = item.cImagenUrl ? JSON.parse(item.cImagenUrl).id : null;
+    this.capacitacionExterna(item.iTipoCapId);
+    this.showModalFormulario = true;
+    if (this.modoVista) {
+      this.formNuevaCapacitacion.disable();
     }
   }
 
@@ -318,6 +356,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
 
   // metodo para guardar el curso creado
   enviarFormulario() {
+    if (this.modoVista) return;
     if (this.loadingGuardar) return; // evitar doble clic
     this.loadingGuardar = true;
 
@@ -509,6 +548,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     };
     this._CapacitacionesService.obtenerCapacitacion(params).subscribe((resp: any) => {
       this.cursos = resp.data;
+      console.log(this.cursos);
     });
   }
 
@@ -532,6 +572,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   limpiarFormulario() {
     this.formNuevaCapacitacion.reset();
     this.modoFormulario = 'crear';
+    this.modoVista = false;
     this.codCapacitacion = null;
     setTimeout(() => {
       this.formNuevaCapacitacion.get('dFechaInicio')?.setValue(new Date());

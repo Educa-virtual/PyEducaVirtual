@@ -24,7 +24,7 @@
   <app-table-primeng
     [columnas]="columnasTabla"
     [data]="cursos"
-    [showCaption]="false"
+    [showCaption]="true"
     (accionBtnItem)="accionBnt($event)"
     [actions]="accionesTabla"
   >
@@ -69,6 +69,7 @@
             (onChange)="capacitacionExterna($event.value)"
             appendTo="body"
             [style]="{ flex: '1', width: '100%' }"
+            [disabled]="modoVista"
           ></p-dropdown>
         </p-inputGroup>
       </div>
@@ -87,6 +88,7 @@
                 formNuevaCapacitacion.get('cCapTitulo')?.touched,
             }"
             [style]="{ flex: '1', width: '100%' }"
+            [disabled]="modoVista"
           />
         </p-inputGroup>
         <small
@@ -113,6 +115,7 @@
                 placeholder="Seleccione Nivel"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
+                [disabled]="modoVista"
               ></p-dropdown>
             </p-inputGroup>
           </div>
@@ -128,6 +131,7 @@
                 optionLabel="cTipoPubNombre"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
+                [disabled]="modoVista"
               ></p-dropdown>
             </p-inputGroup>
           </div>
@@ -143,6 +147,7 @@
               formControlName="cCapDescripcion"
               [style]="{ height: 'auto' }"
               placeholder="Escribir una descripción...."
+              [readonly]="modoVista"
             />
           </div>
         </div>
@@ -165,6 +170,7 @@
                     formNuevaCapacitacion.get('iTotalHrs')?.touched,
                 }"
                 [style]="{ flex: '1', width: '100%' }"
+                [disabled]="modoVista"
               />
             </p-inputGroup>
             <small
@@ -190,6 +196,7 @@
                 inputStyleClass="group-element"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
+                [disabled]="modoVista"
               ></p-calendar>
             </p-inputGroup>
           </div>
@@ -206,6 +213,7 @@
                 inputStyleClass="group-element"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
+                [disabled]="modoVista"
               ></p-calendar>
             </p-inputGroup>
           </div>
@@ -228,6 +236,7 @@
                   formNuevaCapacitacion.get('cLink')?.touched,
               }"
               [style]="{ flex: '1', width: '100%' }"
+              [disabled]="modoVista"
             />
           </p-inputGroup>
           <small
@@ -258,6 +267,7 @@
                   placeholder="Seleccionar instructor"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
+                  [disabled]="modoVista"
                 >
                 </p-dropdown>
               </p-inputGroup>
@@ -265,7 +275,7 @@
             <div class="col">
               <div class="flex align-items-center justify-content-between">
                 <label for="" class="pr-3">¿Tiene Costo?</label>
-                <p-inputSwitch formControlName="iCosto" class="pr-3" />
+                <p-inputSwitch formControlName="iCosto" class="pr-3" [disabled]="modoVista" />
                 <input
                   *ngIf="formNuevaCapacitacion.get('iCosto')?.value"
                   type="text"
@@ -273,6 +283,7 @@
                   placeholder="S/.0.0"
                   class="group-element p-inputtext p-component"
                   [style]="{ flex: '1', width: '100%' }"
+                  [disabled]="modoVista"
                 />
               </div>
             </div>
@@ -286,7 +297,11 @@
               Añadir imagen de portada del curso
             </div>
             <div class="flex align-items-center justify-content-center m-2">
-              <p-inputSwitch formControlName="iImageAleatorio" class="pr-3" />
+              <p-inputSwitch
+                formControlName="iImageAleatorio"
+                class="pr-3"
+                [disabled]="modoVista"
+              />
             </div>
           </div>
         </div>
@@ -308,8 +323,9 @@
                   [tabindex]="index"
                   class="image-item"
                   [class.selected]="isSelected(image)"
-                  (click)="selectImage(image)"
-                  (keyup)="selectImage(null)"
+                  (click)="!modoVista && selectImage(image)"
+                  (keyup)="!modoVista && selectImage(null)"
+                  [class.pointer-events-none]="modoVista"
                 >
                   <div class="image-container">
                     <img [src]="backend + image.url" [alt]="image.title" class="carousel-image" />
@@ -337,33 +353,47 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-content-between flex-wrap gap-2">
-      <p-button
-        icon="pi pi-hammer"
-        label="Limpiar"
-        severity="danger"
-        class="m-2"
-        (click)="limpiarFormulario()"
-      ></p-button>
+      @if (!modoVista) {
+        <p-button
+          icon="pi pi-hammer"
+          label="Limpiar"
+          severity="danger"
+          class="m-2"
+          (click)="limpiarFormulario()"
+        ></p-button>
+      } @else {
+        <div></div>
+      }
 
       <div class="flex gap-2">
-        <p-button
-          *ngIf="modoFormulario === 'crear'"
-          icon="pi pi-eye"
-          label="Vista previa"
-          severity="contrast"
-          class="m-2"
-          (click)="showVistaPreviaCurso()"
-        ></p-button>
+        @if (modoVista) {
+          <p-button
+            icon="pi pi-times"
+            label="Cerrar"
+            severity="secondary"
+            class="m-2"
+            (click)="showModalFormulario = false; limpiarFormulario()"
+          ></p-button>
+        } @else {
+          <p-button
+            *ngIf="modoFormulario === 'crear'"
+            icon="pi pi-eye"
+            label="Vista previa"
+            severity="contrast"
+            class="m-2"
+            (click)="showVistaPreviaCurso()"
+          ></p-button>
 
-        <p-button
-          icon="pi pi-check-circle"
-          [label]="modoFormulario === 'editar' ? 'Actualizar' : 'Guardar'"
-          severity="success"
-          class="m-2"
-          (click)="enviarFormulario()"
-          [loading]="loadingGuardar"
-          [disabled]="!isValidForm() || loadingGuardar"
-        ></p-button>
+          <p-button
+            icon="pi pi-check-circle"
+            [label]="modoFormulario === 'editar' ? 'Actualizar' : 'Guardar'"
+            severity="success"
+            class="m-2"
+            (click)="enviarFormulario()"
+            [loading]="loadingGuardar"
+            [disabled]="!isValidForm() || loadingGuardar"
+          ></p-button>
+        }
       </div>
     </div>
   </ng-template>

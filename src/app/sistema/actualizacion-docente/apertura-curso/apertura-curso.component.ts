@@ -288,6 +288,16 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     this.portada[index]; // Obtiene la imagen según el índice
   }
 
+  get selectedImageUrl(): string {
+    const selected = this.portada.find(img => img.id === this.selectedImageId);
+    return selected ? this.backend + selected.url : '';
+  }
+
+  get selectedImageTitle(): string {
+    const selected = this.portada.find(img => img.id === this.selectedImageId);
+    return selected ? selected.name : '';
+  }
+
   selectImage(image: any) {
     this.selectedImageId = image.id;
 

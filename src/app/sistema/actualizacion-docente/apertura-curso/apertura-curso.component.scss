@@ -1,16 +1,3 @@
-:host ::ng-deep .p-card-title {
-  background-color: red;
-}
-@media (max-width: 868px) {
-  .col-4,
-  .col-5,
-  .col-6,
-  .col-7,
-  .col-8 {
-    width: 100%;
-    // padding: 2px;
-  }
-}
 :host ::ng-deep p-inputGroupAddon {
   background-color: var(--bg-header-modal) !important;
   color: var(--primary-color-text) !important;
@@ -19,7 +6,8 @@
   }
 }
 
-.btnimag {
+:host ::ng-deep .p-panel-header,
+:host ::ng-deep .p-accordion-header-link {
   background-color: var(--bg-header-modal) !important;
   color: var(--primary-color-text) !important;
   i {
@@ -27,28 +15,333 @@
   }
 }
 
-::ng-deep .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+:host ::ng-deep .p-accordion-header-link {
+  padding: 0.75em !important;
+}
+
+:host ::ng-deep .p-accordion .p-panel-content {
+  padding: 0.25em !important;
+}
+
+:host ::ng-deep .p-inputgroup .group-element,
+:host ::ng-deep .p-inputgroup .p-inputtextarea,
+:host ::ng-deep .p-inputgroup .group-element .p-dropdown {
+  // width: 100% !important;
+  border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputnumber-input:not(:only-child) {
+  border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputnumber-input:only-child {
+  border-radius: 0 !important;
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
   width: 100% !important;
 }
-// -------------------------------------------------
-:host {
+
+:host ::ng-deep .p-inputgroup .group-element:last-child,
+:host ::ng-deep .p-inputgroup .p-inputtextarea:last-child,
+:host ::ng-deep .p-inputgroup .group-element.p-inputtext:last-child {
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+  border-top-left-radius: 0rem !important;
+  border-bottom-left-radius: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup p-dropdown:has(+ .group-element) .p-dropdown.group-element,
+:host ::ng-deep .p-inputgroup p-multiselect:has(+ .group-element) .p-multiselect.group-element {
+  border-radius: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon {
+  border-top-left-radius: 0.5rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+  border-top-right-radius: 0rem !important;
+  border-bottom-right-radius: 0rem !important;
+  padding: 0 1rem !important;
+  border: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon:only-child {
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group {
+  display: block !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup {
+  display: block !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .group-element,
+:host ::ng-deep .p-inputgroup.vertical-group .group-element .p-dropdown {
+  width: 100% !important;
+  border-radius: 0rem;
+}
+
+:host ::ng-deep .p-inputgroup .group-element.p-dropdown input {
+  width: 100% !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .group-element:last-child,
+:host ::ng-deep .p-inputgroup.vertical-group .p-calendar .group-element.p-inputtext {
+  border-top-right-radius: 0rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+  border-top-left-radius: 0rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+:host
+  ::ng-deep
+  .p-inputgroup.vertical-group
+  p-dropdown:has(+ .group-element)
+  .p-dropdown.group-element,
+:host
+  ::ng-deep
+  .p-inputgroup.vertical-group
+  p-multiselect:has(+ .group-element)
+  .p-multiselect.group-element {
+  border-radius: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon {
+  border-top-left-radius: 0.5rem !important;
+  border-bottom-left-radius: 0rem !important;
+  border-top-right-radius: 0.5rem !important;
+  border-bottom-right-radius: 0rem !important;
+  display: flow-root !important;
+  padding: 0rem !important;
+  border: 0rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon:only-child {
+  border-bottom-right-radius: 0.5rem !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon .p-inputswitch {
+  float: right !important;
+  top: -0.25rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon button.p-button {
+  float: right !important;
+  padding: 0.25rem !important;
+  top: -0.25rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputgroup-addon a.p-button,
+:host ::ng-deep .p-inputgroup .p-inputgroup-addon a.p-button {
+  padding: 0 !important;
+}
+
+:host
+  ::ng-deep
+  .p-inputgroup.vertical-group
+  .p-inputgroup-addon
+  div[data-pc-name='inputgroupaddon'] {
+  padding: 1rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group button.p-inputnumber-button-up {
+  border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputnumber-input:not(:only-child) {
+  border-radius: 0 !important;
+  border-bottom-left-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-inputnumber-input:only-child {
+  border-radius: 0 !important;
+  border-bottom-left-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .p-multiselect-label {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+:host ::ng-deep .p-fieldset {
+  width: 100% !important;
+  padding: 6px !important;
+  border-color: var(--bg-header-modal) !important;
+}
+
+:host ::ng-deep .p-fieldset-legend {
+  padding: 1rem !important;
+  background-color: var(--bg-header-modal) !important;
+  color: var(--primary-color-text) !important;
+  i {
+    color: var(--primary-color-text) !important;
+  }
+}
+
+:host ::ng-deep .p-fieldset-legend a {
+  padding: 0rem !important;
+  color: var(--primary-color-text) !important;
+  i {
+    color: var(--primary-color-text) !important;
+  }
+}
+
+:host ::ng-deep .p-fieldset-content {
+  padding: 1rem !important;
+}
+
+:host ::ng-deep .p-panel-header .p-panel-header-icon {
+  color: var(--primary-color-text) !important;
+}
+
+.p-inputgroup textarea {
+  resize: vertical;
+}
+
+:host ::ng-deep .p-inputgroup.vertical-group .text-panel {
+  line-height: 3rem;
+  border: 1px solid var(--bg-header-modal) !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .p-chip {
+  background-color: var(--bg-header-modal) !important;
+  color: var(--primary-color-text) !important;
+}
+
+:host ::ng-deep .p-overlaypanel {
+  z-index: 1000 !important;
+  top: 50px !important;
+  left: 0px !important;
+}
+
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  padding: 1.25rem;
+  box-shadow: var(--card-shadow);
+  border-radius: 12px;
+}
+
+.card-regular {
+  border-left: 15px solid var(--green-500);
+}
+
+.card-alerta {
+  border-left: 15px solid var(--red-500);
+}
+
+.card-disabled {
+  border-left: 15px solid var(--gray-500);
+}
+
+.card-warning {
+  border-left: 15px solid var(--yellow-500);
+}
+
+:host ::ng-deep .p-message-wrapper {
+  display: inline-block;
+}
+
+/* ===== Carousel image styles ===== */
+.image-item {
+  border: 2px solid var(--surface-border, #dee2e6);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  margin: 0.25rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-item:hover {
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.image-item.selected {
+  border-color: var(--green-500, #22c55e);
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 0.5rem;
+  position: relative;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
   display: block;
 }
 
-.curso__image-container {
-  height: 8rem;
+.image-title {
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.35rem 0.25rem 0;
+  color: var(--text-color-secondary, #6c757d);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
 
-  img {
-    object-fit: cover;
-  }
+.selected-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: var(--green-500, #22c55e);
+  font-size: 1.25rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure carousel items have consistent height */
+:host ::ng-deep .p-carousel-item {
+  padding: 0.25rem;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-content .p-carousel-item {
+  display: flex;
+  align-items: stretch;
+}
+
+:host ::ng-deep .p-carousel-item > div {
+  height: 100%;
+  width: 100%;
 }
 
 .post-module {
   position: relative;
-  z-index: 1;
   display: block;
   background: #ffffff;
-  // width: 100%;
+  width: 100%;
   height: 370px;
   -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
@@ -59,12 +352,14 @@
   -o-transition: all 0.3s linear 0s;
   transition: all 0.3s linear 0s;
 }
+
 .post-module:hover,
 .hover {
   -webkit-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
 }
+
 .post-module:hover .img-transition img,
 .hover .img-transition img {
   -webkit-transform: scale(1.1);
@@ -72,14 +367,16 @@
   transform: scale(1.1);
   opacity: 0.6;
 }
+
 .post-module .img-transition {
   background: #000000;
   height: 200px;
   overflow: hidden;
 }
+
 .post-module .img-transition img {
   display: block;
-  width: 120%;
+  width: 100%;
   -webkit-transition: all 0.4s linear 0s;
   -moz-transition: all 0.4s linear 0s;
   -ms-transition: all 0.4s linear 0s;
@@ -87,36 +384,53 @@
   transition: all 0.4s linear 0s;
 }
 
-i {
-  color: #404040;
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 0;
 }
 
-.image {
-  position: absolute;
-  top: -20px;
-  z-index: 10;
+.btn-quitar-imagen {
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+  z-index: 2;
 }
 
-.small {
-  position: absolute;
-  top: 265px;
-  z-index: 20;
+.tox-tinymce-aux {
+  z-index: 99999999999 !important;
 }
 
-.title {
-  display: -webkit-box;
-  height: 4rem;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  height: 44px;
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-top: 7px;
-  margin-bottom: 7px;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: wrap;
+:host ::ng-deep .p-orderlist-controls {
+  display: none !important;
+}
+
+:host ::ng-deep .p-orderlist-list {
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+:host ::ng-deep .p-orderlist-list-container,
+:host ::ng-deep .p-orderlist-list {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+:host ::ng-deep .p-orderlist-item {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .p-orderlist-item:hover {
+  background-color: var(--surface-hovered-background) !important;
+}
+
+:host ::ng-deep .p-stepper-nav {
+  overflow-y: hidden !important;
+}
+
+.text-pre-wrap {
+  white-space: pre-wrap !important;
 }
 
 :host ::ng-deep .p-editor-toolbar .ql-link,

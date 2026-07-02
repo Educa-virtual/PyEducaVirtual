@@ -1,11 +1,11 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { ConstantesService } from '@/app/servicios/constantes.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { CarpetasService } from '@/app/servicios/repo/carpetas.service';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
-import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
-import { Component, inject, signal, input, output, effect } from '@angular/core';
+import { Component, signal, input, output, effect } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 
 interface CarpetaForm {
@@ -14,7 +14,7 @@ interface CarpetaForm {
   iPersId: number;
   iParentCarpetaId: number | null;
   iCredId: number;
-  iId: string;
+  iRegistroId: number;
 }
 
 @Component({
@@ -24,7 +24,7 @@ interface CarpetaForm {
   templateUrl: './form-carpeta.component.html',
   styleUrl: './form-carpeta.component.scss',
 })
-export class FormCarpetaComponent extends MostrarErrorComponent {
+export class FormCarpetaComponent {
   showModal = input<boolean>(false);
   action = input<'actualizar' | 'guardar'>('guardar');
   data = input<Partial<CarpetaForm> | null>(null);
@@ -33,58 +33,56 @@ export class FormCarpetaComponent extends MostrarErrorComponent {
   recargarLista = output<void>();
 
   iCarpetaPadreId = input<number | null>(null);
-
-  private _FormBuilder = inject(FormBuilder);
-  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
-  private _ConstantesService = inject(ConstantesService);
-  private _CarpetasService = inject(CarpetasService);
-
-  formCarpetas = this._FormBuilder.nonNullable.group({
-    iCarpetaId: [null],
-    cNombre: ['', Validators.required],
-    iPersId: [0, Validators.required],
-    iParentCarpetaId: [null],
-    iCredId: [0, Validators.required],
-  });
-
   isLoading = signal(false);
 
-  constructor() {
-    super();
+  private perfil: any;
 
+  constructor(
+    private fb: FormBuilder,
+    private validadorService: ValidacionFormulariosService,
+    private messageService: MessageService,
+    private carpetasService: CarpetasService,
+    private store: LocalStoreService
+  ) {
+    this.perfil = this.store.getItem('dremoPerfil');
     effect(() => {
       const d = this.data();
       if (d) {
         this.formCarpetas.patchValue(d);
-        this.formCarpetas.controls.iCarpetaId.setValue(d.iId ?? null);
+        this.formCarpetas.controls.iCarpetaId.setValue(d.iRegistroId ?? null);
       } else {
         this.formCarpetas.reset();
       }
     });
   }
 
+  formCarpetas = this.fb.nonNullable.group({
+    iCarpetaId: [null],
+    cNombre: ['', Validators.required],
+    iPersId: [0, Validators.required],
+    iParentCarpetaId: [null],
+  });
+
   enviarFormulario() {
     if (this.isLoading()) return;
     this.isLoading.set(true);
     this.formCarpetas.patchValue({
-      iPersId: this._ConstantesService.iPersId,
-      iCredId: this._ConstantesService.iCredId,
+      iPersId: this.perfil.iPersId,
       iParentCarpetaId: this.iCarpetaPadreId() ?? null,
     });
 
     const nombresCampos: Record<string, string> = {
       cNombre: 'Nombre de la carpeta',
       iPersId: 'Identificador de la persona',
-      iCredId: 'Credencial',
     };
 
-    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
+    const { valid, message } = this.validadorService.validarFormulario(
       this.formCarpetas,
       nombresCampos
     );
 
     if (!valid && message) {
-      this.mostrarMensajeToast(message);
+      this.messageService.add(message);
       this.isLoading.set(false);
       return;
     }
@@ -97,56 +95,65 @@ export class FormCarpetaComponent extends MostrarErrorComponent {
   }
 
   guardarCarpeta() {
-    this._CarpetasService
+    this.carpetasService
       .guardarCarpeta(this.formCarpetas.value)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (resp: any) => {
-          if (resp.validated) {
-            this.mostrarMensajeToast({
+        next: (data: any) => {
+          if (data.data) {
+            this.messageService.add({
               severity: 'success',
-              summary: '¡Genial!',
-              detail: resp.message,
+              summary: 'Éxito',
+              detail: 'Carpeta creada con éxito',
             });
             this.formCarpetas.reset();
             this.recargarLista.emit();
             this.closeModal.emit();
           } else {
-            this.mostrarMensajeToast({
+            this.messageService.add({
               severity: 'error',
-              summary: 'Atención!',
-              detail: resp.message,
+              summary: 'Error',
+              detail: data.message,
             });
           }
         },
         error: error => {
-          this.mostrarErrores(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error desconocido',
+          });
         },
       });
   }
   actualizarCarpeta() {
-    this._CarpetasService
+    this.carpetasService
       .actualizarCarpeta(this.formCarpetas.value)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (resp: any) => {
-          if (resp.validated) {
-            this.mostrarMensajeToast({
+        next: (data: any) => {
+          if (data.data) {
+            this.messageService.add({
               severity: 'success',
-              summary: 'Actualizado',
-              detail: resp.message,
+              summary: 'Exito',
+              detail: data.message,
             });
             this.recargarLista.emit();
             this.closeModal.emit();
           } else {
-            this.mostrarMensajeToast({
+            this.messageService.add({
               severity: 'error',
-              summary: 'Atención!',
-              detail: resp.message,
+              summary: 'Error',
+              detail: data.data.error,
             });
           }
         },
-        error: error => this.mostrarErrores(error),
+        error: error =>
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error desconocido',
+          }),
       });
   }
 }

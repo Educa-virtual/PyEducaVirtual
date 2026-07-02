@@ -7,20 +7,33 @@ import { inject, Injectable } from '@angular/core';
 })
 export class CarpetasService {
   private baseUrlApi = environment.backendApi;
-  private _http = inject(HttpClient);
+  private http = inject(HttpClient);
+
+  listarCarpetas(data) {
+    return this.http.post(`${this.baseUrlApi}/repo/listarCarpetas`, data);
+  }
 
   guardarCarpeta(data) {
-    return this._http.post(`${this.baseUrlApi}/repo/carpetas`, data);
+    return this.http.post(`${this.baseUrlApi}/repo/guardarCarpeta`, data);
   }
+
   eliminarCarpeta(data) {
-    return this._http.delete(`${this.baseUrlApi}/repo/carpetas`, { params: data });
+    return this.http.post(`${this.baseUrlApi}/repo/eliminarCarpeta`, data);
   }
   actualizarCarpeta(data) {
-    return this._http.put(`${this.baseUrlApi}/repo/carpetas`, data);
+    return this.http.post(`${this.baseUrlApi}/repo/actualizarCarpeta`, data);
   }
-  obtenerCarpetas(params) {
-    return this._http.get(`${this.baseUrlApi}/repo/carpetas`, {
-      params,
-    });
+
+  verReporteCarpetas(data) {
+    return this.http.post(`${this.baseUrlApi}/repo/verReporteCarpetas`, data);
+  }
+
+  formatearTamanio(tamano_en_bytes: number) {
+    const tamano = tamano_en_bytes / 1024;
+    if (tamano < 1024) {
+      return `${tamano.toFixed(2)} KB`;
+    } else {
+      return `${(tamano / 1024).toFixed(2)} MB`;
+    }
   }
 }

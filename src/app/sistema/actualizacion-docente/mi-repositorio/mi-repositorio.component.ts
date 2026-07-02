@@ -1,99 +1,119 @@
-import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
 import { PrimengModule } from '@/app/primeng.module';
 import { FormCarpetaComponent } from './form-carpeta/form-carpeta.component';
-import { ConstantesService } from '@/app/servicios/constantes.service';
 import { CarpetasService } from '@/app/servicios/repo/carpetas.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { finalize } from 'rxjs';
 import { ArchivosService } from '@/app/servicios/repo/archivos.service';
-
-interface Columna {
-  field?: string;
-  header: string;
-  type: 'item' | 'text' | 'date' | 'actions';
-  text?: 'left' | 'center' | 'right';
-  text_header?: 'left' | 'center' | 'right';
-  sortable?: boolean;
-}
+import { IColumn } from '@/app/shared/table-primeng/table-primeng.component';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-mi-repositorio',
   standalone: true,
-  imports: [ToolbarPrimengComponent, AulaBancoPreguntasModule, PrimengModule, FormCarpetaComponent],
+  imports: [AulaBancoPreguntasModule, PrimengModule, FormCarpetaComponent],
   templateUrl: './mi-repositorio.component.html',
   styleUrl: './mi-repositorio.component.scss',
 })
-export class MiRepositorioComponent extends MostrarErrorComponent implements OnInit {
+export class MiRepositorioComponent implements OnInit {
   showModal = signal(false);
   repositorio = signal<any[]>([]);
   selectedRow = signal<any | null>(null);
 
-  columnas = signal<Columna[]>([
-    { header: '#', type: 'item', text: 'center', text_header: 'center' },
+  columnas: IColumn[] = [
     {
       field: 'cNombreLabel',
-      header: 'Nombre del Archivo',
+      header: 'Nombre',
       type: 'text',
       text: 'left',
       text_header: 'left',
-      sortable: true,
+      width: '50%',
     },
     {
-      field: 'dtCreado',
-      header: 'Fecha Subida',
-      type: 'date',
-      text: 'center',
-      text_header: 'center',
-      sortable: true,
+      field: 'dtUltimaModificacion',
+      header: 'Última modificación',
+      type: 'datetime',
+      text: 'left',
+      text_header: 'left',
+      width: '20%',
     },
     {
-      field: 'cTipo',
+      field: 'cExtension',
       header: 'Tipo',
       type: 'text',
       text: 'center',
       text_header: 'center',
-      sortable: true,
+      width: '10%',
     },
     {
-      field: 'cTamano',
+      field: 'iTamano',
       header: 'Peso',
       type: 'text',
       text: 'center',
       text_header: 'center',
-      sortable: true,
+      width: '15%',
     },
     {
       field: '',
-      header: 'Acción',
+      header: 'Acciones',
       type: 'actions',
       text: 'center',
       text_header: 'center',
-      sortable: true,
+      width: '5%',
     },
-  ]);
+  ];
 
   rutaCarpetas = signal<{ id: number | null; nombre: string }[]>([
     { id: null, nombre: 'Repositorio' },
   ]);
 
   items = [];
+  perfil: any;
 
-  private _ConstantesService = inject(ConstantesService);
-  private _CarpetasService = inject(CarpetasService);
-  private _ConfirmationModalService = inject(ConfirmationModalService);
-  private _ArchivosService = inject(ArchivosService);
+  reporte: any[] = [];
+  visible: boolean = false;
+  totalUsado: string = '0';
+
+  iconMap: Record<string, string> = {
+    pdf: '📄',
+    doc: '📝',
+    docx: '📝',
+    mp4: '📹',
+    jpg: '📷',
+    jpeg: '📷',
+    png: '📷',
+    gif: '📷',
+    zip: '🗜️',
+    rar: '🗜️',
+    xlsx: '📊',
+    csv: '📊',
+    txt: '📘',
+  };
+
+  constructor(
+    private _CarpetasService: CarpetasService,
+    private _ArchivosService: ArchivosService,
+    private _ConfirmationModalService: ConfirmationModalService,
+    private store: LocalStoreService,
+    private messageService: MessageService
+  ) {
+    this.perfil = this.store.getItem('dremoPerfil');
+  }
 
   ngOnInit(): void {
-    this.obtenerCarpetas(this.selectedRow()?.iCarpetaId ?? null);
+    this.listarCarpetas(this.selectedRow()?.iCarpetaId ?? null);
   }
 
   abrirMenu(event: Event, row: any, menu: any) {
     this.selectedRow.set(row);
     this.configurarMenuAcciones(row);
     menu.toggle(event);
+  }
+
+  editarCarpeta() {
+    this.showModal.set(true);
   }
 
   configurarMenuAcciones(row: any) {
@@ -106,7 +126,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
             this.entrarCarpeta(row);
           },
         },
-        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.showModal.set(true) },
+        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.editarCarpeta() },
         {
           label: 'Eliminar',
           icon: 'pi pi-trash',
@@ -130,88 +150,70 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
       ];
     }
   }
-  obtenerCarpetas(iCarpetaId) {
-    const params = {
-      iPersId: this._ConstantesService.iPersId,
-      iCarpetaId: iCarpetaId ?? null,
-      iCredId: this._ConstantesService.iCredId,
-    };
+  listarCarpetas(iCarpetaId) {
+    this._CarpetasService
+      .listarCarpetas({
+        iCarpetaId: iCarpetaId ?? null,
+      })
+      .subscribe({
+        next: (resp: any) => {
+          const data = (resp?.data ?? []).map((item: any) => {
+            item.iTamano = this._CarpetasService.formatearTamanio(item.iTamano);
+            const ext = (item.cExtension ?? '').toUpperCase();
 
-    this._CarpetasService.obtenerCarpetas(params).subscribe({
-      next: (resp: any) => {
-        const data = (resp?.data ?? []).map((item: any) => {
-          const ext = (item.cExtension ?? '').toLowerCase();
+            if (item.cTipo === 'carpeta') {
+              item.cIcono = '📁';
+            } else {
+              item.cExtension = ext;
+              item.cIcono = this.iconMap[ext] ?? '📦';
+            }
 
-          if (item.cTipo === 'carpeta') {
-            item.cIcono = '📁';
-          } else {
-            item.cTipo = ext;
-            const iconMap: Record<string, string> = {
-              pdf: '📄',
-              doc: '📝',
-              docx: '📝',
-              mp4: '📹',
-              jpg: '📷',
-              jpeg: '📷',
-              png: '📷',
-              gif: '📷',
-              zip: '🗜️',
-              rar: '🗜️',
-              xlsx: '📊',
-              csv: '📊',
-              txt: '📘',
-            };
+            item.cNombreLabel = `${item.cIcono} ${item.cNombre}`;
 
-            item.cIcono = iconMap[ext] ?? '📦';
-          }
+            return item;
+          });
 
-          item.cNombreLabel = `${item.cIcono} ${item.cNombre}`;
-
-          return item;
-        });
-
-        this.repositorio.set(data);
-      },
-      error: error => {
-        this.mostrarErrores(error);
-      },
-    });
+          this.repositorio.set(data);
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error desconocido',
+          });
+        },
+      });
   }
 
   eliminarCarpeta(row): void {
     this._ConfirmationModalService.openConfirm({
-      header: '¿Está seguro de eliminar la carpeta: ' + row.cNombre + ' ?',
+      header: 'Confirmación',
+      message: '¿Está seguro de eliminar la carpeta: ' + row.cNombre + ' ?',
       accept: () => {
-        const params = {
-          iCarpetaId: row.iId,
-          iCredId: this._ConstantesService.iCredId,
-        };
-
         this._CarpetasService
-          .eliminarCarpeta(params)
+          .eliminarCarpeta({
+            iCarpetaId: row.iRegistroId,
+          })
           .pipe(finalize(() => this.selectedRow.set(null)))
           .subscribe({
-            next: (resp: any) => {
-              if (resp.validated) {
-                this.mostrarMensajeToast({
+            next: (data: any) => {
+              if (data.data) {
+                this.messageService.add({
                   severity: 'success',
                   summary: 'Eliminado',
-                  detail: resp.message,
+                  detail: 'Datos eliminados con éxito',
                 });
-                this.obtenerCarpetas(this.rutaCarpetas()[this.rutaCarpetas().length - 1].id);
+                this.listarCarpetas(this.rutaCarpetas()[this.rutaCarpetas().length - 1].id);
               }
             },
             error: error => {
-              this.mostrarErrores(error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.message || 'Error desconocido',
+              });
             },
           });
-      },
-      reject: () => {
-        this.mostrarMensajeToast({
-          severity: 'error',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
-        });
       },
     });
   }
@@ -242,7 +244,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
     const fileExtension = (file.name.split('.').pop() || '').toLowerCase();
 
     if (!allowedExtensions.includes(fileExtension)) {
-      this.mostrarMensajeToast({
+      this.messageService.add({
         severity: 'error',
         summary: 'Archivo no permitido',
         detail: `El tipo de archivo ".${fileExtension}" no está permitido.`,
@@ -252,7 +254,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
 
     const maxSize = 5 * 1024 * 1024; // 5MB en bytes
     if (file.size > maxSize) {
-      this.mostrarMensajeToast({
+      this.messageService.add({
         severity: 'warn',
         summary: 'Archivo demasiado grande',
         detail: 'El archivo no puede superar los 5 MB',
@@ -265,30 +267,35 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
     const iCarpetaId =
       this.rutaCarpetas().length > 0 ? this.rutaCarpetas()[this.rutaCarpetas().length - 1].id : 0;
     formData.append('iCarpetaId', iCarpetaId?.toString() ?? '0');
-    formData.append('iPersId', this._ConstantesService.iPersId.toString());
-    formData.append('iCredId', this._ConstantesService.iCredId.toString());
+    formData.append('iPersId', this.perfil.iPersId);
     formData.append('cNombre', file.name.split('.').slice(0, -1).join('.')); // sin extensión
     formData.append('cExtension', file.name.split('.').pop() || '');
     formData.append('iTamano', file.size.toString());
     formData.append('archivo', file); // el archivo en sí
 
     this._ArchivosService.guardarArchivo(formData).subscribe({
-      next: (resp: any) => {
-        if (resp.validated) {
-          this.mostrarMensajeToast({
+      next: (data: any) => {
+        if (data.data) {
+          this.messageService.add({
             severity: 'success',
             summary: 'Archivo subido',
-            detail: resp.message,
+            detail: 'Archivo subido con éxito',
           });
           const carpetaActualId =
             this.rutaCarpetas().length > 0
               ? this.rutaCarpetas()[this.rutaCarpetas().length - 1].id
               : 0;
 
-          this.obtenerCarpetas(carpetaActualId);
+          this.listarCarpetas(carpetaActualId);
         }
       },
-      error: err => this.mostrarErrores(err),
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message || 'Error desconocido',
+        });
+      },
     });
   }
 
@@ -296,78 +303,102 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
     input.value = '';
   }
 
+  private descargarBase64ComoArchivo(base64: string, mimeType: string, nombreArchivo: string) {
+    // El backend devuelve el archivo en base64, por eso primero lo decodificamos a bytes.
+    const base64Limpio = (base64 || '').replace(/\s/g, '');
+    const base64SinPrefijo = base64Limpio.includes(',') ? base64Limpio.split(',')[1] : base64Limpio;
+    const bytes = Uint8Array.from(atob(base64SinPrefijo), char => char.charCodeAt(0));
+
+    const blob = new Blob([bytes], { type: mimeType || 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = nombreArchivo || 'archivo-descargado';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
   descargarArchivo(row: any) {
-    const iArchivoId = row.iId;
+    this._ArchivosService
+      .descargarArchivo({
+        iArchivoId: row.iRegistroId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          const base64 = data?.base64 || data?.data?.base64;
 
-    this._ArchivosService.descargarArchivo(iArchivoId).subscribe({
-      next: (response: any) => {
-        if (!response.validated) {
-          this.mostrarErrores(response.message);
-          return;
-        }
-        const byteCharacters = atob(response.base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: response.mime });
+          if (!base64) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: data?.message || 'No se recibió el archivo para descargar',
+            });
+            return;
+          }
 
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = response.nombre;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      },
-      error: err => this.mostrarErrores(err),
-    });
+          const nombreArchivo =
+            data?.nombre ||
+            `${row.cNombre || 'archivo'}${row.cExtension ? `.${row.cExtension}` : ''}`;
+          this.descargarBase64ComoArchivo(
+            base64,
+            data?.mime || 'application/octet-stream',
+            nombreArchivo
+          );
+        },
+        error: (error: any) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error desconocido',
+          });
+        },
+      });
   }
 
   eliminarArchivo(row: any) {
-    const iArchivoId = row.iId;
+    const iArchivoId = row.iRegistroId;
     this._ConfirmationModalService.openConfirm({
-      header: `¿Está seguro de eliminar el archivo: ${row.cNombre}?`,
+      header: 'Confirmación',
+      message: `¿Está seguro de eliminar el archivo: ${row.cNombre}?`,
       accept: () => {
-        const params = {
-          iCredId: this._ConstantesService.iCredId,
-        };
-
         this._ArchivosService
-          .eliminarArchivo(iArchivoId, params)
+          .eliminarArchivo({
+            iArchivoId: iArchivoId,
+          })
           .pipe(finalize(() => this.selectedRow.set(null)))
           .subscribe({
-            next: (resp: any) => {
-              if (resp.validated) {
-                this.mostrarMensajeToast({
+            next: (data: any) => {
+              if (data.data) {
+                this.messageService.add({
                   severity: 'success',
                   summary: 'Archivo eliminado',
-                  detail: resp.message,
+                  detail: 'Archivo eliminado con éxito',
                 });
                 const carpetaActualId =
                   this.rutaCarpetas().length > 0
                     ? this.rutaCarpetas()[this.rutaCarpetas().length - 1].id
                     : 0;
 
-                this.obtenerCarpetas(carpetaActualId);
+                this.listarCarpetas(carpetaActualId);
               }
             },
-            error: error => this.mostrarErrores(error),
+            error: (error: any) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.message || 'Error desconocido',
+              });
+            },
           });
       },
-      reject: () =>
-        this.mostrarMensajeToast({
-          severity: 'info',
-          summary: 'Cancelado',
-          detail: 'Acción cancelada',
-        }),
     });
   }
 
   entrarCarpeta(row: any) {
-    const iCarpetaId = row.iId;
+    const iCarpetaId = row.iRegistroId;
     const nombre = row.cNombre.replace('📁', '').trim();
 
     const nuevaRuta = [...this.rutaCarpetas()];
@@ -377,7 +408,7 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
     const carpetaActualId =
       this.rutaCarpetas().length > 0 ? this.rutaCarpetas()[this.rutaCarpetas().length - 1].id : 0;
 
-    this.obtenerCarpetas(carpetaActualId);
+    this.listarCarpetas(carpetaActualId);
   }
 
   irACarpeta(id: number | null) {
@@ -388,12 +419,62 @@ export class MiRepositorioComponent extends MostrarErrorComponent implements OnI
     }
     this.rutaCarpetas.set(nuevaRuta);
 
-    this.obtenerCarpetas(id);
+    this.listarCarpetas(id);
   }
 
-  verificarTipo(row, columna) {
-    if (row.cTipo === 'carpeta' && columna === 'cNombreLabel') {
+  verificarTipo(row, columna, $event, menu) {
+    if (row.cTipo === 'carpeta' && columna !== '') {
       this.entrarCarpeta(row);
     }
+    if (row.cTipo === 'archivo') {
+      this.abrirMenu($event, row, menu);
+    }
+  }
+
+  verReporte() {
+    this._CarpetasService
+      .verReporteCarpetas({
+        iCarpetaId: null,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.visible = true;
+          const iTamanoTotal = data.data.reduce((acum, item) => {
+            const valor = Number(item.iTamanoUsado) || 0;
+            return acum + valor;
+          }, 0);
+          this.totalUsado = this._CarpetasService.formatearTamanio(iTamanoTotal);
+          /*
+          data.data.push({
+            cExtension: 'Espacio Libre',
+            iTamanoUsado: 2147483648 - iTamanoTotal,
+          })
+          */
+          this.reporte = data.data.map(item => {
+            item.label = item.cExtension;
+            item.value = Number(item.iTamanoUsado);
+            item.cantidad = Number(item.iCantidad);
+            item.icon = this.iconMap[item.cExtension.toLowerCase()] ?? '📦';
+            item.color = this.colorAleatorio();
+            return item;
+          });
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error desconocido',
+          });
+        },
+      });
+  }
+
+  colorAleatorio() {
+    const caracteres = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += caracteres[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 }

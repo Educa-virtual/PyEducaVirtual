@@ -1,9 +1,6 @@
-<app-toolbar-primeng
-  *ngIf="!detalleVisible"
-  title="Solicitudes de Inscripciones"
-></app-toolbar-primeng>
+<app-toolbar-primeng title="Solicitudes de Inscripciones"></app-toolbar-primeng>
 
-<div class="grid" *ngIf="!detalleVisible">
+<div class="grid">
   <div class="col-12">
     <p-inputGroup>
       <p-inputGroupAddon>
@@ -34,12 +31,4 @@
     }
   </div>
   <div class="col-12 mt-5" *ngIf="data && data.length > 0"></div>
-</div>
-<div class="grid" *ngIf="detalleVisible">
-  <div class="col-12">
-    <app-detalle-inscripcion
-      [id]="idSeleccionado"
-      (volver)="volverALista()"
-    ></app-detalle-inscripcion>
-  </div>
 </div>

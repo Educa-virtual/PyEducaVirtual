@@ -11,22 +11,13 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContainerPageComponent,
   IActionContainer,
 } from '@/app/shared/container-page/container-page.component';
-
-import { DialogModule } from 'primeng/dialog';
-import { ImageModule } from 'primeng/image';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { EditorModule } from 'primeng/editor';
-import { FileUploadModule } from 'primeng/fileupload';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
-import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { FieldsetModule } from 'primeng/fieldset';
 import { PrimengModule } from '@/app/primeng.module';
 import { CurriculaCursoCompetenciasComponent } from '../curricula-curso-competencias/curricula-curso-competencias.component';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
@@ -34,12 +25,8 @@ import { environment } from '@/environments/environment';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { HttpClient } from '@angular/common/http';
 import imagenesRecursosAreas from '@/app/shared/imagenes/areas';
-
-// interface Image {
-//   id: number;
-//   url: string;
-//   title: string;
-// }
+import { Router } from '@angular/router';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
 
 @Component({
   selector: 'app-curricula-curso',
@@ -47,19 +34,10 @@ import imagenesRecursosAreas from '@/app/shared/imagenes/areas';
   imports: [
     ContainerPageComponent,
     TablePrimengComponent,
-    DialogModule,
-    ImageModule,
-    ProgressBarModule,
-    EditorModule,
-    FileUploadModule,
-    ToggleButtonModule,
-    ReactiveFormsModule,
-    NoDataComponent,
-    FieldsetModule,
     PrimengModule,
-    FormsModule,
     CurriculaCursoCompetenciasComponent,
     TypesFilesUploadPrimengComponent,
+    NoDataComponent,
   ],
   templateUrl: './curricula-curso.component.html',
   styleUrl: './curricula-curso.component.scss',
@@ -68,7 +46,7 @@ export class CurriculaCursoComponent implements OnChanges {
   @Output() asignarCurso = new EventEmitter();
 
   @Input() iCurrId: number = 0;
-  @Input() curriculas: any = [];
+  @Input() curricula: any = [];
   @Input() caption: string = '';
 
   cursos: any[] = [];
@@ -81,7 +59,6 @@ export class CurriculaCursoComponent implements OnChanges {
   iCursoId: number = 0;
   capacidadesCurso: any[] = [];
   titulo: string = '';
-  currricula: any = {};
   curso: any = {};
 
   perfil: any;
@@ -119,10 +96,15 @@ export class CurriculaCursoComponent implements OnChanges {
   private http = inject(HttpClient);
   private backendApi = environment.backendApi;
   private _LocalStoreService = inject(LocalStoreService);
+
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [];
+
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService
+    private query: GeneralService,
+    private router: Router
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
     this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
@@ -147,6 +129,17 @@ export class CurriculaCursoComponent implements OnChanges {
     vValidoCredito: [true], //, Validators.requiredTrue
   });
 
+  setBreadCrumb() {
+    this.breadCrumbItems = [
+      { label: 'Currículas', routerLink: ['/administrador/mantenimiento-curricula'] },
+      {
+        label: this.curricula.cCurrDescripcion,
+        routerLink: [`/administrador/mantenimiento-curricula/${this.iCurrId}/areas`],
+      },
+      { label: 'Áreas curriculares' },
+    ];
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
       // Si iCurrId cambió y tiene valor válido
@@ -155,11 +148,8 @@ export class CurriculaCursoComponent implements OnChanges {
       this.getTipoCurso();
     }
 
-    if (changes['curriculas'] && changes['curriculas'].currentValue) {
-      // Si curriculas cambió
-      this.curriculas = changes['curriculas'].currentValue;
-
-      this.currricula = this.curriculas.find((c: any) => c.iCurrId === this.iCurrId) || {};
+    if (changes['curricula'] && changes['curricula'].currentValue) {
+      this.setBreadCrumb();
     }
   }
 
@@ -233,6 +223,9 @@ export class CurriculaCursoComponent implements OnChanges {
     switch (accion) {
       case 'cursos':
         this.asignarCurso.emit(item);
+        break;
+      case 'regresar':
+        this.router.navigate([`/administrador/mantenimiento-curricula`]);
         break;
       case 'agregar':
         this.titulo =
@@ -336,11 +329,11 @@ export class CurriculaCursoComponent implements OnChanges {
 
     if (this.bUpdate) {
       total_credito =
-        Number(this.currricula?.iCurrTotalCreditos ?? 0) -
+        Number(this.curricula?.iCurrTotalCreditos ?? 0) -
         totalCredito +
         Number(this.curso.nCursoTotalCreditos);
     } else {
-      total_credito = Number(this.currricula?.iCurrTotalCreditos ?? 0) - totalCredito;
+      total_credito = Number(this.curricula?.iCurrTotalCreditos ?? 0) - totalCredito;
     }
 
     const credito = Number(this.frmCursos.value.nCursoTotalCreditos ?? 0);
@@ -376,15 +369,14 @@ export class CurriculaCursoComponent implements OnChanges {
 
     if (this.bUpdate) {
       totalHora =
-        Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) -
+        Number(String(this.curricula?.iCurrNroHoras ?? '0').trim()) -
         total_horas +
         Number(this.curso.iCursoTotalHoras);
     } else {
-      totalHora = Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) - total_horas;
+      totalHora = Number(String(this.curricula?.iCurrNroHoras ?? '0').trim()) - total_horas;
     }
 
     const hora = Number(this.frmCursos?.value?.iCursoTotalHoras ?? 0);
-    console.log(this.curriculas.iCurrNroHoras);
     const esValido = totalHora >= hora;
 
     if (!esValido) {
@@ -501,10 +493,17 @@ export class CurriculaCursoComponent implements OnChanges {
   accionesCursos: IActionContainer[] = [
     {
       labelTooltip: 'Agregar área',
-      text: '',
+      text: 'Agregar',
       icon: 'pi pi-plus',
       accion: 'agregar',
       class: 'p-button-success',
+    },
+    {
+      labelTooltip: 'Regresar',
+      text: 'Regresar',
+      icon: 'pi pi-arrow-left',
+      accion: 'regresar',
+      class: 'p-button-secondary',
     },
   ];
 

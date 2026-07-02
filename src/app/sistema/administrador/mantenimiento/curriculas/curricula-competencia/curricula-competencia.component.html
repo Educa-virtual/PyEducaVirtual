@@ -1,9 +1,36 @@
-<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
-<app-container-page
-  title="Lista de competencias"
-  [actions]="accionesCompetencias"
-  (accionBtnItem)="accionBtnItem($event)"
->
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Competencias de: {{ curriculaDescripcion }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        size="small"
+        pTooltip="Agregar"
+        tooltipPosition="top"
+        (click)="accionBtnItem({ accion: 'agregar' })"
+        severity="success"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Agregar</span>
+      </p-button>
+      <p-button
+        size="small"
+        pTooltip="Regresar"
+        tooltipPosition="top"
+        (click)="accionBtnItem({ accion: 'regresar' })"
+        severity="info"
+      >
+        <i class="pi pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Regresar</span>
+      </p-button>
+    </div>
+  </ng-template>
+
   <div class="grid">
     <div class="col-12 mt-3">
       @if (competencias.length > 0) {
@@ -20,7 +47,8 @@
       }
     </div>
   </div>
-</app-container-page>
+</p-panel>
+
 <p-dialog
   header="{{ titulo }}"
   [(visible)]="visible_competencia"

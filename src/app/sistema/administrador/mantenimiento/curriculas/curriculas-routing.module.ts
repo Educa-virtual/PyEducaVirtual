@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CurriculasComponent } from './curriculas.component';
-import { AreasListComponent } from './areas-list/areas-list.component';
-import { CompetenciasListComponent } from './competencias-list/competencias-list.component';
+import { CurriculaCursoComponent } from './curricula-curso/curricula-curso.component';
+import { CurriculaCompetenciaComponent } from './curricula-competencia/curricula-competencia.component';
 
 const routes: Routes = [
   {
@@ -11,11 +11,11 @@ const routes: Routes = [
   },
   {
     path: ':iCurrId/areas',
-    component: AreasListComponent,
+    component: CurriculaCursoComponent,
   },
   {
     path: ':iCurrId/competencias',
-    component: CompetenciasListComponent,
+    component: CurriculaCompetenciaComponent,
   },
 ];
 

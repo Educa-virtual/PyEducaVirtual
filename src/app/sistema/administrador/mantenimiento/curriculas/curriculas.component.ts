@@ -94,14 +94,14 @@ export class CurriculasComponent implements OnInit {
       case 'ver_areas':
         this.router.navigate([
           `/administrador/mantenimiento-curricula/${item.iCurrId}/areas`,
-          { caption: item.cCurrDescripcion },
+          { curricula: item.cCurrDescripcion },
         ]);
         break;
 
       case 'ver_competencias':
         this.router.navigate([
           `/administrador/mantenimiento-curricula/${item.iCurrId}/competencias`,
-          { caption: item.cCurrDescripcion },
+          { curricula: item.cCurrDescripcion },
         ]);
         break;
 

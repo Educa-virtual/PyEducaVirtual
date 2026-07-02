@@ -1,19 +1,10 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
 import { Button } from 'primeng/button';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
@@ -26,6 +17,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competencia-capacidades/curricula-competencia-capacidades.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-curricula-competencia',
@@ -41,11 +33,8 @@ import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competenc
   templateUrl: './curricula-competencia.component.html',
   styleUrl: './curricula-competencia.component.scss',
 })
-export class CurriculaCompetenciaComponent implements OnChanges {
+export class CurriculaCompetenciaComponent implements OnInit {
   @Output() asignarcompetencia = new EventEmitter();
-
-  @Input() iCurrId: number = 0;
-  @Input() caption: string = '';
 
   titulo: string = 'Gestión de Competencias';
   competencias: any[];
@@ -53,6 +42,11 @@ export class CurriculaCompetenciaComponent implements OnChanges {
   bUpdate = false;
   iCompetenciaId: number;
   perfil: any;
+  curriculaDescripcion: string;
+  iCurrId: any;
+
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [];
 
   private _ConstantesService = inject(ConstantesService);
   private _confirmService = inject(ConfirmationModalService);
@@ -62,9 +56,25 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     private fb: FormBuilder,
     public cdr: ChangeDetectorRef,
     private messageService: MessageService,
-    private query: GeneralService
+    private query: GeneralService,
+    private route: ActivatedRoute
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
+    /* obtener del extra de la ruta */
+    this.curriculaDescripcion = this.route.snapshot.paramMap.get('curricula');
+    this.iCurrId = this.route.snapshot.paramMap.get('iCurrId');
+    this.setBreadCrumb();
+  }
+
+  setBreadCrumb() {
+    this.breadCrumbItems = [
+      { label: 'Currículas', routerLink: ['/administrador/mantenimiento-curricula'] },
+      {
+        label: this.curriculaDescripcion,
+        routerLink: [`/administrador/mantenimiento-curricula/${this.iCurrId}/areas`],
+      },
+      { label: 'Competencias' },
+    ];
   }
 
   formCompetencia = this.fb.group({
@@ -76,22 +86,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     iEstado: [1],
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
-      // Si iCurrId cambió y tiene valor válido
-      this.inicializacion();
-
-      // this.getTipoCurso();
-      // this.getCapacidades();
-    }
-
-    if (changes['caption'] && changes['caption'].currentValue) {
-      // Si curriculas cambió
-      this.caption = changes['caption'].currentValue;
-    }
-  }
-
-  inicializacion() {
+  ngOnInit() {
     this.competencias = [];
     //const item = event.item || this.cursos || null
     this.query
@@ -147,7 +142,9 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         break;
       case 'agregar':
         this.titulo =
-          'Formulario para agregar competencia curricular (Curricula: ' + this.caption + ')';
+          'Formulario para agregar competencia curricular (Curricula: ' +
+          this.curriculaDescripcion +
+          ')';
         this.visible_competencia = true;
         this.iCompetenciaId = 0;
         this.bUpdate = false;
@@ -160,7 +157,9 @@ export class CurriculaCompetenciaComponent implements OnChanges {
 
       case 'editar':
         this.titulo =
-          'Formulario para editar competencia curricular (Curricula: ' + this.caption + ')';
+          'Formulario para editar competencia curricular (Curricula: ' +
+          this.curriculaDescripcion +
+          ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
         this.visible_competencia = true;
@@ -247,7 +246,6 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           this.formCompetencia.reset();
           this.visible_competencia = false;
         }
-        this.inicializacion();
       },
     });
   }
@@ -289,10 +287,17 @@ export class CurriculaCompetenciaComponent implements OnChanges {
   accionesCompetencias: IActionContainer[] = [
     {
       labelTooltip: 'Agregar competencias',
-      text: '',
+      text: 'Agregar',
       icon: 'pi pi-plus',
       accion: 'agregar',
       class: 'p-button-success',
+    },
+    {
+      labelTooltip: 'Regresar',
+      text: 'Regresar',
+      icon: 'pi pi-arrow-left',
+      accion: 'regresar',
+      class: 'p-button-info',
     },
   ];
 

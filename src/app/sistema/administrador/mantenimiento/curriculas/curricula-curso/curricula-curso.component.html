@@ -1,4 +1,5 @@
-<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
 <app-container-page
   title="Lista de áreas"
   [actions]="accionesCursos"
@@ -13,7 +14,6 @@
           [data]="cursos"
           [actions]="accionesTablaCurso"
           (accionBtnItem)="accionBtnItem($event)"
-          [searchPlaceholder]="'Buscar por área...'"
         />
       } @else {
         <app-no-data

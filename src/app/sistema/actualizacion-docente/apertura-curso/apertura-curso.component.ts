@@ -1,5 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   TablePrimengComponent,
   IColumn,
@@ -52,6 +53,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
 
   backend = environment.backend;
 
+  private _router = inject(Router);
   private _formBuilder = inject(FormBuilder);
   private _confirmService = inject(ConfirmationModalService);
   private _ConstantesService = inject(ConstantesService);
@@ -233,6 +235,13 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       isVisible: row => ['1', '2'].includes(row.iEstado) && row.cTipoCapDesc !== this.CAP_EXT,
     },
     {
+      labelTooltip: 'Gestionar inscripciones',
+      icon: 'pi pi-users',
+      accion: 'inscripciones',
+      type: 'item',
+      class: 'p-menuitem-link text-cyan-500',
+    },
+    {
       labelTooltip: 'Publicar',
       icon: 'pi pi-send',
       accion: 'publicar',
@@ -279,6 +288,11 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
           dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
         };
         this.showModalHorarios = true;
+        break;
+      case 'inscripciones':
+        this._router.navigate([
+          `actualizacion-docente/capacitaciones/${item.iCapacitacionId}/inscripciones`,
+        ]);
         break;
       case 'eliminar':
         this.eliminarCapacitacion(item);

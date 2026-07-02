@@ -138,11 +138,6 @@ export const administradorDremo = [
             routerLink: ['/actualizacion-docente/capacitaciones'],
           },
           {
-            label: 'Solicitudes',
-            icon: 'pi pi-file-plus',
-            routerLink: ['/actualizacion-docente/solicitudes'],
-          },
-          {
             label: 'Instructores',
             icon: 'pi pi-user',
             routerLink: ['/actualizacion-docente/instructores'],

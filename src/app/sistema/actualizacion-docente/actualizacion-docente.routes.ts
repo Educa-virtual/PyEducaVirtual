@@ -9,6 +9,7 @@ import { CapacitacionesComponent } from './capacitaciones/capacitaciones.compone
 import { MiRepositorioComponent } from './mi-repositorio/mi-repositorio.component';
 import { AperturaCursoComponent } from './apertura-curso/apertura-curso.component';
 import { TiposPublicoComponent } from './mantenimiento/tipos-publico/tipos-publico.component';
+import { DetalleInscripcionComponent } from './solicitud-Inscripcion/detalle-inscripcion/detalle-inscripcion.component';
 
 const routes: Routes = [
   {
@@ -87,6 +88,15 @@ const routes: Routes = [
         data: {
           expectedRole: [ADMINISTRADOR_DREMO],
           breadcrumb: 'Tipos de público',
+          icon: 'pi pi-users',
+        },
+      },
+      {
+        path: 'capacitaciones/:iCapacitacionId/inscripciones',
+        component: DetalleInscripcionComponent,
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO],
+          breadcrumb: 'Inscripciones del curso',
           icon: 'pi pi-users',
         },
       },

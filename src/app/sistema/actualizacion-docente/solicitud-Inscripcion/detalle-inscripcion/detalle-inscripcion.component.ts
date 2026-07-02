@@ -1,5 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module';
-import { Component, EventEmitter, inject, Input, OnInit, Output, OnChanges } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import {
   TablePrimengComponent,
   IColumn,
@@ -8,7 +10,7 @@ import {
 import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { TiposIdentificacionesService } from '@/app/servicios/grl/tipos-identificaciones.service';
 import { Message, MessageService } from 'primeng/api';
 import { InscripcionesService } from '@/app/servicios/cap/inscripciones.service';
@@ -25,13 +27,9 @@ import { finalize } from 'rxjs';
   templateUrl: './detalle-inscripcion.component.html',
   styleUrl: './detalle-inscripcion.component.scss',
 })
-export class DetalleInscripcionComponent
-  extends MostrarErrorComponent
-  implements OnInit, OnChanges
-{
-  @Input() id!: string;
-  @Output() volver = new EventEmitter<void>();
-
+export class DetalleInscripcionComponent extends MostrarErrorComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private location = inject(Location);
   private _formBuilder = inject(FormBuilder);
   private _CapacitacionesService = inject(CapacitacionesService);
   private _ConstantesService = inject(ConstantesService);
@@ -57,7 +55,7 @@ export class DetalleInscripcionComponent
   nombreCurso: string = '';
   pdfURL: SafeResourceUrl | null = null;
 
-  public formIncripcion: FormGroup = this._formBuilder.group({
+  public formIncripcion = this._formBuilder.group({
     iTipoIdentId: ['', [Validators.required]],
     dni: ['', [Validators.required]],
     cPersNombre: ['', [Validators.required]],
@@ -71,15 +69,13 @@ export class DetalleInscripcionComponent
     iPersId: [''],
   });
 
-  // changes
-  ngOnChanges() {
-    this.formIncripcion.reset();
-  }
   ngOnInit(): void {
+    const iCapacitacionId = this.route.snapshot.paramMap.get('iCapacitacionId');
+    this.datosCurso = { iCapacitacionId: iCapacitacionId };
     this.obtenerSolicitudesXCurso();
     this.obtenerTipoIdentificaciones();
 
-    this.nombreCurso = this.datosCurso.cCapTitulo;
+    this.nombreCurso = this.datosCurso.cCapTitulo || '';
   }
   // mostrar los headr de las tablas
   public columnasTabla: IColumn[] = [
@@ -178,15 +174,8 @@ export class DetalleInscripcionComponent
         break;
       case 'aceptar':
         console.log(item);
-        // this.modoFormulario = 'editar'
-        // this.iCapacitacionId = item.iCapacitacionId
-        // // console.log('Editar', item)
-        // this.formNuevaCapacitacion.patchValue(item)
-        // // this.selectedItems = []
-        // // this.selectedItems = [item]
         break;
       case 'denegar':
-        // this.eliminarCapacitacion(item)
         break;
       case 'mostrarComprobante':
       case 'verSolicitud':
@@ -212,7 +201,6 @@ export class DetalleInscripcionComponent
 
   // obtener las solicitudes del curso
   obtenerSolicitudesXCurso() {
-    this.datosCurso = this.id;
     const iCredId = this._ConstantesService.iCredId;
     const data = {
       iCapacitacionId: this.datosCurso.iCapacitacionId,
@@ -225,7 +213,7 @@ export class DetalleInscripcionComponent
     });
   }
   regresar() {
-    this.volver.emit();
+    this.location.back();
   }
   // metodo para buscar x dni
   buscarDni() {

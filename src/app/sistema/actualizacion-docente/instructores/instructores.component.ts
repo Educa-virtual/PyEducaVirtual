@@ -129,7 +129,7 @@ export class InstructoresComponent implements OnInit {
       next: (response: any) => {
         this.instructores = response.data;
         this.instructores.forEach(instructor => {
-          instructor.cDatosInstructor = `<b>Apellidos y Nombres:</b> ${instructor.cPersApeNombres}<br/>
+          instructor.cDatosInstructor = `<b>Apellidos y Nombres:</b> ${instructor.cPersNombreCompleto}<br/>
             <b>Correo electrónico:</b> ${instructor.cPersCorreo ? instructor.cPersCorreo : ''}<br/>
             <b>Celular:</b> ${instructor.cPersTelefono ? instructor.cPersTelefono : ''}`;
         });

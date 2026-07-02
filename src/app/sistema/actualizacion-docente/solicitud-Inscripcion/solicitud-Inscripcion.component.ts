@@ -4,7 +4,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CardCapacitacionesComponent } from './card-capacitaciones/card-capacitaciones.component';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { PaginatorModule } from 'primeng/paginator';
-import { DetalleInscripcionComponent } from './detalle-inscripcion/detalle-inscripcion.component';
 import { DropdownChangeEvent } from 'primeng/dropdown';
 import { TipoCapacitacionesService } from '@/app/servicios/cap/tipo-capacitaciones.service';
 import { CapacitacionesService } from '@/app/servicios/cap/capacitaciones.service';
@@ -14,21 +13,12 @@ import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mos
   standalone: true,
   templateUrl: './solicitud-Inscripcion.component.html',
   styleUrls: ['./solicitud-Inscripcion.component.scss'],
-  imports: [
-    PrimengModule,
-    ToolbarPrimengComponent,
-    CardCapacitacionesComponent,
-    PaginatorModule,
-    DetalleInscripcionComponent,
-  ],
+  imports: [PrimengModule, ToolbarPrimengComponent, CardCapacitacionesComponent, PaginatorModule],
 })
 export class SolicitudInscripcionComponent extends MostrarErrorComponent implements OnInit {
   private _ConstantesService = inject(ConstantesService);
   private _TipoCapacitacionesService = inject(TipoCapacitacionesService);
   private _CapacitacionesService = inject(CapacitacionesService);
-
-  detalleVisible = false;
-  idSeleccionado!: string;
 
   data: any[] = [];
   capacitacionFiltrado: any[] = [];
@@ -78,15 +68,7 @@ export class SolicitudInscripcionComponent extends MostrarErrorComponent impleme
     const seleccionado = this.tipoCapacitacion.find(t => t.iTipoCapId === id.iTipoCapId);
     if (seleccionado && id.cLink) {
       window.open(id.cLink, '_blank');
-    } else {
-      this.idSeleccionado = id;
-      this.detalleVisible = true;
     }
-  }
-
-  volverALista() {
-    this.detalleVisible = false;
-    this.idSeleccionado = '';
   }
 
   filtrarCapacitaciones(event: DropdownChangeEvent) {

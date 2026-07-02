@@ -1,10 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import {
-  ContainerPageComponent,
-  IActionContainer,
-} from '@/app/shared/container-page/container-page.component';
-import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
@@ -20,7 +16,7 @@ import { PrimengModule } from '@/app/primeng.module';
 @Component({
   selector: 'app-curriculas',
   standalone: true,
-  imports: [PrimengModule, ContainerPageComponent, TablePrimengComponent],
+  imports: [PrimengModule, TablePrimengComponent],
   templateUrl: './curriculas.component.html',
   styleUrl: './curriculas.component.scss',
 })
@@ -44,8 +40,14 @@ export class CurriculasComponent implements OnInit {
   breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
   breadCrumbItems: MenuItem[] = [{ label: 'Currículas' }];
 
+  estados_vigente: any[] = [
+    { label: 'SÍ', value: 1 },
+    { label: 'NO', value: 0 },
+  ];
+
   private _ConstantesService = inject(ConstantesService);
   private _confirmService = inject(ConfirmationModalService);
+
   constructor(
     private fb: FormBuilder,
     public curriculasService: CurriculasService,
@@ -56,26 +58,29 @@ export class CurriculasComponent implements OnInit {
     private router: Router
   ) {
     this.iPerfilId = this._ConstantesService.iPerfilId;
-    this.frmCurriculas = this.fb.group({
-      iCurrId: [''],
-      iModalServId: ['', Validators.required],
-      iCurrNotaMinima: [''],
-      iCurrTotalCreditos: [''],
-      iCurrNroHoras: [''],
-      cCurrPerfilEgresado: [''],
-      cCurrMencion: [''],
-      nCurrPesoProcedimiento: [''],
-      cCurrPesoConceptual: [''],
-      cCurrPesoActitudinal: [''],
-      bCurrEsLaVigente: [false],
-      cCurrRsl: [''],
-      dtCurrRsl: [''],
-      cCurrDescripcion: ['', Validators.required],
-    });
   }
 
   ngOnInit() {
-    this.messages = [{ severity: 'info', detail: 'Videos de Seguridad' }];
+    try {
+      this.frmCurriculas = this.fb.group({
+        iCurrId: [''],
+        iModalServId: ['', Validators.required],
+        iCurrNotaMinima: [''],
+        iCurrTotalCreditos: [''],
+        iCurrNroHoras: [''],
+        cCurrPerfilEgresado: [''],
+        cCurrMencion: [''],
+        nCurrPesoProcedimiento: [''],
+        cCurrPesoConceptual: [''],
+        cCurrPesoActitudinal: [''],
+        bCurrEsLaVigente: [false],
+        cCurrRsl: [''],
+        dtCurrRsl: [''],
+        cCurrDescripcion: ['', Validators.required],
+      });
+    } catch (error) {
+      console.error(error, 'Error de formulario');
+    }
     this.obtenerDatosIniciales();
   }
 
@@ -318,16 +323,6 @@ export class CurriculasComponent implements OnInit {
         },
       });
   }
-
-  accionesCurricula: IActionContainer[] = [
-    {
-      labelTooltip: 'Agregar currícula',
-      text: 'Nueva currícula',
-      icon: 'pi pi-plus',
-      accion: 'nueva_curricula',
-      class: 'p-button-success',
-    },
-  ];
 
   accionesTablaCurricula: IActionTable[] = [
     {

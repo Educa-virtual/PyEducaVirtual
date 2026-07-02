@@ -562,7 +562,6 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     };
     this._CapacitacionesService.obtenerCapacitacion(params).subscribe((resp: any) => {
       this.cursos = resp.data;
-      console.log(this.cursos);
     });
   }
 

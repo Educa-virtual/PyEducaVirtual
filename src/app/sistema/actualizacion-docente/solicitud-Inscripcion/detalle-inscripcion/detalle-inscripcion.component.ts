@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import {
   TablePrimengComponent,
@@ -38,6 +38,7 @@ export class DetalleInscripcionComponent extends MostrarErrorComponent implement
   private _InscripcionesService = inject(InscripcionesService);
   private _MessageService = inject(MessageService);
   private sanitizer: DomSanitizer;
+  private _router = inject(Router);
 
   alumnos: any[];
   showModal: boolean = false;
@@ -153,14 +154,14 @@ export class DetalleInscripcionComponent extends MostrarErrorComponent implement
     {
       labelTooltip: 'Agregar',
       text: 'Agregar',
-      icon: 'pi pi-plus',
+      icon: 'pi pi-plus pi-fw',
       accion: 'agregar',
       class: 'p-button-success',
     },
     {
       labelTooltip: 'Regresar',
       text: 'Regresar',
-      icon: 'pi pi-undo',
+      icon: 'pi pi-arrow-left pi-fw',
       accion: 'regresar',
       class: 'p-button-secondary',
     },
@@ -213,7 +214,7 @@ export class DetalleInscripcionComponent extends MostrarErrorComponent implement
     });
   }
   regresar() {
-    this.location.back();
+    this._router.navigate(['/actualizacion-docente/capacitaciones']);
   }
   // metodo para buscar x dni
   buscarDni() {

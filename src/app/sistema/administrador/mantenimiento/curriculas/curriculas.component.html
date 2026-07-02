@@ -1,47 +1,28 @@
-<app-container-page
-  title="Currículas"
-  [actions]="accionesCurricula"
-  (accionBtnItem)="accionBtnItem($event)"
-  ><p-toast />
-  <div class="grid">
-    <div class="field col-12 md:col-4">
-      <app-container-page title="Lista de Currículas" [actions]="[]">
-        <div class="grid">
-          <div class="col-12 mt-3">
-            <app-table-primeng
-              [columnas]="curriculasColumns"
-              [actions]="accionesTablaCurricula"
-              [data]="curriculas"
-              (accionBtnItem)="accionBtnItem($event)"
-              [searchPlaceholder]="'Buscar por nombre...'"
-              [showAdvancedFilter]="true"
-            >
-            </app-table-primeng>
-          </div>
-        </div>
-      </app-container-page>
-    </div>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 
-    <div class="field col-12 md:col-4">
-      @if (iCurrId > 0) {
-        <app-curricula-curso
-          [iCurrId]="iCurrId"
-          [curriculas]="curriculas"
-          [caption]="caption"
-        ></app-curricula-curso>
-      } @else {
-        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron áreas relacionados" />
-      }
-    </div>
-    <div class="field col-12 md:col-4">
-      @if (iCurrId > 0) {
-        <app-curricula-competencia [iCurrId]="iCurrId" [caption]="caption" />
-      } @else {
-        <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias relacionados" />
-      }
-    </div>
+<p-toast />
+<div class="grid">
+  <div class="field col-12">
+    <app-container-page
+      title="Lista de Currículas"
+      [actions]="accionesCurricula"
+      (accionBtnItem)="accionBtnItem($event)"
+    >
+      <div class="grid">
+        <div class="col-12 mt-3">
+          <app-table-primeng
+            [columnas]="curriculasColumns"
+            [actions]="accionesTablaCurricula"
+            [data]="curriculas"
+            (accionBtnItem)="accionBtnItem($event)"
+            [showAdvancedFilter]="false"
+          >
+          </app-table-primeng>
+        </div>
+      </div>
+    </app-container-page>
   </div>
-</app-container-page>
+</div>
 
 <p-dialog
   #dialog
@@ -245,7 +226,6 @@
             styleClass="w-full"
           >
           </p-calendar>
-          <!-- fechaResolucion -->
           <label for="fechaResolucion">Fecha de la resolución</label>
         </span>
       </div>
@@ -253,42 +233,6 @@
   </form>
 
   <div class="tag2">Los parámetros en (*) son obligatorios</div>
-  <!-- <p-button
-                    styleClass="w-full"
-                    icon="pi pi-plus"
-                    class="col-12 grid align-content-center justify-content-center gap-3 text-bold text-xl"
-                    label="Cursos"
-                >
-                </p-button> -->
-  <!-- @if (!dialogs.curriculas.expand.cursos) {
-            <div class="col-1">
-                <button
-                    class="border-none text-s bg-blue-500 text-white font-bold px-1 border-round w-full h-full mb-2 cursor-pointer"
-                    (click)="showCursos()"
-                >
-                    <div class="grid text-xl row-gap-5">
-                        <i class="col-12 text-2xl pi pi-cog"></i>
-                        <div class="col-12 grid m-0 row-gap-2">
-                            <span
-                                class="col-12"
-                                *ngFor="let char of 'CURSOS'.split('')"
-                                >{{ char }}</span
-                            >
-                        </div>
-                    </div>
-                </button>
-            </div>
-        } -->
-  <!-- @if (dialogs.curriculas.expand.cursos) { -->
-  <!-- <p-divider type="solid" layout="vertical" /> -->
-  <!-- 
-        <app-container-page title="Cursos" [actions]="cursos.container.actions"
-            (accionBtnItem)="cursos.container.accionBtnItem($event)">
-            <app-table-primeng class="w-full" [columnas]="cursos.table.columns" [data]="cursos.table.data"
-                [actions]="cursos.table.actions.core" (accionBtnItem)="cursos.table.accionBtnItem($event)" />
-        </app-container-page> -->
-  <!-- } -->
-
   <ng-template pTemplate="footer">
     <div class="grid">
       <div class="col-12 justify-content-between">

@@ -1,0 +1,218 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Áreas curriculares de: {{ caption }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button size="small" severity="secondary" (click)="salir()">
+        <i class="pi pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Regresar</span>
+      </p-button>
+      <p-button
+        size="small"
+        pTooltip="Agregar área"
+        tooltipPosition="top"
+        (click)="accionBtnItem({ accion: 'agregar' })"
+        severity="success"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Agregar</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <app-table-primeng
+    [columnas]="cursosColumns"
+    [actions]="accionesTablaCurso"
+    [data]="cursos"
+    (accionBtnItem)="accionBtnItem($event)"
+    [searchPlaceholder]="'Buscar por nombre...'"
+  >
+  </app-table-primeng>
+</p-panel>
+
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  (onHide)="(false)"
+  [style]="{ width: '75rem' }"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold white-space-nowrap">{{ titulo }}</span>
+    </div>
+  </ng-template>
+  <br />
+  <form [formGroup]="frmCursos" class="grid">
+    <div class="col-12 grid">
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label w-full">
+          <input
+            pInputText
+            id="cCursoNombre"
+            formControlName="cCursoNombre"
+            class="w-full"
+            maxlength="100"
+          />
+          @if (
+            frmCursos.get('cCursoNombre').dirty &&
+            frmCursos.get('cCursoNombre').invalid &&
+            frmCursos.get('cCursoNombre').touched
+          ) {
+            <small class="text-red-500"> Este campo es obligatorio. </small>
+          }
+          <label for="cCursoNombre">Nombre del área (*)</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label w-full">
+          <p-dropdown
+            id="iTipoCursoId"
+            styleClass="w-full"
+            [options]="tiposCursos"
+            optionLabel="cTipoCursoNombre"
+            optionValue="iTipoCursoId"
+            appendTo="body"
+            formControlName="iTipoCursoId"
+            placeholder="Seleccione un tipo"
+          />
+          @if (
+            frmCursos.get('iTipoCursoId').dirty &&
+            frmCursos.get('iTipoCursoId').invalid &&
+            frmCursos.get('iTipoCursoId').touched
+          ) {
+            <small class="text-red-500"> Debe seleccionar una opción. </small>
+          }
+          <label for="iTipoCursoId">Tipo de área (*)</label>
+        </span>
+      </div>
+    </div>
+    <div class="col-12 grid">
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label w-full">
+          <p-inputNumber
+            inputId="nCursoCredTeoria"
+            formControlName="nCursoCredTeoria"
+            mode="decimal"
+            inputStyleClass="w-full"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            (onInput)="calcularTotalCreditos()"
+          />
+          <label for="nCursoCredTeoria">Créditos teoría</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label w-full">
+          <p-inputNumber
+            inputId="nCursoCredPractica"
+            formControlName="nCursoCredPractica"
+            mode="decimal"
+            inputStyleClass="w-full"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            (onInput)="calcularTotalCreditos()"
+          />
+          <label for="nCursoCredPractica">Créditos práctica</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-4">
+        <span class="p-float-label w-full">
+          <p-inputNumber
+            inputId="nCursoTotalCreditos"
+            formControlName="nCursoTotalCreditos"
+            mode="decimal"
+            inputStyleClass="w-full"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+          />
+          <label for="nCursoTotalCreditos">Total créditos</label>
+        </span>
+      </div>
+    </div>
+    <div class="col-12 grid">
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label w-full">
+          <p-inputNumber
+            inputId="iCursoTotalHoras"
+            formControlName="iCursoTotalHoras"
+            mode="decimal"
+            inputStyleClass="w-full"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+          />
+          <label for="iCursoTotalHoras">Total horas</label>
+        </span>
+      </div>
+      <div class="field col-12 md:col-6">
+        <span class="p-float-label w-full">
+          <p-editor
+            id="cCursoDescripcion"
+            formControlName="cCursoDescripcion"
+            [style]="{ height: '80px', width: '100%' }"
+          />
+          <label for="cCursoDescripcion">Descripción</label>
+        </span>
+      </div>
+    </div>
+    <div class="col-12 grid">
+      <div class="field col-12 md:col-12">
+        <span class="p-float-label w-full">
+          <p-editor
+            id="cCursoPerfilDocente"
+            formControlName="cCursoPerfilDocente"
+            [style]="{ height: '80px', width: '100%' }"
+          />
+          <label for="cCursoPerfilDocente">Perfil docente</label>
+        </span>
+      </div>
+    </div>
+  </form>
+  <div class="tag2">Los parámetros en (*) son obligatorios</div>
+  <ng-template pTemplate="footer">
+    <div class="grid">
+      <div class="col-12 justify-content-between">
+        <p-button
+          pButton
+          type="button"
+          label="Cancelar"
+          icon="pi pi-times-circle"
+          severity="danger"
+          class="p-button-rounded p-button-text"
+          (onClick)="visible = false"
+        />
+        <p-button
+          *ngIf="bUpdate"
+          pButton
+          type="button"
+          icon="pi pi-save"
+          label="Actualizar"
+          class="p-button-rounded p-button-text"
+          (click)="accionBtnItem({ accion: 'actualizar_area' })"
+          severity="warning"
+          [disabled]="frmCursos.invalid"
+        />
+        <p-button
+          *ngIf="!bUpdate"
+          pButton
+          type="button"
+          icon="pi pi-save"
+          label="Guardar"
+          class="p-button-rounded p-button-text"
+          (click)="accionBtnItem({ accion: 'agregar_area' })"
+          severity="primary"
+          [disabled]="frmCursos.invalid"
+        />
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-toast />

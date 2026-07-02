@@ -213,18 +213,16 @@
         </div>
         <div class="col-12">
           <div class="border-round w-full btnimag">
-            <div class="flex justify-content-between flex-wrap">
-              <div class="flex align-items-center justify-content-center m-2">
-                ¿Desea elegir imagen?
-              </div>
-              <div class="flex align-items-center justify-content-center m-2">
+            <p-inputGroup class="vertical-group">
+              <p-inputGroupAddon>
                 <p-inputSwitch
                   formControlName="iImageAleatorio"
                   class="pr-3"
                   (onChange)="showVistaPrevia = $event.checked"
                 />
-              </div>
-            </div>
+                <span>¿Desea elegir imagen?</span>
+              </p-inputGroupAddon>
+            </p-inputGroup>
           </div>
           <p-image
             class="flex align-items-center justify-content-center m-2"
@@ -239,32 +237,30 @@
               <p-carousel
                 #carousel
                 [value]="portada"
-                [numVisible]="2"
-                [numScroll]="2"
+                [numVisible]="3"
+                [numScroll]="1"
                 [circular]="true"
+                [responsiveOptions]="responsiveOptions"
               >
                 <ng-template let-image let-index="index" pTemplate="item">
                   <div
                     [tabindex]="index"
                     class="image-item"
+                    [class.selected]="isSelected(image.id)"
                     (click)="selectImage(image)"
                     (keyup)="selectImage(null)"
                   >
-                    <div class="m-2 border-round shadow-2 p-3 text-center">
+                    <div class="image-container">
                       <img
                         [src]="backend + '/' + image.url"
                         [alt]="image.title"
-                        class="w-full border-round"
+                        class="carousel-image"
                       />
-
-                      <div
-                        class="flex justify-center items-center gap-2 text-center mt-2 font-medium"
-                      >
-                        <span>{{ image.name }}</span>
-                        <i
-                          *ngIf="isSelected(image.id)"
-                          class="pi pi-check-circle text-green-500 text-lg"
-                        ></i>
+                      <div class="image-title">
+                        {{ image.name }}
+                      </div>
+                      <div *ngIf="isSelected(image.id)" class="selected-indicator">
+                        <i class="pi pi-check-circle"></i>
                       </div>
                     </div>
                   </div>
@@ -272,8 +268,7 @@
               </p-carousel>
 
               <div class="form-info" *ngIf="selectedImageId">
-                <h6 [align]="'center'" class="mt-2">Imagen seleccionada:</h6>
-                <p [align]="'center'">{{ selectedImageName }}</p>
+                <p>Imagen seleccionada: {{ selectedImageName }}</p>
               </div>
             </div>
           </div>
@@ -327,46 +322,15 @@
   [maximizable]="true"
 >
   <ng-template pTemplate="content">
-    <p-tabView [(activeIndex)]="activeCompetenciaTab">
-      <p-tabPanel header="Competencias asignadas">
-        <div *ngIf="iCursoId > 0">
-          <app-curricula-curso-competencias
-            [iCurrId]="iCurrId"
-            [iCursoId]="iCursoId"
-            [cursos]="cursos"
-          ></app-curricula-curso-competencias>
-        </div>
-        <div *ngIf="iCursoId === 0">
-          <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
-        </div>
-      </p-tabPanel>
-      <p-tabPanel header="Nueva competencia">
-        <div *ngIf="iCursoId > 0">
-          <app-curricula-curso-competencias
-            [iCurrId]="iCurrId"
-            [iCursoId]="iCursoId"
-            [cursos]="cursos"
-            [modoFormulario]="true"
-          ></app-curricula-curso-competencias>
-        </div>
-        <div *ngIf="iCursoId === 0">
-          <app-no-data [showIcon]="'NO-DATA'" mensaje="Seleccione un área curricular primero" />
-        </div>
-      </p-tabPanel>
-    </p-tabView>
-  </ng-template>
-
-  <!-- PIE DEL DIALOG -->
-  <ng-template pTemplate="footer">
-    <div class="flex justify-content-end gap-2">
-      <button
-        pButton
-        label="Cerrar"
-        icon="pi pi-times"
-        class="p-button-danger"
-        size="small"
-        (click)="visibleCompetencias = false"
-      ></button>
+    <div *ngIf="iCursoId > 0">
+      <app-curricula-curso-competencias
+        [iCurrId]="iCurrId"
+        [iCursoId]="iCursoId"
+        [cursos]="cursos"
+      ></app-curricula-curso-competencias>
+    </div>
+    <div *ngIf="iCursoId === 0">
+      <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
     </div>
   </ng-template>
 </p-dialog>

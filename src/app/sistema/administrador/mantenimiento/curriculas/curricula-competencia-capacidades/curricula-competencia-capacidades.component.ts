@@ -1,69 +1,26 @@
 import {
   ChangeDetectorRef,
   Component,
-  // EventEmitter,
   inject,
   Input,
-  //  Output,
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { Button } from 'primeng/button';
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
 import { Message, MessageService } from 'primeng/api';
-import { MessagesModule } from 'primeng/messages';
-import { DialogModule } from 'primeng/dialog';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputNumberModule } from 'primeng/inputnumber';
-//import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { ToastModule } from 'primeng/toast';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
-
-import { ToggleButtonModule } from 'primeng/togglebutton';
+import { PrimengModule } from '@/app/primeng.module';
 
 @Component({
   selector: 'app-curricula-competencia-capacidades',
   standalone: true,
-  imports: [
-    Button,
-    TablePrimengComponent,
-    CommonModule,
-    FormsModule,
-    ToastModule,
-    InputNumberModule,
-    ReactiveFormsModule,
-    CardModule,
-    ButtonModule,
-    MessagesModule,
-    TablePrimengComponent,
-    DialogModule,
-    InputTextModule,
-    DropdownModule,
-    InputTextareaModule,
-    InputSwitchModule,
-    ToggleButtonModule,
-    NoDataComponent,
-    ContainerPageComponent,
-  ],
+  imports: [PrimengModule, TablePrimengComponent, NoDataComponent],
   templateUrl: './curricula-competencia-capacidades.component.html',
   styleUrl: './curricula-competencia-capacidades.component.scss',
 })
@@ -73,10 +30,15 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
   capacidades: any[] = [];
   messages: Message[] | undefined;
   formCapacidades: FormGroup;
-  bUpdate: boolean = false; //variable para identificar modificacion
+  bUpdate: boolean = false;
   perfil: any;
+  activeTab: number = 0;
 
-  //private _confirmService = inject(ConfirmationModalService);
+  estados_capacidades: any[] = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
+
   private _LocalStoreService = inject(LocalStoreService);
 
   constructor(
@@ -98,9 +60,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['iCompetenciaId'] && changes['iCompetenciaId'].currentValue) {
-      // Si iCurrId cambió y tiene valor válido
       this.inicializacion();
-
       this.formCapacidades.patchValue({
         iCompetenciaId: this.iCompetenciaId,
       });
@@ -133,6 +93,21 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
           });
         },
       });
+  }
+
+  cambiarTab(index: number) {
+    this.activeTab = index;
+    if (index === 1) {
+      this.inicializacionForm();
+    }
+  }
+
+  inicializacionForm() {
+    this.formCapacidades.reset();
+    this.formCapacidades.patchValue({
+      iCompetenciaId: this.iCompetenciaId,
+      iEstado: 1,
+    });
   }
 
   insertarCompetenciaCapacidad(item: any) {
@@ -168,7 +143,6 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
         this.inicializacion();
         if (!this.bUpdate) {
           this.formCapacidades.reset();
-          //se agrego para cuando se guarda un registro
           this.formCapacidades.patchValue({
             iCompetenciaId: this.iCompetenciaId,
           });
@@ -183,12 +157,9 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
 
     switch (accion) {
       case 'agregar':
-        this.formCapacidades.reset();
-        this.formCapacidades.patchValue({
-          iCompetenciaId: this.iCompetenciaId,
-          iEstado: 1,
-        });
+        this.inicializacionForm();
         this.bUpdate = false;
+        this.activeTab = 1;
         break;
 
       case 'guardar_capacidad':
@@ -201,7 +172,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
         this.bUpdate = true;
         break;
 
-      case 'editar_competencia':
+      case 'editar_capacidad':
         this.formCapacidades.patchValue({
           iCapacidadId: item.iCapacidadId,
           iCompetenciaId: this.iCompetenciaId,
@@ -210,6 +181,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
           iEstado: Number(item.iEstado ?? 0),
         });
         this.bUpdate = true;
+        this.activeTab = 1;
         break;
 
       default:
@@ -220,7 +192,7 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
   columns = [
     {
       type: 'item',
-      width: '10%',
+      width: '5%',
       field: '',
       header: 'Item',
       text_header: 'center',
@@ -236,16 +208,15 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
     },
     {
       type: 'text',
-      width: '35%',
+      width: '45%',
       field: 'cCapacidadDescripcion',
       header: 'Descripción',
       text_header: 'center',
       text: 'left',
     },
-
     {
       type: 'estado-activo',
-      width: '15%',
+      width: '10%',
       field: 'iEstado',
       header: '',
       text_header: 'center',
@@ -265,23 +236,16 @@ export class CurriculaCompetenciaCapacidadesComponent implements OnChanges {
     {
       labelTooltip: 'Editar capacidades',
       icon: 'pi pi-pencil',
-      accion: 'editar_competencia',
+      accion: 'editar_capacidad',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Eliminar capacidades',
-    //   icon: 'pi pi-trash',
-    //   accion: 'eliminar_capacidades',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
   ];
 
   actionsContainer = [
     {
       labelTooltip: 'Agregar',
-      text: 'Agregar capacidades',
+      text: 'Agregar capacidad',
       icon: 'pi pi-plus',
       accion: 'agregar',
       class: 'p-button-success',

@@ -16,7 +16,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competencia-capacidades/curricula-competencia-capacidades.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CurriculasService } from '../config/service/curriculas.service';
 
 @Component({
@@ -39,14 +39,22 @@ export class CurriculaCompetenciaComponent implements OnInit {
   titulo: string = 'Gestión de Competencias';
   competencias: any[];
   visible_competencia: boolean = false;
+  visible_capacidades: boolean = false;
   bUpdate = false;
   iCompetenciaId: number;
+  iCompetenciaIdSeleccionada: number = 0;
+  competenciaSeleccionada: any = null;
   perfil: any;
   iCurrId: any;
   curricula: any;
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
   breadCrumbItems: MenuItem[] = [];
+
+  estados_competencias: any[] = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
 
   private _confirmService = inject(ConfirmationModalService);
   private _LocalStoreService = inject(LocalStoreService);
@@ -57,6 +65,7 @@ export class CurriculaCompetenciaComponent implements OnInit {
     private messageService: MessageService,
     private query: GeneralService,
     private route: ActivatedRoute,
+    private router: Router,
     private curriculaService: CurriculasService
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
@@ -121,11 +130,6 @@ export class CurriculaCompetenciaComponent implements OnInit {
             });
             return;
           }
-          // this.messageService.add({
-          //   severity: 'success',
-          //   summary: 'Mensaje del sistema',
-          //   detail: 'Se cargo exitosamente',
-          // });
         },
       });
   }
@@ -137,6 +141,9 @@ export class CurriculaCompetenciaComponent implements OnInit {
     switch (accion) {
       case 'asignar':
         this.asignarcompetencia.emit(item);
+        break;
+      case 'regresar':
+        this.router.navigate([`/administrador/mantenimiento-curricula`]);
         break;
       case 'agregar':
         this.titulo =
@@ -161,7 +168,6 @@ export class CurriculaCompetenciaComponent implements OnInit {
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
         this.visible_competencia = true;
-        this.accionBtnItem({ accion: 'select_modalidad', item: { iNivelId: item.iNivelId } });
         this.formCompetencia.patchValue({
           iCompetenciaId: item.iCompetenciaId,
           iCurrId: Number(this.iCurrId),
@@ -173,10 +179,15 @@ export class CurriculaCompetenciaComponent implements OnInit {
         this.bUpdate = true;
         break;
 
+      case 'capacidades':
+        this.competenciaSeleccionada = item;
+        this.iCompetenciaIdSeleccionada = item.iCompetenciaId;
+        this.visible_capacidades = true;
+        break;
+
       case 'agregar_competencia':
         this.bUpdate = false;
         this.insertarCompetencia(this.formCompetencia.value);
-
         break;
 
       case 'actualizar_competencia':
@@ -193,14 +204,6 @@ export class CurriculaCompetenciaComponent implements OnInit {
             // Acción para eliminar el registro
             this.deleteCompetencia(item.iCompetenciaId);
           },
-          // reject: () => {
-          //   // Mensaje de cancelación (opcional)
-          //   this.messageService.add({
-          //     severity: 'error',
-          //     summary: 'Mensaje',
-          //     detail: 'Registro cancelado',
-          //   });
-          // },
         });
         break;
 
@@ -239,7 +242,6 @@ export class CurriculaCompetenciaComponent implements OnInit {
           summary: 'Mensaje del sistema',
           detail: 'Se actualizo correctamente',
         });
-        //this.inicializacion();
         if (!this.bUpdate) {
           this.formCompetencia.reset();
           this.visible_competencia = false;
@@ -277,7 +279,6 @@ export class CurriculaCompetenciaComponent implements OnInit {
           detail: 'Se eliminó la currícula correctamente.',
         });
         this.visible_competencia = false;
-        // this.obtenerDatosIniciales();
       },
     });
   }
@@ -307,18 +308,18 @@ export class CurriculaCompetenciaComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Eliminar competencias',
-    //   icon: 'pi pi-trash',
-    //   accion: 'eliminar_competencia',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
+    {
+      labelTooltip: 'Mostrar capacidades',
+      icon: 'pi pi-list',
+      accion: 'capacidades',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+    },
   ];
   competenciasColumns = [
     {
       type: 'text',
-      width: '5%',
+      width: '10%',
       field: 'cCompetenciaNro',
       header: '',
       text_header: 'center',
@@ -332,22 +333,21 @@ export class CurriculaCompetenciaComponent implements OnInit {
       text_header: 'center',
       text: 'left',
     },
-
     {
       type: 'estado-activo',
-      width: '5%',
+      width: '10%',
       field: 'iEstado',
-      header: '',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'actions',
-      width: '20%',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
-      text: 'center',
+      text: 'right',
     },
   ];
 }

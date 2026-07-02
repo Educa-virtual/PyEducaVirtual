@@ -25,7 +25,7 @@
         pTooltip="Regresar"
         tooltipPosition="top"
         (click)="accionBtnItem({ accion: 'regresar' })"
-        severity="info"
+        severity="secondary"
       >
         <i class="pi pi-arrow-left"></i>
         <span class="ml-2 hidden sm:block">Regresar</span>
@@ -51,130 +51,138 @@
   </div>
 </p-panel>
 
+<!-- DIALOG 1: DATOS DE LA COMPETENCIA -->
 <p-dialog
   header="{{ titulo }}"
   [(visible)]="visible_competencia"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    height: '80vh',
+    maxHeight: '95vh',
+  }"
   [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  [resizable]="true"
   [maximizable]="true"
-  [resizable]="false"
-  appendTo="body"
-  (onHide)="(false)"
-  [style]="{ width: '75rem' }"
 >
-  <!-- CONTENIDO DEL DIALOG -->
   <ng-template pTemplate="content">
-    <p-tabView>
-      <p-tabPanel header="Información de competencias">
-        <app-container-page title="Competencias" [actions]="[]">
-          <form [formGroup]="formCompetencia" class="flex flex-column gap-3 w-full">
-            <div class="grid">
-              <p></p>
-              <div class="field col-12 md:col-2">
-                <span class="p-float-label w-full">
-                  <p-inputNumber
-                    inputId="cCompetenciaNro"
-                    [min]="1"
-                    formControlName="cCompetenciaNro"
-                    inputStyleClass="w-full"
-                    [showButtons]="true"
-                  ></p-inputNumber>
-                  <label for="cCompetenciaNro">N°</label>
-                </span>
-              </div>
-              <div class="field col-12 md:col-8">
-                <span class="p-float-label w-full">
-                  <input
-                    pInputText
-                    id="cCompetenciaNombre"
-                    formControlName="cCompetenciaNombre"
-                    class="w-full"
-                  />
-                  <label for="cCompetenciaNombre">Nombre</label>
-                </span>
-              </div>
-              <div class="field col-12 md:col-2">
-                <p-toggleButton
-                  styleClass="w-full"
-                  onLabel="Activo"
-                  offLabel="Inactivo"
-                  formControlName="iEstado"
-                />
-              </div>
-            </div>
-
-            <div class="grid">
-              <div class="field col-12 md:col-10">
-                <span class="p-float-label w-full">
-                  <textarea
-                    pInputTextarea
-                    id="cCompetenciaDescripcion"
-                    class="w-full"
-                    formControlName="cCompetenciaDescripcion"
-                    rows="5"
-                  ></textarea>
-                  <label for="cCompetenciaDescripcion">Descripción</label>
-                </span>
-              </div>
-              <div class="field col-12 md:col-2">
-                <span class="p-float-label">
-                  <button
-                    pButton
-                    label="Editar"
-                    icon="pi pi-pencil"
-                    class="p-button-warning w-full"
-                    size="small"
-                    [disabled]="formCompetencia.invalid"
-                    (click)="
-                      accionBtnItem({
-                        accion: 'actualizar_competencia',
-                        item: formCompetencia.value,
-                      })
-                    "
-                    *ngIf="bUpdate"
-                  ></button>
-                  <button
-                    pButton
-                    label="Guardar"
-                    icon="pi pi-save"
-                    class="p-button-success w-full"
-                    size="small"
-                    (click)="
-                      accionBtnItem({ accion: 'agregar_competencia', item: formCompetencia.value })
-                    "
-                    *ngIf="!bUpdate"
-                    [disabled]="formCompetencia.invalid"
-                  ></button>
-                </span>
-              </div>
-            </div>
-          </form>
-          <div class="tag2">Los parámetros en (*) son obligatorios</div>
-        </app-container-page>
-      </p-tabPanel>
-
-      <p-tabPanel header="Capacidades asignadas" *ngIf="iCompetenciaId > 0">
-        <div *ngIf="iCompetenciaId === 0">
-          <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron competencias asignadas" />
+    <p-messages severity="info" [closable]="true">
+      <ng-template pTemplate="content">
+        <p>Los parámetros en (*) son obligatorios</p>
+      </ng-template>
+    </p-messages>
+    <form [formGroup]="formCompetencia" class="flex flex-column gap-3 w-full">
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>N°</p-inputGroupAddon>
+            <p-inputNumber
+              inputId="cCompetenciaNro"
+              [min]="1"
+              formControlName="cCompetenciaNro"
+              inputStyleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+              [showButtons]="true"
+            ></p-inputNumber>
+          </p-inputGroup>
         </div>
-        <div *ngIf="iCompetenciaId > 0">
-          <app-curricula-competencia-capacidades
-            [iCompetenciaId]="iCompetenciaId"
-          ></app-curricula-competencia-capacidades>
+        <div class="col-12 md:col-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>Estado (*)</p-inputGroupAddon>
+            <p-dropdown
+              [options]="estados_competencias"
+              formControlName="iEstado"
+              [showClear]="true"
+              appendTo="body"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
         </div>
-      </p-tabPanel>
-    </p-tabView>
-  </ng-template>
-  <!-- PIE DEL DIALOG -->
-  <ng-template pTemplate="footer">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Nombre (*)</p-inputGroupAddon>
+            <input
+              pInputText
+              id="cCompetenciaNombre"
+              class="group-element"
+              formControlName="cCompetenciaNombre"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Descripción</p-inputGroupAddon>
+            <textarea
+              pInputTextarea
+              id="cCompetenciaDescripcion"
+              class="group-element"
+              formControlName="cCompetenciaDescripcion"
+              rows="5"
+              [style]="{ flex: '1', width: '100%', resize: 'none' }"
+            ></textarea>
+          </p-inputGroup>
+        </div>
+      </div>
+    </form>
     <div class="flex justify-content-end gap-2">
-      <button
-        pButton
+      <p-button
         label="Cancelar"
         icon="pi pi-times"
-        class="p-button-danger"
-        size="small"
+        severity="secondary"
         (click)="visible_competencia = false"
-      ></button>
+      />
+      <p-button
+        label="Editar"
+        icon="pi pi-pencil"
+        severity="warning"
+        [disabled]="formCompetencia.invalid"
+        (click)="accionBtnItem({ accion: 'actualizar_competencia', item: formCompetencia.value })"
+        *ngIf="bUpdate"
+      />
+      <p-button
+        label="Guardar"
+        icon="pi pi-save"
+        severity="success"
+        size="small"
+        (click)="accionBtnItem({ accion: 'agregar_competencia', item: formCompetencia.value })"
+        *ngIf="!bUpdate"
+        [disabled]="formCompetencia.invalid"
+      />
     </div>
   </ng-template>
 </p-dialog>
+
+<!-- DIALOG 2: CAPACIDADES DE LA COMPETENCIA -->
+<p-dialog
+  header="Capacidades de la competencia: {{ competenciaSeleccionada?.cCompetenciaNombre ?? '' }}"
+  [(visible)]="visible_capacidades"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    height: '80vh',
+    maxHeight: '95vh',
+  }"
+  [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <ng-template pTemplate="content">
+    <div *ngIf="iCompetenciaIdSeleccionada > 0">
+      <app-curricula-competencia-capacidades
+        [iCompetenciaId]="iCompetenciaIdSeleccionada"
+      ></app-curricula-competencia-capacidades>
+    </div>
+    <div *ngIf="iCompetenciaIdSeleccionada === 0">
+      <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron capacidades asignadas" />
+    </div>
+  </ng-template>
+</p-dialog>
+<p-toast />

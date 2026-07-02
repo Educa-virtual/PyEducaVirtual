@@ -1,100 +1,91 @@
-<!-- <app-container-page title="Cursos" [actions]="accionesCursos" (accionBtnItem)="accionBtnItem($event)"> -->
-<app-container-page
-  title="Lista de capacidades"
-  [actions]="actionsContainer"
-  (accionBtnItem)="accionBtnItem($event)"
->
-  <div class="grid">
-    <div class="col-12 md:col-4">
-      <form [formGroup]="formCapacidades" class="flex flex-column gap-3 w-full">
-        <!-- Nombre -->
+<p-tabView [(activeIndex)]="activeTab">
+  <p-tabPanel header="Capacidades asignadas" *ngIf="activeTab === 0" [disabled]="true">
+    <div class="flex justify-content-start gap-3 my-3">
+      <p-button
+        label="Agregar"
+        icon="pi pi-plus"
+        severity="success"
+        (click)="accionBtnItem({ accion: 'agregar' })"
+      />
+    </div>
+    @if (capacidades.length > 0) {
+      <app-table-primeng
+        class="w-full"
+        [columnas]="columns"
+        [data]="capacidades"
+        [actions]="actions"
+        (accionBtnItem)="accionBtnItem($event)"
+      />
+    } @else {
+      <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron capacidades asignadas" />
+    }
+  </p-tabPanel>
+  <p-tabPanel header="Detalle de Capacidad" *ngIf="activeTab === 1" [disabled]="true">
+    <form [formGroup]="formCapacidades">
+      <div class="grid p-fluid">
         <div class="col-12">
-          <span class="p-float-label">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Estado (*)</p-inputGroupAddon>
+            <p-dropdown
+              [options]="estados_capacidades"
+              formControlName="iEstado"
+              [showClear]="true"
+              appendTo="body"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Nombre (*)</p-inputGroupAddon>
             <input
               pInputText
               id="cCapacidadNombre"
-              class="w-full"
+              class="group-element"
               formControlName="cCapacidadNombre"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="cCapacidadNombre">Nombre (*)</label>
-          </span>
+          </p-inputGroup>
         </div>
-
-        <!-- Descripción -->
         <div class="col-12">
-          <span class="p-float-label">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Descripción</p-inputGroupAddon>
             <textarea
               pInputTextarea
               id="cCapacidadDescripcion"
-              class="w-full"
+              class="group-element"
               formControlName="cCapacidadDescripcion"
-              rows="5"
+              rows="3"
+              [style]="{ flex: '1', width: '100%', resize: 'none' }"
             ></textarea>
-            <label for="cCapacidadDescripcion">Descripción</label>
-          </span>
-        </div>
-
-        <!-- Estado -->
-        <div class="grid">
-          <div class="col-12 md:col-6">
-            <div class="flex align-items-center">
-              <p-toggleButton
-                formControlName="iEstado"
-                onLabel="Activo"
-                offLabel="Inactivo"
-                class="w-full"
-              ></p-toggleButton>
-            </div>
-          </div>
-
-          <!-- Botones -->
-          <div class="col-12 md:col-6 flex gap-2">
-            <button
-              *ngIf="bUpdate"
-              pButton
-              label="Editar"
-              icon="pi pi-pencil"
-              class="p-button-warning w-full"
-              size="small"
-              [disabled]="formCapacidades.invalid"
-              (click)="
-                accionBtnItem({ accion: 'actualizar_capacidad', item: formCapacidades.value })
-              "
-            ></button>
-
-            <button
-              *ngIf="!bUpdate"
-              pButton
-              label="Guardar"
-              icon="pi pi-save"
-              class="p-button-success w-full"
-              size="small"
-              [disabled]="formCapacidades.invalid"
-              (click)="accionBtnItem({ accion: 'guardar_capacidad', item: formCapacidades.value })"
-            ></button>
-          </div>
-        </div>
-      </form>
-      <div class="tag2">Los parámetros en (*) son obligatorios</div>
-    </div>
-    <div class="col-12 md:col-8">
-      <div class="grid">
-        <div class="col-12 mt-3">
-          @if (capacidades.length > 0) {
-            <app-table-primeng
-              class="w-full"
-              [columnas]="columns"
-              [data]="capacidades"
-              [actions]="actions"
-              (accionBtnItem)="accionBtnItem($event)"
-              [showAdvancedFilter]="true"
-              [showCaption]="false"
-            />
-          } @else {
-            <app-no-data [showIcon]="'NO-DATA'" mensaje="No se encontraron capacidades asignadas" />
-          }
+          </p-inputGroup>
         </div>
       </div>
+    </form>
+    <div class="flex justify-content-end gap-3">
+      <p-button
+        label="Ver todos"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (click)="cambiarTab(0)"
+      />
+      <p-button
+        label="Guardar"
+        *ngIf="!bUpdate"
+        icon="pi pi-save"
+        severity="success"
+        (click)="accionBtnItem({ accion: 'guardar_capacidad', item: formCapacidades.value })"
+        [disabled]="formCapacidades.invalid"
+      />
+      <p-button
+        label="Actualizar"
+        *ngIf="bUpdate"
+        icon="pi pi-save"
+        severity="warning"
+        [disabled]="formCapacidades.invalid"
+        (click)="accionBtnItem({ accion: 'actualizar_capacidad', item: formCapacidades.value })"
+      />
     </div>
-  </div>
-</app-container-page>
+  </p-tabPanel>
+</p-tabView>

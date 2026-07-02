@@ -24,7 +24,7 @@
     <form [formGroup]="frmCursosCompetencias">
       <div class="grid p-fluid">
         <div class="col-12">
-          <p-inputGroup class="vertical-group">
+          <p-inputGroup>
             <p-inputGroupAddon>Estado (*)</p-inputGroupAddon>
             <p-dropdown
               [options]="estados_competencias"
@@ -37,7 +37,7 @@
           </p-inputGroup>
         </div>
         <div class="col-12">
-          <p-inputGroup class="vertical-group">
+          <p-inputGroup>
             <p-inputGroupAddon>Modalidad (*)</p-inputGroupAddon>
             <p-dropdown
               [options]="modalidad"
@@ -53,7 +53,7 @@
           </p-inputGroup>
         </div>
         <div class="col-12" *ngIf="this.frmCursosCompetencias.value.iNivelId > 0">
-          <p-inputGroup class="vertical-group">
+          <p-inputGroup>
             <p-inputGroupAddon>Nivel (*)</p-inputGroupAddon>
             <p-dropdown
               [options]="nivel_tipo_actual"

@@ -31,13 +31,14 @@
         label="Archivo"
         icon="pi pi-plus"
         (onClick)="resetearInput(fileInput); fileInput.click()"
-      ></p-button>
+      />
       <p-button
         label="Carpeta"
         icon="pi pi-plus"
         severity="danger"
         (onClick)="selectedRow.set(null); showModal.set(true)"
-      ></p-button>
+      />
+      <p-button label="Espacio" icon="pi pi-disk" severity="info" (onClick)="verReporte()" />
     </div>
     <div class="col-12">
       <p-table
@@ -125,3 +126,39 @@
   (recargarLista)="listarCarpetas(rutaCarpetas()[rutaCarpetas().length - 1].id)"
 ></app-form-carpeta>
 <p-toast></p-toast>
+
+<p-dialog
+  [(visible)]="visible"
+  [style]="{ width: '50vw' }"
+  header="Reporte"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  modal="true"
+  closable="true"
+>
+  <div class="grid mt-3">
+    <div class="col-6 text-left">Usado: {{ totalUsado }}</div>
+    <div class="col-6 text-right font-bold">Total: 2 GB</div>
+  </div>
+  <p-meterGroup [value]="reporte" [max]="2147483648" class="p-3">
+    <ng-template pTemplate="label">
+      <div class="flex flex-wrap gap-3">
+        <ng-container *ngFor="let meterItem of reporte; let index = index">
+          <p-card class="flex-1">
+            <div class="flex justify-content-between gap-5">
+              <div class="flex flex-column gap-1">
+                <span class="text-secondary text-sm">{{ meterItem.label }}</span>
+                <span class="font-bold text-lg">{{ meterItem.cantidad }} archivos </span>
+              </div>
+              <span
+                class="w-2rem h-2rem border-circle inline-flex justify-content-center align-items-center text-center"
+                [style]="{ 'background-color': meterItem.color, color: '#ffffff' }"
+              >
+                <span>{{ meterItem.icon }}</span>
+              </span>
+            </div>
+          </p-card>
+        </ng-container>
+      </div>
+    </ng-template>
+  </p-meterGroup>
+</p-dialog>

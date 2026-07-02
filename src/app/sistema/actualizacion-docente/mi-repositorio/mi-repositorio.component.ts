@@ -72,6 +72,26 @@ export class MiRepositorioComponent implements OnInit {
   items = [];
   perfil: any;
 
+  reporte: any[] = [];
+  visible: boolean = false;
+  totalUsado: string = '0';
+
+  iconMap: Record<string, string> = {
+    pdf: '📄',
+    doc: '📝',
+    docx: '📝',
+    mp4: '📹',
+    jpg: '📷',
+    jpeg: '📷',
+    png: '📷',
+    gif: '📷',
+    zip: '🗜️',
+    rar: '🗜️',
+    xlsx: '📊',
+    csv: '📊',
+    txt: '📘',
+  };
+
   constructor(
     private _CarpetasService: CarpetasService,
     private _ArchivosService: ArchivosService,
@@ -145,23 +165,7 @@ export class MiRepositorioComponent implements OnInit {
               item.cIcono = '📁';
             } else {
               item.cExtension = ext;
-              const iconMap: Record<string, string> = {
-                pdf: '📄',
-                doc: '📝',
-                docx: '📝',
-                mp4: '📹',
-                jpg: '📷',
-                jpeg: '📷',
-                png: '📷',
-                gif: '📷',
-                zip: '🗜️',
-                rar: '🗜️',
-                xlsx: '📊',
-                csv: '📊',
-                txt: '📘',
-              };
-
-              item.cIcono = iconMap[ext] ?? '📦';
+              item.cIcono = this.iconMap[ext] ?? '📦';
             }
 
             item.cNombreLabel = `${item.cIcono} ${item.cNombre}`;
@@ -425,5 +429,52 @@ export class MiRepositorioComponent implements OnInit {
     if (row.cTipo === 'archivo') {
       this.abrirMenu($event, row, menu);
     }
+  }
+
+  verReporte() {
+    this._CarpetasService
+      .verReporteCarpetas({
+        iCarpetaId: null,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.visible = true;
+          const iTamanoTotal = data.data.reduce((acum, item) => {
+            const valor = Number(item.iTamanoUsado) || 0;
+            return acum + valor;
+          }, 0);
+          this.totalUsado = this._CarpetasService.formatearTamanio(iTamanoTotal);
+          /*
+          data.data.push({
+            cExtension: 'Espacio Libre',
+            iTamanoUsado: 2147483648 - iTamanoTotal,
+          })
+          */
+          this.reporte = data.data.map(item => {
+            item.label = item.cExtension;
+            item.value = Number(item.iTamanoUsado);
+            item.cantidad = Number(item.iCantidad);
+            item.icon = this.iconMap[item.cExtension.toLowerCase()] ?? '📦';
+            item.color = this.colorAleatorio();
+            return item;
+          });
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error desconocido',
+          });
+        },
+      });
+  }
+
+  colorAleatorio() {
+    const caracteres = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += caracteres[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 }

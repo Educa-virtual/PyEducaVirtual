@@ -24,6 +24,10 @@ export class CarpetasService {
     return this.http.post(`${this.baseUrlApi}/repo/actualizarCarpeta`, data);
   }
 
+  verReporteCarpetas(data) {
+    return this.http.post(`${this.baseUrlApi}/repo/verReporteCarpetas`, data);
+  }
+
   formatearTamanio(tamano_en_bytes: number) {
     const tamano = tamano_en_bytes / 1024;
     if (tamano < 1024) {

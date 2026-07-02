@@ -35,6 +35,8 @@ import { CommonModule } from '@angular/common';
 import { GeneralService } from '@/app/servicios/general.service';
 import { AulaBancoPreguntasModule } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
@@ -56,6 +58,8 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
     InputTextModule,
     DropdownModule,
     InputSwitchModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     NoDataComponent,
     AulaBancoPreguntasModule,
   ],
@@ -66,6 +70,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
   @Input() iCursoId: number = 0;
   @Input() cursos: any = [];
   @Input() iCurrId: number = 0;
+  @Input() modoFormulario: boolean = false;
   @Output() asignarCompetencia = new EventEmitter();
 
   competencias: any[] = [];

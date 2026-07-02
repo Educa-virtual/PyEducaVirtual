@@ -40,12 +40,15 @@ export class CurriculaCursoComponent implements OnInit {
 
   cursos: any[] = [];
   visible: boolean = false;
+  visibleCompetencias: boolean = false;
+  activeCompetenciaTab: number = 0;
   totalCursos: any[] = [];
   nivelesTipos: any[] = [];
   grados: any[] = [];
   tiposCursos: any[] = [];
   capacidades: any[] = [];
   iCursoId: number = 0;
+  cursoSeleccionado: any = null;
   capacidadesCurso: any[] = [];
   titulo: string = '';
   curso: any = {};
@@ -89,6 +92,11 @@ export class CurriculaCursoComponent implements OnInit {
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
   breadCrumbItems: MenuItem[] = [];
+
+  estados_cursos: any[] = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -205,6 +213,15 @@ export class CurriculaCursoComponent implements OnInit {
     switch (accion) {
       case 'cursos':
         this.asignarCurso.emit(item);
+        break;
+      case 'competencias':
+        this.cursoSeleccionado = item;
+        this.iCursoId = item.iCursoId;
+        this.visibleCompetencias = true;
+        this.activeCompetenciaTab = 0;
+        break;
+      case 'cambiar_tab_competencia':
+        this.activeCompetenciaTab = 1;
         break;
       case 'regresar':
         this.router.navigate([`/administrador/mantenimiento-curricula`]);
@@ -496,13 +513,13 @@ export class CurriculaCursoComponent implements OnInit {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Mostrar competencias',
-    //   icon: 'pi pi-book',
-    //   accion: 'cursos',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-primary p-button-text',
-    // },
+    {
+      labelTooltip: 'Mostrar competencias',
+      icon: 'pi pi-book',
+      accion: 'competencias',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+    },
     // {
     //   labelTooltip: 'Eliminar área curricular',
     //   icon: 'pi pi-trash',

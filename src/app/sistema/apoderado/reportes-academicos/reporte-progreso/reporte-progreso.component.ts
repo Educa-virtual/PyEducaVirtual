@@ -68,7 +68,7 @@ export class ReporteProgresoComponent implements OnInit {
       })
       .subscribe({
         next: (response: any) => {
-          this.dataEstudiantes = response.data ? [response.data] : [];
+          this.dataEstudiantes = response.data ? response.data : [];
         },
         error: err => {
           this.messageService.add({

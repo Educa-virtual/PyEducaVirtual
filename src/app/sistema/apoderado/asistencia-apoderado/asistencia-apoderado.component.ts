@@ -39,7 +39,7 @@ export class AsistenciaApoderadoComponent {
       })
       .subscribe({
         next: (response: any) => {
-          this.dataEstudiantes = response.data ? [response.data] : [];
+          this.dataEstudiantes = response.data ? response.data : [];
         },
         error: err => {
           this.messageService.add({

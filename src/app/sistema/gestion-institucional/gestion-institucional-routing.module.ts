@@ -60,7 +60,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'configGradoSeccion',
+    path: 'config',
     component: ConfigGradoSeccionComponent,
     canActivate: [RoleGuard],
     data: {
@@ -68,68 +68,78 @@ const routes: Routes = [
     },
   },
   {
-    path: 'config',
-    component: ConfigComponent,
+    path: 'config/:id',
+    component: ConfigGradoSeccionComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [DIRECTOR_IE],
     },
-  },
-  {
-    path: 'ambiente',
-    component: ConfigAmbienteComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
-  {
-    path: 'grado',
-    component: ConfigGradoComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
-  {
-    path: 'seccion',
-    component: ConfigSeccionComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
-  {
-    path: 'plan-estudio',
-    component: ConfigPlanEstudiosComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
-  {
-    path: 'hora-docente',
-    component: ConfigHoraDocenteComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
-  {
-    path: 'asignar-grado',
-    component: ConfigAsignarGradoComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
-  },
-  {
-    path: 'resumen',
-    component: ConfigResumenComponent,
-    canActivate: [RoleGuard],
-    data: {
-      expectedRole: [DIRECTOR_IE],
-    },
+    children: [
+      {
+        path: 'academico',
+        component: ConfigComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'ambiente',
+        component: ConfigAmbienteComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'grado',
+        component: ConfigGradoComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'seccion',
+        component: ConfigSeccionComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'plan-estudio',
+        component: ConfigPlanEstudiosComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'hora-docente',
+        component: ConfigHoraDocenteComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'asignar-grado',
+        component: ConfigAsignarGradoComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+      {
+        path: 'resumen',
+        component: ConfigResumenComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [DIRECTOR_IE],
+        },
+      },
+    ]
   },
   {
     path: 'fechas-nacionales',

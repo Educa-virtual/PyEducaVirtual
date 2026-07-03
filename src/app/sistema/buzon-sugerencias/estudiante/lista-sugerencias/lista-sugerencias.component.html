@@ -2,7 +2,9 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column gap-2">
-      <h3 class="m-0 text-uppercase text-primary">Buzón de sugerencias administrativas</h3>
+      <span class="font-bold white-space-nowrap text-2xl m-0">
+        Buzón de sugerencias administrativas
+      </span>
     </div>
   </ng-template>
   <ng-template pTemplate="icons" class="flex flex-column flex-1">
@@ -21,11 +23,13 @@
       </button>
     </div>
   </ng-template>
-  <p>
-    Ingresa tu sugerencia para que el director de la I.E. la pueda recibir (ejemplo: cambio de
-    carpetas, señalización en pasillos, etc.). Se muestran las sugerencias del año escolar
-    seleccionado.
-  </p>
+  <p-messages severity="info">
+    <ng-template pTemplate="content">
+      Ingresa tu sugerencia para que el director de la I.E. la pueda recibir (ejemplo: cambio de
+      carpetas, señalización en pasillos, etc.). Se muestran las sugerencias del año escolar
+      seleccionado.
+    </ng-template>
+  </p-messages>
   <app-table-primeng
     [columnas]="columns"
     [searchPlaceholder]="'Buscar por asunto...'"

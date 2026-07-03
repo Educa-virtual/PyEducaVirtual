@@ -42,7 +42,7 @@ export class HorarioEstudianteComponent implements OnChanges {
     if (changes['lista']?.currentValue) {
       this.lista = changes['lista'].currentValue;
 
-      if (this.lista) {
+      if (this.lista.length > 0) {
         const iYAcadId = Number(this.lista.iYAcadId);
         const iSedeId = Number(this.lista.iSedeId);
         const iNivelGradoId = Number(this.lista.iNivelGradoId);

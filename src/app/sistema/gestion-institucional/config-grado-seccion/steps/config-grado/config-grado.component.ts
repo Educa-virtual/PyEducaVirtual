@@ -77,7 +77,6 @@ export class ConfigGradoComponent implements OnInit {
         private msg: StepConfirmationService
     ) {
         //this.iSedeId = this.stepService.iSedeId
-        this.items = this.stepService.itemsStep
         //this.iYAcadId = this.stepService.iYAcadId
         this.configuracion = this.stepService.configuracion
     }

@@ -1,143 +1,280 @@
-<app-container-page
-  title="Registrar plan de estudio"
-  [actions]="accionesPrincipal"
+<form [formGroup]="formBusqueda">
+  <div class="grid p-fluid mt-4">
+    <div class="col-12 md:col-6">
+      <p-message [severity]="mensajeSeverity" [text]="mensajeTexto"></p-message>
+    </div>
+    <div class="col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon>Grado</p-inputGroupAddon>
+        <p-dropdown
+          [options]="nivel_grados"
+          styleClass="group-element"
+          formControlName="iNivelGradoId"
+          [style]="{ flex: 1, width: '100%' }"
+          showClear="true"
+          appendTo="body"
+          (onChange)="filtrarTabla()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-2">
+      <p-button
+        label="Agregar"
+        icon="pi pi-fw pi-plus"
+        severity="success"
+        (click)="agregarIeCurso()"
+        [disabled]="!gradoSeleccionado"
+      />
+    </div>
+  </div>
+</form>
+
+<app-table-primeng
+  [columnas]="columns"
+  [showCaption]="false"
+  [data]="ie_cursos_filtrado"
   (accionBtnItem)="accionBtnItemTable($event)"
+  [showPaginator]="false"
+  [(selectedRowData)]="selectedItems"
+  [actions]="actions"
+  [showSearchTable]="false"
 >
-  <div class="card">
-    <p-steps [model]="items" [readonly]="true"></p-steps>
-  </div>
-  <br />
-  @if (!bAgregar) {
-    <div class="card">
-      <p-messages [(value)]="mensaje" [enableService]="false" [closable]="false" />
-      <!-- <p-table [value]="groupedData" [responsiveLayout]="'scroll'" styleClass="p-datatable-sm">
-         Cabecera personalizada 
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Asignatura</th>
-            <th>Tipo de Nivel</th>
-            <th *ngFor="let grado of dynamicColumns">
-              {{ grado }}
-            </th>
-            <th>Accion</th>
-          </tr>
-        </ng-template>
+</app-table-primeng>
 
-         Filas dinámicas 
-        <ng-template pTemplate="body" let-rowData>
-          <tr>
-            <td>{{ rowData.cCursoNombre }}</td>
-            <td>{{ rowData.cNivelTipoNombre }}</td>
+<div class="flex justify-content-end mt-4">
+  <p-button (onClick)="siguienteTab()" label="Siguiente" />
+</div>
 
-            <td *ngFor="let grado of dynamicColumns">
-              <input
-                type="number"
-                pInputText
-                id="{{ rowData.iCursoId + '-' + grado }}"
-                name="{{ rowData.iCursoId + '-' + grado }}"
-                style="width: 50px"
-                value="{{ rowData.grades[grado] }}"
-              />
-               {{ rowData.grades[grado] || '-' }} 
-            </td>
-            <td>
-              <p-button
-                icon="pi pi-pencil"
-                class="p-button-rounded p-button-text"
-                (onClick)="accionBtn(rowData)"
-              ></p-button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table> -->
-    </div>
-  } @else {
-    <app-asignar-horas></app-asignar-horas>
-  }
-
-  <div class="flex justify-content-end">
-    <p-button (onClick)="confirm()" label="Siguiente" />
-  </div>
-</app-container-page>
-<p-dialog header="{{ caption }}" [(visible)]="visible" [style]="{ width: '56rem' }" [modal]="true">
+<p-dialog
+  header="Actualizar horas"
+  [(visible)]="visible"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{
+    width: '50vw',
+    maxWidth: '100vw',
+    maxHeight: '95vh',
+  }"
+  [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  (onHide)="cerrarDialogo()"
+  [resizable]="true"
+  [maximizable]="true"
+>
   <form [formGroup]="form">
-    <div class="grid p-fluid mt-3">
-      <div class="field col-12 md:col-2">
-        <span class="p-float-label">
-          <input type="hidden" formControlName="iPlanes" aria-describedby="iConfigId-help" />
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Grado</p-inputGroupAddon>
           <input
             pInputText
-            formControlName="cYAcadNombre"
-            readOnly="false"
-            aria-describedby="cYAcadNombre-help"
+            type="text"
+            formControlName="cGradoAbreviacionNombre"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
           />
-
-          <label for="cYAcadNombre">Año escolar:</label>
-        </span>
+        </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-10">
-        <span class="p-float-label">
-          <input
-            pInputText
-            formControlName="cPlanes"
-            readOnly="false"
-            aria-describedby="cPlanes-help"
-          />
-          <label for="cPlanes">Descripcion de planes</label>
-        </span>
-      </div>
-
-      <div class="field col-12 md:col-2">
-        <span>
-          @if (!enlace || enlace.trim() === '') {
-            <p>No existe archivo adjunto</p>
-          } @else {
-            <p>Existe Archivo</p>
-            <a [href]="enlace" download="archivo.pdf" class="custom-download-link" target="_blank">
-              <i class="pi pi-download"></i> Descargar Archivo
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iCursosNivelGradId.toggle($event)"
+              (keypress)="iCursosNivelGradId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
             </a>
-          }
-        </span>
+            <p-overlayPanel #iCursosNivelGradId [showCloseIcon]="true" appendTo="body">
+              <div class="w-15rem">
+                Seleccione el área curricular que se dictará en su Institución Educativa (IE). Si un
+                área dictada en su IE no aparece en la lista, comuniquese con el administrador del
+                sistema y solicite que se agregue para los grados que necesite.
+              </div>
+            </p-overlayPanel>
+            Área de su IE
+          </p-inputGroupAddon>
+          <p-dropdown
+            [options]="areas"
+            formControlName="iCursosNivelGradId"
+            [showClear]="true"
+            filter="true"
+            appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            (onChange)="validarCursoMinedu()"
+          />
+        </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-10">
-        <span class="p-float-label">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iConfPlanId.toggle($event)"
+              (keypress)="iConfPlanId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iConfPlanId [showCloseIcon]="true" appendTo="body">
+              <div class="w-15rem">
+                Seleccione el área equivalente del MINEDU. Si no tiene equivalente deje este campo
+                en blanco. Recuerde que varias áreas de su IE pueden tener la misma área equivalente
+                del MINEDU.
+              </div>
+            </p-overlayPanel>
+            Área MINEDU
+          </p-inputGroupAddon>
+          <p-dropdown
+            [options]="areas_curricula"
+            formControlName="iConfPlanId"
+            [showClear]="true"
+            filter="true"
+            appendTo="body"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            (onChange)="validarCursoMinedu()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12" *ngIf="esCursoMinedu">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iPorcentajeAporte.toggle($event)"
+              (keypress)="iPorcentajeAporte.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iPorcentajeAporte [showCloseIcon]="true" appendTo="body">
+              <div class="w-15rem">
+                Porcentaje que el área de su IE aporta al cálculo de horas del área de la curricula
+                del MINEDU. Este porcentaje también se usará como sugerencia en el cálculo de las
+                calificaciones de estudiantes.
+              </div>
+            </p-overlayPanel>
+            Porcentaje que aporta
+          </p-inputGroupAddon>
+          <p-inputNumber
+            [showButtons]="true"
+            formControlName="iPorcentajeAporte"
+            [min]="0.0"
+            [max]="100.0"
+            [step]="1"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            suffix="%"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            (onBlur)="validarHorasMinimas()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Horas presenciales</p-inputGroupAddon>
+          <input
+            *ngIf="esCursoMinedu"
+            pInputText
+            formControlName="iHorasSemPresencialAporte"
+            class="group-element"
+            [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales equivalentes en curricula del MINEDU"
+            tooltipPosition="top"
+          />
           <input
             pInputText
-            formControlName="cObsPlanes"
-            readOnly="false"
-            aria-describedby="cObsPlanes-help"
+            type="number"
+            formControlName="iHorasSemPresencial"
+            min="0"
+            max="10"
+            (change)="validarHorasMinimas()"
+            class="group-element"
+            [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales que se dictan en su IE"
+            tooltipPosition="top"
           />
-
-          <label for="cObsPlanes">Observaciones</label>
-        </span>
+        </p-inputGroup>
       </div>
-
-      <div class="field col-12 md:col-5">
-        <app-types-files-upload-primeng
-          [nameFile]="'configuracion-iiee'"
-          [nameOption]="'configuracion-iiee'"
-          [typesFiles]="typesFiles"
-          (actionTypesFileUpload)="accionBtn($event)"
-          [filesUrl]="filesUrl"
-        >
-        </app-types-files-upload-primeng>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Horas virtuales</p-inputGroupAddon>
+          <input
+            *ngIf="esCursoMinedu"
+            pInputText
+            formControlName="iHorasSemDomicilioAporte"
+            class="group-element"
+            [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales equivalentes en curricula del MINEDU"
+            tooltipPosition="top"
+          />
+          <input
+            pInputText
+            type="number"
+            formControlName="iHorasSemDomicilio"
+            min="0"
+            max="10"
+            (change)="validarHorasMinimas()"
+            class="group-element"
+            [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales que se dictan en su IE"
+            tooltipPosition="top"
+          />
+        </p-inputGroup>
       </div>
-      <div class="field col-12 md:col-7">
-        <span>
-          <p>
-            <strong>Consideraciones al adjuntar archivos</strong>
-          </p>
-          <li>Solo se permite las extensiones : JPG, JPEG, PNG, PDF</li>
-          <li>El tamaño maximo permitido es de 10 MB</li>
-          <li>Puede agregar solo un archivos</li>
-        </span>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Total de horas</p-inputGroupAddon>
+          <input
+            *ngIf="esCursoMinedu"
+            pInputText
+            formControlName="iTotalHorasAporte"
+            class="group-element"
+            [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales equivalentes en curricula del MINEDU"
+            tooltipPosition="top"
+            [attr.disabled]="true"
+          />
+          <input
+            pInputText
+            type="number"
+            formControlName="iTotalHoras"
+            class="group-element"
+            [style]="{ flex: 1, width: '50%' }"
+            pTooltip="Horas semanales que se dictan en su IE. Debe ser mayor a 0"
+            tooltipPosition="top"
+          />
+        </p-inputGroup>
       </div>
     </div>
+  </form>
+  <div class="flex justify-content-end gap-2">
+    <p-button size="small" (click)="cerrarDialogo()" label="Cerrar" severity="secondary" />
     <p-button
+      *ngIf="bEditar"
+      size="small"
+      (click)="actualizar()"
+      label="Actualizar"
+      [disabled]="form.invalid"
+      severity="warning"
+    />
+    <p-button
+      *ngIf="!bEditar"
+      size="small"
+      (click)="guardar()"
       label="Guardar"
       [disabled]="form.invalid"
-      (onClick)="accionBtnItem('guardar')"
-      styleClass="p-button-danger"
-    /><p-toast />
-  </form>
+      severity="success"
+    />
+  </div>
 </p-dialog>
+
+<p-toast></p-toast>

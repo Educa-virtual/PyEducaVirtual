@@ -1,102 +1,56 @@
-<!-- <div class="card">
-    <h2>Cargar archivo Excel</h2>
-
-    <input type="file" (change)="onFileChange($event)" accept=".xlsx, .xls" />
-
-    <p-table
-        *ngIf="jsonData.length > 0"
-        [value]="jsonData"
-        [paginator]="true"
-        [rows]="5"
-        responsiveLayout="scroll"
-    >
-        <ng-template pTemplate="header">
-            <tr>
-                <th *ngFor="let header of headers">{{ header }}</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td *ngFor="let header of headers">{{ rowData[header] }}</td>
-            </tr>
-        </ng-template>
-    </p-table>
-    <pre>{{ jsonData | json }}</pre>
-    Muestra los datos JSON en formato legible
-</div> -->
-
-<p-tabView styleClass="tabview-custom">
-  <p-tabPanel>
-    <ng-template pTemplate="header">
-      <div class="flex align-items-center gap-2">
-        <!-- <p-avatar
-                    image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-                    shape="circle"
-                /> -->
-        <span class="font-bold white-space-nowrap m-0"> Importar </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="content">
-      <app-bulk-data-import></app-bulk-data-import>
-    </ng-template>
-  </p-tabPanel>
-  <p-tabPanel header="Header II">
-    <ng-template pTemplate="header">
-      <div class="flex align-items-center gap-2">
-        <!-- <p-avatar
-                    image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png"
-                    shape="circle"
-                /> -->
-        <span class="font-bold white-space-nowrap m-0"> Exportar </span>
-      </div>
-    </ng-template>
-    <form [formGroup]="form">
-      <div class="grid p-fluid mt-2">
-        <div class="field col-12 md:col-3">
-          <span class="p-float-label">
-            <p-dropdown
-              [style]="{ width: '100%' }"
-              [options]="reg_modulos"
-              [filter]="true"
-              filterBy="modulo"
-              optionLabel="modulo"
-              optionValue="id"
-              formControlName="iTabla"
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center gap-2">
+      <span class="font-bold white-space-nowrap text-2xl m-0">
+        Sincronizar archivos y descarga de plantillas
+      </span>
+    </div>
+  </ng-template>
+  <p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+          <span class="font-bold white-space-nowrap m-0"> Importar </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-bulk-data-import></app-bulk-data-import>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="Header II">
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+          <span class="font-bold white-space-nowrap m-0"> Exportar </span>
+        </div>
+      </ng-template>
+      <form [formGroup]="form">
+        <div class="grid p-fluid mt-2">
+          <div class="col-12 md:col-9">
+            <p-inputGroup>
+              <p-inputGroupAddon>Seleccionar tabla a exportar</p-inputGroupAddon>
+              <p-dropdown
+                [options]="reg_modulos"
+                [filter]="true"
+                filterBy="modulo"
+                optionLabel="modulo"
+                optionValue="id"
+                formControlName="iTabla"
+                styleClass="group-element"
+                [style]="{ flex: 1, width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-3">
+            <p-button
+              label="Exportar registros"
+              icon="pi pi-list"
+              (click)="selectTabla()"
+              severity="primary"
             />
-            <label for="iTabla">Seleccionar tabla a exportar</label>
-          </span>
+          </div>
+          <div class="col-12 md:col-6"></div>
         </div>
-        <!--  (onChange)="selectTabla()" -->
-        <div class="field col-12 md:col-3">
-          <button
-            pButton
-            label="Exportar registros"
-            icon="pi pi-list"
-            size="small"
-            (click)="selectTabla()"
-            class="p-button-primary"
-          ></button>
-          <!-- <pre>{{ jsonData | json }}</pre> -->
-        </div>
-        <div class="field col-12 md:col-6"></div>
-      </div>
-    </form>
-  </p-tabPanel>
-  <!-- <p-tabPanel header="Header III">
-        <ng-template pTemplate="header">
-            <div class="flex align-items-center gap-2">
-                <p-avatar
-                    image="https://primefaces.org/cdn/primeng/images/demo/avatar/ionibowcher.png"
-                    shape="circle"
-                />
-                <span class="font-bold white-space-nowrap m-0">
-                    Lista de Errores
-                </span>
-                <p-badge value="2" />
-            </div>
-        </ng-template>
-        <p>Mostrara los error encontraods...</p>
-    </p-tabPanel> -->
-</p-tabView>
-
-<!-- <p-toast /> -->
+      </form>
+    </p-tabPanel>
+  </p-tabView>
+</p-panel>

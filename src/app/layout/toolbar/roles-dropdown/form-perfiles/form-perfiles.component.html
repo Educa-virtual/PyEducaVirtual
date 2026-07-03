@@ -1,11 +1,15 @@
 <p-dialog
   [(visible)]="showModal"
-  [style]="{ width: '50%' }"
   header="Bienvenido al sistema"
   [modal]="true"
-  class="p-fluid"
   [closable]="false"
   (onHide)="closeModal()"
+  [breakpoints]="{ '1200px': '75vw', '640px': '100vw' }"
+  [style]="{
+    width: '50vw',
+    maxWidth: '100vw',
+    maxHeight: '95vh',
+  }"
 >
   <ng-template pTemplate="ng-content">
     <div class="mt-4 grid">

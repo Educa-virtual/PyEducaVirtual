@@ -1,143 +1,120 @@
-import { Component, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { AuditoriaService } from '../services/auditoria.service'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { DropdownModule } from 'primeng/dropdown'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import {
-    FormBuilder,
-    FormGroup,
-    FormsModule,
-    ReactiveFormsModule,
-} from '@angular/forms'
-import { TableModule } from 'primeng/table'
-import { CommonModule } from '@angular/common'
-import { AccordionModule } from 'primeng/accordion'
-import { CalendarModule } from 'primeng/calendar'
-import * as XLSX from 'xlsx'
-import { optionsDropdownConfig } from './config/dropdown/dropdown'
-import { UtilService } from '@/app/servicios/utils.service'
+import { Component, OnInit } from '@angular/core';
+import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import { AuditoriaService } from '../services/auditoria.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import { optionsDropdownConfig } from './config/dropdown/dropdown';
+import { UtilService } from '@/app/servicios/utils.service';
+import { PrimengModule } from '@/app/primeng.module';
 
 @Component({
-    selector: 'app-accesos',
-    standalone: true,
-    imports: [
-        TablePrimengComponent,
-        TableModule,
-        CommonModule,
-        InputGroupModule,
-        DropdownModule,
-        InputGroupAddonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AccordionModule,
-        CalendarModule,
-    ],
-    templateUrl: './accesos.component.html',
-    styleUrl: './accesos.component.scss',
-    providers: [],
+  selector: 'app-accesos',
+  standalone: true,
+  imports: [TablePrimengComponent, PrimengModule],
+  templateUrl: './accesos.component.html',
+  styleUrl: './accesos.component.scss',
+  providers: [],
 })
 export class AccesosComponent implements OnInit {
-    form: FormGroup
-    data
-    selectRowData
-    isExpand = false
-    options = optionsDropdownConfig
+  form: FormGroup;
+  data;
+  selectRowData;
+  visible: boolean = false;
+  options = optionsDropdownConfig;
 
-    columnsDetail = [
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'property',
-            header: 'Propiedad',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'oldValue',
-            header: 'Datos antiguos',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'newValue',
-            header: 'Datos nuevos',
-            text_header: 'left',
-            text: 'left',
-        },
-    ]
+  columnsDetail = [
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'property',
+      header: 'Propiedad',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'oldValue',
+      header: 'Datos antiguos',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '5rem',
+      field: 'newValue',
+      header: 'Datos nuevos',
+      text_header: 'left',
+      text: 'left',
+    },
+  ];
 
-    columns
+  columns;
 
-    dataExport
+  dataExport;
 
-    constructor(
-        private router: Router,
-        private auditoria: AuditoriaService,
-        private fb: FormBuilder,
-        private utils: UtilService
-    ) {
-        this.form = this.fb.group({
-            selectedTable: [this.options[0]],
-            filtroFecha: [[new Date(), new Date()]],
+  constructor(
+    private auditoria: AuditoriaService,
+    private fb: FormBuilder,
+    private utils: UtilService
+  ) {
+    this.form = this.fb.group({
+      selectedTable: [this.options[0]],
+      filtroDesde: [new Date(new Date().setDate(new Date().getDate() - 30))],
+      filtroHasta: [new Date()],
+    });
+  }
+
+  ngOnInit() {
+    this.refrescar();
+    this.form.valueChanges.subscribe(curr => {
+      this.getData(curr);
+    });
+  }
+
+  refrescar() {
+    this.getData(this.form.value);
+  }
+
+  getData(curr) {
+    const option = curr.selectedTable.value;
+    this.auditoria.endpoint = option.endPoint;
+
+    if (curr.filtroDesde != null && curr.filtroHasta != null) {
+      this.auditoria
+        .getData({
+          filtroFechaInicio: this.utils.convertirAFechaSegura(this.form.value.filtroDesde),
+          filtroFechaFin: this.utils.convertirAFechaSegura(this.form.value.filtroHasta),
         })
+        .subscribe({
+          next: res => {
+            this.data = option.response(res);
+          },
+
+          complete: () => {
+            this.columns = option.columns;
+          },
+        });
     }
+  }
 
-    ngOnInit() {
-        this.refrescar()
-        this.form.valueChanges.subscribe((curr) => {
-            this.getData(curr)
-        })
-    }
+  selectRow(data) {
+    this.selectRowData = data;
+    this.visible = true;
+  }
 
-    refrescar() {
-        this.getData(this.form.value)
-    }
+  cerrarDialogo() {
+    this.visible = false;
+  }
 
-    getData(curr) {
-        const option = curr.selectedTable.value
-        this.auditoria.endpoint = option.endPoint
-        this.isExpand = option?.expand ?? false
+  generarExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(this.data);
 
-        if (curr.filtroFecha[0] != null && curr.filtroFecha[1] != null) {
-            this.auditoria
-                .getData({
-                    filtroFechaInicio: this.utils.convertirAFechaSegura(
-                        this.form.value.filtroFecha[0]
-                    ),
-                    filtroFechaFin: this.utils.convertirAFechaSegura(
-                        this.form.value.filtroFecha[1]
-                    ),
-                })
-                .subscribe({
-                    next: (res) => {
-                        this.data = option.response(res)
-                    },
+    // Crear un libro de trabajo y añadir la hoja
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
 
-                    complete: () => {
-                        this.columns = option.columns
-                    },
-                })
-        }
-    }
-
-    selectRow(data) {
-        this.selectRowData = data
-    }
-
-    generarExcel() {
-        const worksheet = XLSX.utils.json_to_sheet(this.data)
-
-        // Crear un libro de trabajo y añadir la hoja
-        const workbook = XLSX.utils.book_new()
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos')
-
-        // Exportar el archivo Excel
-        XLSX.writeFile(workbook, 'Auditoria.xlsx')
-    }
+    // Exportar el archivo Excel
+    XLSX.writeFile(workbook, 'Auditoria.xlsx');
+  }
 }

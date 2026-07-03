@@ -5,7 +5,7 @@
   (accionBtnItem)="this.accionCloseForm.emit($event)"
   width="65rem"
 >
-  <div class="col-12 mt-3 grid">
+  <div class="col-12 mt-3 grid p-fluid">
     <div class="col-12 md:col-5">
       <p-inputGroup>
         <p-inputGroupAddon>Fecha Inicio:</p-inputGroupAddon>
@@ -16,6 +16,9 @@
           [showIcon]="true"
           [disabled]="true"
           [(ngModel)]="data.dFechaInicio"
+          inputStyleClass="group-element"
+          appendTo="body"
+          [style]="{ flex: '1', width: '100%' }"
         ></p-calendar>
       </p-inputGroup>
     </div>
@@ -29,6 +32,9 @@
           [showIcon]="true"
           [disabled]="true"
           [(ngModel)]="data.dFechaFin"
+          inputStyleClass="group-element"
+          appendTo="body"
+          [style]="{ flex: '1', width: '100%' }"
         ></p-calendar>
       </p-inputGroup>
     </div>
@@ -95,6 +101,8 @@
                   [timeOnly]="true"
                   placeholder="Hora de inicio"
                   appendTo="body"
+                  inputStyleClass="group-element"
+                  [style]="{ flex: '1', width: '100%' }"
                   [(ngModel)]="item.iHoraInicio"
                 >
                   <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
@@ -110,6 +118,8 @@
                   [timeOnly]="true"
                   placeholder="Hora de fin"
                   appendTo="body"
+                  inputStyleClass="group-element"
+                  [style]="{ flex: '1', width: '100%' }"
                   [(ngModel)]="item.iHoraFin"
                 >
                   <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
@@ -142,6 +152,8 @@
                 [timeOnly]="true"
                 placeholder="Ingrese hora de inicio"
                 appendTo="body"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
                 [(ngModel)]="iHoraInicio"
               >
                 <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
@@ -168,6 +180,8 @@
                 [timeOnly]="true"
                 placeholder="Ingrese hora de fin"
                 appendTo="body"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
                 [(ngModel)]="iHoraFin"
               >
                 <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">

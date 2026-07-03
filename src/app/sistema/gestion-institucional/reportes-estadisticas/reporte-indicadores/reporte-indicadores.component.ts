@@ -23,7 +23,6 @@ import {
   indicadorDeserciones,
   indicadorFaltasTardanzas,
   indicadorMatriculas,
-  indicadorVacantes,
   reportes,
 } from './constantes-indicadores';
 import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.service';
@@ -118,12 +117,12 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       tab: 'resumen-bajo-rendimiento',
       opcion: indicadorBajoRendimiento,
     },
-    {
-      title: 'Vacantes',
-      icon: 'pi pi-id-card',
-      tab: 'resumen-vacantes',
-      opcion: indicadorVacantes,
-    },
+    // {
+    //   title: 'Vacantes',
+    //   icon: 'pi pi-id-card',
+    //   tab: 'resumen-vacantes',
+    //   opcion: indicadorVacantes,
+    // },
   ]);
 
   reportes = signal<any>(reportes);

@@ -54,14 +54,6 @@ export class ListaSugerenciasComponent implements OnInit {
       text: 'left',
     },
     {
-      type: 'text',
-      width: '12rem',
-      field: 'cAsunto',
-      header: 'Asunto',
-      text_header: 'center',
-      text: 'left',
-    },
-    {
       type: 'tag',
       width: '2rem',
       field: 'cPrioridadNombre',
@@ -73,6 +65,14 @@ export class ListaSugerenciasComponent implements OnInit {
       },
       text_header: 'center',
       text: 'center',
+    },
+    {
+      type: 'text',
+      width: '12rem',
+      field: 'cAsunto',
+      header: 'Asunto',
+      text_header: 'center',
+      text: 'left',
     },
     {
       type: 'text',
@@ -90,14 +90,14 @@ export class ListaSugerenciasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
     },
-    {
-      type: 'item-innerHtml',
-      width: '8rem',
-      field: 'cRespuestaCorta',
-      header: 'Respuesta',
-      text_header: 'center',
-      text: 'left',
-    },
+    // {
+    //   type: 'item-innerHtml',
+    //   width: '8rem',
+    //   field: 'cRespuestaCorta',
+    //   header: 'Respuesta',
+    //   text_header: 'center',
+    //   text: 'left',
+    // },
     {
       type: 'actions',
       width: '3rem',

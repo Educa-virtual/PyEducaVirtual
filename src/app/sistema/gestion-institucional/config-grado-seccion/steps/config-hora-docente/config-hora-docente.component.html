@@ -1,43 +1,304 @@
-<p-toast />
-<app-container-page
-  title="Asignar horas"
-  [actions]="accionesPrincipal"
-  (accionBtnItem)="accionBtnItemTable($event)"
->
-  <div class="card">
-    <p-steps [model]="items" [readonly]="true"></p-steps>
-  </div>
-  <div class="card">
-    <app-table-primeng
-      [columnas]="columns"
-      [showCaption]="true"
-      [data]="docentes"
-      (accionBtnItem)="accionBtnItemTable($event)"
-      [showPaginator]="true"
-      [(selectedRowData)]="accionBtnItemTable"
-      [actions]="actions"
-    >
-      <ng-container slot="caption-content"> </ng-container>
-    </app-table-primeng>
-    <div class="flex justify-content-end">
-      <p-button (onClick)="confirm()" [disabled]="!form.valid" label="Siguiente" />
+<form [formGroup]="formBusqueda">
+  <div class="grid p-fluid mt-4">
+    <div class="col-12 md:col-4">
+      <p-inputGroup>
+        <p-inputGroupAddon>Estado</p-inputGroupAddon>
+        <p-dropdown
+          [options]="estados"
+          styleClass="group-element"
+          formControlName="bActivo"
+          [style]="{ flex: 1, width: '100%' }"
+          showClear="true"
+          appendTo="body"
+          (onChange)="filtrarTabla()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Buscar</p-inputGroupAddon>
+        <input
+          pInputText
+          type="text"
+          placeholder="Buscar"
+          formControlName="cTextoBusqueda"
+          class="group-element"
+          [style]="{ flex: 1, width: '100%' }"
+          (keyup)="filtrarTabla()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-2">
+      <p-button
+        label="Agregar"
+        icon="pi pi-fw pi-plus"
+        severity="success"
+        (click)="agregarDocente()"
+      />
     </div>
   </div>
+</form>
 
-  <p-dialog
-    [(visible)]="showFormulario"
-    [modal]="true"
-    [style]="{ width: '50vw' }"
-    [maximizable]="true"
-    [closable]="true"
-    [dismissableMask]="true"
-    [header]="'Agregar Personal'"
-  >
-    <app-form-docente
-      [configuracion]="config"
-      [docente]="docente"
-      [c_accion]="c_accion"
-      (accionBtnItem)="accionBtnItemTable($event)"
-    ></app-form-docente>
-  </p-dialog>
-</app-container-page>
+<app-table-primeng
+  [columnas]="columns"
+  [showCaption]="false"
+  [data]="docentes_filtrados"
+  (accionBtnItem)="accionBtnItemTable($event)"
+  [showPaginator]="true"
+  [(selectedRowData)]="accionBtnItemTable"
+  [actions]="actions"
+/>
+
+<p-dialog
+  header="{{ caption }}"
+  [(visible)]="visible"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
+  [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  (onHide)="cerrarDialogo()"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <form [formGroup]="form">
+    <div class="grid p-fluid mt-3">
+      <div class="col-12 md:col-6">
+        <p-inputGroup class="vertical-group">
+          <p-inputGroupAddon>
+            <p-button
+              size="small"
+              label="Validar"
+              styleClass="p-button-primary"
+              (onClick)="buscarPersonaPorDocumento()"
+              severity="success"
+            />
+            Documento *
+          </p-inputGroupAddon>
+          <p-inputMask
+            formControlName="cPersDocumento"
+            [maxlength]="longitud_documento"
+            [mask]="formato_documento"
+            autoClear="false"
+            slotChar=""
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="grid p-fluid">
+          <div class="col-12 m-0">
+            <p-inputGroup>
+              <p-inputGroupAddon>Primer Apellido *</p-inputGroupAddon>
+              <input
+                type="text"
+                pInputText
+                formControlName="cPersPaterno"
+                class="group-element"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 m-0">
+            <p-inputGroup>
+              <p-inputGroupAddon>Segundo Apellido *</p-inputGroupAddon>
+              <input
+                type="text"
+                pInputText
+                formControlName="cPersMaterno"
+                class="group-element"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombres *</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersNombre"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha de nacimiento</p-inputGroupAddon>
+          <p-calendar
+            formControlName="dPersNacimiento"
+            iconDisplay="input"
+            [showIcon]="true"
+            inputStyleClass="group-element"
+            appendTo="body"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Género *</p-inputGroupAddon>
+          <p-dropdown
+            formControlName="cPersSexo"
+            [options]="sexos"
+            placeholder="Seleccione"
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Email</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersCorreo"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Teléfono</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cPersTelefono"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-divider />
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iConfPlanId.toggle($event)"
+              (keypress)="iConfPlanId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iConfPlanId [showCloseIcon]="true" appendTo="body">
+              <div class="w-15rem">Ingrese un valor entre 6 y 48 horas</div>
+            </p-overlayPanel>
+            Horas laborables *
+          </p-inputGroupAddon>
+          <p-inputNumber
+            formControlName="iHorasLabora"
+            min="6"
+            max="48"
+            step="1"
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>
+            <a
+              role="button"
+              class="p-button p-button-secondary mr-2"
+              (click)="iConfPlanId.toggle($event)"
+              (keypress)="iConfPlanId.toggle($event)"
+              tabindex="0"
+            >
+              <i class="pi pi-question-circle"></i>
+            </a>
+            <p-overlayPanel #iConfPlanId [showCloseIcon]="true" appendTo="body">
+              <div class="w-15rem">Ingrese un valor entre 12 y 31 horas</div>
+            </p-overlayPanel>
+            Horas académicas *
+          </p-inputGroupAddon>
+          <p-inputNumber
+            formControlName="iHorasDictado"
+            min="12"
+            max="31"
+            step="1"
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Código de plaza</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cCodigoPlaza"
+            class="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha de ingreso</p-inputGroupAddon>
+          <p-calendar
+            formControlName="dtPersIeInicio"
+            iconDisplay="input"
+            [showIcon]="true"
+            appendTo="body"
+            inputStyleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha de Salida</p-inputGroupAddon>
+          <p-calendar
+            formControlName="dtPersIeFin"
+            iconDisplay="input"
+            [showIcon]="true"
+            appendTo="body"
+            inputStyleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      *ngIf="bEditar"
+      label="Editar"
+      [disabled]="form.invalid"
+      (onClick)="actualizarDocente()"
+      severity="warning"
+    />
+    <p-button
+      *ngIf="!bEditar"
+      label="Guardar"
+      [disabled]="form.invalid"
+      (onClick)="guardarDocente()"
+      severity="success"
+    />
+  </div>
+</p-dialog>

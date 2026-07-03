@@ -1,96 +1,92 @@
 <p-toast />
 
 <div class="flex flex-column gap-4">
-    <form [formGroup]="typeCollectionForm" class="flex flex-column gap-4">
-        <section class="flex gap-8">
-            @for (config of dropdownConfigs; track config.id) {
-                @if (shouldShowDropdown(config)) {
-                    <div class="flex flex-column gap-3">
-                        <p-inputGroup>
-                            <p-inputGroupAddon>{{
-                                config.label
-                            }}</p-inputGroupAddon>
-                            <p-dropdown
-                                [formControlName]="config.label + config.id"
-                                [options]="config.options"
-                                [placeholder]="config.placeholder"
-                                styleClass="w-16rem"
-                            >
-                            </p-dropdown>
-                        </p-inputGroup>
-                    </div>
-                }
-            }
+  <form [formGroup]="typeCollectionForm">
+    <section class="grid">
+      @for (config of dropdownConfigs; track config.id) {
+        @if (shouldShowDropdown(config)) {
+          <div class="col-12 md:col-5">
+            <p-inputGroup>
+              <p-inputGroupAddon>{{ config.label }}</p-inputGroupAddon>
+              <p-dropdown
+                [formControlName]="config.label + config.id"
+                [options]="config.options"
+                [placeholder]="config.placeholder"
+                styleClass="group-element"
+                [style]="{ flex: 1, width: '100%' }"
+              >
+              </p-dropdown>
+            </p-inputGroup>
+          </div>
+        }
+      }
+      <div class="col-12 md:col-2">
+        @if (typeCollectionForm.value['Origen de la plantilla:1'].id === 2) {
+          <p-button
+            label="Descargar plantilla"
+            icon="pi pi-download"
+            (onClick)="downloadTemplate()"
+            [disabled]="isDisabled.downloadTemplate"
+          />
+        }
+      </div>
+    </section>
+  </form>
 
-            @if (
-                typeCollectionForm.value['Origen de la plantilla:1'].id === 2
-            ) {
-                <p-button
-                    class="download-template"
-                    styleClass="w-full"
-                    label="Descargar plantilla"
-                    icon="pi pi-download"
-                    (onClick)="downloadTemplate()"
-                    [disabled]="isDisabled.downloadTemplate"
-                />
-            }
-        </section>
-    </form>
-
-    @if (isSelectedTypeCollection(typeCollectionForm.value)) {
-        <div class="card flex flex-wrap flex-column gap-2">
-            <section class="flex justify-content-between">
-                <div class="flex flex-column gap-3">
-                    <span>Archivo de origen:</span>
-                    <app-btn-file-upload
-                        accept=".xlsx"
-                        (fileChange)="uploadFile($event)"
-                        [(ngModel)]="file"
-                    />
-                </div>
-            </section>
+  @if (isSelectedTypeCollection(typeCollectionForm.value)) {
+    <div class="card flex flex-wrap flex-column gap-2">
+      <section class="flex justify-content-between">
+        <div class="flex flex-column gap-3">
+          <span>Archivo de origen:</span>
+          <app-btn-file-upload
+            accept=".xlsx"
+            (fileChange)="uploadFile($event)"
+            [(ngModel)]="file"
+          />
         </div>
-        <app-tab-view>
-            <app-tab-panel title="Información del archivo">
-                @if (columnsGroup) {
-                    <app-table-primeng
-                        typeHeaderColumn="group"
-                        [columnsGroup]="columnsGroup"
-                        [columnas]="columns"
-                        [data]="data"
-                        [showCaption]="true"
-                        [showSortIcon]="false"
-                    ></app-table-primeng>
+      </section>
+    </div>
+    <app-tab-view>
+      <app-tab-panel title="Información del archivo">
+        @if (columnsGroup) {
+          <app-table-primeng
+            typeHeaderColumn="group"
+            [columnsGroup]="columnsGroup"
+            [columnas]="columns"
+            [data]="data"
+            [showCaption]="true"
+            [showSortIcon]="false"
+          ></app-table-primeng>
 
-                    <div class="card flex flex-wrap flex-column gap-2">
-                        <section class="flex justify-content-between">
-                            <div class="flex flex-column gap-3">
-                                <span>Iniciar importación:</span>
-                                <p-button
-                                    #importBtn
-                                    class="import"
-                                    label="Importar datos"
-                                    icon="pi pi-database"
-                                    [loading]="importLoad"
-                                    (onClick)="validaImportData()"
-                                />
-                            </div>
-                        </section>
-                    </div>
-                }
-            </app-tab-panel>
-            @if (responseDataImport) {
-                <app-tab-panel title="Resultado de la importación">
-                    @if (data) {
-                        <app-table-primeng
-                            [columnas]="collection.columnsResultImport"
-                            [data]="responseDataImport"
-                            [showCaption]="true"
-                            [showSortIcon]="false"
-                        ></app-table-primeng>
-                    }
-                </app-tab-panel>
-            }
-        </app-tab-view>
-    }
+          <div class="card flex flex-wrap flex-column gap-2">
+            <section class="flex justify-content-between">
+              <div class="flex flex-column gap-3">
+                <span>Iniciar importación:</span>
+                <p-button
+                  #importBtn
+                  class="import"
+                  label="Importar datos"
+                  icon="pi pi-database"
+                  [loading]="importLoad"
+                  (onClick)="validaImportData()"
+                />
+              </div>
+            </section>
+          </div>
+        }
+      </app-tab-panel>
+      @if (responseDataImport) {
+        <app-tab-panel title="Resultado de la importación">
+          @if (data) {
+            <app-table-primeng
+              [columnas]="collection.columnsResultImport"
+              [data]="responseDataImport"
+              [showCaption]="true"
+              [showSortIcon]="false"
+            ></app-table-primeng>
+          }
+        </app-tab-panel>
+      }
+    </app-tab-view>
+  }
 </div>

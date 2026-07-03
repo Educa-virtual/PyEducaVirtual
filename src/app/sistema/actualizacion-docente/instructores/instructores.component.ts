@@ -129,7 +129,7 @@ export class InstructoresComponent implements OnInit {
       next: (response: any) => {
         this.instructores = response.data;
         this.instructores.forEach(instructor => {
-          instructor.cDatosInstructor = `<b>Apellidos y Nombres:</b> ${instructor.cPersApeNombres}<br/>
+          instructor.cDatosInstructor = `<b>Apellidos y Nombres:</b> ${instructor.cPersNombreCompleto}<br/>
             <b>Correo electrónico:</b> ${instructor.cPersCorreo ? instructor.cPersCorreo : ''}<br/>
             <b>Celular:</b> ${instructor.cPersTelefono ? instructor.cPersTelefono : ''}`;
         });
@@ -181,7 +181,7 @@ export class InstructoresComponent implements OnInit {
   public columnasTabla: IColumn[] = [
     {
       type: 'item',
-      width: '0.5rem',
+      width: '5%',
       field: 'index',
       header: 'Nro',
       text_header: 'center',
@@ -189,7 +189,7 @@ export class InstructoresComponent implements OnInit {
     },
     {
       type: 'item-innerHtml',
-      width: '10rem',
+      width: '60%',
       field: 'cDatosInstructor',
       header: 'Datos Personales del Instructor',
       text_header: 'left',
@@ -197,15 +197,15 @@ export class InstructoresComponent implements OnInit {
     },
     {
       type: 'item-checkList',
-      width: '2rem',
+      width: '15%',
       field: 'bCredencial',
-      header: '¿Tiene Credencial?',
+      header: '¿Tiene perfil?',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'tag',
-      width: '2rem',
+      width: '10%',
       field: 'cEstado',
       header: 'Estado',
       text_header: 'center',
@@ -217,7 +217,7 @@ export class InstructoresComponent implements OnInit {
     },
     {
       type: 'actions',
-      width: '1rem',
+      width: '10%',
       field: '',
       header: 'Acciones',
       text_header: 'center',

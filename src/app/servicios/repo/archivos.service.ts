@@ -9,17 +9,15 @@ export class ArchivosService {
   private baseUrlApi = environment.backendApi;
   private _http = inject(HttpClient);
 
-  guardarArchivo(formData: FormData) {
-    return this._http.post<any>(`${this.baseUrlApi}/repo/archivos`, formData);
+  guardarArchivo(data) {
+    return this._http.post<any>(`${this.baseUrlApi}/repo/guardarArchivo`, data);
   }
 
-  descargarArchivo(iArchivoId: number) {
-    return this._http.get(`${this.baseUrlApi}/repo/archivos/descargar/${iArchivoId}`);
+  descargarArchivo(data) {
+    return this._http.post(`${this.baseUrlApi}/repo/descargarArchivo`, data);
   }
 
-  eliminarArchivo(iArchivoId, params) {
-    return this._http.delete<any>(`${this.baseUrlApi}/repo/archivos/${iArchivoId}`, {
-      params,
-    });
+  eliminarArchivo(data) {
+    return this._http.post<any>(`${this.baseUrlApi}/repo/eliminarArchivo`, data);
   }
 }

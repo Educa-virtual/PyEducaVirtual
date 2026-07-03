@@ -57,7 +57,13 @@ export class SincronizarArchivoComponent implements OnInit {
     { id: 1, modulo: 'Ambientes' }, //iiee_ambientes
     { id: 2, modulo: 'Horarios' }, //horarios_ie
     { id: 3, modulo: 'Configuraciones' }, // configuraciones
-    { id: 3, modulo: 'traslados' }, // traslados
+    { id: 4, modulo: 'Traslados' }, // traslados
+    { id: 5, modulo: 'Matriculas' }, // matriculas
+    { id: 6, modulo: 'Deserciones' }, // deserciones
+    { id: 7, modulo: 'Apoderados' }, // apoderados
+    { id: 8, modulo: 'Usuarios' }, // usuarios
+    { id: 9, modulo: 'Docentes' }, // docentes
+    { id: 10, modulo: 'Personal' }, // personal_ies
   ];
 
   headers: string[] = [];

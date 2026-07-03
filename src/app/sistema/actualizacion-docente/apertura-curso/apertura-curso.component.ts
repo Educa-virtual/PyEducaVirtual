@@ -1,12 +1,13 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   TablePrimengComponent,
   IColumn,
   IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
-import { MessageService } from 'primeng/api';
+import { MessageService, MenuItem } from 'primeng/api';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
@@ -52,6 +53,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
 
   backend = environment.backend;
 
+  private _router = inject(Router);
   private _formBuilder = inject(FormBuilder);
   private _confirmService = inject(ConfirmationModalService);
   private _ConstantesService = inject(ConstantesService);
@@ -69,6 +71,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   publicoObjetivo: any[] = [];
   cursos: any[] = [];
   showModalHorarios: boolean = false;
+  showModalFormulario: boolean = false;
   showVistaPrevia: boolean = false;
   instructores: any;
   selectedImageId: any;
@@ -76,6 +79,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   isDisabled: boolean = this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO;
 
   modoFormulario: 'crear' | 'editar' = 'crear';
+  modoVista: boolean = false;
 
   public formNuevaCapacitacion = this._formBuilder.group({
     iCapacitacionId: [''],
@@ -114,6 +118,13 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     },
   ];
 
+  breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
+  breadCrumbItems: MenuItem[] = [
+    {
+      label: 'Capacitaciones activas',
+    },
+  ];
+
   ngOnInit() {
     this.obtenerNivelPedagogico();
     this.obtenerTipodePublico();
@@ -145,11 +156,11 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       },
     ];
   }
-  // mostrar los headr de las tablas
+  // mostrar los headers de las tablas
   public columnasTabla: IColumn[] = [
     {
       type: 'item',
-      width: '0.5rem',
+      width: '10%',
       field: 'index',
       header: 'Nro',
       text_header: 'center',
@@ -157,7 +168,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     },
     {
       type: 'text',
-      width: '8rem',
+      width: '35%',
       field: 'cCapTitulo',
       header: 'Título del curso',
       text_header: 'left',
@@ -165,15 +176,31 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     },
     {
       type: 'text',
-      width: '2rem',
-      field: 'dFechaFin',
-      header: 'Fecha Fin',
+      width: '25%',
+      field: 'cPersNombreCompleto',
+      header: 'Instructor',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'iAprobadas',
+      header: 'Participantes',
       text_header: 'center',
       text: 'center',
     },
     {
-      type: 'actions',
-      width: '1rem',
+      type: 'date',
+      width: '10%',
+      field: 'dFechaFin',
+      header: 'Fecha cierre',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'dropdown-actions',
+      width: '10%',
       field: '',
       header: 'Acciones',
       text_header: 'center',
@@ -181,22 +208,14 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     },
   ];
 
-  // mostrar los botones de la tabla
+  // mostrar los botones de la tabla (dropdown)
   public accionesTabla: IActionTable[] = [
     {
-      labelTooltip: 'Publicar',
-      icon: 'pi pi-send',
-      accion: 'publicar',
+      labelTooltip: 'Ver',
+      icon: 'pi pi-eye',
+      accion: 'ver',
       type: 'item',
-      class: 'p-button-rounded p-button-success p-button-text',
-      isVisible: row => ['1'].includes(row.iEstado),
-    },
-    {
-      labelTooltip: 'Finalizar',
-      icon: 'pi pi-ban',
-      accion: 'finalizar',
-      type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
+      class: 'p-menuitem-link text-blue-500',
       isVisible: row => ['2'].includes(row.iEstado),
     },
     {
@@ -204,18 +223,109 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
-      class: 'p-button-rounded p-button-warn p-button-text',
-      isVisible: row => ['1', '2'].includes(row.iEstado),
+      class: 'p-menuitem-link text-orange-500',
+      isVisible: row => ['1'].includes(row.iEstado),
+    },
+    {
+      labelTooltip: 'Configurar horarios',
+      icon: 'pi pi-clock',
+      accion: 'configurarHorarios',
+      type: 'item',
+      class: 'p-menuitem-link text-green-500',
+      isVisible: row => ['1', '2'].includes(row.iEstado) && row.cTipoCapDesc !== this.CAP_EXT,
+    },
+    {
+      labelTooltip: 'Gestionar inscripciones',
+      icon: 'pi pi-users',
+      accion: 'inscripciones',
+      type: 'item',
+      class: 'p-menuitem-link text-cyan-500',
+    },
+    {
+      labelTooltip: 'Publicar',
+      icon: 'pi pi-send',
+      accion: 'publicar',
+      type: 'item',
+      class: 'p-menuitem-link text-primary',
+      isVisible: row => ['1'].includes(row.iEstado),
+    },
+    {
+      labelTooltip: 'Finalizar',
+      icon: 'pi pi-ban',
+      accion: 'finalizar',
+      type: 'item',
+      class: 'p-menuitem-link text-secondary',
+      isVisible: row => ['2'].includes(row.iEstado),
     },
     {
       labelTooltip: 'Eliminar',
       icon: 'pi pi-trash',
       accion: 'eliminar',
       type: 'item',
-      class: 'p-button-rounded p-button-danger p-button-text',
+      class: 'p-menuitem-link text-red-500',
       isVisible: row => row.iEstado === '1',
     },
   ];
+
+  datosFormulario: any;
+  // asignar la accion a los botones de la tabla
+  accionBnt({ accion, item }): void {
+    switch (accion) {
+      case 'ver':
+        this.modoFormulario = 'editar';
+        this.modoVista = true;
+        this.cargarDatosEnFormulario(item);
+        break;
+      case 'editar':
+        this.modoFormulario = 'editar';
+        this.modoVista = false;
+        this.cargarDatosEnFormulario(item);
+        break;
+      case 'configurarHorarios':
+        this.datosFormulario = {
+          ...item,
+          dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
+          dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
+        };
+        this.showModalHorarios = true;
+        break;
+      case 'inscripciones':
+        this._router.navigate([
+          `actualizacion-docente/capacitaciones/${item.iCapacitacionId}/inscripciones`,
+        ]);
+        break;
+      case 'eliminar':
+        this.eliminarCapacitacion(item);
+        break;
+      case 'publicar':
+      case 'finalizar':
+        item.bEstado = accion === 'publicar' ? false : true;
+        this.cambiarEstadoPublicacionCapacitacion(item);
+        break;
+    }
+  }
+
+  private cargarDatosEnFormulario(item: any) {
+    const itemFormateado = {
+      ...item,
+      iCosto: Number(item.iCosto) === 1 ? true : false,
+      dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
+      dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
+    };
+    this.formNuevaCapacitacion.patchValue(itemFormateado);
+    this.selectedImageId = item.cImagenUrl ? JSON.parse(item.cImagenUrl).id : null;
+    this.capacitacionExterna(item.iTipoCapId);
+    this.showModalFormulario = true;
+    if (this.modoVista) {
+      this.formNuevaCapacitacion.disable();
+    }
+  }
+
+  agregarCapacitacion() {
+    this.modoFormulario = 'crear';
+    this.limpiarFormulario();
+    this.showModalFormulario = true;
+  }
 
   datosprevios: any;
   // mostrar modal de visualizacion de una vista previa del curso creado
@@ -228,6 +338,16 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   seleccionarImagen(event: any) {
     const index = event.detail.index; // Acceder al índice correcto
     this.portada[index]; // Obtiene la imagen según el índice
+  }
+
+  get selectedImageUrl(): string {
+    const selected = this.portada.find(img => img.id === this.selectedImageId);
+    return selected ? this.backend + selected.url : '';
+  }
+
+  get selectedImageTitle(): string {
+    const selected = this.portada.find(img => img.id === this.selectedImageId);
+    return selected ? selected.name : '';
   }
 
   selectImage(image: any) {
@@ -248,34 +368,9 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     return this.selectedImageId === image.id;
   }
 
-  // asignar la accion a los botones de la tabla
-  accionBnt({ accion, item }): void {
-    switch (accion) {
-      case 'editar':
-        this.modoFormulario = 'editar';
-        const itemFormateado = {
-          ...item,
-          iCosto: Number(item.iCosto) === 1 ? true : false,
-          dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
-          dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
-        };
-        this.formNuevaCapacitacion.patchValue(itemFormateado);
-        this.selectedImageId = item.cImagenUrl ? JSON.parse(item.cImagenUrl).id : null;
-        this.capacitacionExterna(item.iTipoCapId);
-        break;
-      case 'eliminar':
-        this.eliminarCapacitacion(item);
-        break;
-      case 'publicar':
-      case 'finalizar':
-        item.bEstado = accion === 'publicar' ? false : true;
-        this.cambiarEstadoPublicacionCapacitacion(item);
-        break;
-    }
-  }
-
   // metodo para guardar el curso creado
   enviarFormulario() {
+    if (this.modoVista) return;
     if (this.loadingGuardar) return; // evitar doble clic
     this.loadingGuardar = true;
 
@@ -345,8 +440,6 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       .pipe(
         finalize(() => {
           this.loadingGuardar = false;
-          this.formNuevaCapacitacion.reset();
-          this.modoFormulario = 'crear';
         })
       )
       .subscribe({
@@ -358,6 +451,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
               detail: resp.message,
             });
             this.limpiarFormulario();
+            this.showModalFormulario = false;
             this.obtenerCapacitaciones();
           }
         },
@@ -377,16 +471,13 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       message: 'Recuerde que no podra retroceder',
       header: `¿Esta seguro que desea Eliminar: ${titulo} ?`,
       accept: () => {
-        // console.log('Eliminado', data)
         this._CapacitacionesService.eliminarCapacitacion(data).subscribe({
           next: (resp: any) => {
-            // Mensaje de guardado(opcional)
             this.messageService.add({
               severity: 'danger',
               summary: 'Eliminado',
               detail: 'Acción éxitosa',
             });
-            // para refrescar la pagina
             if (resp?.validated) {
               this.obtenerCapacitaciones();
             }
@@ -397,7 +488,6 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
         });
       },
       reject: () => {
-        // Mensaje de cancelación (opcional)
         this.messageService.add({
           severity: 'error',
           summary: 'Cancelado',
@@ -420,7 +510,6 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       message: 'Recuerde que no podra retroceder',
       header: `¿Esta seguro que desea ${accion}: ${titulo} ?`,
       accept: () => {
-        // console.log('Eliminado', data)
         this._CapacitacionesService.actualizarEstadoCapacitacion(data).subscribe({
           next: (resp: any) => {
             if (resp?.validated) {
@@ -438,7 +527,6 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
         });
       },
       reject: () => {
-        // Mensaje de cancelación (opcional)
         this.messageService.add({
           severity: 'error',
           summary: 'Cancelado',
@@ -497,6 +585,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   limpiarFormulario() {
     this.formNuevaCapacitacion.reset();
     this.modoFormulario = 'crear';
+    this.modoVista = false;
     this.codCapacitacion = null;
     setTimeout(() => {
       this.formNuevaCapacitacion.get('dFechaInicio')?.setValue(new Date());

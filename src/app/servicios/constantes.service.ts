@@ -354,7 +354,7 @@ const registro_asistencia = [
 const administracion = [
   // Director
   {
-    label: 'Administración',
+    inicio,
     items: [
       {
         label: 'Información de la Institución',

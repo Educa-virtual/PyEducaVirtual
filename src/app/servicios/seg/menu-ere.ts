@@ -19,12 +19,7 @@ export const reportesEre = {
 export const administradorDremo = [
   {
     items: [
-      {
-        label: 'Administracion',
-        icon: 'pi pi-fw pi-home',
-        // routerLink: [''],
-      },
-      // inicio,
+      inicio,
       {
         label: 'Administrador IE',
         icon: 'pi pi-warehouse',

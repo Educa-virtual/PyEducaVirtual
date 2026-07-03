@@ -36,7 +36,6 @@ export class BancoPreguntasFormComponent implements OnChanges {
       this.data = changes.data.currentValue;
       this.iBancoId = this.data?.iBancoId || null;
       this.opcion = this.iBancoId ? 'ACTUALIZAR' : 'GUARDAR';
-      //console.log(this.data)
       this.formPreguntas.patchValue({
         iTipoPregId: Number(this.data?.iTipoPregId),
         cBancoPregunta: this.data?.cBancoPregunta,

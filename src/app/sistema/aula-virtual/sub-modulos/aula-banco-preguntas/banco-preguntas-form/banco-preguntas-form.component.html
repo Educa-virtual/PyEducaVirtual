@@ -6,7 +6,7 @@
   *ngIf="formPreguntas"
 >
   <form [formGroup]="formPreguntas" class="grid mt-4">
-    @if (curso.idEncabPregId) {
+    @if (curso?.idEncabPregId || curso?.iBancoId) {
       <div class="col-12">
         <p-inputGroup>
           <p-inputGroupAddon>Título</p-inputGroupAddon>
@@ -24,6 +24,7 @@
           optionValue="iTipoPregId"
           [options]="tipoPreguntas"
           optionLabel="cTipoPregunta"
+          [readonly]="opcion === 'ACTUALIZAR'"
         />
       </p-inputGroup>
     </div>

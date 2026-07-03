@@ -1,13 +1,13 @@
 <app-banco-pregunta-lista
-    [columnas]="columnas"
-    [data]="bancoPreguntas"
-    [accionesTabla]="actionsTable"
-    (accionBtnItemTable)="handleAcciones($event)"
+  [columnas]="columnas"
+  [data]="filtrarCursos"
+  [accionesTabla]="actionsTable"
+  (accionBtnItemTable)="handleAcciones($event)"
 />
 
 <app-view-preguntas
-    [showDetallePregunta]="showDetallePregunta"
-    [detallePreguntas]="detallePreguntas"
-    [titulo]="tituloDetallePregunta"
-    (accionBtnItem)="accionBtnItem($event)"
+  [showDetallePregunta]="showDetallePregunta"
+  [detallePreguntas]="detallePreguntas"
+  [titulo]="tituloDetallePregunta"
+  (accionBtnItem)="accionBtnItem($event)"
 ></app-view-preguntas>

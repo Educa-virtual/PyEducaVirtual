@@ -204,7 +204,7 @@ export class ApiAulaService {
   }
 
   obtenerReporteFinalDeNotas(params: {
-    iIeCursoId;
+    iCursoId;
     iYAcadId;
     iSedeId;
     iSeccionId;

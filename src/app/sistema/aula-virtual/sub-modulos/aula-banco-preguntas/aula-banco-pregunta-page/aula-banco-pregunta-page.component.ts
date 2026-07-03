@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { Subject, takeUntil } from 'rxjs';
 import { GeneralService } from '@/app/servicios/general.service';
-import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component';
 import { AulaBancoPreguntasService } from '../aula-banco-preguntas/aula-banco-.preguntas.service';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -56,7 +55,6 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
   private _constantesService = inject(ConstantesService);
   private unsubscribe$ = new Subject<boolean>();
   private _generalService = inject(GeneralService);
-  private _store = inject(LocalStoreService);
   private _BancoPreguntasService = inject(BancoPreguntasService);
   private _MessageService = inject(MessageService);
   private _ConfirmationModalService = inject(ConfirmationModalService);
@@ -75,6 +73,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         this.itemCurso = this.cursos.filter(curso => curso.iCursoId === this.params.iCursoId)[0];
         this.itemCurso.idEncabPregId = null;
         this.itemCurso.cEncabPregTitulo = null;
+        this.itemData = null;
         this.showModalPreguntas = true;
       },
     },
@@ -83,6 +82,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
       icon: 'pi pi-plus',
       command: () => {
         this.itemCurso = this.cursos.filter(curso => curso.iCursoId === this.params.iCursoId)[0];
+        this.itemData = null;
         this.showModalEncabezado = true;
       },
     },
@@ -143,15 +143,15 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         });
         break;
       case 'agregar-pregunta-multiple':
-        if (this.params.iCursoId === 0) {
-          this.mostrarMensajeToast({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Seleccione un curso',
-          });
-          return;
-        }
-        this.itemCurso = this.cursos.filter(curso => curso.iCursoId === this.params.iCursoId)[0];
+        // if (this.params.iCursoId === 0) {
+        //   this.mostrarMensajeToast({
+        //     severity: 'error',
+        //     summary: 'Error',
+        //     detail: 'Seleccione un curso',
+        //   });
+        //   return;
+        // }
+        this.itemCurso = item;
         this.itemCurso.idEncabPregId = item.idEncabPregId;
         this.itemCurso.cEncabPregTitulo = item.cEncabPregTitulo;
         this.showModalPreguntas = true;
@@ -224,25 +224,20 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
   }
 
   obtenerGrados() {
-    const params = {
-      petition: 'post',
-      group: 'acad',
-      prefix: 'grados',
-      ruta: 'handleCrudOperation', //'getDocentesCursos',
-      data: {
-        opcion: 'CONSULTAR',
-        iCredId: this._constantesService.iCredId,
-      },
+    const paramentros = {
+      iDocenteId: this._constantesService.iDocenteId,
     };
-    this._generalService.getGralPrefix(params).subscribe({
-      next: response => {
+
+    this._BancoPreguntasService.obtenerGradosDocente(paramentros).subscribe({
+      next: (respuesta: any) => {
+        const datos = respuesta.data;
         this.grados = [
           {
             iGradoId: 0,
             iNivelGradoId: 0,
             cGrado: 'Todos',
           },
-          ...(response.data ?? []),
+          ...(datos ?? []),
         ];
       },
       complete: () => {},
@@ -270,7 +265,6 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
             (usuario, index, self) => index == self.findIndex(u => u.iCursoId == usuario.iCursoId)
           );
         },
-        complete: () => {},
         error: error => {
           console.log(error);
         },
@@ -301,18 +295,6 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
       }
     });
   }
-  public years = [
-    { iYearId: 0, cYearNombre: 'Todos' },
-    { iYearId: 2023, cYearNombre: '2023' },
-    { iYearId: 2024, cYearNombre: '2024' },
-  ];
-
-  public secciones = [
-    { iSeccionId: 0, cSeccionNombre: 'Todas' },
-    { iSeccionId: 1, cSeccionNombre: 'A' },
-    { iSeccionId: 2, cSeccionNombre: 'B' },
-    { iSeccionId: 3, cSeccionNombre: 'C' },
-  ];
 
   eliminarBancoPreguntas(iBancoId) {
     const params = {

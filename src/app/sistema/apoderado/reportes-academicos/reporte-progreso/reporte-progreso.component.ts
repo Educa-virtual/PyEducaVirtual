@@ -4,12 +4,10 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TablaReporteProgresoComponent } from '@/app/sistema/estudiante/reportes-academicos/tabla-reporte-progreso/tabla-reporte-progreso.component';
 import { ReporteProgresoService } from './services/reporte-progreso.service';
-import { CalendarioAcademicoComponent } from '@/app/sistema/gestion-institucional/calendario-academico/calendario-academico.component';
-import { FullCalendarioComponent } from '@/app/shared/full-calendario/full-calendario.component';
-import { CalendarioService } from '@/app/sistema/estudiante/calendario/services/calendario.service';
 import { HorarioEstudianteComponent } from '@/app/sistema/estudiante/horario-estudiante/horario-estudiante.component';
 import { TabViewModule } from 'primeng/tabview';
 import { CalendarioComponent } from '@/app/sistema/estudiante/calendario-estudiante/calendario-estudiante.component';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-reporte-progreso',
@@ -18,8 +16,6 @@ import { CalendarioComponent } from '@/app/sistema/estudiante/calendario-estudia
     TabViewModule,
     PrimengModule,
     TablaReporteProgresoComponent,
-    CalendarioAcademicoComponent,
-    FullCalendarioComponent,
     HorarioEstudianteComponent,
     CalendarioComponent,
   ],
@@ -33,7 +29,6 @@ export class ReporteProgresoComponent implements OnInit {
   courses: any[] = [];
   year: any = JSON.parse(localStorage.getItem('dremoYear'));
   dataEstudiantes: any[] = [];
-  dataMatriculas: any[] = [];
   estudianteSeleccionado: any;
   matriculaSeleccionada: any;
 
@@ -47,7 +42,7 @@ export class ReporteProgresoComponent implements OnInit {
     private reporteProgresoService: ReporteProgresoService,
     private messageService: MessageService,
     private apoderadoService: ApoderadoService,
-    private calendarioService: CalendarioService
+    private store: LocalStoreService
   ) {}
 
   ngOnInit() {
@@ -63,72 +58,66 @@ export class ReporteProgresoComponent implements OnInit {
         label: 'Progreso',
       },
     ];
-
-    // this.obtenerEstudiantesApoderado();
+    this.obtenerEstudiantesApoderado();
   }
 
   obtenerEstudiantesApoderado() {
-    this.apoderadoService.obtenerEstudiantesApoderado().subscribe({
-      next: (response: any) => {
-        this.dataEstudiantes = response.data;
-      },
-      error: err => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener estudiantes',
-          detail: err.error.message || 'Error desconocido',
-        });
-      },
-    });
-  }
-
-  obtenerMatriculasEstudiante() {
     this.apoderadoService
-      .obtenerMatriculasEstudiante(this.estudianteSeleccionado, this.year)
+      .obtenerEstudiantesApoderado({
+        iYAcadId: this.store.getItem('dremoiYAcadId'),
+      })
       .subscribe({
         next: (response: any) => {
-          this.dataMatriculas = response.data.map((matricula: any) => ({
-            ...matricula,
-            cMatriculaMostrar:
-              `${matricula.iYearId} - ${matricula.cGradoAbreviacion} ${matricula.cSeccionNombre} - ${matricula.cNivelTipoNombre.replace('Educación ', '')} - I.E. ${matricula.cIieeNombre}`.trim(),
-          }));
+          this.dataEstudiantes = response.data ? [response.data] : [];
         },
         error: err => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Problema al obtener matrículas',
+            summary: 'Problema al obtener estudiantes',
             detail: err.error.message || 'Error desconocido',
           });
+          this.dataEstudiantes = [];
         },
       });
   }
 
   obtenerReporteAcademicoEstudiante() {
-    this.reporteProgresoService.obtenerReporteProgreso(this.matriculaSeleccionada).subscribe({
-      next: (response: any) => {
-        this.courses = response.data;
-        if (this.courses.length == 0) {
+    if (!this.matriculaSeleccionada || !this.matriculaSeleccionada.iMatrId) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Selección inválida',
+        detail: 'Por favor seleccione un estudiante válido',
+      });
+      return;
+    }
+
+    this.reporteProgresoService
+      .obtenerReporteProgreso(this.matriculaSeleccionada.iMatrId)
+      .subscribe({
+        next: (response: any) => {
+          this.courses = Array.isArray(response.data) ? response.data : [];
+          if (this.courses.length === 0) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Sin datos',
+              detail: 'No hay datos para la matrícula seleccionada',
+            });
+          }
+        },
+        error: err => {
           this.messageService.add({
-            severity: 'warn',
-            summary: 'Sin datos',
-            detail: 'No hay datos para la matrícula seleccionada',
+            severity: 'error',
+            summary: 'Problema al obtener reportes',
+            detail: err.error.message || 'Error desconocido',
           });
-        }
-      },
-      error: err => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener reportes',
-          detail: err.error.message || 'Error desconocido',
-        });
-      },
-    });
-    this.obtenerHorario(this.matriculaSeleccionada);
+        },
+      });
+    this.obtenerHorario(this.matriculaSeleccionada.iMatrId);
   }
   obtenerHorario(id: any) {
     this.horarioEstudiante = {};
 
-    this.horarioEstudiante = this.dataMatriculas.find(item => item.iMatrId === id);
+    this.horarioEstudiante = this.dataEstudiantes.find(item => item.iMatrId === id);
     console.log(this.horarioEstudiante, 'horarioEstudiante');
   }
 

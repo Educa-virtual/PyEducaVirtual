@@ -15,29 +15,12 @@
   </p-messages>
   <ng-template pTemplate="body">
     <div class="grid p-fluid mt-4">
-      <div class="field col-12 md:col-6">
+      <div class="col-12">
         <p-inputGroup>
           <p-inputGroupAddon class="mi-addon-primary">Estudiante:</p-inputGroupAddon>
           <p-dropdown
             [options]="dataEstudiantes"
-            optionLabel="cNombreCompleto"
-            optionValue="iEstudianteId"
-            appendTo="body"
-            styleClass="group-element"
-            [style]="{ flex: '1', width: '100%' }"
-            placeholder="Seleccione..."
-            [(ngModel)]="estudianteSeleccionado"
-            (onChange)="obtenerMatriculasEstudiante()"
-          />
-        </p-inputGroup>
-      </div>
-      <div class="field col-12 md:col-6">
-        <p-inputGroup>
-          <p-inputGroupAddon class="mi-addon-primary">Matrícula:</p-inputGroupAddon>
-          <p-dropdown
-            [options]="dataMatriculas"
-            optionLabel="cMatriculaMostrar"
-            optionValue="iMatrId"
+            optionLabel="cPersNombreCompleto"
             appendTo="body"
             styleClass="group-element"
             [style]="{ flex: '1', width: '100%' }"
@@ -53,11 +36,11 @@
 <p-tabView [(activeIndex)]="activeTab" (onChange)="onTabChange($event)">
   <p-tabPanel header="Logro alcanzado" [headerStyleClass]="activeTab === 0 ? 'tab-activo' : ''">
     <div class="block mt-3">
-      @if (courses.length > 0) {
+      @if (courses.length > 0 && matriculaSeleccionada) {
         <app-tabla-reporte-progreso
           [courses]="courses"
-          [iYAcadId]="matriculaSeleccionada?.iYAcadId"
-          [iMatrId]="matriculaSeleccionada"
+          [iYAcadId]="matriculaSeleccionada.iYAcadId"
+          [iMatrId]="matriculaSeleccionada.iMatrId"
           [vista]="'apoderado'"
         ></app-tabla-reporte-progreso>
       }

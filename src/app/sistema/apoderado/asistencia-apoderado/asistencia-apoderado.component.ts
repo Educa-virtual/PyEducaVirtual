@@ -4,6 +4,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { AsistenciaComponent } from '../../asistencia/asistencia.component';
 import { AulaBancoPreguntasModule } from '../../aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
 import { ApoderadoService } from '../apoderado.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-asistencia-apoderado',
@@ -23,7 +24,8 @@ export class AsistenciaApoderadoComponent {
 
   constructor(
     private messageService: MessageService,
-    private apoderadoService: ApoderadoService
+    private apoderadoService: ApoderadoService,
+    private store: LocalStoreService
   ) {
     this.breadCrumbItems = [{ label: 'Asistencia' }];
     this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
@@ -31,35 +33,18 @@ export class AsistenciaApoderadoComponent {
   }
 
   obtenerEstudiantesApoderado() {
-    this.apoderadoService.obtenerEstudiantesApoderado().subscribe({
-      next: (response: any) => {
-        this.dataEstudiantes = response.data;
-      },
-      error: err => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Problema al obtener estudiantes',
-          detail: err.error.message || 'Error desconocido',
-        });
-      },
-    });
-  }
-
-  obtenerMatriculasEstudiante() {
     this.apoderadoService
-      .obtenerMatriculasEstudiante(this.estudianteSeleccionado, this.year)
+      .obtenerEstudiantesApoderado({
+        iYAcadId: this.store.getItem('dremoiYAcadId'),
+      })
       .subscribe({
         next: (response: any) => {
-          this.dataMatriculas = response.data.map((matricula: any) => ({
-            ...matricula,
-            cMatriculaMostrar:
-              `${matricula.iYearId} - ${matricula.cGradoAbreviacion} ${matricula.cSeccionNombre} - ${matricula.cNivelTipoNombre.replace('Educación ', '')} - I.E. ${matricula.cIieeNombre}`.trim(),
-          }));
+          this.dataEstudiantes = response.data ? [response.data] : [];
         },
         error: err => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Problema al obtener matrículas',
+            summary: 'Problema al obtener estudiantes',
             detail: err.error.message || 'Error desconocido',
           });
         },

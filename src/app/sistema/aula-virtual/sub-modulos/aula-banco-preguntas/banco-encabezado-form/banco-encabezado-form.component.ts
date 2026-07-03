@@ -39,16 +39,47 @@ export class BancoEncabezadoFormComponent implements OnChanges {
     cEncabPregContenido: ['', Validators.required],
     iCredId: ['', Validators.required],
     iNivelGradoId: [''],
+    jsonPreguntas: this._FormBuilder.array([]),
   });
 
+  get jsonPreguntas() {
+    return this.formEncabezadoPreguntas.get('jsonPreguntas') as any;
+  }
+
   ngOnChanges(changes) {
-    if (changes.data.currentValue) {
-      this.data = changes.data.currentValue;
+    if (changes['data']?.currentValue) {
+      this.data = changes['data'].currentValue;
       this.idEncabPregId = this.data?.idEncabPregId;
       this.opcion = this.idEncabPregId ? 'ACTUALIZAR' : 'GUARDAR';
       this.formEncabezadoPreguntas.patchValue({
         cEncabPregTitulo: this.data?.cEncabPregTitulo,
         cEncabPregContenido: this.data?.cEncabPregContenido,
+      });
+
+      this.jsonPreguntas.clear();
+
+      this.data?.jsonPreguntas?.forEach((p: any) => {
+        const preguntaFG = this._FormBuilder.group({
+          iTipoPregId: [p?.iTipoPregId],
+          iBancoId: [p?.iBancoId],
+          iCursoId: [p?.iCursoId],
+          cBancoPregunta: [p?.cBancoPregunta],
+          cBancoTextoAyuda: [p?.cBancoTextoAyuda],
+          jsonAlternativas: this._FormBuilder.array(
+            (p.jsonAlternativas || []).map((a: any) =>
+              this._FormBuilder.group({
+                iBancoAltId: [a?.iBancoAltId],
+                cBancoAltLetra: [a?.cBancoAltLetra],
+                cBancoAltDescripcion: [a?.cBancoAltDescripcion],
+                bBancoAltRptaCorrecta: [a?.bBancoAltRptaCorrecta],
+                cBancoAltExplicacionRpta: [a?.cBancoAltExplicacionRpta],
+                cAlternativaImagen: [a?.cAlternativaImagen],
+              })
+            )
+          ),
+        });
+
+        this.jsonPreguntas.push(preguntaFG);
       });
     }
     if (changes.curso?.currentValue) {
@@ -64,6 +95,27 @@ export class BancoEncabezadoFormComponent implements OnChanges {
       if (!this.idEncabPregId) return;
       this.actualizarEncabezadoPreguntas();
     }
+  }
+
+  marcarCorrecta(i: number, j: number) {
+    const preguntas = this.formEncabezadoPreguntas.get('jsonPreguntas') as any;
+    const alternativas = preguntas.at(i).get('jsonAlternativas') as any;
+
+    alternativas.controls.forEach((ctrl, index) => {
+      ctrl.get('bBancoAltRptaCorrecta')?.setValue(index === j, {
+        emitEvent: false,
+      });
+    });
+  }
+
+  eliminarAlternativa(opcion: any, indice: any) {
+    const alternativas = this.jsonPreguntas.at(indice).get('jsonAlternativas') as any;
+
+    const index = alternativas.controls.indexOf(opcion);
+
+    if (index === -1) return;
+
+    alternativas.removeAt(index);
   }
 
   guardarEncabezadoPreguntas() {

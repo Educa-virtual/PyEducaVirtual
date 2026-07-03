@@ -272,7 +272,6 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   enviarDatosFinales(item: any, periodo: boolean) {
     this.mostrarModalConclusionDesc = true;
     this.estudianteSelect = item;
-    console.log(this.estudianteSelect);
     // Limpiar el formulario antes de aplicar nuevos valores
     this.conclusionDescrp.reset();
 
@@ -333,7 +332,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
 
   obtenerReporteDenotasFinales() {
     const params = {
-      iIeCursoId: this.curso.iIeCursoId,
+      iCursoId: this.curso.iCursoId,
       iYAcadId: this._ConstantesService.iYAcadId,
       iSedeId: this._ConstantesService.iSedeId,
       iSeccionId: this.curso.iSeccionId,
@@ -363,7 +362,6 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
         cConclusion: this.conclusionDescrp.value.cDetMatConclusionDescPromedio,
         iCredId: this._ConstantesService.iCredId,
       };
-      console.log('Datos a guardar:', datos);
 
       this._serviceResultados.guardarDescripcion(datos).subscribe({
         next: resp => {

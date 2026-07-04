@@ -15,26 +15,20 @@
       @for (item of actions; track $index) {
         <button
           size="small"
-          [rounded]="true"
           pButton
           pRipple
           [disabled]="item?.disabled ?? false"
           [pTooltip]="item.labelTooltip"
           tooltipPosition="top"
-          severity="success"
           (click)="accionBtn(item.accion, [])"
           [ngClass]="item.class"
         >
           @if (item.icon | isIconType) {
-            <app-icon
-              [name]="item.icon.name"
-              [color]="item.icon.color"
-              [size]="item.icon.size"
-            ></app-icon>
+            <app-icon [name]="item.icon.name" [color]="item.icon.color" [size]="item.icon.size" />
           } @else {
             <i class="{{ item.icon }}"></i>
           }
-          &nbsp;{{ item.text }}
+          <span class="hidden md:inline-block ml-2">{{ item.text }}</span>
         </button>
       }
     </div>

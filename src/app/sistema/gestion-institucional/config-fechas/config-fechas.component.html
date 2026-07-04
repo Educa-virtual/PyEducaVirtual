@@ -1,82 +1,95 @@
 <p-toast />
 <app-container-page
-  title="Registrar feriados nacionales"
+  title="Feriados nacionales"
   [actions]="nationalHolyday.container.actions"
   (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
 >
-  <div class="card">
-    <app-table-primeng
-      [columnas]="nationalHolyday.table.columns.core"
-      [showCaption]="false"
-      [data]="nationalHolyday.table.data.core"
-      (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
-      [actions]="nationalHolyday.table.actions"
-    >
-    </app-table-primeng>
-  </div>
+  <app-table-primeng
+    [columnas]="nationalHolyday.table.columns.core"
+    [data]="nationalHolyday.table.data.core"
+    (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
+    [actions]="nationalHolyday.table.actions"
+  />
 </app-container-page>
 
 <p-dialog
   [header]="dialogs.nationalHoliday.title"
   [(visible)]="dialogs.nationalHoliday.visible"
-  [style]="{ width: '56rem' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
   [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  [styleClass]="'dialog-responsive'"
+  [resizable]="true"
+  [maximizable]="true"
 >
   <form [formGroup]="form">
     <div class="grid mt-2">
-      <div class="col-12 grid">
-        <div class="col-10 flex flex-column gap-2">
-          <label for="dtFeriado">Fecha</label>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fecha</p-inputGroupAddon>
           <p-calendar
             appendTo="body"
             [showOnFocus]="false"
-            inputStyleClass="w-full"
-            styleClass="w-full"
+            inputStyleClass="group-element"
             formControlName="dtFeriado"
-            [iconDisplay]="'input'"
             [showIcon]="true"
-            inputId="dtFeriado"
+            [style]="{ flex: '1', width: '100%' }"
           />
-        </div>
-        <div class="col flex flex-column gap-2">
-          <label for="bFeriadoEsRecuperable">Es recuperable</label>
-          <p-toggleButton
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Es recuperable</p-inputGroupAddon>
+          <p-dropdown
             formControlName="bFeriadoEsRecuperable"
-            onLabel="Si"
-            offLabel="No"
-            styleClass="w-full"
+            [options]="[
+              { label: 'SI', value: 1 },
+              { label: 'NO', value: 0 },
+            ]"
+            [style]="{ flex: '1', width: '100%' }"
+            styleClass="group-element"
+            appendTo="body"
           />
-        </div>
+        </p-inputGroup>
       </div>
-
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cFeriadoNombre">Nombre</label>
-        <input
-          pInputText
-          id="cFechaImpNombre"
-          formControlName="cFeriadoNombre"
-          aria-describedby="cFeriadoNombre-help"
-        />
-      </div>
-
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cDocumento">URL del documento</label>
-        <input
-          pInputText
-          id="cDocumento"
-          formControlName="cDocumento"
-          aria-describedby="cDocumento-help"
-        />
-      </div>
-
       <div class="col-12">
-        <p-button
-          label="Guardar"
-          [disabled]="form.invalid"
-          styleClass="w-full"
-          (onClick)="nationalHolyday.saveData()"
-        />
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cFeriadoNombre"
+            appendTo="body"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
       </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>URL del documento</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cDocumento"
+            appendTo="body"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+    <div class="flex justify-content-end mt-2">
+      <p-button
+        label="Guardar"
+        [disabled]="form.invalid"
+        severity="success"
+        (onClick)="nationalHolyday.saveData()"
+      />
     </div>
   </form>
 </p-dialog>
@@ -84,42 +97,48 @@
 <p-dialog
   [header]="dialogs.importNationalHolyday.title"
   [(visible)]="dialogs.importNationalHolyday.visible"
-  [style]="{ width: '56rem' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
   [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  [styleClass]="'dialog-responsive'"
+  [resizable]="true"
+  [maximizable]="true"
 >
-  <div class="mt-3 flex flex-column gap-3">
-    <div class="flex justify-content-between gap-3">
-      <div class="flex gap-2">
-        <app-btn-file-upload
-          accept="*.xlsx"
-          icon="pi pi-file-import"
-          [(ngModel)]="file"
-          (fileChange)="nationalHolyday.import.fileChange($event)"
-        />
-
-        <p-button
-          (onClick)="nationalHolyday.import.downloadTemplate()"
-          severity="info"
-          icon="pi pi-file-excel"
-          label="Descargar plantilla"
-        />
-      </div>
-
+  <div class="flex justify-content-between flex-wrap my-3 gap-2 row-gap-2">
+    <div class="flex gap-2 row-gap-2">
       <p-button
-        [loading]="nationalHolyday.import.loading"
-        (onClick)="nationalHolyday.import.saveData()"
-        severity="success"
-        [disabled]="file ? false : true"
-        icon="pi pi-database"
-        label="Iniciar importación"
+        (onClick)="nationalHolyday.import.downloadTemplate()"
+        severity="info"
+        icon="pi pi-file-excel"
+        label="Plantilla"
+      />
+      <app-btn-file-upload
+        accept="*.xlsx"
+        icon="pi pi-file-import"
+        label="Cargar"
+        [(ngModel)]="file"
+        (fileChange)="nationalHolyday.import.fileChange($event)"
       />
     </div>
-
-    <app-table-primeng
-      [columnas]="nationalHolyday.table.columns.import"
-      [data]="nationalHolyday.table.data.import"
-      [showCaption]="true"
-      [showSortIcon]="false"
-    ></app-table-primeng>
+    <p-button
+      [loading]="nationalHolyday.import.loading"
+      (onClick)="nationalHolyday.import.saveData()"
+      severity="success"
+      [disabled]="file ? false : true"
+      icon="pi pi-database"
+      label="Importar"
+    />
   </div>
+
+  <app-table-primeng
+    [columnas]="nationalHolyday.table.columns.import"
+    [data]="nationalHolyday.table.data.import"
+    [showCaption]="true"
+  />
 </p-dialog>

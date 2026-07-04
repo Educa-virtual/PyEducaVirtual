@@ -119,7 +119,7 @@ function accionBtnItem(this: ConfigFechasComponent, { accion, item }) {
       break;
     case 'sincronizar':
       this.dialog.openConfirm({
-        header: 'Sincronizar feriados nacionales',
+        header: 'Aplicar feriados nacionales',
         accept: () => {
           this.nationalHolidayService.syncFeriadosNacionales().subscribe({
             next: (res: any) => {

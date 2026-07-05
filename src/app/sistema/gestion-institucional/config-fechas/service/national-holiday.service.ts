@@ -10,7 +10,7 @@ const baseUrl = environment.backendApi;
   providedIn: 'root',
 })
 export class nationalHolidayService {
-  importEndPoint = `${baseUrl}`;
+  importEndPoint = `${baseUrl}/grl/feriados-nacionales`;
   endPoint = `${baseUrl}/grl/feriados-nacionales`;
   constructor(
     public http: HttpClient,
@@ -18,7 +18,7 @@ export class nationalHolidayService {
   ) {}
 
   importDataCollection(data: any): Observable<any> {
-    return this.http.post(`${baseUrl}/${this.importEndPoint}`, {
+    return this.http.post(`${this.importEndPoint}`, {
       SpecialsDates: data,
     });
   }
@@ -44,32 +44,27 @@ export class nationalHolidayService {
       });
   }
 
-  getFeriadosNacionales() {
-    const iYearId = JSON.parse(localStorage.getItem('dremoYear'));
-
-    return this.http.get(`${this.endPoint}/getFeriadosNacionales/${iYearId}`);
+  listarFeriadosNacionales(data: any) {
+    return this.http.post(`${this.endPoint}/listarFeriadosNacionales`, data);
   }
 
-  insFeriadosNacionales(data) {
-    return this.http.post(`${this.endPoint}/insFeriadosNacionales`, data);
+  guardarFeriadoNacional(data: any) {
+    return this.http.post(`${this.endPoint}/guardarFeriadoNacional`, data);
   }
 
-  insFeriadosNacionalesMasivo(data) {
-    return this.http.post(`${this.endPoint}/insFeriadosNacionalesMasivo`, data);
+  guardarFeriadoNacionalMasivo(data) {
+    return this.http.post(`${this.endPoint}/guardarFeriadoNacionalMasivo`, data);
   }
 
-  updFeriadosNacionales(data) {
-    return this.http.put(`${this.endPoint}/updFeriadosNacionales`, data);
+  actualizarFeriadoNacional(data) {
+    return this.http.post(`${this.endPoint}/actualizarFeriadoNacional`, data);
   }
 
-  deleteFeriadosNacionalesXiFeriadoId(data) {
-    return this.http.delete(`${this.endPoint}/deleteFeriadosNacionales/${data.iFeriadoId}`);
+  borrarFeriadoNacional(data: any) {
+    return this.http.post(`${this.endPoint}/borrarFeriadoNacional`, data);
   }
-  syncFeriadosNacionales() {
-    const iYearId = JSON.parse(localStorage.getItem('dremoYear'));
 
-    return this.http.put(`${this.endPoint}/syncFeriadosNacionales`, {
-      iYearId: iYearId,
-    });
+  aplicarFeriadosNacionales(data: any) {
+    return this.http.put(`${this.endPoint}/aplicarFeriadosNacionales`, data);
   }
 }

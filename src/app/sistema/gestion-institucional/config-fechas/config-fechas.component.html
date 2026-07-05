@@ -1,14 +1,15 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
 <p-toast />
 <app-container-page
   title="Feriados nacionales"
-  [actions]="nationalHolyday.container.actions"
-  (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
+  [actions]="containerActions"
+  (accionBtnItem)="accionBtnItem($event)"
 >
   <app-table-primeng
-    [columnas]="nationalHolyday.table.columns.core"
-    [data]="nationalHolyday.table.data.core"
-    (accionBtnItem)="nationalHolyday.table.accionBtnItem($event)"
-    [actions]="nationalHolyday.table.actions"
+    [columnas]="columns"
+    [data]="data"
+    (accionBtnItem)="accionBtnItem($event)"
+    [actions]="actions"
   />
 </app-container-page>
 
@@ -88,7 +89,7 @@
         label="Guardar"
         [disabled]="form.invalid"
         severity="success"
-        (onClick)="nationalHolyday.saveData()"
+        (onClick)="saveData()"
       />
     </div>
   </form>
@@ -110,10 +111,10 @@
   [resizable]="true"
   [maximizable]="true"
 >
-  <div class="flex justify-content-between flex-wrap my-3 gap-2 row-gap-2">
+  <div class="flex justify-content-between flex-wrap my-3 gap-3 row-gap-2">
     <div class="flex gap-2 row-gap-2">
       <p-button
-        (onClick)="nationalHolyday.import.downloadTemplate()"
+        (onClick)="nationalHolidayService.downloadTemplate()"
         severity="info"
         icon="pi pi-file-excel"
         label="Plantilla"
@@ -123,12 +124,12 @@
         icon="pi pi-file-import"
         label="Cargar"
         [(ngModel)]="file"
-        (fileChange)="nationalHolyday.import.fileChange($event)"
+        (fileChange)="fileChange($event)"
       />
     </div>
     <p-button
-      [loading]="nationalHolyday.import.loading"
-      (onClick)="nationalHolyday.import.saveData()"
+      [loading]="importLoading"
+      (onClick)="importData()"
       severity="success"
       [disabled]="file ? false : true"
       icon="pi pi-database"
@@ -136,9 +137,5 @@
     />
   </div>
 
-  <app-table-primeng
-    [columnas]="nationalHolyday.table.columns.import"
-    [data]="nationalHolyday.table.data.import"
-    [showCaption]="true"
-  />
+  <app-table-primeng [columnas]="columnsImport" [data]="dataImport" [showCaption]="true" />
 </p-dialog>

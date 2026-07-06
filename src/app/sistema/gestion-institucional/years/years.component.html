@@ -1,98 +1,80 @@
-<app-container-page
-  title="Registro del año académico"
-  [actions]="years.container.actions"
-  (accionBtnItem)="years.accionBtnItem($event)"
-  ><p-toast />
-  <div class="card">
-    <app-table-primeng
-      [columnas]="years.table.columns"
-      [showCaption]="true"
-      [data]="years.table.data"
-      (accionBtnItem)="years.accionBtnItem($event)"
-      [showPaginator]="true"
-      [actions]="years.table.actions"
-    >
-    </app-table-primeng>
-    <ng-container slot="caption-content"> </ng-container>
-  </div>
-</app-container-page>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-toast />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Años académicos</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        size="small"
+        severity="success"
+        pTooltip="Aperturar nueva año"
+        tooltipPosition="left"
+        (click)="agregarYear()"
+      >
+        <i class="pi pi-fw pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Aperturar</span>
+      </p-button>
+    </div>
+  </ng-template>
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="years"
+    (accionBtnItem)="accionBtnItem($event)"
+    [showPaginator]="true"
+    [actions]="actions"
+  />
+</p-panel>
 
 <p-dialog
-  [header]="dialogs.year.title"
-  [(visible)]="dialogs.year.visible"
+  [header]="dialogYear.title"
+  [(visible)]="dialogYear.visible"
   [style]="{ width: '56rem' }"
   [modal]="true"
 >
-  <form class="grid mt-2" [formGroup]="forms.year">
-    <div class="col grid">
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cYearNombre">Nombre</label>
-        <input
-          pInputText
-          input
-          pStyleClass="w-full"
-          id="cYearNombre"
-          placeholder="Ingrese el nombre del año académico"
-          formControlName="cYearNombre"
+  <form class="grid mt-2" [formGroup]="formYear">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
+        <p-inputNumber
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+          formControlName="iYearId"
+          min="2000"
+          max="2100"
+          [useGrouping]="false"
+          [showButtons]="true"
+          placeholder="Ingrese el año académico"
         />
-      </div>
+      </p-inputGroup>
     </div>
-
-    <div class="col-12 flex flex-column gap-2">
-      <label for="cYearOficial">Nombre oficial</label>
-      <input pInputText pStyleClass="w-full" id="cYearOficial" formControlName="cYearOficial" />
+    <div class="col-12">
+      <p-inputGroup class="vertical-group">
+        <p-inputGroupAddon>Nombre oficial *</p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+          formControlName="cYearOficial"
+          placeholder="Ingrese el nombre oficial"
+        />
+      </p-inputGroup>
     </div>
   </form>
-  <!-- 
-    <form class="grid mt-2" [formGroup]="forms.yearAcademico">
-        <div class="col grid">
-            <div class="col-6 flex flex-column gap-2">
-                <label for="dtYAcadInicio">Inicio</label>
-                <p-calendar
-                    appendTo="body"
-                    [showOnFocus]="false"
-                    inputStyleClass="w-full"
-                    styleClass="w-full"
-                    formControlName="dtYAcadInicio"
-                    [iconDisplay]="'input'"
-                    [showIcon]="true"
-                    inputId="dtYAcadInicio"
-                />
-            </div>
-            <div class="col-6 flex flex-column gap-2">
-                <label for="dYAcadFin">Fin</label>
-                <p-calendar
-                    appendTo="body"
-                    [showOnFocus]="false"
-                    inputStyleClass="w-full"
-                    styleClass="w-full"
-                    formControlName="dYAcadFin"
-                    [iconDisplay]="'input'"
-                    [showIcon]="true"
-                    inputId="dYAcadFin"
-                />
-            </div>
-        </div>
-    </form> -->
 
-  <ng-template pTemplate="footer">
-    @if (this.forms.year.enabled) {
-      <div class="flex justify-content-between gap-2">
-        <p-button
-          label="Cancelar"
-          [text]="true"
-          severity="secondary"
-          (onClick)="dialogs.year.visible = false"
-        />
-        <p-button
-          label="Guardar"
-          [outlined]="true"
-          severity="secondary"
-          (onClick)="years.saveData()"
-        />
-      </div>
-    }
-  </ng-template>
+  <div class="flex justify-content-end gap-2" *ngIf="formYear.enabled">
+    <p-button label="Cancelar" severity="secondary" (onClick)="dialogYear.visible = false" />
+    <p-button label="Guardar" severity="primary" (onClick)="guardarYear()" />
+    <p-button *ngIf="bEditar" label="Actualizar" severity="warning" (onClick)="actualizarYear()" />
+  </div>
 </p-dialog>
 
 <p-dialog
@@ -109,7 +91,7 @@
         styleClass="w-full"
         icon="pi pi-plus"
         label="Agregar bloque"
-        [disabled]="forms.year.disabled"
+        [disabled]="formYear.disabled"
         severity="primary"
         (onClick)="
           distribucionBloques.accionBtnItem({

@@ -6,19 +6,19 @@ export function actions(this: YearsComponent) {
     {
       ...ver,
       isVisible: () => {
-        return this.forms.year.value.iYearEstado == '0';
+        return this.formYear.value.iYearEstado == '0';
       },
     },
     {
       ...editar,
       isVisible: () => {
-        return this.forms.year.value.iYearEstado == '1';
+        return this.formYear.value.iYearEstado == '1';
       },
     },
     {
       ...eliminar,
       isVisible: () => {
-        return this.forms.year.value.iYearEstado == '1';
+        return this.formYear.value.iYearEstado == '1';
       },
     },
   ];

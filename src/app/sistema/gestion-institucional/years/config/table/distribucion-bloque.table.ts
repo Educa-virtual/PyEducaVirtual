@@ -145,9 +145,7 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
               }),
               takeWhile((res: any) => res?.data?.[0]?.Message == 'true'),
               switchMap(() =>
-                this.distribucionBloquesService.getDistribucionBloques(
-                  this.forms.year.value.iYearId
-                )
+                this.distribucionBloquesService.getDistribucionBloques(this.formYear.value.iYearId)
               )
             )
             .subscribe({
@@ -175,7 +173,7 @@ function accionBtnItem(this: YearsComponent, { accion, item }) {
 function saveData(this: YearsComponent) {
   const data: any = {
     iTipoDistribucionId: this.forms.distribucionBloque.value.iTipoDistribucionId,
-    iYearId: this.forms.year.value.iYearId,
+    iYearId: this.formYear.value.iYearId,
     iSesionId: JSON.parse(localStorage.getItem('dremoPerfil')).iCredId,
     dtInicioBloque: this.datePipe.transform(
       this.forms.distribucionBloque.value.dtInicioBloque,
@@ -207,7 +205,7 @@ function saveData(this: YearsComponent) {
           this.dialogs.distribucionBloque.visible = !isSuccess;
         }),
         switchMap(() =>
-          this.distribucionBloquesService.getDistribucionBloques(this.forms.year.value.iYearId)
+          this.distribucionBloquesService.getDistribucionBloques(this.formYear.value.iYearId)
         )
       )
       .subscribe({
@@ -254,7 +252,7 @@ function saveData(this: YearsComponent) {
           this.dialogs.distribucionBloque.visible = !isSuccess;
         }),
         switchMap(() =>
-          this.distribucionBloquesService.getDistribucionBloques(this.forms.year.value.iYearId)
+          this.distribucionBloquesService.getDistribucionBloques(this.formYear.value.iYearId)
         )
       )
       .subscribe({

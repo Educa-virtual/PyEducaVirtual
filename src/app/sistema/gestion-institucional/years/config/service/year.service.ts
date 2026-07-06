@@ -2,29 +2,27 @@ import { environment } from '@/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
-export class YearService {
-  endPoint = `${environment.backendApi}/grl/years`;
+const baseUrl = environment.backendApi;
 
+@Injectable({
+  providedIn: 'root',
+})
+export class YearService {
   constructor(private http: HttpClient) {}
 
-  getYears(iYearId?) {
-    if (iYearId) {
-      return this.http.get(`${this.endPoint}/getYears/${iYearId}`);
-    }
+  listarYears(data: any) {
+    return this.http.post(`${baseUrl}/grl/years/listarYears`, data);
+  }
 
-    return this.http.get(`${this.endPoint}/getYears`);
+  guardarYear(data: any) {
+    return this.http.post(`${baseUrl}/grl/years/guardarYear`, data);
   }
-  insYears(data) {
-    return this.http.post(`${this.endPoint}/insYears`, data);
+
+  actualizarYear(data: any) {
+    return this.http.post(`${baseUrl}/grl/years/actualizarYear`, data);
   }
-  updYears(data) {
-    return this.http.put(`${this.endPoint}/updYears`, data);
-  }
-  patchYears(data) {
-    return this.http.patch(`${this.endPoint}/patchYears`, data);
-  }
-  deleteYears(iYearId) {
-    return this.http.delete(`${this.endPoint}/deleteYears/${iYearId}`);
+
+  borrarYear(data: any) {
+    return this.http.post(`${baseUrl}/grl/years/borrarYear/`, data);
   }
 }

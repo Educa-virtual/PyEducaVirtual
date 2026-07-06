@@ -1,24 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core'; //OnChanges, OnDestroy
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
-import { ButtonModule } from 'primeng/button';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { CalendarModule } from 'primeng/calendar';
-import { ChipsModule } from 'primeng/chips';
-import { TagModule } from 'primeng/tag';
-import { ToastModule } from 'primeng/toast';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-
-import { MessageService } from 'primeng/api';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-
-import { FormsModule } from '@angular/forms';
-
+import { Component, inject, OnInit } from '@angular/core';
+import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import { MenuItem, MessageService } from 'primeng/api';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 import { StepConfirmationService } from '@/app/servicios/confirm.service';
 import { PrimengModule } from '@/app/primeng.module';
-import { years } from './config/table/year.table';
 import { YearService } from './config/service/year.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { distribucionBloques } from './config/table/distribucion-bloque.table';
@@ -26,52 +12,37 @@ import { DistribucionBloquesService } from './config/service/distribucion-bloque
 import { DatePipe } from '@angular/common';
 import { PeriodoEvaluacionesService } from './config/service/periodoEvaluaciones.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { Router } from '@angular/router';
-import { TokenStorageService } from '@/app/servicios/token.service';
-
 import { GlobalStateService } from 'src/app/servicios/global-state.service';
 
 @Component({
   selector: 'app-years',
   standalone: true,
-  imports: [
-    TablePrimengComponent,
-    ButtonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    DialogModule,
-    ToggleButtonModule,
-    ContainerPageComponent,
-    CalendarModule,
-    ChipsModule,
-    ToastModule,
-    PrimengModule,
-    TagModule,
-    InputTextareaModule,
-  ],
+  imports: [TablePrimengComponent, PrimengModule],
   providers: [MessageService, GeneralService, StepConfirmationService, DatePipe],
   templateUrl: './years.component.html',
   styleUrl: './years.component.scss',
 }) //, OnChanges, OnDestroy
 export class YearsComponent implements OnInit {
+  formYear: FormGroup;
+  years: any;
   forms: {
-    year: FormGroup;
     distribucionBloque: FormGroup;
     procesarPeriodos: FormGroup;
   } = {
-    year: new FormGroup({}),
     distribucionBloque: new FormGroup({}),
     procesarPeriodos: new FormGroup({}),
   };
 
+  bEditar: boolean = false;
+
   private _LocalStoreService = inject(LocalStoreService);
   perfil = this._LocalStoreService.getItem('dremoPerfil');
 
+  dialogYear = {
+    title: '',
+    visible: false,
+  };
   dialogs = {
-    year: {
-      title: '',
-      visible: false,
-    },
     distribucionBloques: {
       title: '',
       visible: false,
@@ -90,7 +61,7 @@ export class YearsComponent implements OnInit {
     types: [],
     processData: () => {
       const iPeriodoEvalId = this.forms.procesarPeriodos.get('iPeriodoEvalId').value;
-      const iYAcadId = this.forms.year.get('iYAcadId').value;
+      const iYAcadId = this.formYear.get('iYAcadId').value;
 
       if (!iPeriodoEvalId || !iYAcadId) {
         this.messageService.add({
@@ -128,17 +99,6 @@ export class YearsComponent implements OnInit {
     },
   };
 
-  years = {
-    accionBtnItem: years.accionBtnItem.bind(this),
-    table: {
-      columns: years.table.columns,
-      data: [],
-      actions: years.table.actions,
-    },
-    container: years.container,
-    saveData: years.saveData.bind(this),
-  };
-
   distribucionBloques = {
     types: [],
     accionBtnItem: distribucionBloques.accionBtnItem.bind(this),
@@ -150,50 +110,62 @@ export class YearsComponent implements OnInit {
     saveData: distribucionBloques.saveData.bind(this),
   };
 
+  tiposDistribucion = [
+    {
+      iTipoDistribucionId: 1,
+      cBloqueNombre: 'Semana lectiva',
+    },
+    {
+      iTipoDistribucionId: 2,
+      cBloqueNombre: 'Semana de gestión',
+    },
+  ];
+
+  breadCrumbHome: MenuItem = { label: 'Inicio', icon: 'pi pi-house' };
+  breadCrumbItems: MenuItem[] = [{ label: 'Años académicos' }];
+
   constructor(
     public messageService: MessageService,
     public query: GeneralService,
     private fb: FormBuilder,
     public yearsService: YearService,
     public distribucionBloquesService: DistribucionBloquesService,
-    private msg: StepConfirmationService,
     public dialogConfirm: ConfirmationModalService,
-    private router: Router,
-    private tokenStorageService: TokenStorageService,
-
     public datePipe: DatePipe,
     public periodoEvaluacionesService: PeriodoEvaluacionesService,
     private globalState: GlobalStateService
-  ) {
-    this.forms.year = this.fb.group({
-      iYearId: [''],
-      cYearNombre: [''],
-      cYearOficial: [''],
-      iYearEstado: [''],
-      iYAcadId: [''],
-    });
-
-    this.forms.distribucionBloque = this.fb.group({
-      iDistribucionBloqueId: [''],
-      iYAcadId: [''],
-      iTipoDistribucionId: [''],
-      iSesionId: [''],
-      dtInicioBloque: [''],
-      dtFinBloque: [''],
-      iEstado: [''],
-    });
-
-    this.forms.procesarPeriodos = this.fb.group({
-      iPeriodoEvalId: [''],
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.yearsService.getYears().subscribe({
-      next: (res: any) => {
-        this.years.table.data = res.data;
-      },
-    });
+    try {
+      this.formYear = this.fb.group({
+        iYearId: [''],
+        cYearNombre: [new Date('Y')],
+        cYearOficial: [''],
+        iYearEstado: [''],
+        dtYAcadInicio: [''],
+        dYAcadFin: [''],
+        cYAcadDescripcion: [''],
+        iYAcadId: [''],
+      });
+
+      this.forms.distribucionBloque = this.fb.group({
+        iDistribucionBloqueId: [''],
+        iYAcadId: [''],
+        iTipoDistribucionId: [''],
+        iSesionId: [''],
+        dtInicioBloque: [''],
+        dtFinBloque: [''],
+        iEstado: [''],
+      });
+
+      this.forms.procesarPeriodos = this.fb.group({
+        iPeriodoEvalId: [''],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    this.listarYears();
 
     this.distribucionBloquesService.getTipoDistribucion().subscribe({
       next: (res: any) => {
@@ -213,6 +185,7 @@ export class YearsComponent implements OnInit {
       },
     });
   }
+
   actualizarTolbarAnio(data: any) {
     // O eliminar todo
     // localStorage.clear();
@@ -259,4 +232,318 @@ export class YearsComponent implements OnInit {
         }
     }, 2000);*/
   }
+
+  agregarYear() {
+    this.dialogYear.title = 'Agregar año académico';
+    this.dialogYear.visible = true;
+    this.formYear.patchValue({
+      iYearEstado: true,
+    });
+  }
+
+  listarYears() {
+    this.yearsService.listarYears({}).subscribe({
+      next: (res: any) => {
+        this.years = res.data;
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  guardarYear() {
+    this.yearsService.guardarYear(this.formYear.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se guardó con éxito',
+        });
+        this.listarYears();
+      },
+      error: error => {
+        console.error('Error guardando año académico:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  actualizarYear() {
+    this.yearsService.actualizarYear(this.formYear.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se actualizó con éxito',
+        });
+        this.listarYears();
+      },
+      error: error => {
+        console.error('Error actualizando año académico:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  eliminarYear(item: any) {
+    this.yearsService.borrarYear(item).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Eliminado con éxito',
+        });
+        this.listarYears();
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  accionBtnItem({ accion, item }) {
+    switch (accion) {
+      case 'ver':
+        this.formYear.disable();
+        this.dialogYear = {
+          title: 'Año académico',
+          visible: true,
+        };
+        this.formYear.patchValue(item);
+        break;
+      case 'editar':
+        this.dialogYear = {
+          title: 'Editar año académico',
+          visible: true,
+        };
+        this.formYear.get('iYearEstado').disable();
+        this.formYear.patchValue(item);
+
+        break;
+      case 'eliminar':
+        this.dialogConfirm.openConfirm({
+          header: 'Eliminar año',
+          message: `¿Realmente desea eliminar el año: ${item.iYearId} ?`,
+          accept: () => {
+            this.eliminarYear(item);
+          },
+        });
+        break;
+      case 'semanasLectivas':
+        this.dialogs.distribucionBloques = {
+          title: `Semanas lectivas del año: ${item.iYearId}`,
+          visible: true,
+        };
+
+        this.formYear.patchValue({
+          iYearId: item.iYearId,
+          cYearNombre: item.cYearNombre,
+          cYearOficial: item.cYearOficial,
+          iYearEstado: item.iYearEstado,
+        });
+
+        this.distribucionBloquesService.getDistribucionBloques(item.iYearId).subscribe({
+          next: (res: any) => {
+            console.log('res');
+            console.log(res.data);
+
+            this.distribucionBloques.table.data = res.data.map(item => {
+              const tipoDistribucion = this.tiposDistribucion.find(
+                tipo => tipo.iTipoDistribucionId == item.iTipoDistribucionId
+              );
+
+              return {
+                ...item,
+                cBloqueNombre: tipoDistribucion.cBloqueNombre,
+                dtInicioBloque: this.datePipe.transform(item.dtInicioBloque, 'dd/MM/yyyy'),
+                dtFinBloque: this.datePipe.transform(item.dtFinBloque, 'dd/MM/yyyy'),
+              };
+            });
+          },
+        });
+
+        break;
+      case 'procesarPeriodos':
+        this.dialogs.procesarPeriodo = {
+          title: `Generar periodos del calendario académico para el año: ${item.iYearId}`,
+          visible: true,
+        };
+
+        this.formYear.patchValue({
+          iYearId: item.iYearId,
+          cYearNombre: item.cYearNombre,
+          cYearOficial: item.cYearOficial,
+          iYearEstado: item.iYearEstado,
+          iYAcadId: item.iYAcadId,
+        });
+
+        console.log('this.formYear');
+        console.log(this.formYear.value);
+
+        break;
+      case 'verSemanasLectivas':
+        this.dialogs.distribucionBloques = {
+          title: `Semanas lectivas del año: ${item.iYearId}`,
+          visible: true,
+        };
+
+        this.formYear.disable();
+        this.forms.distribucionBloque.disable();
+
+        this.formYear.patchValue({
+          iYearId: item.iYearId,
+          cYearNombre: item.cYearNombre,
+          cYearOficial: item.cYearOficial,
+          iYearEstado: item.iYearEstado,
+        });
+
+        this.distribucionBloquesService.getDistribucionBloques(item.iYearId).subscribe({
+          next: (res: any) => {
+            this.distribucionBloques.table.data = res.data.map(item => {
+              const tipoDistribucion = this.tiposDistribucion.find(
+                tipo => tipo.iTipoDistribucionId == item.iTipoDistribucionId
+              );
+
+              return {
+                ...item,
+                cBloqueNombre: tipoDistribucion.cBloqueNombre,
+                dtInicioBloque: this.datePipe.transform(item.dtInicioBloque, 'dd/MM/yyyy'),
+                dtFinBloque: this.datePipe.transform(item.dtFinBloque, 'dd/MM/yyyy'),
+              };
+            });
+          },
+        });
+        break;
+    }
+  }
+
+  /* Datos de tabla */
+  columns: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'item',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'cYearNombre',
+      header: 'Año',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '35%',
+      field: 'cYearOficial',
+      header: 'Nombre oficial',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'estado-activo',
+      width: '5%',
+      field: 'iYearEstado',
+      header: 'Activo',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '10%',
+      field: 'dtYAcadInicio',
+      header: 'Inicio',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '10%',
+      field: 'dYAcadFin',
+      header: 'Fin',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'dropdown-actions',
+      width: '5%',
+      field: 'actions',
+      header: 'Acciones',
+      text_header: 'right',
+      text: 'right',
+    },
+  ];
+
+  actions = [
+    {
+      labelTooltip: 'Gestionar semanas lectivas',
+      icon: 'pi pi-calendar',
+      accion: 'semanasLectivas',
+      type: 'item',
+      class: 'p-menuitem-link text-primary',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+    {
+      labelTooltip: 'Ver semanas lectivas',
+      icon: 'pi pi-calendar',
+      accion: 'verSemanasLectivas',
+      type: 'item',
+      class: 'p-menuitem-link text-primary',
+      isVisible: rowData => Number(rowData.iYearEstado) == 0,
+    },
+    {
+      labelTooltip: 'Procesar periodos',
+      icon: 'pi pi-sync',
+      accion: 'procesarPeriodos',
+      type: 'item',
+      class: 'p-menuitem-link text-purple-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+    {
+      labelTooltip: 'Ver',
+      icon: 'pi pi-eye',
+      accion: 'ver',
+      type: 'item',
+      class: 'p-menuitem-link text-gray-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 0,
+    },
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-menuitem-link text-orange-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-menuitem-link text-red-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+  ];
 }

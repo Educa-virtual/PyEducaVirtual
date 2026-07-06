@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { MenuItem, MessageService } from 'primeng/api';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
 import { StepConfirmationService } from '@/app/servicios/confirm.service';
 import { PrimengModule } from '@/app/primeng.module';
@@ -140,12 +140,11 @@ export class YearsComponent implements OnInit {
     try {
       this.formYear = this.fb.group({
         iYearId: [''],
-        cYearNombre: [new Date('Y')],
-        cYearOficial: [''],
+        cYearNombre: [new Date().getFullYear(), [Validators.required]],
+        cYearOficial: ['', [Validators.required]],
         iYearEstado: [''],
-        dtYAcadInicio: [''],
-        dYAcadFin: [''],
-        cYAcadDescripcion: [''],
+        dtYAcadInicio: ['', [Validators.required]],
+        dYAcadFin: ['', [Validators.required]],
         iYAcadId: [''],
       });
 
@@ -234,10 +233,12 @@ export class YearsComponent implements OnInit {
   }
 
   agregarYear() {
+    this.bEditar = false;
     this.dialogYear.title = 'Agregar año académico';
     this.dialogYear.visible = true;
-    this.formYear.patchValue({
+    this.setFormYear({
       iYearEstado: true,
+      iYearId: new Date().getFullYear(),
     });
   }
 
@@ -265,6 +266,7 @@ export class YearsComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Se guardó con éxito',
         });
+        this.dialogYear.visible = false;
         this.listarYears();
       },
       error: error => {
@@ -286,6 +288,7 @@ export class YearsComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Se actualizó con éxito',
         });
+        this.dialogYear.visible = false;
         this.listarYears();
       },
       error: error => {
@@ -320,6 +323,17 @@ export class YearsComponent implements OnInit {
     });
   }
 
+  setFormYear(data: any) {
+    this.formYear.reset(data);
+    this.yearsService.formatearFormControl(
+      this.formYear,
+      'dtYAcadInicio',
+      data.dtYAcadInicio,
+      'date'
+    );
+    this.yearsService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
+  }
+
   accionBtnItem({ accion, item }) {
     switch (accion) {
       case 'ver':
@@ -328,15 +342,16 @@ export class YearsComponent implements OnInit {
           title: 'Año académico',
           visible: true,
         };
-        this.formYear.patchValue(item);
+        this.setFormYear(item);
         break;
       case 'editar':
+        this.bEditar = true;
         this.dialogYear = {
           title: 'Editar año académico',
           visible: true,
         };
         this.formYear.get('iYearEstado').disable();
-        this.formYear.patchValue(item);
+        this.setFormYear(item);
 
         break;
       case 'eliminar':

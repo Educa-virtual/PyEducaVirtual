@@ -12,8 +12,8 @@
       <p-button
         size="small"
         severity="success"
-        pTooltip="Aperturar nueva año"
-        tooltipPosition="left"
+        pTooltip="Aperturar nuevo año"
+        tooltipPosition="top"
         (click)="agregarYear()"
       >
         <i class="pi pi-fw pi-plus"></i>
@@ -34,8 +34,18 @@
 <p-dialog
   [header]="dialogYear.title"
   [(visible)]="dialogYear.visible"
-  [style]="{ width: '56rem' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{
+    width: '50vw',
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+  }"
   [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  (onHide)="setFormYear({})"
+  [resizable]="true"
+  [maximizable]="true"
 >
   <form class="grid mt-2" [formGroup]="formYear">
     <div class="col-12">
@@ -65,6 +75,35 @@
           appendTo="body"
           formControlName="cYearOficial"
           placeholder="Ingrese el nombre oficial"
+          maxlength="512"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtYAcadInicio"
+          inputId="dtYAcadInicio"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fin</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dYAcadFin"
+          inputId="dYAcadFin"
+          [showIcon]="true"
         />
       </p-inputGroup>
     </div>
@@ -72,7 +111,7 @@
 
   <div class="flex justify-content-end gap-2" *ngIf="formYear.enabled">
     <p-button label="Cancelar" severity="secondary" (onClick)="dialogYear.visible = false" />
-    <p-button label="Guardar" severity="primary" (onClick)="guardarYear()" />
+    <p-button *ngIf="!bEditar" label="Guardar" severity="primary" (onClick)="guardarYear()" />
     <p-button *ngIf="bEditar" label="Actualizar" severity="warning" (onClick)="actualizarYear()" />
   </div>
 </p-dialog>

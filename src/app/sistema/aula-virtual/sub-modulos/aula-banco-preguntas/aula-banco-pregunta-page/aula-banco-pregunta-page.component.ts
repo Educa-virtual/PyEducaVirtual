@@ -93,6 +93,10 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
     this.showModalPreguntas = false;
     const { accion, item } = elemento;
     switch (accion) {
+      case 'actualizar-preguntas':
+        this.obtenerBancoPreguntas();
+        this.showModalPreguntas = false;
+        break;
       case 'close-modal':
         this.showModalPreguntas = false;
         break;
@@ -165,7 +169,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
     switch (accion) {
       case 'close-modal':
         this.showModalEncabezado = false;
-        this.obtenerBancoPreguntas();
+        //this.obtenerBancoPreguntas();
         break;
       case 'editar':
         this.showModalEncabezado = true;
@@ -255,10 +259,12 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
           this.cursos = response.data.map(curso => ({
             iCursoId: curso.idDocCursoId,
             ...curso,
+            nombreCursoCompleto: `${curso.cCursoNombre} : ${curso.cGradoAbreviacion}`,
           }));
           this.cursos.unshift({
             iCursoId: 0,
             cCursoNombre: 'Todos',
+            nombreCursoCompleto: 'Todos',
           });
 
           this.cursos = this.cursos.filter(

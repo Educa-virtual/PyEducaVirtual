@@ -9,7 +9,7 @@
           [(ngModel)]="params.iCursoId"
           optionValue="iCursoId"
           [options]="cursos"
-          optionLabel="cCursoNombre"
+          optionLabel="nombreCursoCompleto"
           styleClass="w-full"
         />
       </p-inputGroup>
@@ -60,14 +60,13 @@
   </div>
 
   <!-- Tabla Banco de Preguntas -->
-  <div class="col-12" *ngIf="!showModalPreguntas">
-    <app-aula-banco-preguntas
-      [iCursoId]="params.iCursoId"
-      [iGradoId]="params.iGradoId"
-      [params]="params"
-      (actionBtnItem)="accionBtnItem($event)"
-    ></app-aula-banco-preguntas>
-  </div>
+
+  <app-aula-banco-preguntas
+    [iCursoId]="params.iCursoId"
+    [iGradoId]="params.iGradoId"
+    [params]="params"
+    (actionBtnItem)="accionBtnItem($event)"
+  ></app-aula-banco-preguntas>
 </div>
 
 <app-banco-preguntas-form

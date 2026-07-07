@@ -108,15 +108,12 @@ export class BancoEncabezadoFormComponent implements OnChanges {
     });
   }
 
-  eliminarAlternativa(opcion: any, indice: any) {
-    const alternativas = this.jsonPreguntas.at(indice).get('jsonAlternativas') as any;
-
-    const index = alternativas.controls.indexOf(opcion);
-
-    if (index === -1) return;
-
-    alternativas.removeAt(index);
-  }
+  // eliminarAlternativa(opcion: any, indice: any) {
+  //   const alternativas = this.jsonPreguntas.at(indice).get('jsonAlternativas') as any;
+  //   const index = alternativas.controls.indexOf(opcion);
+  //   if (index === -1) return;
+  //   alternativas.removeAt(index);
+  // }
 
   guardarEncabezadoPreguntas() {
     if (this.isLoading) return; // evitar doble clic
@@ -160,7 +157,7 @@ export class BancoEncabezadoFormComponent implements OnChanges {
               detail: resp.message,
             });
             this.accionBtnItem.emit({
-              accion: 'close-modal',
+              accion: 'actualizar-preguntas',
               item: [],
             });
           }
@@ -235,7 +232,7 @@ export class BancoEncabezadoFormComponent implements OnChanges {
               detail: resp.message,
             });
             this.accionBtnItem.emit({
-              accion: 'close-modal',
+              accion: 'actualizar-preguntas',
               item: [],
             });
           }
@@ -269,5 +266,14 @@ export class BancoEncabezadoFormComponent implements OnChanges {
 
   mostrarMensajeToast(message) {
     this._MessageService.add(message);
+  }
+
+  eliminarPregunta(pregunta: any) {
+    const preguntas = this.jsonPreguntas;
+    const index = preguntas.controls.indexOf(pregunta);
+
+    if (index !== -1) {
+      preguntas.removeAt(index);
+    }
   }
 }

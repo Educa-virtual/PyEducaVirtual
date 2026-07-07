@@ -338,8 +338,8 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy, OnChanges
   }
 
   accionBtnItem(elemento) {
-    const { accion, item } = elemento;
-    console.log(item);
+    const { accion } = elemento;
+
     switch (accion) {
       case 'close-modal':
         this.showDetallePregunta = false;

@@ -205,17 +205,17 @@ export class ActividadesNoLectivasComponent implements OnInit {
       text_header: 'center',
       text: 'center',
     },
-    {
-      type: 'group_json_file',
-      width: '2rem',
-      field: 'cDetCargaNoLectEvidencias',
-      header: 'Evidencias',
-      text_header: 'center',
-      text: 'justify',
-    },
+    // {
+    //   type: 'group_json_file',
+    //   width: '2rem',
+    //   field: 'cDetCargaNoLectEvidencias',
+    //   header: 'Evidencias',
+    //   text_header: 'center',
+    //   text: 'justify',
+    // },
     {
       type: 'actions',
-      width: '3rem',
+      width: '5rem',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
@@ -619,6 +619,42 @@ export class ActividadesNoLectivasComponent implements OnInit {
       complete: () => {
         this.obtenerCargaNoLectivas();
         this.bAprobar = false;
+      },
+    });
+  }
+  descargarArchivo(file: any) {
+    const datos = {
+      ruta: file,
+    };
+
+    this.actividadGestionService.descargarArchivo(datos).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.click();
+      },
+    });
+  }
+
+  descargarImagen(file: any) {
+    const datos = {
+      ruta: file,
+    };
+
+    this.actividadGestionService.descargarArchivo(datos).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: response.type });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = file.split('/').pop();
+        link.click();
+
+        URL.revokeObjectURL(url);
       },
     });
   }

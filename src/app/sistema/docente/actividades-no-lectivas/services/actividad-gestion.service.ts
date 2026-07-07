@@ -36,4 +36,9 @@ export class ActividadGestionService {
   observacionDetalleCargaNoLectivas(data: any) {
     return this.http.post(`${baseUrl}/docente/carga-no-lectivas/observar`, data);
   }
+  descargarArchivo(data: any) {
+    return this.http.post(`${baseUrl}/docente/carga-no-lectivas/descargar`, data, {
+      responseType: 'blob',
+    });
+  }
 }

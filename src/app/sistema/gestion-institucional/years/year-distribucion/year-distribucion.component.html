@@ -1,0 +1,118 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-toast />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Distribución de bloques académicos</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        pTooltip="Regresar"
+        size="small"
+        tooltipPosition="top"
+        severity="secondary"
+        (onClick)="regresar()"
+      >
+        <i class="pi pi-fw pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Regresar</span>
+      </p-button>
+      <p-button
+        pTooltip="Añadir Distribucion"
+        size="small"
+        tooltipPosition="top"
+        (onClick)="agregarDistribucion()"
+        severity="success"
+      >
+        <i class="pi pi-fw pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Añadir</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <app-table-primeng
+    (accionBtnItem)="accionBtnItem($event)"
+    [actions]="actions"
+    [columnas]="columns"
+    [data]="distribuciones" />
+
+  <p-dialog
+    [header]="dialogDistribucion.title"
+    [(visible)]="dialogDistribucion.visible"
+    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    [style]="{
+      width: '50vw',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+    }"
+    [modal]="true"
+    [closable]="true"
+    [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+    (onHide)="setFormDistribucion({})"
+    [resizable]="true"
+    [maximizable]="true"
+  >
+    <form [formGroup]="formDistribucion">
+      <div class="grid mt-2">
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Tipo de Distribucion</p-inputGroupAddon>
+            <p-dropdown
+              [options]="tipos_distribuciones"
+              formControlName="iTipoDistribucionId"
+              styleClass="group-element"
+              placeholder="Seleccione un tipo"
+              [style]="{ flex: '1', width: '100%' }"
+              appendTo="body"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+            <p-calendar
+              appendTo="body"
+              inputStyleClass="group-element"
+              formControlName="dtInicioBloque"
+              [showIcon]="true"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Fin</p-inputGroupAddon>
+            <p-calendar
+              appendTo="body"
+              inputStyleClass="group-element"
+              formControlName="dtFinBloque"
+              [showIcon]="true"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
+        </div>
+      </div>
+    </form>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        (onClick)="dialogDistribucion.visible = false"
+      />
+      <p-button
+        label="Actualizar"
+        severity="warning"
+        *ngIf="bEditar"
+        (onClick)="actualizarDistribucion()"
+      />
+      <p-button
+        label="Guardar"
+        severity="success"
+        *ngIf="!bEditar"
+        (onClick)="guardarDistribucion()"
+      />
+    </div> </p-dialog
+></p-panel>

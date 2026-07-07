@@ -1,5 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import { Component, OnInit } from '@angular/core';
+import {
+  IActionTable,
+  IColumn,
+  TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
@@ -7,12 +11,8 @@ import { StepConfirmationService } from '@/app/servicios/confirm.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { YearService } from './config/service/year.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { distribucionBloques } from './config/table/distribucion-bloque.table';
-import { DistribucionBloquesService } from './config/service/distribucion-bloques.service';
 import { DatePipe } from '@angular/common';
-import { PeriodoEvaluacionesService } from './config/service/periodoEvaluaciones.service';
-import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { GlobalStateService } from 'src/app/servicios/global-state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-years',
@@ -21,105 +21,24 @@ import { GlobalStateService } from 'src/app/servicios/global-state.service';
   providers: [MessageService, GeneralService, StepConfirmationService, DatePipe],
   templateUrl: './years.component.html',
   styleUrl: './years.component.scss',
-}) //, OnChanges, OnDestroy
+})
 export class YearsComponent implements OnInit {
   formYear: FormGroup;
+  formPeriodos: FormGroup;
+
   years: any;
-  forms: {
-    distribucionBloque: FormGroup;
-    procesarPeriodos: FormGroup;
-  } = {
-    distribucionBloque: new FormGroup({}),
-    procesarPeriodos: new FormGroup({}),
-  };
-
   bEditar: boolean = false;
-
-  private _LocalStoreService = inject(LocalStoreService);
-  perfil = this._LocalStoreService.getItem('dremoPerfil');
 
   dialogYear = {
     title: '',
     visible: false,
   };
-  dialogs = {
-    distribucionBloques: {
-      title: '',
-      visible: false,
-    },
-    distribucionBloque: {
-      title: '',
-      visible: false,
-    },
-    procesarPeriodo: {
-      title: '',
-      visible: false,
-    },
+  dialogPeriodos = {
+    title: '',
+    visible: false,
   };
 
-  periodoEvaluaciones = {
-    types: [],
-    processData: () => {
-      const iPeriodoEvalId = this.forms.procesarPeriodos.get('iPeriodoEvalId').value;
-      const iYAcadId = this.formYear.get('iYAcadId').value;
-
-      if (!iPeriodoEvalId || !iYAcadId) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Calendario académico',
-          detail: 'Falta información para procesar el calendario',
-          life: 3000,
-        });
-
-        return;
-      }
-
-      this.periodoEvaluacionesService
-        .processConfigCalendario({
-          iCredEntPerfId: this.perfil.iCredEntPerfId ?? null,
-          iCredId: this.perfil.iCredId ?? null,
-          iPerioEvalId: iPeriodoEvalId,
-          iYAcadId: iYAcadId,
-        })
-        .subscribe({
-          next: (res: any) => {
-            const result = res.data[0];
-            const isSuccess = result.Message === 'true';
-
-            this.messageService.add({
-              severity: isSuccess ? 'success' : 'warn',
-              summary: 'Calendario académico',
-              detail: result.resultado,
-              life: 3000,
-            });
-
-            this.dialogs.procesarPeriodo.visible = !isSuccess;
-          },
-        });
-    },
-  };
-
-  distribucionBloques = {
-    types: [],
-    accionBtnItem: distribucionBloques.accionBtnItem.bind(this),
-    table: {
-      columns: distribucionBloques.table.columns,
-      data: [],
-      actions: distribucionBloques.table.actions.call(this),
-    },
-    saveData: distribucionBloques.saveData.bind(this),
-  };
-
-  tiposDistribucion = [
-    {
-      iTipoDistribucionId: 1,
-      cBloqueNombre: 'Semana lectiva',
-    },
-    {
-      iTipoDistribucionId: 2,
-      cBloqueNombre: 'Semana de gestión',
-    },
-  ];
+  periodos: any[] = [];
 
   breadCrumbHome: MenuItem = { label: 'Inicio', icon: 'pi pi-house' };
   breadCrumbItems: MenuItem[] = [{ label: 'Años académicos' }];
@@ -129,11 +48,9 @@ export class YearsComponent implements OnInit {
     public query: GeneralService,
     private fb: FormBuilder,
     public yearsService: YearService,
-    public distribucionBloquesService: DistribucionBloquesService,
     public dialogConfirm: ConfirmationModalService,
     public datePipe: DatePipe,
-    public periodoEvaluacionesService: PeriodoEvaluacionesService,
-    private globalState: GlobalStateService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -147,89 +64,17 @@ export class YearsComponent implements OnInit {
         dYAcadFin: ['', [Validators.required]],
         iYAcadId: [''],
       });
-
-      this.forms.distribucionBloque = this.fb.group({
-        iDistribucionBloqueId: [''],
-        iYAcadId: [''],
-        iTipoDistribucionId: [''],
-        iSesionId: [''],
-        dtInicioBloque: [''],
-        dtFinBloque: [''],
-        iEstado: [''],
-      });
-
-      this.forms.procesarPeriodos = this.fb.group({
-        iPeriodoEvalId: [''],
+      this.formPeriodos = this.fb.group({
+        iYAcadId: ['', [Validators.required]],
+        iPeriodoEvalId: ['', [Validators.required]],
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
+    this.yearsService.crearYear({}).subscribe((data: any) => {
+      this.periodos = this.yearsService.getPeriodos(data?.periodos);
+    });
     this.listarYears();
-
-    this.distribucionBloquesService.getTipoDistribucion().subscribe({
-      next: (res: any) => {
-        this.distribucionBloques.types = res.data.map(item => ({
-          code: item.iTipoDistribucionId,
-          name: item.cBloqueNombre,
-        }));
-      },
-    });
-
-    this.periodoEvaluacionesService.getPeriodosEvaluaciones().subscribe({
-      next: (res: any) => {
-        this.periodoEvaluaciones.types = res.data.map(item => ({
-          code: item.iPeriodoEvalId,
-          name: item.cPeriodoEvalNombre,
-        }));
-      },
-    });
-  }
-
-  actualizarTolbarAnio(data: any) {
-    // O eliminar todo
-    // localStorage.clear();
-    // sessionStorage.clear();
-
-    /* para leer reactivamente
-    this.globalState.years$.subscribe(years => {
-    console.log('Años disponibles:', years);
-  });
-
-  this.globalState.selectedYear$.subscribe(year => {
-    console.log('Año seleccionado:', year);
-  });
-   
-   */
-    //Se asignan los nuevos años
-    this.globalState.updateYears(data);
-
-    //Asigna el año agregado
-    const year_actual = data.find(year => year.iYearEstado === '1');
-
-    this.globalState.setSelectedYear(year_actual);
-    return;
-    //return;
-    // Mostrar el diálogo de confirmación
-    /* this.dialogConfirm.openAlert({
-      header: 'Se reiniciará  para aplicar los cambios del nuevo año',
-    
-      });
-    // Esperar 5 segundos (5000 ms)
-      setTimeout(() => {
-        window.location.reload();
-        /*   const user = localStorage.getItem('dremoToken')
-
-        const accessToken = localStorage.getItem('auth-token')
-        const refreshToken = localStorage.getItem('auth-refreshtoken')
-        if (user) {
-            this.tokenStorageService.saveUser(user.replaceAll('"', ''))
-            this.tokenStorageService.saveToken(accessToken)
-            this.tokenStorageService.saveRefreshToken(refreshToken)
-        } else {
-            localStorage.clear()
-            this.tokenStorageService.signOut()
-        }
-    }, 2000);*/
   }
 
   agregarYear() {
@@ -324,6 +169,7 @@ export class YearsComponent implements OnInit {
   }
 
   setFormYear(data: any) {
+    console.log(data);
     this.formYear.reset(data);
     this.yearsService.formatearFormControl(
       this.formYear,
@@ -332,6 +178,29 @@ export class YearsComponent implements OnInit {
       'date'
     );
     this.yearsService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
+  }
+
+  procesarPeriodos() {
+    this.yearsService
+      .procesarPeriodosEvaluacion({
+        iPerioEvalId: this.formPeriodos.value.iPeriodoEvalId,
+        iYAcadId: this.formYear.value.iYAcadId,
+      })
+      .subscribe({
+        next: (res: any) => {
+          const result = res.data[0];
+          const isSuccess = result.Message === 'true';
+
+          this.messageService.add({
+            severity: isSuccess ? 'success' : 'warn',
+            summary: 'Calendario académico',
+            detail: result.resultado,
+            life: 3000,
+          });
+
+          this.dialogPeriodos.visible = !isSuccess;
+        },
+      });
   }
 
   accionBtnItem({ accion, item }) {
@@ -352,101 +221,28 @@ export class YearsComponent implements OnInit {
         };
         this.formYear.get('iYearEstado').disable();
         this.setFormYear(item);
-
         break;
       case 'eliminar':
         this.dialogConfirm.openConfirm({
-          header: 'Eliminar año',
-          message: `¿Realmente desea eliminar el año: ${item.iYearId} ?`,
+          header: 'Confirmación',
+          message: `¿Realmente desea eliminar el año seleecionado?`,
           accept: () => {
             this.eliminarYear(item);
           },
         });
         break;
-      case 'semanasLectivas':
-        this.dialogs.distribucionBloques = {
-          title: `Semanas lectivas del año: ${item.iYearId}`,
-          visible: true,
-        };
-
-        this.formYear.patchValue({
-          iYearId: item.iYearId,
-          cYearNombre: item.cYearNombre,
-          cYearOficial: item.cYearOficial,
-          iYearEstado: item.iYearEstado,
-        });
-
-        this.distribucionBloquesService.getDistribucionBloques(item.iYearId).subscribe({
-          next: (res: any) => {
-            console.log('res');
-            console.log(res.data);
-
-            this.distribucionBloques.table.data = res.data.map(item => {
-              const tipoDistribucion = this.tiposDistribucion.find(
-                tipo => tipo.iTipoDistribucionId == item.iTipoDistribucionId
-              );
-
-              return {
-                ...item,
-                cBloqueNombre: tipoDistribucion.cBloqueNombre,
-                dtInicioBloque: this.datePipe.transform(item.dtInicioBloque, 'dd/MM/yyyy'),
-                dtFinBloque: this.datePipe.transform(item.dtFinBloque, 'dd/MM/yyyy'),
-              };
-            });
-          },
-        });
-
+      case 'distribucion':
+        this.yearsService.setYear(item);
+        this.router.navigate([
+          `/gestion-institucional/years-academicos/${item.iYAcadId}/distribucion`,
+        ]);
         break;
-      case 'procesarPeriodos':
-        this.dialogs.procesarPeriodo = {
+      case 'periodos':
+        this.dialogPeriodos = {
           title: `Generar periodos del calendario académico para el año: ${item.iYearId}`,
           visible: true,
         };
-
-        this.formYear.patchValue({
-          iYearId: item.iYearId,
-          cYearNombre: item.cYearNombre,
-          cYearOficial: item.cYearOficial,
-          iYearEstado: item.iYearEstado,
-          iYAcadId: item.iYAcadId,
-        });
-
-        console.log('this.formYear');
-        console.log(this.formYear.value);
-
-        break;
-      case 'verSemanasLectivas':
-        this.dialogs.distribucionBloques = {
-          title: `Semanas lectivas del año: ${item.iYearId}`,
-          visible: true,
-        };
-
-        this.formYear.disable();
-        this.forms.distribucionBloque.disable();
-
-        this.formYear.patchValue({
-          iYearId: item.iYearId,
-          cYearNombre: item.cYearNombre,
-          cYearOficial: item.cYearOficial,
-          iYearEstado: item.iYearEstado,
-        });
-
-        this.distribucionBloquesService.getDistribucionBloques(item.iYearId).subscribe({
-          next: (res: any) => {
-            this.distribucionBloques.table.data = res.data.map(item => {
-              const tipoDistribucion = this.tiposDistribucion.find(
-                tipo => tipo.iTipoDistribucionId == item.iTipoDistribucionId
-              );
-
-              return {
-                ...item,
-                cBloqueNombre: tipoDistribucion.cBloqueNombre,
-                dtInicioBloque: this.datePipe.transform(item.dtInicioBloque, 'dd/MM/yyyy'),
-                dtFinBloque: this.datePipe.transform(item.dtFinBloque, 'dd/MM/yyyy'),
-              };
-            });
-          },
-        });
+        this.setFormYear(item);
         break;
     }
   }
@@ -511,11 +307,11 @@ export class YearsComponent implements OnInit {
     },
   ];
 
-  actions = [
+  actions: IActionTable[] = [
     {
       labelTooltip: 'Gestionar semanas lectivas',
       icon: 'pi pi-calendar',
-      accion: 'semanasLectivas',
+      accion: 'distribucion',
       type: 'item',
       class: 'p-menuitem-link text-primary',
       isVisible: rowData => Number(rowData.iYearEstado) == 1,
@@ -523,7 +319,7 @@ export class YearsComponent implements OnInit {
     {
       labelTooltip: 'Ver semanas lectivas',
       icon: 'pi pi-calendar',
-      accion: 'verSemanasLectivas',
+      accion: 'distribucion',
       type: 'item',
       class: 'p-menuitem-link text-primary',
       isVisible: rowData => Number(rowData.iYearEstado) == 0,
@@ -531,7 +327,7 @@ export class YearsComponent implements OnInit {
     {
       labelTooltip: 'Procesar periodos',
       icon: 'pi pi-sync',
-      accion: 'procesarPeriodos',
+      accion: 'periodos',
       type: 'item',
       class: 'p-menuitem-link text-purple-500',
       isVisible: rowData => Number(rowData.iYearEstado) == 1,

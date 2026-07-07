@@ -20,9 +20,6 @@ import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados
 import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component';
 import { InformacionComponent } from './informacion/informacion.component';
 import { SincronizarArchivoComponent } from './sincronizar-archivo/sincronizar-archivo.component';
-
-//import { HorarioComponent } from './horario/horario.component'
-//import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component';
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
@@ -42,6 +39,7 @@ import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion
 import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
 import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.component';
 import { ListaUsuariosComponent } from '../administrador/gestion-usuarios/lista-usuarios/lista-usuarios.component';
+import { YearDistribucionComponent } from './years/year-distribucion/year-distribucion.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -56,7 +54,15 @@ const routes: Routes = [
     component: YearsComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [DIRECTOR_IE, ADMINISTRADOR_DREMO],
+      expectedRole: [ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'years-academicos/:iYAcadId/distribucion',
+    component: YearDistribucionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
     },
   },
   {
@@ -139,7 +145,7 @@ const routes: Routes = [
           expectedRole: [DIRECTOR_IE],
         },
       },
-    ]
+    ],
   },
   {
     path: 'fechas-nacionales',

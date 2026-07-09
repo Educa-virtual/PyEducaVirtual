@@ -101,13 +101,24 @@
       <div class="flex flex-wrap">
         <div class="inline" *ngFor="let adjunto of mensaje.cAdjunto">
           <p-button
+            *ngIf="adjunto.type === 1 || adjunto.type === 3"
             label="{{ adjunto.name | slice: 0 : 20 }}..."
             [icon]="adjunto.extension ? 'pi pi-download' : 'pi pi-link'"
-            class="p-button-rounded p-button-text mr-3"
+            class="p-button-rounded p-button-text mr-3 bg-white"
             size="small"
             [text]="true"
             [raised]="true"
             (click)="descargarArchivo(adjunto)"
+          />
+          <p-button
+            *ngIf="adjunto.type === 2"
+            label="{{ adjunto.name | slice: 0 : 20 }}..."
+            [icon]="adjunto.extension ? 'pi pi-image' : 'pi pi-link'"
+            class="p-button-rounded p-button-text mr-3 bg-white"
+            size="small"
+            [text]="true"
+            [raised]="true"
+            (click)="descargarImagen(adjunto)"
           />
         </div>
       </div>

@@ -198,4 +198,24 @@ export class ListaComunicadosComponent implements OnInit {
       window.open(archivo.name, '_blank');
     }
   }
+
+  descargarImagen(archivo: any) {
+    const datos = {
+      archivo: archivo.file,
+    };
+
+    this.comunicadosService.descargarDocumento(datos).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: response.type });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = archivo.file.split('/').pop();
+        link.click();
+
+        URL.revokeObjectURL(url);
+      },
+    });
+  }
 }

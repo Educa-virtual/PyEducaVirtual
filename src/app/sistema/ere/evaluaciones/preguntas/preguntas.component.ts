@@ -469,6 +469,8 @@ export class PreguntasComponent implements OnInit {
       preguntaPeso = pregunta.pregunta[0].iPreguntaPeso;
       preguntaPuntaje = pregunta.pregunta[0].iPreguntaPuntaje;
     }
+    console.log(encabezado, 'encabezado');
+    console.log(pregunta, 'pregunta');
 
     if (contenidoPregunta == '' || contenidoPregunta == null) {
       this._MessageService.add({

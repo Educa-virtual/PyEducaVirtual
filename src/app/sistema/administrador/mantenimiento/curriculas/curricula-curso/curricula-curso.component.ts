@@ -2,44 +2,23 @@ import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContainerPageComponent,
   IActionContainer,
 } from '@/app/shared/container-page/container-page.component';
-
-import { DialogModule } from 'primeng/dialog';
-import { ImageModule } from 'primeng/image';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { EditorModule } from 'primeng/editor';
-import { FileUploadModule } from 'primeng/fileupload';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
-import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { FieldsetModule } from 'primeng/fieldset';
 import { PrimengModule } from '@/app/primeng.module';
 import { CurriculaCursoCompetenciasComponent } from '../curricula-curso-competencias/curricula-curso-competencias.component';
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component';
 import { environment } from '@/environments/environment';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { HttpClient } from '@angular/common/http';
 import imagenesRecursosAreas from '@/app/shared/imagenes/areas';
-
-// interface Image {
-//   id: number;
-//   url: string;
-//   title: string;
-// }
+import { ActivatedRoute, Router } from '@angular/router';
+import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { CurriculasService } from '../config/service/curriculas.service';
 
 @Component({
   selector: 'app-curricula-curso',
@@ -47,42 +26,35 @@ import imagenesRecursosAreas from '@/app/shared/imagenes/areas';
   imports: [
     ContainerPageComponent,
     TablePrimengComponent,
-    DialogModule,
-    ImageModule,
-    ProgressBarModule,
-    EditorModule,
-    FileUploadModule,
-    ToggleButtonModule,
-    ReactiveFormsModule,
-    NoDataComponent,
-    FieldsetModule,
     PrimengModule,
-    FormsModule,
     CurriculaCursoCompetenciasComponent,
     TypesFilesUploadPrimengComponent,
+    NoDataComponent,
   ],
   templateUrl: './curricula-curso.component.html',
   styleUrl: './curricula-curso.component.scss',
 })
-export class CurriculaCursoComponent implements OnChanges {
+export class CurriculaCursoComponent implements OnInit {
   @Output() asignarCurso = new EventEmitter();
-
-  @Input() iCurrId: number = 0;
-  @Input() curriculas: any = [];
   @Input() caption: string = '';
 
   cursos: any[] = [];
   visible: boolean = false;
+  visibleCompetencias: boolean = false;
+  activeCompetenciaTab: number = 0;
   totalCursos: any[] = [];
   nivelesTipos: any[] = [];
   grados: any[] = [];
   tiposCursos: any[] = [];
   capacidades: any[] = [];
   iCursoId: number = 0;
+  cursoSeleccionado: any = null;
   capacidadesCurso: any[] = [];
   titulo: string = '';
-  currricula: any = {};
   curso: any = {};
+
+  iCurrId: any;
+  curricula: any;
 
   perfil: any;
   filesUrl = [];
@@ -116,16 +88,29 @@ export class CurriculaCursoComponent implements OnChanges {
   bUpdate: boolean = false;
 
   backend = environment.backend;
-  private http = inject(HttpClient);
-  private backendApi = environment.backendApi;
   private _LocalStoreService = inject(LocalStoreService);
+
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [];
+
+  estados_cursos: any[] = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService
+    private query: GeneralService,
+    private router: Router,
+    private curriculaService: CurriculasService,
+    private route: ActivatedRoute
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
     this.ruta_imagen = String('cursos/images/SVG/no-imagen.svg');
+    this.iCurrId = this.route.snapshot.paramMap.get('iCurrId');
+    this.curricula = this.curriculaService.getCurricula();
+    this.setBreadCrumb();
   }
 
   frmCursos = this.fb.group({
@@ -147,23 +132,17 @@ export class CurriculaCursoComponent implements OnChanges {
     vValidoCredito: [true], //, Validators.requiredTrue
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
-      // Si iCurrId cambió y tiene valor válido
-      this.iCurrId = changes['iCurrId'].currentValue;
-      this.inicializacion();
-      this.getTipoCurso();
-    }
-
-    if (changes['curriculas'] && changes['curriculas'].currentValue) {
-      // Si curriculas cambió
-      this.curriculas = changes['curriculas'].currentValue;
-
-      this.currricula = this.curriculas.find((c: any) => c.iCurrId === this.iCurrId) || {};
-    }
+  setBreadCrumb() {
+    this.breadCrumbItems = [
+      { label: 'Currículas', routerLink: ['/administrador/mantenimiento-curricula'] },
+      {
+        label: this.curricula.cCurrDescripcion ?? '',
+      },
+      { label: 'Áreas curriculares' },
+    ];
   }
 
-  inicializacion() {
+  ngOnInit(): void {
     //const item = event.item || this.cursos || null
     this.cursos = [];
     this.query
@@ -202,6 +181,7 @@ export class CurriculaCursoComponent implements OnChanges {
           }
         },
       });
+    this.getTipoCurso();
   }
 
   getTipoCurso() {
@@ -233,6 +213,18 @@ export class CurriculaCursoComponent implements OnChanges {
     switch (accion) {
       case 'cursos':
         this.asignarCurso.emit(item);
+        break;
+      case 'competencias':
+        this.cursoSeleccionado = item;
+        this.iCursoId = item.iCursoId;
+        this.visibleCompetencias = true;
+        this.activeCompetenciaTab = 0;
+        break;
+      case 'cambiar_tab_competencia':
+        this.activeCompetenciaTab = 1;
+        break;
+      case 'regresar':
+        this.router.navigate([`/administrador/mantenimiento-curricula`]);
         break;
       case 'agregar':
         this.titulo =
@@ -336,11 +328,11 @@ export class CurriculaCursoComponent implements OnChanges {
 
     if (this.bUpdate) {
       total_credito =
-        Number(this.currricula?.iCurrTotalCreditos ?? 0) -
+        Number(this.curricula?.iCurrTotalCreditos ?? 0) -
         totalCredito +
         Number(this.curso.nCursoTotalCreditos);
     } else {
-      total_credito = Number(this.currricula?.iCurrTotalCreditos ?? 0) - totalCredito;
+      total_credito = Number(this.curricula?.iCurrTotalCreditos ?? 0) - totalCredito;
     }
 
     const credito = Number(this.frmCursos.value.nCursoTotalCreditos ?? 0);
@@ -376,15 +368,14 @@ export class CurriculaCursoComponent implements OnChanges {
 
     if (this.bUpdate) {
       totalHora =
-        Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) -
+        Number(String(this.curricula?.iCurrNroHoras ?? '0').trim()) -
         total_horas +
         Number(this.curso.iCursoTotalHoras);
     } else {
-      totalHora = Number(String(this.currricula?.iCurrNroHoras ?? '0').trim()) - total_horas;
+      totalHora = Number(String(this.curricula?.iCurrNroHoras ?? '0').trim()) - total_horas;
     }
 
     const hora = Number(this.frmCursos?.value?.iCursoTotalHoras ?? 0);
-    console.log(this.curriculas.iCurrNroHoras);
     const esValido = totalHora >= hora;
 
     if (!esValido) {
@@ -493,7 +484,6 @@ export class CurriculaCursoComponent implements OnChanges {
           this.frmCursos.reset();
         }
         this.visible = false;
-        this.inicializacion();
       },
     });
   }
@@ -501,10 +491,17 @@ export class CurriculaCursoComponent implements OnChanges {
   accionesCursos: IActionContainer[] = [
     {
       labelTooltip: 'Agregar área',
-      text: '',
+      text: 'Agregar',
       icon: 'pi pi-plus',
       accion: 'agregar',
       class: 'p-button-success',
+    },
+    {
+      labelTooltip: 'Regresar',
+      text: 'Regresar',
+      icon: 'pi pi-arrow-left',
+      accion: 'regresar',
+      class: 'p-button-secondary',
     },
   ];
 
@@ -516,13 +513,13 @@ export class CurriculaCursoComponent implements OnChanges {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Mostrar competencias',
-    //   icon: 'pi pi-book',
-    //   accion: 'cursos',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-primary p-button-text',
-    // },
+    {
+      labelTooltip: 'Mostrar competencias',
+      icon: 'pi pi-book',
+      accion: 'competencias',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+    },
     // {
     //   labelTooltip: 'Eliminar área curricular',
     //   icon: 'pi pi-trash',
@@ -536,50 +533,42 @@ export class CurriculaCursoComponent implements OnChanges {
     {
       type: 'item',
       width: '5%',
-      field: '',
+      field: '#',
       header: 'Item',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'text',
-      width: '60%',
+      width: '65%',
       field: 'cCursoNombre',
       header: 'Área curricular',
       text_header: 'center',
       text: 'left',
     },
-    // {
-    //   type: 'text',
-    //   width: '5rem',
-    //   field: 'nCursoTotalCreditos',
-    //   header: 'Créditos',
-    //   text_header: 'center',
-    //   text: 'center',
-    // },
-    // {
-    //   type: 'text',
-    //   width: '5rem',
-    //   field: 'iCursoTotalHoras',
-    //   header: 'Horas',
-    //   text_header: 'center',
-    //   text: 'center',
-    // },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'iCursoTotalHoras',
+      header: 'Horas',
+      text_header: 'center',
+      text: 'center',
+    },
     {
       type: 'estado-activo',
-      width: '5%',
+      width: '10%',
       field: 'iCursoEstado',
-      header: '',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'actions',
-      width: '30%',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
-      text: 'center',
+      text: 'right',
     },
   ];
 }

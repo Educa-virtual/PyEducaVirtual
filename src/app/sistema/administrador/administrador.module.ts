@@ -49,8 +49,10 @@ const routes: Routes = [
 
   {
     path: 'mantenimiento-curricula',
-    loadComponent: () =>
-      import('./mantenimiento/curriculas/curriculas.component').then(m => m.CurriculasComponent),
+    loadChildren: () =>
+      import('./mantenimiento/curriculas/curriculas-routing.module').then(
+        m => m.CurriculasRoutingModule
+      ),
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ADMINISTRADOR_DREMO],

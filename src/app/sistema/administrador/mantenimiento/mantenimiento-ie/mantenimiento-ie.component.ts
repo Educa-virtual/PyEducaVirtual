@@ -1,22 +1,20 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
-
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import { DatosInformesService } from '@/app/sistema/ere/services/datos-informes.service';
 import { GestionUsuariosService } from '../../gestion-usuarios/services/gestion-usuarios.service';
-import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
-import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
-
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import {
+  IActionTable,
+  IColumn,
+  TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component';
 import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { FormSedesComponent } from './form-sedes/form-sedes.component';
-import { CardOrderlistIeComponent } from '../../shared/card-orderlist-ie/card-orderlist-ie.component';
 import { catchError, map, of } from 'rxjs';
 
 @Component({
@@ -24,26 +22,14 @@ import { catchError, map, of } from 'rxjs';
   standalone: true,
   imports: [
     PrimengModule,
-    NoDataComponent,
-    ToolbarPrimengComponent,
-
     TablePrimengComponent,
     AgregarMantenimientoIeComponent,
     FormSedesComponent,
-    CardOrderlistIeComponent,
   ],
   templateUrl: './mantenimiento-ie.component.html',
   styleUrl: './mantenimiento-ie.component.scss',
 })
-export class MantenimientoIeComponent extends MostrarErrorComponent implements OnInit {
-  private _LocalStoreService = inject(LocalStoreService);
-  private _FormBuilder = inject(FormBuilder);
-  private _GeneralService = inject(GeneralService);
-  private _ConstantesService = inject(ConstantesService);
-  private _GestionUsuariosService = inject(GestionUsuariosService);
-  private _DatosInformesService = inject(DatosInformesService);
-  private _ConfirmationModalService = inject(ConfirmationModalService);
-
+export class MantenimientoIeComponent implements OnInit {
   title: string = 'Mantenimiento Instituciones Educativas';
   loading: boolean = false;
   institucionSeleccionada = signal<any>({});
@@ -51,7 +37,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   itemSelectedSede = signal<any | null>(null);
 
   nivelTipos = signal<any[]>([]);
-  instituciones = signal<any[]>([]);
+  instituciones: any[] = [];
 
   institucionesxiNivelTipoId = signal<any[]>([]);
 
@@ -62,6 +48,8 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
   showDialogConfirmacion: boolean = false;
   sede: any = {};
   periodos: any = [];
+
+  activeTab: number = 0;
 
   isLoadingDatosIniciales = signal<boolean>(false);
 
@@ -80,6 +68,85 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
 
   perfil = this._LocalStoreService.getItem('dremoPerfil');
 
+  constructor(
+    private _LocalStoreService: LocalStoreService,
+    private _GeneralService: GeneralService,
+    private _ConstantesService: ConstantesService,
+    private _GestionUsuariosService: GestionUsuariosService,
+    private _DatosInformesService: DatosInformesService,
+    private _ConfirmationModalService: ConfirmationModalService,
+    private _FormBuilder: FormBuilder,
+    private messageService: MessageService
+  ) {}
+
+  columnas: IColumn[] = [
+    {
+      type: 'item',
+      width: '10%',
+      field: 'index',
+      header: 'Nro',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '50%',
+      field: 'cTitulo',
+      header: 'Código modular - Institución Educativa',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'text',
+      width: '20%',
+      field: 'cNivelDescripcion',
+      header: 'Descripción',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'actions',
+      width: '15%',
+      field: 'acciones',
+      header: 'Acciones',
+      text_header: 'left',
+      text: 'left',
+    },
+  ];
+
+  acciones: IActionTable[] = [
+    {
+      labelTooltip: 'Seleccionar',
+      icon: 'pi pi-arrow-right',
+      accion: 'seleccionar',
+      type: 'item',
+      class: 'p-button-rounded p-button-info p-button-text',
+    },
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-warning p-button-text',
+    },
+  ];
+
+  onAccionBtn(event: { accion: string; item: any }) {
+    switch (event.accion) {
+      case 'seleccionar':
+        this.institucionSeleccionada.set(event.item);
+        this.obtenerInformacionIE(event.item);
+        this.activeTab = 1;
+        break;
+      case 'editar':
+        this.showModal.set(true);
+        this.itemSelected.set(event.item);
+        this.institucionSeleccionada.set(event.item);
+        this.isLoadingDatosIniciales.set(true);
+        break;
+    }
+  }
+
   formMantenimiento = this._FormBuilder.nonNullable.group({
     iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
     iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
@@ -94,7 +161,6 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
     iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
     iPerioEvalId: [0, Validators.required],
     iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
-    // iSedeId: [0, Validators.required],
   });
 
   accionesSedes = signal<any[]>([
@@ -112,13 +178,6 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Eliminar',
-    //   icon: 'pi pi-trash',
-    //   accion: 'eliminar',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
   ]);
 
   public columnasSedes = signal<any[]>([
@@ -194,7 +253,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
         this.bUpdateInstitucion = true;
         break;
       case 'agregar_iiee':
-        this.instituciones.set([]);
+        this.instituciones = null;
         this.getIntitucionEducativa();
         this.obtenerInstituciones();
         this.bUpdateInstitucion = false;
@@ -218,7 +277,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
           this.institucionSeleccionada.set(item);
         },
         error: error => {
-          this.mostrarErrores(error);
+          console.error('Error obteniendo datos:', error);
         },
         complete: () => {
           // this.getIntitucionEducativa();
@@ -263,11 +322,11 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
           }));
 
           // actualizamos la señal
-          this.instituciones.set(instituciones);
+          this.instituciones = instituciones;
           return instituciones; // ✅ devolvemos el resultado
         }),
         catchError(error => {
-          this.mostrarErrores(error);
+          console.error('Error obteniendo datos:', error);
           return of([]); // devolvemos un observable vacío para evitar que rompa
         })
       );
@@ -282,7 +341,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
         this.sedes.set(respuesta?.data || []);
       },
       error: error => {
-        this.mostrarErrores(error);
+        console.error('Error obteniendo datos:', error);
       },
     });
   }
@@ -363,13 +422,13 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
                 summary: 'Acción exitosa',
                 detail: resp.message,
               });
-              this.instituciones.set([]);
+              this.instituciones = null;
               this.getIntitucionEducativa();
               this.obtenerInstituciones();
             }
           },
           error: error => {
-            this.mostrarErrores(error);
+            console.error('Error obteniendo datos:', error);
           },
         });
       },
@@ -465,7 +524,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
             }
           },
           error: error => {
-            this.mostrarErrores(error);
+            console.error('Error obteniendo datos:', error);
           },
         });
       },
@@ -486,7 +545,7 @@ export class MantenimientoIeComponent extends MostrarErrorComponent implements O
         this.periodos = data.data || [];
       },
       error: error => {
-        this.mostrarErrores(error);
+        console.error('Error obteniendo datos:', error);
       },
     });
   }

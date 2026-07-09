@@ -8,57 +8,23 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { Button } from 'primeng/button';
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
 import { Message, MessageService } from 'primeng/api';
-import { MessagesModule } from 'primeng/messages';
-import { DialogModule } from 'primeng/dialog';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { ToastModule } from 'primeng/toast';
-import { CommonModule } from '@angular/common';
 import { GeneralService } from '@/app/servicios/general.service';
 import { AulaBancoPreguntasModule } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas.module';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { PrimengModule } from '@/app/primeng.module';
 
 @Component({
   selector: 'app-curricula-curso-competencias',
   standalone: true,
-  imports: [
-    Button,
-    TablePrimengComponent,
-    CommonModule,
-    FormsModule,
-    ToastModule,
-    InputNumberModule,
-    ReactiveFormsModule,
-    CardModule,
-    ButtonModule,
-    MessagesModule,
-    TablePrimengComponent,
-    DialogModule,
-    InputTextModule,
-    DropdownModule,
-    InputSwitchModule,
-    NoDataComponent,
-    AulaBancoPreguntasModule,
-  ],
+  imports: [PrimengModule, TablePrimengComponent, NoDataComponent, AulaBancoPreguntasModule],
   templateUrl: './curricula-curso-competencias.component.html',
   styleUrl: './curricula-curso-competencias.component.scss',
 })
@@ -66,6 +32,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
   @Input() iCursoId: number = 0;
   @Input() cursos: any = [];
   @Input() iCurrId: number = 0;
+  @Input() modoFormulario: boolean = false;
   @Output() asignarCompetencia = new EventEmitter();
 
   competencias: any[] = [];
@@ -78,15 +45,17 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
   bUpdate: boolean = false; //variable para identificar modificacion
   perfil: any;
 
+  activeTab: number = 0;
+  estados_competencias: any[] = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
+
   private _confirmService = inject(ConfirmationModalService);
   private _LocalStoreService = inject(LocalStoreService);
 
   constructor(
     private fb: FormBuilder,
-    // public curriculasService: CurriculasService,
-    // public cursosService: CursosService,
-    //   public modalidadServiciosService: ModalidadServicioService,
-    // public nivelesGradosService: NivelGradosService,
     public cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private query: GeneralService
@@ -129,6 +98,13 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
     this.frmCursosCompetencias.reset();
   }
 
+  cambiarTab(index: number) {
+    this.activeTab = index;
+    if (index === 1) {
+      this.inicializacion();
+    }
+  }
+
   accionBtnItem(event: any) {
     const item = event.item || null;
     const accion = event.accion || null;
@@ -141,6 +117,7 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
       case 'agregar':
         this.frmCursosCompetencias.reset();
         this.bUpdate = false;
+        this.activeTab = 1;
         break;
 
       case 'guardar':
@@ -170,6 +147,11 @@ export class CurriculaCursoCompetenciasComponent implements OnChanges {
           iEstado: Number(item.iEstado) ?? 0,
         });
         this.bUpdate = true;
+        this.activeTab = 1;
+        break;
+
+      case 'cambiar_tab_competencia':
+        this.activeTab = 1;
         break;
 
       case 'eliminar_competencia':

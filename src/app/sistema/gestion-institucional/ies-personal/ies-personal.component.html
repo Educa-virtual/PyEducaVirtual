@@ -33,14 +33,10 @@
     <form [formGroup]="form">
       <div class="grid p-fluid mt-3">
         <input pInputText type="hidden" formControlName="iPersIeId" class="p-inputtext-sm" />
-        <div class="field col-12 md:col-12">
-          <div class="separator-with-text">
-            <span>Datos del personal</span>
-          </div>
-        </div>
 
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Seleccionar cargo</p-inputGroupAddon>
             <p-dropdown
               [options]="cargos"
               formControlName="iPersCargoId"
@@ -51,17 +47,21 @@
               [showClear]="true"
               [appendTo]="'body'"
               (onChange)="onCargoSeleccionado($event)"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-
-            <label for="iPersCargoId">Selecionar cargo</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-6">
-          <span class="p-float-label">
-            <p-inputNumber formControlName="iHorasLabora" aria-describedby="iHorasLabora-help" />
-
-            <label for="iHorasLabora">Total de horas</label>
-          </span>
+        <div class="col-12 md:col-6">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Total de horas</p-inputGroupAddon>
+            <p-inputNumber
+              formControlName="iHorasLabora"
+              aria-describedby="iHorasLabora-help"
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
+            />
+          </p-inputGroup>
           <small
             id="iHorasLabora-help"
             class="p-error"
@@ -70,8 +70,9 @@
             Ingrese un número válido mayor de 1 a 40.
           </small>
         </div>
-        <div class="field col-6">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Tipo de documento *</p-inputGroupAddon>
             <p-dropdown
               [options]="tipos_documentos"
               formControlName="iTipoIdentId"
@@ -80,31 +81,34 @@
               [filter]="true"
               [showClear]="true"
               [appendTo]="'body'"
+              styleClass="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="iTipoIdentId">Tipo de documento *</label>
-          </span>
+          </p-inputGroup>
         </div>
-        <div class="field col-12 md:col-4">
-          <span class="p-float-label">
+        <div class="col-12 md:col-6">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>
+              <p-button
+                label="Validar"
+                icon="pi pi-search"
+                severity="success"
+                (onClick)="validarPersona()"
+                *ngIf="!form.get('iPersIeId')?.value"
+              />
+              Documento
+            </p-inputGroupAddon>
             <input
               pInputText
               id="cPersDocumento"
-              (onclick)="validarPersona()"
+              (click)="validarPersona()"
               formControlName="cPersDocumento"
               aria-describedby="cPersDocumento-help"
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
             <input type="hidden" formControlName="iPersId" />
-
-            <label for="cPersDocumento">Documento</label>
-          </span>
-        </div>
-        <div class="field col-12 md:col-2" *ngIf="!form.get('iPersIeId')?.value">
-          <p-button
-            label="Validar"
-            icon="pi pi-search"
-            styleClass="p-button-success"
-            (onClick)="validarPersona()"
-          />
+          </p-inputGroup>
         </div>
 
         <div class="field col-12" *ngIf="mensaje">
@@ -113,71 +117,78 @@
 
         @if (option) {
           <div class="field col-12 md:col-12">
-            <!-- <hr class="custom-separator" /> -->
             <div class="separator-with-text">
               <span>Información de NEXUS</span>
             </div>
           </div>
 
-          <div class="field col-12 md:col-6">
-            <span class="p-float-label">
+          <div class="col-12 md:col-6">
+            <p-inputGroup class="vertical-group">
+              <p-inputGroupAddon>Fecha inicio</p-inputGroupAddon>
               <p-calendar
                 formControlName="dtInicio"
                 [iconDisplay]="'input'"
                 [showIcon]="true"
                 inputId="dtInicio"
                 [appendTo]="'body'"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
               />
-
-              <label for="dtInicio">Fecha inicio</label>
-            </span>
+            </p-inputGroup>
           </div>
-          <div class="field col-12 md:col-6">
-            <span class="p-float-label">
+          <div class="col-12 md:col-6">
+            <p-inputGroup class="vertical-group">
+              <p-inputGroupAddon>Fecha fin</p-inputGroupAddon>
               <p-calendar
                 formControlName="dtFin"
                 [iconDisplay]="'input'"
                 [showIcon]="true"
                 inputId="dtFin"
                 [appendTo]="'body'"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
               />
-
-              <label for="dtFin">Fecha fin</label>
-            </span>
+            </p-inputGroup>
           </div>
-          <div class="field col-12 md:col-4">
-            <span class="p-float-label">
+          <div class="col-12 md:col-4">
+            <p-inputGroup class="vertical-group">
+              <p-inputGroupAddon>Nexus</p-inputGroupAddon>
               <input
                 pInputText
                 id="iCodigoNexus"
                 formControlName="iCodigoNexus"
                 aria-describedby="iCodigoNexus-help"
+                class="group-element"
+                [style]="{ flex: '1', width: '100%' }"
               />
-              <label for="iCodigoNexus">Nexus</label>
-            </span>
+            </p-inputGroup>
           </div>
-          <div class="field col-12 md:col-8">
-            <span class="p-float-label">
+          <div class="col-12 md:col-8">
+            <p-inputGroup class="vertical-group">
+              <p-inputGroupAddon>Documento de aprobación</p-inputGroupAddon>
               <input
                 pInputText
                 id="cResolucion"
                 formControlName="cResolucion"
                 aria-describedby="cResolucion-help"
+                class="group-element"
+                [style]="{ flex: '1', width: '100%' }"
               />
-              <label for="cResolucion">Documento de aprobación</label>
-            </span>
+            </p-inputGroup>
           </div>
         }
-        <div class="field col-12 md:col-12">
-          <span class="p-float-label">
+        <div class="col-12 md:col-12">
+          <p-inputGroup class="vertical-group">
+            <p-inputGroupAddon>Observación</p-inputGroupAddon>
             <input
               pInputText
               id="cMotivo"
               formControlName="cMotivo"
               aria-describedby="cMotivo-help"
+              class="group-element"
+              [style]="{ flex: '1', width: '100%' }"
             />
-            <label for="cMotivo">Observación</label>
-          </span>
+          </p-inputGroup>
         </div>
       </div>
       @if (c_accion === 'editar') {

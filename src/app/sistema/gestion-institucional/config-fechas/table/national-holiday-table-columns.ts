@@ -31,14 +31,6 @@ const columns: IColumn[] = [
     text: 'center',
   },
   {
-    type: 'text',
-    width: '5rem',
-    field: 'E2/cDocumento',
-    header: 'Documento',
-    text_header: 'center',
-    text: 'center',
-  },
-  {
     type: 'estado-activo',
     width: '5rem',
     field: 'D2/bFeriadoEsRecuperable',

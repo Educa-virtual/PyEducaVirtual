@@ -1,19 +1,10 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   IActionTable,
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { GeneralService } from '@/app/servicios/general.service';
 import { Button } from 'primeng/button';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
@@ -21,11 +12,12 @@ import {
   IActionContainer,
   ContainerPageComponent,
 } from '@/app/shared/container-page/container-page.component';
-import { ConstantesService } from '@/app/servicios/constantes.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competencia-capacidades/curricula-competencia-capacidades.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CurriculasService } from '../config/service/curriculas.service';
 
 @Component({
   selector: 'app-curricula-competencia',
@@ -41,20 +33,29 @@ import { CurriculaCompetenciaCapacidadesComponent } from '../curricula-competenc
   templateUrl: './curricula-competencia.component.html',
   styleUrl: './curricula-competencia.component.scss',
 })
-export class CurriculaCompetenciaComponent implements OnChanges {
+export class CurriculaCompetenciaComponent implements OnInit {
   @Output() asignarcompetencia = new EventEmitter();
-
-  @Input() iCurrId: number = 0;
-  @Input() caption: string = '';
 
   titulo: string = 'Gestión de Competencias';
   competencias: any[];
   visible_competencia: boolean = false;
+  visible_capacidades: boolean = false;
   bUpdate = false;
   iCompetenciaId: number;
+  iCompetenciaIdSeleccionada: number = 0;
+  competenciaSeleccionada: any = null;
   perfil: any;
+  iCurrId: any;
+  curricula: any;
 
-  private _ConstantesService = inject(ConstantesService);
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [];
+
+  estados_competencias: any[] = [
+    { label: 'ACTIVO', value: 1 },
+    { label: 'INACTIVO', value: 0 },
+  ];
+
   private _confirmService = inject(ConfirmationModalService);
   private _LocalStoreService = inject(LocalStoreService);
 
@@ -62,9 +63,25 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     private fb: FormBuilder,
     public cdr: ChangeDetectorRef,
     private messageService: MessageService,
-    private query: GeneralService
+    private query: GeneralService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private curriculaService: CurriculasService
   ) {
     this.perfil = this._LocalStoreService.getItem('dremoPerfil');
+    this.iCurrId = this.route.snapshot.paramMap.get('iCurrId');
+    this.curricula = this.curriculaService.getCurricula();
+    this.setBreadCrumb();
+  }
+
+  setBreadCrumb() {
+    this.breadCrumbItems = [
+      { label: 'Currículas', routerLink: ['/administrador/mantenimiento-curricula'] },
+      {
+        label: this.curricula.cCurrDescripcion ?? '',
+      },
+      { label: 'Competencias' },
+    ];
   }
 
   formCompetencia = this.fb.group({
@@ -76,22 +93,7 @@ export class CurriculaCompetenciaComponent implements OnChanges {
     iEstado: [1],
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['iCurrId'] && changes['iCurrId'].currentValue) {
-      // Si iCurrId cambió y tiene valor válido
-      this.inicializacion();
-
-      // this.getTipoCurso();
-      // this.getCapacidades();
-    }
-
-    if (changes['caption'] && changes['caption'].currentValue) {
-      // Si curriculas cambió
-      this.caption = changes['caption'].currentValue;
-    }
-  }
-
-  inicializacion() {
+  ngOnInit() {
     this.competencias = [];
     //const item = event.item || this.cursos || null
     this.query
@@ -128,11 +130,6 @@ export class CurriculaCompetenciaComponent implements OnChanges {
             });
             return;
           }
-          // this.messageService.add({
-          //   severity: 'success',
-          //   summary: 'Mensaje del sistema',
-          //   detail: 'Se cargo exitosamente',
-          // });
         },
       });
   }
@@ -145,9 +142,14 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       case 'asignar':
         this.asignarcompetencia.emit(item);
         break;
+      case 'regresar':
+        this.router.navigate([`/administrador/mantenimiento-curricula`]);
+        break;
       case 'agregar':
         this.titulo =
-          'Formulario para agregar competencia curricular (Curricula: ' + this.caption + ')';
+          'Formulario para agregar competencia curricular (Curricula: ' +
+          this.curricula.cCurrDescripcion +
+          ')';
         this.visible_competencia = true;
         this.iCompetenciaId = 0;
         this.bUpdate = false;
@@ -160,11 +162,12 @@ export class CurriculaCompetenciaComponent implements OnChanges {
 
       case 'editar':
         this.titulo =
-          'Formulario para editar competencia curricular (Curricula: ' + this.caption + ')';
+          'Formulario para editar competencia curricular (Curricula: ' +
+          this.curricula.cCurrDescripcion +
+          ')';
         this.formCompetencia.reset();
         this.iCompetenciaId = item.iCompetenciaId;
         this.visible_competencia = true;
-        this.accionBtnItem({ accion: 'select_modalidad', item: { iNivelId: item.iNivelId } });
         this.formCompetencia.patchValue({
           iCompetenciaId: item.iCompetenciaId,
           iCurrId: Number(this.iCurrId),
@@ -176,10 +179,15 @@ export class CurriculaCompetenciaComponent implements OnChanges {
         this.bUpdate = true;
         break;
 
+      case 'capacidades':
+        this.competenciaSeleccionada = item;
+        this.iCompetenciaIdSeleccionada = item.iCompetenciaId;
+        this.visible_capacidades = true;
+        break;
+
       case 'agregar_competencia':
         this.bUpdate = false;
         this.insertarCompetencia(this.formCompetencia.value);
-
         break;
 
       case 'actualizar_competencia':
@@ -196,14 +204,6 @@ export class CurriculaCompetenciaComponent implements OnChanges {
             // Acción para eliminar el registro
             this.deleteCompetencia(item.iCompetenciaId);
           },
-          // reject: () => {
-          //   // Mensaje de cancelación (opcional)
-          //   this.messageService.add({
-          //     severity: 'error',
-          //     summary: 'Mensaje',
-          //     detail: 'Registro cancelado',
-          //   });
-          // },
         });
         break;
 
@@ -242,12 +242,10 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           summary: 'Mensaje del sistema',
           detail: 'Se actualizo correctamente',
         });
-        //this.inicializacion();
         if (!this.bUpdate) {
           this.formCompetencia.reset();
           this.visible_competencia = false;
         }
-        this.inicializacion();
       },
     });
   }
@@ -281,7 +279,6 @@ export class CurriculaCompetenciaComponent implements OnChanges {
           detail: 'Se eliminó la currícula correctamente.',
         });
         this.visible_competencia = false;
-        // this.obtenerDatosIniciales();
       },
     });
   }
@@ -289,10 +286,17 @@ export class CurriculaCompetenciaComponent implements OnChanges {
   accionesCompetencias: IActionContainer[] = [
     {
       labelTooltip: 'Agregar competencias',
-      text: '',
+      text: 'Agregar',
       icon: 'pi pi-plus',
       accion: 'agregar',
       class: 'p-button-success',
+    },
+    {
+      labelTooltip: 'Regresar',
+      text: 'Regresar',
+      icon: 'pi pi-arrow-left',
+      accion: 'regresar',
+      class: 'p-button-info',
     },
   ];
 
@@ -304,18 +308,18 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
-    // {
-    //   labelTooltip: 'Eliminar competencias',
-    //   icon: 'pi pi-trash',
-    //   accion: 'eliminar_competencia',
-    //   type: 'item',
-    //   class: 'p-button-rounded p-button-danger p-button-text',
-    // },
+    {
+      labelTooltip: 'Mostrar capacidades',
+      icon: 'pi pi-list',
+      accion: 'capacidades',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+    },
   ];
   competenciasColumns = [
     {
       type: 'text',
-      width: '5%',
+      width: '10%',
       field: 'cCompetenciaNro',
       header: '',
       text_header: 'center',
@@ -329,22 +333,21 @@ export class CurriculaCompetenciaComponent implements OnChanges {
       text_header: 'center',
       text: 'left',
     },
-
     {
       type: 'estado-activo',
-      width: '5%',
+      width: '10%',
       field: 'iEstado',
-      header: '',
+      header: 'Estado',
       text_header: 'center',
       text: 'center',
     },
     {
       type: 'actions',
-      width: '20%',
+      width: '10%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
-      text: 'center',
+      text: 'right',
     },
   ];
 }

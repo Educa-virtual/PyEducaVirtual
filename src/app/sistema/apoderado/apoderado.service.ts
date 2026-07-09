@@ -11,13 +11,7 @@ export class ApoderadoService {
 
   constructor() {}
 
-  obtenerEstudiantesApoderado() {
-    return this.http.get(`${this.urlBackendApi}/apo/estudiantes`);
-  }
-
-  obtenerMatriculasEstudiante(iEstudianteId: any, anio: any) {
-    return this.http.get(
-      `${this.urlBackendApi}/acad/estudiantes/${iEstudianteId}/matriculas?anio=${anio}`
-    );
+  obtenerEstudiantesApoderado(data: any) {
+    return this.http.post(`${this.urlBackendApi}/apo/listarEstudiantes`, data);
   }
 }

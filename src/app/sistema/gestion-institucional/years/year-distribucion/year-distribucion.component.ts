@@ -5,7 +5,7 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { Component, OnInit } from '@angular/core';
-import { YearService } from '../config/service/year.service';
+import { YearService } from '../year.service';
 import { FormBuilder } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';

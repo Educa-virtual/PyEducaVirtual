@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneralService } from '@/app/servicios/general.service';
 import { StepConfirmationService } from '@/app/servicios/confirm.service';
 import { PrimengModule } from '@/app/primeng.module';
-import { YearService } from './config/service/year.service';
+import { YearService } from './year.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';

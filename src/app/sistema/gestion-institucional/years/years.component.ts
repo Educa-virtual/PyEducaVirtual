@@ -6,8 +6,6 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { GeneralService } from '@/app/servicios/general.service';
-import { StepConfirmationService } from '@/app/servicios/confirm.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { YearService } from './year.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
@@ -18,34 +16,27 @@ import { Router } from '@angular/router';
   selector: 'app-years',
   standalone: true,
   imports: [TablePrimengComponent, PrimengModule],
-  providers: [MessageService, GeneralService, StepConfirmationService, DatePipe],
+  providers: [DatePipe],
   templateUrl: './years.component.html',
   styleUrl: './years.component.scss',
 })
 export class YearsComponent implements OnInit {
   formYear: FormGroup;
-  formPeriodos: FormGroup;
-
   years: any;
+
   bEditar: boolean = false;
+  bSoloLectura: boolean = false;
 
   dialogYear = {
     title: '',
     visible: false,
   };
-  dialogPeriodos = {
-    title: '',
-    visible: false,
-  };
 
-  periodos: any[] = [];
-
-  breadCrumbHome: MenuItem = { label: 'Inicio', icon: 'pi pi-house' };
+  breadCrumbHome: MenuItem = { label: '', icon: 'pi pi-home' };
   breadCrumbItems: MenuItem[] = [{ label: 'Años académicos' }];
 
   constructor(
     public messageService: MessageService,
-    public query: GeneralService,
     private fb: FormBuilder,
     public yearsService: YearService,
     public dialogConfirm: ConfirmationModalService,
@@ -64,20 +55,14 @@ export class YearsComponent implements OnInit {
         dYAcadFin: ['', [Validators.required]],
         iYAcadId: [''],
       });
-      this.formPeriodos = this.fb.group({
-        iYAcadId: ['', [Validators.required]],
-        iPeriodoEvalId: ['', [Validators.required]],
-      });
     } catch (error) {
       console.error(error);
     }
-    this.yearsService.crearYear({}).subscribe((data: any) => {
-      this.periodos = this.yearsService.getPeriodos(data?.periodos);
-    });
     this.listarYears();
   }
 
   agregarYear() {
+    this.bSoloLectura = false;
     this.bEditar = false;
     this.dialogYear.title = 'Agregar año académico';
     this.dialogYear.visible = true;
@@ -180,32 +165,10 @@ export class YearsComponent implements OnInit {
     this.yearsService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
   }
 
-  procesarPeriodos() {
-    this.yearsService
-      .procesarPeriodosEvaluacion({
-        iPerioEvalId: this.formPeriodos.value.iPeriodoEvalId,
-        iYAcadId: this.formYear.value.iYAcadId,
-      })
-      .subscribe({
-        next: (res: any) => {
-          const result = res.data[0];
-          const isSuccess = result.Message === 'true';
-
-          this.messageService.add({
-            severity: isSuccess ? 'success' : 'warn',
-            summary: 'Calendario académico',
-            detail: result.resultado,
-            life: 3000,
-          });
-
-          this.dialogPeriodos.visible = !isSuccess;
-        },
-      });
-  }
-
   accionBtnItem({ accion, item }) {
     switch (accion) {
       case 'ver':
+        this.bSoloLectura = true;
         this.formYear.disable();
         this.dialogYear = {
           title: 'Año académico',
@@ -214,6 +177,7 @@ export class YearsComponent implements OnInit {
         this.setFormYear(item);
         break;
       case 'editar':
+        this.bSoloLectura = false;
         this.bEditar = true;
         this.dialogYear = {
           title: 'Editar año académico',
@@ -237,12 +201,11 @@ export class YearsComponent implements OnInit {
           `/gestion-institucional/years-academicos/${item.iYAcadId}/distribucion`,
         ]);
         break;
-      case 'periodos':
-        this.dialogPeriodos = {
-          title: `Generar periodos del calendario académico para el año: ${item.iYearId}`,
-          visible: true,
-        };
-        this.setFormYear(item);
+      case 'calendario':
+        this.yearsService.setYear(item);
+        this.router.navigate([
+          `/gestion-institucional/years-academicos/${item.iYAcadId}/calendario`,
+        ]);
         break;
     }
   }
@@ -325,9 +288,9 @@ export class YearsComponent implements OnInit {
       isVisible: rowData => Number(rowData.iYearEstado) == 0,
     },
     {
-      labelTooltip: 'Procesar periodos',
+      labelTooltip: 'Configurar calendario académico',
       icon: 'pi pi-sync',
-      accion: 'periodos',
+      accion: 'calendario',
       type: 'item',
       class: 'p-menuitem-link text-purple-500',
       isVisible: rowData => Number(rowData.iYearEstado) == 1,

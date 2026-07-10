@@ -35,7 +35,7 @@ export class YearDistribucionComponent implements OnInit {
 
   bEditar: boolean = false;
 
-  breadCrumbHome: MenuItem[] = [{ label: 'Inicio', icon: 'pi pi-home' }];
+  breadCrumbHome: MenuItem = { label: '', icon: 'pi pi-home' };
   breadCrumbItems: MenuItem[] = [];
 
   constructor(

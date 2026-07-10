@@ -40,6 +40,7 @@ import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/ge
 import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.component';
 import { ListaUsuariosComponent } from '../administrador/gestion-usuarios/lista-usuarios/lista-usuarios.component';
 import { YearDistribucionComponent } from './years/year-distribucion/year-distribucion.component';
+import { YearCalendarioComponent } from './years/year-calendario/year-calendario.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -60,6 +61,14 @@ const routes: Routes = [
   {
     path: 'years-academicos/:iYAcadId/distribucion',
     component: YearDistribucionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'years-academicos/:iYAcadId/calendario',
+    component: YearCalendarioComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ADMINISTRADOR_DREMO],

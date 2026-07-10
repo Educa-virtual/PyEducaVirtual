@@ -1,0 +1,258 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-toast />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Configurar años académicos</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        size="small"
+        severity="secondary"
+        pTooltip="Regresar"
+        tooltipPosition="top"
+        (click)="volver()"
+      >
+        <i class="pi pi-fw pi-arrow-left"></i>
+        <span class="ml-2 hidden sm:block">Regresar</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="formCalendario">
+    <p-tabView [(activeIndex)]="tabIndex">
+      <p-tabPanel header="Calendario académico" [selected]="true">
+        <div class="grid mt-2">
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                [showOnFocus]="false"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
+                formControlName="dtCalAcadInicio"
+                [showIcon]="true"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Fin</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                [showOnFocus]="false"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
+                formControlName="dtCalAcadFin"
+                [showIcon]="true"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Inicio Matriculas</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                [showOnFocus]="false"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
+                formControlName="dtCalAcadMatriculaInicio"
+                [showIcon]="true"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Fin Matriculas</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                [showOnFocus]="false"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
+                formControlName="dtCalAcadMatriculaFin"
+                [showIcon]="true"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Fin Rezagados</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                [showOnFocus]="false"
+                inputStyleClass="group-element"
+                [style]="{ flex: '1', width: '100%' }"
+                formControlName="dtCalAcadMatriculaResagados"
+                [showIcon]="true"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>
+                <a
+                  role="button"
+                  class="p-button p-button-secondary mr-2"
+                  (click)="panel.toggle($event)"
+                  (keypress)="panel.toggle($event)"
+                  tabindex="0"
+                >
+                  <i class="pi pi-question-circle"></i>
+                </a>
+                <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+                  <div class="w-15rem">
+                    Los periodos (bimestral, trimestral, semestral) agrupan los bloques lectivos
+                    oficiales del MINEDU, sin cambiar sus fechas, solo organizando evaluaciones
+                    dentro de ellos.
+                  </div>
+                </p-overlayPanel>
+                <span>Periodos</span>
+              </p-inputGroupAddon>
+              <p-dropdown
+                formControlName="iPeriodoEvalId"
+                appendTo="body"
+                styleClass="group-element"
+                placeholder="Seleccione"
+                [options]="tipos_periodos"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12">
+            <p-fieldset legend="Fase regular" class="mt-2">
+              <div class="grid">
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+                    <p-calendar
+                      appendTo="body"
+                      pTooltip="Inicio de la fase regular"
+                      tooltipPosition="top"
+                      inputStyleClass="group-element"
+                      formControlName="dtFaseInicioRegular"
+                      [showIcon]="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    />
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Fin</p-inputGroupAddon>
+                    <p-calendar
+                      appendTo="body"
+                      pTooltip="Fin de la fase regular"
+                      tooltipPosition="top"
+                      inputStyleClass="group-element"
+                      formControlName="dtFaseFinRegular"
+                      [showIcon]="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    />
+                  </p-inputGroup>
+                </div>
+              </div>
+            </p-fieldset>
+          </div>
+          <div class="col-12">
+            <p-fieldset legend="Fase de recuperación" class="mt-2">
+              <div class="grid">
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+                    <p-calendar
+                      appendTo="body"
+                      pTooltip="Inicio de la fase de recuperación"
+                      tooltipPosition="top"
+                      inputStyleClass="group-element"
+                      formControlName="dtFaseInicioRecuperacion"
+                      [showIcon]="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    />
+                  </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>Fin</p-inputGroupAddon>
+                    <p-calendar
+                      appendTo="body"
+                      pTooltip="Fin de la fase de recuperación"
+                      tooltipPosition="top"
+                      inputStyleClass="group-element"
+                      formControlName="dtFaseFinRecuperacion"
+                      [showIcon]="true"
+                      [style]="{ flex: '1', width: '100%' }"
+                    />
+                  </p-inputGroup>
+                </div>
+              </div>
+            </p-fieldset>
+          </div>
+        </div>
+        <div class="flex justify-content-end mt-2 gap-2">
+          <p-button label="Regresar" severity="secondary" (onClick)="volver()" />
+          <p-button
+            [disabled]="formCalendario.valid"
+            label="Aplicar y continuar"
+            severity="success"
+            (onClick)="procesarPeriodos()"
+          />
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Periodos">
+        <p-dataView
+          [value]="periodos"
+          emptyMessage="Primero debe configurar el periodo y las fases del calendario"
+        >
+          <ng-template pTemplate="itemTemplate" let-periodo let-i="index">
+            <div class="grid">
+              <div class="col-12 md:col-4">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Periodo</p-inputGroupAddon>
+                  <p-inputText
+                    [formControlName]="periodo.value"
+                    [style]="{ flex: '1', width: '100%' }"
+                    [disabled]="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-4">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+                  <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="group-element"
+                    [style]="{ flex: '1', width: '100%' }"
+                    [formControlName]="
+                      $any(controles_periodos.at(i)).controls['dtPeriodoEvalAperInicio']
+                    "
+                    [showIcon]="true"
+                  />
+                </p-inputGroup>
+              </div>
+              <div class="col-12 md:col-4">
+                <p-inputGroup>
+                  <p-inputGroupAddon>Fin</p-inputGroupAddon>
+                  <p-calendar
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputStyleClass="group-element"
+                    [style]="{ flex: '1', width: '100%' }"
+                    [formControlName]="
+                      $any(controles_periodos.at(i)).controls['dtPeriodoEvalAperFin']
+                    "
+                    [showIcon]="true"
+                  />
+                </p-inputGroup>
+              </div>
+            </div>
+          </ng-template>
+        </p-dataView>
+      </p-tabPanel>
+      <p-tabPanel header="Turnos"> </p-tabPanel>
+    </p-tabView>
+  </form>
+</p-panel>

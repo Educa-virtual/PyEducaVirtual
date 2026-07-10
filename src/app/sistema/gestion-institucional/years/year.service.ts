@@ -15,7 +15,9 @@ export class YearService {
   parametros: any;
   parametros$?: Observable<any>;
   tipos_distribuciones: any[];
-  periodos: any[];
+  tipos_periodos: any[];
+  tipos_turnos: any[];
+  dias_semana: any[];
   year: any;
 
   /* Compartir datos entre componentes */
@@ -52,16 +54,16 @@ export class YearService {
     return this.parametros$;
   }
 
-  getPeriodos(data: any) {
-    if (!this.periodos && data) {
+  getTiposPeriodos(data: any) {
+    if (!this.tipos_periodos && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.periodos = items.map(item => ({
+      this.tipos_periodos = items.map(item => ({
         value: Number(item.iPeriodoEvalId),
         label: item.cPeriodoEvalNombre,
       }));
-      return this.periodos;
+      return this.tipos_periodos;
     }
-    return this.periodos;
+    return this.tipos_periodos;
   }
 
   getTiposDistribuciones(data: any) {
@@ -74,6 +76,18 @@ export class YearService {
       return this.tipos_distribuciones;
     }
     return this.tipos_distribuciones;
+  }
+
+  getDiasSemana() {
+    return [
+      { value: 1, label: 'LUNES' },
+      { value: 2, label: 'MARTES' },
+      { value: 3, label: 'MIÉRCOLES' },
+      { value: 4, label: 'JUEVES' },
+      { value: 5, label: 'VIERNES' },
+      { value: 6, label: 'SÁBADO' },
+      { value: 7, label: 'DOMINGO' },
+    ];
   }
 
   /* Consultas CRUD */
@@ -108,6 +122,14 @@ export class YearService {
 
   borrarDistribucionBloque(data: any) {
     return this.http.post(`${baseUrl}/acad/borrarDistribucionBloque`, data);
+  }
+
+  verCalendarioAcademicos(data: any) {
+    return this.http.post(`${baseUrl}/acad/verCalendarioAcademicos`, data);
+  }
+
+  updCalendarioAcademicos(data: any) {
+    return this.http.post(`${baseUrl}/acad/updCalendarioAcademicos`, data);
   }
 
   procesarPeriodosEvaluacion(data) {

@@ -103,7 +103,11 @@ export class AppTopBarComponent implements OnInit {
     this.modulos = user.modulos;
     this.selectedModulo = modulo ? modulo.iModuloId : null;
 
-    this.notificacion();
+    this.perfiles;
+    const iPerfilId = this._ConstantesService.iPerfilId;
+    if (!iPerfilId) {
+      this.notificacion();
+    }
   }
 
   changeModulo(value) {

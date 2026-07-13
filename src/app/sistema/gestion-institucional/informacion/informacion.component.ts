@@ -9,8 +9,6 @@ import { PrimengModule } from '@/app/primeng.module';
 import { GeneralService } from '@/app/servicios/general.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { environment } from '@/environments/environment';
-import { HttpClient } from '@angular/common/http';
 // import { catchError, map, throwError } from 'rxjs';
 import { InformacionService } from './service/informacion.service';
 
@@ -45,8 +43,6 @@ export class InformacionComponent implements OnInit {
   ruta_imagen: string;
 
   private _confirmService = inject(ConfirmationModalService);
-  private backendApi = environment.backendApi;
-  private http = inject(HttpClient);
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
@@ -239,8 +235,22 @@ export class InformacionComponent implements OnInit {
     enviar.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
 
     this.informacionService.subirImagen(enviar).subscribe({
-      next: (data: any) => {
-        console.log('respuesta', data);
+      next: (respuesta: any) => {
+        const datos = respuesta.data.resultado;
+        if (datos) {
+          this.logo = datos;
+          this.perfil.cIieeLogo = datos;
+          this.store.setItem('dremoPerfil', this.perfil);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje',
+            detail: 'Error al subir el logo',
+          });
+        }
+      },
+      complete: () => {
+        window.location.reload();
       },
     });
   }

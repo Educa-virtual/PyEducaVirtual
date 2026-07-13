@@ -7,15 +7,15 @@
 >
   <app-table-primeng
     [columnas]="columns"
-    [data]="data"
+    [data]="feriados"
     (accionBtnItem)="accionBtnItem($event)"
     [actions]="actions"
   />
 </app-container-page>
 
 <p-dialog
-  [header]="dialogs.nationalHoliday.title"
-  [(visible)]="dialogs.nationalHoliday.visible"
+  [header]="dialogFeriado.title"
+  [(visible)]="dialogFeriado.visible"
   [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
   [style]="{
     width: '89rem',
@@ -28,6 +28,7 @@
   [styleClass]="'dialog-responsive'"
   [resizable]="true"
   [maximizable]="true"
+  (onHide)="cerrarDialogFeriado()"
 >
   <form [formGroup]="form">
     <div class="grid mt-2">
@@ -89,15 +90,15 @@
         label="Guardar"
         [disabled]="form.invalid"
         severity="success"
-        (onClick)="saveData()"
+        (onClick)="guardarFeriadoNacional()"
       />
     </div>
   </form>
 </p-dialog>
 
 <p-dialog
-  [header]="dialogs.importNationalHolyday.title"
-  [(visible)]="dialogs.importNationalHolyday.visible"
+  [header]="dialogImportar.title"
+  [(visible)]="dialogImportar.visible"
   [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
   [style]="{
     width: '89rem',
@@ -110,6 +111,7 @@
   [styleClass]="'dialog-responsive'"
   [resizable]="true"
   [maximizable]="true"
+  (onHide)="cerrarDialogImportar()"
 >
   <div class="flex justify-content-between flex-wrap my-3 gap-3 row-gap-2">
     <div class="flex gap-2 row-gap-2">
@@ -123,19 +125,18 @@
         accept="*.xlsx"
         icon="pi pi-file-import"
         label="Cargar"
-        [(ngModel)]="file"
-        (fileChange)="fileChange($event)"
+        (change)="handleArchivo($event)"
       />
     </div>
     <p-button
       [loading]="importLoading"
-      (onClick)="importData()"
+      (onClick)="guardarFeriadoNacionalMasivo()"
       severity="success"
-      [disabled]="file ? false : true"
+      [disabled]="!datosExcel || datosExcel.length === 0 ? true : false"
       icon="pi pi-database"
       label="Importar"
     />
   </div>
 
-  <app-table-primeng [columnas]="columnsImport" [data]="dataImport" [showCaption]="true" />
+  <app-table-primeng [columnas]="columnsImport" [data]="importados" [showCaption]="true" />
 </p-dialog>

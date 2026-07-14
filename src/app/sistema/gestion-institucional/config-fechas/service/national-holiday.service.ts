@@ -89,7 +89,7 @@ export class nationalHolidayService {
     groupControl: string | null = null
   ) {
     if (tipo === 'number') {
-      if (!value || isNaN(Number(value))) {
+      if (value === null || value === undefined || value === '' || isNaN(Number(value))) {
         value = null;
       } else {
         value = Number(value);

@@ -50,10 +50,7 @@
           <p-inputGroupAddon>Es recuperable</p-inputGroupAddon>
           <p-dropdown
             formControlName="bFeriadoEsRecuperable"
-            [options]="[
-              { label: 'SI', value: 1 },
-              { label: 'NO', value: 0 },
-            ]"
+            [options]="opciones"
             [style]="{ flex: '1', width: '100%' }"
             styleClass="group-element"
             appendTo="body"
@@ -87,7 +84,15 @@
     </div>
     <div class="flex justify-content-end mt-2">
       <p-button
+        label="Actualizar"
+        *ngIf="bEditar"
+        [disabled]="form.invalid"
+        severity="warning"
+        (onClick)="actualizarFeriadoNacional()"
+      />
+      <p-button
         label="Guardar"
+        *ngIf="!bEditar"
         [disabled]="form.invalid"
         severity="success"
         (onClick)="guardarFeriadoNacional()"

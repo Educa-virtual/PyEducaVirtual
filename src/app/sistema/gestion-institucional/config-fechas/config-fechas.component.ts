@@ -4,7 +4,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { Component, OnInit } from '@angular/core';
 import { CalendarModule } from 'primeng/calendar';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { nationalHolidayService } from './service/national-holiday.service';
@@ -37,6 +37,7 @@ export class ConfigFechasComponent implements OnInit {
   importados: any[] = [];
 
   importLoading: boolean = false;
+  bEditar: boolean = false;
 
   dialogImportar = {
     title: '',
@@ -46,6 +47,11 @@ export class ConfigFechasComponent implements OnInit {
     title: '',
     visible: false,
   };
+
+  opciones = [
+    { label: 'SI', value: 1 },
+    { label: 'NO', value: 0 },
+  ];
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home', routerLink: '/' };
   breadCrumbItems: MenuItem[] = [{ label: 'Feriados nacionales' }];
@@ -69,10 +75,10 @@ export class ConfigFechasComponent implements OnInit {
     try {
       this.form = this.fb.group({
         iFeriadoId: [''],
-        cFeriadoNombre: [''],
-        iYAcadId: [''],
-        dtFeriado: [''],
-        bFeriadoEsRecuperable: [''],
+        cFeriadoNombre: ['', [Validators.required]],
+        iYAcadId: [this.iYAcadId],
+        dtFeriado: ['', [Validators.required]],
+        bFeriadoEsRecuperable: [0, [Validators.required]],
         cDocumento: [''],
       });
     } catch (error) {
@@ -91,28 +97,24 @@ export class ConfigFechasComponent implements OnInit {
           this.feriados = data.data;
         },
         error: error => {
-          console.error('Error fetching Años Académicos:', error);
-        },
-        complete: () => {
-          console.log('Request completed');
+          console.error('Error obteniendo feriados nacionales:', error);
         },
       });
   }
 
   setForm(item) {
     this.form.reset(item);
-    console.log(item, 'item');
     this.nationalHolidayService.formatearFormControl(
       this.form,
       'dtFeriado',
-      item.dtFeriado,
+      item?.dtFeriado,
       'date',
       null
     );
     this.nationalHolidayService.formatearFormControl(
       this.form,
       'bFeriadoEsRecuperable',
-      item.bFeriadoEsRecuperable,
+      item ? item.bFeriadoEsRecuperable : 0,
       'number',
       null
     );
@@ -121,13 +123,21 @@ export class ConfigFechasComponent implements OnInit {
   accionBtnItem({ accion, item }): void {
     switch (accion) {
       case 'agregar':
+        this.bEditar = false;
         this.dialogFeriado = {
           title: 'Agregar feriado nacional',
           visible: true,
         };
+        this.form.get('dtFeriado').enable();
+        this.setForm({
+          iYAcadId: this.iYAcadId,
+          bFeriadoEsRecuperable: 0,
+        });
         break;
       case 'editar':
+        this.bEditar = true;
         this.setForm(item);
+        this.form.get('dtFeriado').disable();
         this.dialogFeriado = {
           title: 'Editar feriado nacional',
           visible: true,
@@ -209,6 +219,7 @@ export class ConfigFechasComponent implements OnInit {
   guardarFeriadoNacional(): void {
     this.nationalHolidayService.guardarFeriadoNacional(this.form.value).subscribe({
       next: () => {
+        this.dialogFeriado.visible = false;
         this.messageService.add({
           severity: 'success',
           summary: 'Éxito',
@@ -218,10 +229,30 @@ export class ConfigFechasComponent implements OnInit {
       },
       error: error => {
         this.messageService.add({
-          severity: 'danger',
+          severity: 'error',
           summary: 'Error',
           detail: error.error.message ?? 'Error desconocido',
-          life: 3000,
+        });
+      },
+    });
+  }
+
+  actualizarFeriadoNacional() {
+    this.nationalHolidayService.actualizarFeriadoNacional(this.form.value).subscribe({
+      next: () => {
+        this.dialogFeriado.visible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Los datos se han actualizado correctamente',
+        });
+        this.listarFeriadosNacionales();
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message ?? 'Error desconocido',
         });
       },
     });
@@ -240,13 +271,13 @@ export class ConfigFechasComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
+          this.listarFeriadosNacionales;
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
-            detail: 'Los feriados nacionales se han guardado correctamente',
+            detail: 'Se procesaron los datos importados',
           });
           this.importados = data.data;
-          this.listarFeriadosNacionales;
         },
         error: error => {
           this.messageService.add({
@@ -260,7 +291,10 @@ export class ConfigFechasComponent implements OnInit {
   }
 
   cerrarDialogFeriado() {
-    this.setForm({});
+    this.setForm({
+      iYAcadId: this.iYAcadId,
+      bFeriadoEsRecuperable: 0,
+    });
   }
 
   cerrarDialogImportar() {
@@ -271,7 +305,7 @@ export class ConfigFechasComponent implements OnInit {
   columns: IColumn[] = [
     {
       type: 'item',
-      width: '10%',
+      width: '5%',
       field: '',
       header: '#',
       text_header: 'center',
@@ -287,7 +321,7 @@ export class ConfigFechasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '50%',
+      width: '60%',
       field: 'cFeriadoNombre',
       header: 'Nombre',
       text_header: 'left',
@@ -303,7 +337,7 @@ export class ConfigFechasComponent implements OnInit {
     },
     {
       type: 'actions',
-      width: '10%',
+      width: '5%',
       field: 'actions',
       header: 'Acciones',
       text_header: 'center',
@@ -314,7 +348,7 @@ export class ConfigFechasComponent implements OnInit {
   columnsImport: IColumn[] = [
     {
       type: 'item',
-      width: '10%',
+      width: '5%',
       field: 'item',
       header: 'Item',
       text_header: 'center',
@@ -322,7 +356,7 @@ export class ConfigFechasComponent implements OnInit {
     },
     {
       type: 'date',
-      width: '15%',
+      width: '10%',
       field: 'dtFeriado',
       header: 'Fecha',
       text_header: 'center',
@@ -330,7 +364,7 @@ export class ConfigFechasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '30%',
+      width: '35%',
       field: 'cFeriadoNombre',
       header: 'Nombre',
       text_header: 'left',
@@ -346,7 +380,7 @@ export class ConfigFechasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '20%',
+      width: '35%',
       field: 'cImportadoObs',
       header: 'Observación',
       text_header: 'left',

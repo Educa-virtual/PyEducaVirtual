@@ -127,10 +127,11 @@
         label="Plantilla"
       />
       <app-btn-file-upload
+        #fileUpload
         accept="*.xlsx"
         icon="pi pi-file-import"
         label="Cargar"
-        (change)="handleArchivo($event)"
+        (fileChange)="handleArchivo($event)"
       />
     </div>
     <p-button

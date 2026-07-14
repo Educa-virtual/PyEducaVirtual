@@ -2,7 +2,7 @@ import { PrimengModule } from '@/app/primeng.module';
 import { BtnFileUploadComponent } from '@/app/shared/btn-file-upload/btn-file-upload.component';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
 import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarModule } from 'primeng/calendar';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -55,6 +55,8 @@ export class ConfigFechasComponent implements OnInit {
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home', routerLink: '/' };
   breadCrumbItems: MenuItem[] = [{ label: 'Feriados nacionales' }];
+
+  @ViewChild('fileUpload') fileUpload!: BtnFileUploadComponent;
 
   iYAcadId: number;
   datosExcel: any | null = null;
@@ -258,8 +260,7 @@ export class ConfigFechasComponent implements OnInit {
     });
   }
 
-  async handleArchivo(event) {
-    const file = (event.target as HTMLInputElement)?.files?.[0];
+  async handleArchivo(file: File) {
     this.datosExcel = await this.leerExcel.leerArchivo(file, ['Feriados']);
   }
 
@@ -278,6 +279,7 @@ export class ConfigFechasComponent implements OnInit {
             detail: 'Se procesaron los datos importados',
           });
           this.importados = data.data;
+          this.fileUpload?.resetFile();
         },
         error: error => {
           this.messageService.add({
@@ -299,6 +301,7 @@ export class ConfigFechasComponent implements OnInit {
 
   cerrarDialogImportar() {
     this.datosExcel = null;
+    this.fileUpload?.resetFile();
   }
 
   // Datos para tablas

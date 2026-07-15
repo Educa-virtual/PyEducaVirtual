@@ -4,6 +4,7 @@ import { YearService } from '../year.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 
 @Component({
   selector: 'app-year-calendario',
@@ -31,6 +32,7 @@ export class YearCalendarioComponent implements OnInit {
 
   constructor(
     private yearsService: YearService,
+    private formService: ReactiveFormService,
     private messageService: MessageService,
     private fb: FormBuilder,
     private router: Router
@@ -56,17 +58,16 @@ export class YearCalendarioComponent implements OnInit {
         dtCalAcadMatriculaFin: [null, [Validators.required]],
         bCalAcadFaseRegular: [null],
         bCalAcadFaseRecuperacion: [null],
-        dtFaseInicioRegular: [null, [Validators.required]],
-        dtFaseFinRegular: [null, [Validators.required]],
-        dtFaseInicioRecuperacion: [null, [Validators.required]],
-        dtFaseFinRecuperacion: [null, [Validators.required]],
+        dtFaseInicioRegular: [null],
+        dtFaseFinRegular: [null],
+        dtFaseInicioRecuperacion: [null],
+        dtFaseFinRecuperacion: [null],
         controles_periodos: this.fb.array([]),
       });
     } catch (error) {
       console.error(error);
     }
     this.yearsService.crearYear({}).subscribe((data: any) => {
-      console.log(data, 'data');
       this.tipos_periodos = this.yearsService.getTiposPeriodos(data?.tipos_periodos);
     });
     this.setBreadCrumbItems();
@@ -101,37 +102,37 @@ export class YearCalendarioComponent implements OnInit {
 
   setFormCalendario(data: any) {
     this.formCalendario.reset(data);
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formCalendario,
       'iPeriodoEvalId',
       data.iPeriodoEvalId,
       'number'
     );
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formCalendario,
       'dtCalAcadInicio',
       data.dtCalAcadInicio,
       'date'
     );
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formCalendario,
       'dtCalAcadFin',
       data.dtCalAcadFin,
       'date'
     );
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formCalendario,
       'dtCalAcadMatriculaInicio',
       data.dtCalAcadMatriculaInicio,
       'date'
     );
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formCalendario,
       'dtCalAcadMatriculaResagados',
       data.dtCalAcadMatriculaResagados,
       'date'
     );
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formCalendario,
       'dtCalAcadMatriculaFin',
       data.dtCalAcadMatriculaFin,
@@ -154,17 +155,29 @@ export class YearCalendarioComponent implements OnInit {
       });
   }
 
-  procesarPeriodos() {
-    this.yearsService.procesarPeriodosEvaluacion(this.formCalendario.value).subscribe({
-      next: (res: any) => {
-        const result = res.data[0];
-        const isSuccess = result.Message === 'true';
-
+  actualizarCalendario() {
+    if (this.formCalendario.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Por favor complete todos los campos requeridos',
+      });
+      this.formService.validarFormulario(this.formCalendario);
+      return;
+    }
+    this.yearsService.actualizarCalendarioAcademicos(this.formCalendario.value).subscribe({
+      next: () => {
         this.messageService.add({
-          severity: isSuccess ? 'success' : 'warn',
-          summary: 'Calendario académico',
-          detail: result.resultado,
-          life: 3000,
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se actualizó el calendario académico',
+        });
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message ?? 'Error desconocido',
         });
       },
     });

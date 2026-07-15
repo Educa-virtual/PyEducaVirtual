@@ -10,6 +10,7 @@ import { FormBuilder } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { Router } from '@angular/router';
+import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 
 @Component({
   selector: 'app-year-distribucion',
@@ -40,6 +41,7 @@ export class YearDistribucionComponent implements OnInit {
 
   constructor(
     private yearService: YearService,
+    private formService: ReactiveFormService,
     private fb: FormBuilder,
     private messageService: MessageService,
     private confirmService: ConfirmationModalService,
@@ -77,19 +79,19 @@ export class YearDistribucionComponent implements OnInit {
 
   setFormDistribucion(data: any) {
     this.formDistribucion.reset(data);
-    this.yearService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formDistribucion,
       'iTipoDistribucionId',
       data.iTipoDistribucionId,
       'number'
     );
-    this.yearService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formDistribucion,
       'dtInicioBloque',
       data.dtInicioBloque,
       'date'
     );
-    this.yearService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formDistribucion,
       'dtFinBloque',
       data.dtFinBloque,

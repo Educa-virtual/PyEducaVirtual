@@ -11,6 +11,7 @@ import { YearService } from './year.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 
 @Component({
   selector: 'app-years',
@@ -36,10 +37,11 @@ export class YearsComponent implements OnInit {
   breadCrumbItems: MenuItem[] = [{ label: 'Años académicos' }];
 
   constructor(
-    public messageService: MessageService,
+    private messageService: MessageService,
     private fb: FormBuilder,
-    public yearsService: YearService,
-    public dialogConfirm: ConfirmationModalService,
+    private yearsService: YearService,
+    private formService: ReactiveFormService,
+    private dialogConfirm: ConfirmationModalService,
     public datePipe: DatePipe,
     private router: Router
   ) {}
@@ -156,13 +158,13 @@ export class YearsComponent implements OnInit {
   setFormYear(data: any) {
     console.log(data);
     this.formYear.reset(data);
-    this.yearsService.formatearFormControl(
+    this.formService.formatearFormControl(
       this.formYear,
       'dtYAcadInicio',
       data.dtYAcadInicio,
       'date'
     );
-    this.yearsService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
+    this.formService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
   }
 
   accionBtnItem({ accion, item }) {

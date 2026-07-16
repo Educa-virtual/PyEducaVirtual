@@ -205,9 +205,7 @@ export class YearsComponent implements OnInit {
         break;
       case 'calendario':
         this.yearsService.setYear(item);
-        this.router.navigate([
-          `/gestion-institucional/years-academicos/${item.iYAcadId}/calendario`,
-        ]);
+        this.router.navigate([`/gestion-institucional/years-academicos/${item.iYAcadId}/config`]);
         break;
     }
   }

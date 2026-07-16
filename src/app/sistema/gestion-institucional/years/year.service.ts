@@ -1,7 +1,7 @@
 import { environment } from '@/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, shareReplay } from 'rxjs';
 
 const baseUrl = environment.backendApi;
 
@@ -10,6 +10,16 @@ const baseUrl = environment.backendApi;
 })
 export class YearService {
   constructor(private http: HttpClient) {}
+
+  private activeIndex = new BehaviorSubject<number | null>(null);
+
+  setActiveIndex(index: number) {
+    this.activeIndex.next(index);
+  }
+
+  getActiveIndex(): Observable<any> {
+    return this.activeIndex.asObservable();
+  }
 
   parametros: any;
   parametros$?: Observable<any>;
@@ -131,7 +141,7 @@ export class YearService {
     return this.http.post(`${baseUrl}/acad/actualizarCalendarioAcademicos`, data);
   }
 
-  procesarPeriodosEvaluacion(data) {
-    return this.http.post(`${baseUrl}/procesarPeriodosEvaluacion`, data);
+  listarCalendarioPeriodos(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarCalendarioPeriodos`, data);
   }
 }

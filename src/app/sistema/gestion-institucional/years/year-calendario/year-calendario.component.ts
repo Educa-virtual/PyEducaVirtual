@@ -15,8 +15,6 @@ import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 })
 export class YearCalendarioComponent implements OnInit {
   formCalendario: FormGroup;
-  formPeriodo: FormGroup;
-  formTurnos: FormGroup;
 
   year: any;
   periodos: any[] = [];
@@ -38,10 +36,7 @@ export class YearCalendarioComponent implements OnInit {
     private router: Router
   ) {
     this.year = this.yearsService.getYear();
-  }
-
-  get controles_periodos(): FormArray {
-    return this.formPeriodo.get('controles_periodos') as FormArray;
+    this.yearsService.setActiveIndex(0);
   }
 
   ngOnInit(): void {
@@ -62,7 +57,6 @@ export class YearCalendarioComponent implements OnInit {
         dtFaseFinRegular: [null],
         dtFaseInicioRecuperacion: [null],
         dtFaseFinRecuperacion: [null],
-        controles_periodos: this.fb.array([]),
       });
     } catch (error) {
       console.error(error);
@@ -136,6 +130,30 @@ export class YearCalendarioComponent implements OnInit {
       this.formCalendario,
       'dtCalAcadMatriculaFin',
       data.dtCalAcadMatriculaFin,
+      'date'
+    );
+    this.formService.formatearFormControl(
+      this.formCalendario,
+      'dtFaseInicioRegular',
+      data.dtFaseInicioRegular,
+      'date'
+    );
+    this.formService.formatearFormControl(
+      this.formCalendario,
+      'dtFaseFinRegular',
+      data.dtFaseFinRegular,
+      'date'
+    );
+    this.formService.formatearFormControl(
+      this.formCalendario,
+      'dtFaseInicioRecuperacion',
+      data.dtFaseInicioRecuperacion,
+      'date'
+    );
+    this.formService.formatearFormControl(
+      this.formCalendario,
+      'dtFaseFinRecuperacion',
+      data.dtFaseFinRecuperacion,
       'date'
     );
   }

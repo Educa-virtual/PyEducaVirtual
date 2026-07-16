@@ -41,6 +41,9 @@ import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.compo
 import { ListaUsuariosComponent } from '../administrador/gestion-usuarios/lista-usuarios/lista-usuarios.component';
 import { YearDistribucionComponent } from './years/year-distribucion/year-distribucion.component';
 import { YearCalendarioComponent } from './years/year-calendario/year-calendario.component';
+import { YearConfigComponent } from './years/year-config/year-config.component';
+import { YearPeriodosComponent } from './years/year-periodos/year-periodos.component';
+import { YearDiasComponent } from './years/year-dias/year-dias.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -67,12 +70,43 @@ const routes: Routes = [
     },
   },
   {
-    path: 'years-academicos/:iYAcadId/calendario',
-    component: YearCalendarioComponent,
+    path: 'years-academicos/:iYAcadId/config',
+    component: YearConfigComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ADMINISTRADOR_DREMO],
     },
+    children: [
+      {
+        path: '',
+        redirectTo: 'calendario',
+        pathMatch: 'full',
+      },
+      {
+        path: 'calendario',
+        component: YearCalendarioComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO],
+        },
+      },
+      {
+        path: 'periodos',
+        component: YearPeriodosComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO],
+        },
+      },
+      {
+        path: 'dias',
+        component: YearDiasComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO],
+        },
+      },
+    ],
   },
   {
     path: 'config',

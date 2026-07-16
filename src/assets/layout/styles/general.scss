@@ -353,6 +353,11 @@
   overflow-y: hidden !important;
 }
 
+:host ::ng-deep .p-dialog-content {
+  padding: 1rem !important;
+  overflow: visible !important;
+}
+
 .text-pre-wrap {
   white-space: pre-wrap !important;
 }

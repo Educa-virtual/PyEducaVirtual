@@ -3,7 +3,11 @@ import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
 import { YearService } from '../year.service';
 import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import {
+  IActionTable,
+  IColumn,
+  TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -18,6 +22,7 @@ export class YearPeriodosComponent implements OnInit {
   breadCrumbItems: MenuItem[] = [];
 
   periodos: any[] = [];
+  tiposFases: any[] = [];
 
   year: any;
   bEditable: boolean = false;
@@ -29,6 +34,11 @@ export class YearPeriodosComponent implements OnInit {
 
   formPeriodo: FormGroup;
   selectedItem: any;
+
+  opciones: any[] = [
+    { label: 'SI', value: true },
+    { label: 'NO', value: false },
+  ];
 
   constructor(
     private yearsService: YearService,
@@ -44,8 +54,10 @@ export class YearPeriodosComponent implements OnInit {
     try {
       this.formPeriodo = this.fb.group({
         iPeriodoEvalAperId: [null],
+        iOrden: [{ value: '', disabled: true }],
         iPeriodoEvalId: [null, [Validators.required]],
-        cPeriodoEvalNombre: ['', [Validators.required]],
+        cPeriodoEvalNombre: [{ value: '', disabled: true }],
+        cFasePromNombre: [{ value: '', disabled: true }],
         iFaseId: [null],
         dtPeriodoEvalAperInicio: [null],
         dtPeriodoEvalAperFin: ['', [Validators.required]],
@@ -77,27 +89,85 @@ export class YearPeriodosComponent implements OnInit {
       });
   }
 
+  procesarPeriodos() {
+    this.yearsService
+      .procesarCalendarioPeriodos({
+        iCalAcadId: this.year.iCalAcadId ?? null,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Periodo procesado con éxito',
+          });
+          this.dialogPeriodo.visible = false;
+          this.listarPeriodos();
+        },
+        error: error => {
+          console.error('Error procesando periodo:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error?.message || 'Error desconocido',
+          });
+        },
+      });
+  }
+
+  actualizarPeriodo() {
+    this.yearsService.actualizarCalendarioPeriodo(this.formPeriodo.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Periodo actualizado con éxito',
+        });
+        this.dialogPeriodo.visible = false;
+        this.listarPeriodos();
+      },
+      error: error => {
+        console.error('Error actualizando periodo:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error?.message || 'Error desconocido',
+        });
+      },
+    });
+  }
+
   setFormPeriodo(data: any) {
     this.formPeriodo.reset(data);
     this.formService.formatearFormControl(
       this.formPeriodo,
-      'iPeriodoEvalId',
-      data.iPeriodoEvalId,
-      'number'
-    );
-    this.formService.formatearFormControl(this.formPeriodo, 'iFaseId', data.iFaseId, 'number');
-    this.formService.formatearFormControl(
-      this.formPeriodo,
-      'iPeriodoEvalAperId',
-      data.iPeriodoEvalAperId,
+      'dtPeriodoEvalAperInicio',
+      data.dtPeriodoEvalAperInicio,
       'date'
     );
     this.formService.formatearFormControl(
       this.formPeriodo,
-      'cPeriodoEvalApeNombre',
-      data.cPeriodoEvalApeNombre,
+      'dtPeriodoEvalAperFin',
+      data.dtPeriodoEvalAperFin,
       'date'
     );
+    this.formService.formatearFormControl(
+      this.formPeriodo,
+      'bHabilitado',
+      data.bHabilitado,
+      'boolean'
+    );
+  }
+
+  habilitarForm(bHabilitado: boolean) {
+    if (bHabilitado) {
+      this.formPeriodo.enable();
+      this.formPeriodo.get('iOrden').disable();
+      this.formPeriodo.get('cPeriodoEvalNombre').disable();
+      this.formPeriodo.get('cFasePromNombre').disable();
+    } else {
+      this.formPeriodo.disable();
+    }
   }
 
   accionBtnItemTable({ accion, item }) {
@@ -105,6 +175,7 @@ export class YearPeriodosComponent implements OnInit {
     switch (accion) {
       case 'editar':
         this.bEditable = true;
+        this.habilitarForm(true);
         this.dialogPeriodo = {
           title: 'Editar periodo',
           visible: true,
@@ -113,6 +184,7 @@ export class YearPeriodosComponent implements OnInit {
         break;
       case 'ver':
         this.bEditable = false;
+        this.habilitarForm(false);
         this.dialogPeriodo = {
           title: 'Periodo',
           visible: true,
@@ -121,26 +193,35 @@ export class YearPeriodosComponent implements OnInit {
         break;
     }
   }
-  columnas: any[] = [
+
+  columnas: IColumn[] = [
     {
       type: 'text',
       width: '10%',
+      field: 'iOrden',
+      header: 'Orden',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '15%',
+      field: 'cFasePromNombre',
+      header: 'Fase',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '20%',
       field: 'cPeriodoEvalNombre',
       header: 'Periodo',
       text_header: 'center',
       text: 'center',
     },
     {
-      type: 'text',
-      width: '10%',
-      field: 'cPeriodoEvalNombre',
-      header: 'Fase',
-      text_header: 'center',
-      text: 'center',
-    },
-    {
       type: 'date',
-      width: '10%',
+      width: '20%',
       field: 'dtPeriodoEvalAperInicio',
       header: 'Inicio',
       text_header: 'center',
@@ -148,9 +229,17 @@ export class YearPeriodosComponent implements OnInit {
     },
     {
       type: 'date',
-      width: '10%',
+      width: '20%',
       field: 'dtPeriodoEvalAperFin',
       header: 'Fin',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'estado-activo',
+      width: '15%',
+      field: 'bHabilitado',
+      header: 'Habilitado',
       text_header: 'center',
       text: 'center',
     },
@@ -164,20 +253,20 @@ export class YearPeriodosComponent implements OnInit {
     },
   ];
 
-  actions: any[] = [
+  actions: IActionTable[] = [
     {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',
       accion: 'editar',
       type: 'item',
-      class: 'p-button-text',
+      class: 'p-button-text p-button-rounded p-button-warning',
     },
     {
       labelTooltip: 'Ver',
       icon: 'pi pi-eye',
       accion: 'ver',
       type: 'item',
-      class: 'p-button-text',
+      class: 'p-button-text p-button-rounded p-button-secondary',
     },
   ];
 }

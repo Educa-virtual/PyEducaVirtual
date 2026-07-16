@@ -144,4 +144,12 @@ export class YearService {
   listarCalendarioPeriodos(data: any) {
     return this.http.post(`${baseUrl}/acad/listarCalendarioPeriodos`, data);
   }
+
+  procesarCalendarioPeriodos(data: any) {
+    return this.http.post(`${baseUrl}/acad/procesarCalendarioPeriodos`, data);
+  }
+
+  actualizarCalendarioPeriodo(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarCalendarioPeriodo`, data);
+  }
 }

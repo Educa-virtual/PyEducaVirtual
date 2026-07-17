@@ -54,7 +54,7 @@ export class YearsComponent implements OnInit {
     this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     if ([DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId))) {
-      this.verYear(this.iYAcadId);
+      // Si es director ver solo el año seleccionado
       this.router.navigate([`/gestion-institucional/years-academicos/${this.iYAcadId}/config`]);
     }
   }
@@ -180,18 +180,6 @@ export class YearsComponent implements OnInit {
     this.formService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
   }
 
-  verYear(iYAcadId: any) {
-    this.yearsService
-      .verYear({
-        iYAcadId: iYAcadId,
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.yearsService.setYear(data.data);
-        },
-      });
-  }
-
   accionBtnItem({ accion, item }) {
     switch (accion) {
       case 'ver':
@@ -223,13 +211,11 @@ export class YearsComponent implements OnInit {
         });
         break;
       case 'distribucion':
-        this.yearsService.setYear(item);
         this.router.navigate([
           `/gestion-institucional/years-academicos/${item.iYAcadId}/distribucion`,
         ]);
         break;
       case 'calendario':
-        this.yearsService.setYear(item);
         this.router.navigate([`/gestion-institucional/years-academicos/${item.iYAcadId}/config`]);
         break;
     }

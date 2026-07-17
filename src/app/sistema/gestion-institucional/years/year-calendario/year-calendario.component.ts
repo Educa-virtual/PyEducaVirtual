@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { YearService } from '../year.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 
 @Component({
@@ -16,6 +16,7 @@ import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 export class YearCalendarioComponent implements OnInit {
   formCalendario: FormGroup;
 
+  iYAcadId: number;
   year: any;
   periodos: any[] = [];
   turnos: any[] = [];
@@ -33,10 +34,13 @@ export class YearCalendarioComponent implements OnInit {
     private formService: ReactiveFormService,
     private messageService: MessageService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    this.year = this.yearsService.getYear();
     this.yearsService.setActiveIndex(0);
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
+    });
   }
 
   ngOnInit(): void {
@@ -64,8 +68,21 @@ export class YearCalendarioComponent implements OnInit {
     this.yearsService.crearYear({}).subscribe((data: any) => {
       this.tipos_periodos = this.yearsService.getTiposPeriodos(data?.tipos_periodos);
     });
-    this.setBreadCrumbItems();
-    this.verCalendarioAcademicos();
+    this.verYear();
+  }
+
+  verYear() {
+    this.yearsService
+      .verYear({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.year = data.data;
+          this.setBreadCrumbItems();
+          this.verCalendarioAcademicos();
+        },
+      });
   }
 
   setBreadCrumbItems() {

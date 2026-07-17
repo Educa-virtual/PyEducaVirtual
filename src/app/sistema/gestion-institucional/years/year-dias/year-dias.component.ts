@@ -4,7 +4,7 @@ import { MessageService } from 'primeng/api';
 import { YearService } from '../year.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-year-dias',
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
   styleUrl: './year-dias.component.scss',
 })
 export class YearDiasComponent implements OnInit {
+  iYAcadId: number;
   year: any;
 
   tipos_turnos: any[] = [];
@@ -25,10 +26,13 @@ export class YearDiasComponent implements OnInit {
     private formService: ReactiveFormService,
     private messageService: MessageService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.yearsService.setActiveIndex(2);
-    this.year = this.yearsService.getYear();
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
+    });
   }
 
   ngOnInit(): void {
@@ -49,7 +53,20 @@ export class YearDiasComponent implements OnInit {
       this.tipos_turnos = this.yearsService.getTiposTurnos(data?.tipos_turnos);
       this.dias_semana = this.yearsService.getDiasSemana(data?.dias_semana);
     });
-    this.verCalendarioTurno();
+    this.verYear();
+  }
+
+  verYear() {
+    this.yearsService
+      .verYear({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.year = data.data;
+          this.verCalendarioTurno();
+        },
+      });
   }
 
   setFormTurno(data: any) {

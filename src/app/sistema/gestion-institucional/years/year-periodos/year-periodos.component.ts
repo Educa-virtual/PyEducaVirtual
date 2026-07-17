@@ -9,7 +9,7 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-year-periodos',
@@ -25,6 +25,7 @@ export class YearPeriodosComponent implements OnInit {
   periodos: any[] = [];
   tiposFases: any[] = [];
 
+  iYAcadId: number;
   year: any;
   bEditable: boolean = false;
 
@@ -46,10 +47,13 @@ export class YearPeriodosComponent implements OnInit {
     private messageService: MessageService,
     private formService: ReactiveFormService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.yearsService.setActiveIndex(1);
-    this.year = this.yearsService.getYear();
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
+    });
   }
 
   ngOnInit(): void {
@@ -68,13 +72,26 @@ export class YearPeriodosComponent implements OnInit {
     } catch (error) {
       console.error(error, 'Error al inicializar el formulario');
     }
-    this.listarPeriodos();
+    this.verYear();
+  }
+
+  verYear() {
+    this.yearsService
+      .verYear({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.year = data.data;
+          this.listarPeriodos();
+        },
+      });
   }
 
   listarPeriodos() {
     this.yearsService
       .listarCalendarioPeriodos({
-        iYAcadId: this.year.iYAcadId ?? null,
+        iYAcadId: this.iYAcadId ?? null,
       })
       .subscribe({
         next: (data: any) => {

@@ -48,46 +48,57 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
     private cf: ChangeDetectorRef
   ) {
     this.perfil = this.store.getItem('dremoPerfil');
-    this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.iSedeId = this.perfil.iSedeId;
-    this.year = this.yearService.getYear();
-    this.setBreadCrumbItems();
+    this.route.paramMap.subscribe(params => {
+      this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
+    });
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
-      this.items = [
-        {
-          label: 'Calendario',
-          icon: 'pi pi-fw pi-calendar',
-          route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/calendario`,
-        },
-        {
-          label: 'Periodos',
-          icon: 'pi pi-fw pi-cog',
-          route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/periodos`,
-        },
-        {
-          label: 'Turno y días',
-          icon: 'pi pi-fw pi-clock',
-          route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/dias`,
-        },
-      ];
+    this.verYear();
+    this.items = [
+      {
+        label: 'Calendario',
+        icon: 'pi pi-fw pi-calendar',
+        route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/calendario`,
+      },
+      {
+        label: 'Periodos',
+        icon: 'pi pi-fw pi-cog',
+        route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/periodos`,
+      },
+      {
+        label: 'Turno y días',
+        icon: 'pi pi-fw pi-clock',
+        route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/dias`,
+      },
+    ];
 
-      // Obtener la ruta actual del usuario
-      const urlSegments = this.router.url.split('/');
-      const currentSegment = urlSegments[urlSegments.length - 1];
+    // Obtener la ruta actual del usuario
+    const urlSegments = this.router.url.split('/');
+    const currentSegment = urlSegments[urlSegments.length - 1];
 
-      // Validar que el segment sea una ruta válida
-      const validSegments = ['calendario', 'periodos', 'dias'];
-      const targetSegment = validSegments.includes(currentSegment) ? currentSegment : 'calendario';
+    // Validar que el segment sea una ruta válida
+    const validSegments = ['calendario', 'periodos', 'dias'];
+    const targetSegment = validSegments.includes(currentSegment) ? currentSegment : 'calendario';
 
-      // Navegar a la ruta actual o a calendario como default
-      this.router.navigate([
-        `/gestion-institucional/years-academicos/${this.iYAcadId}/config/${targetSegment}`,
-      ]);
-    });
+    // Navegar a la ruta actual o a calendario como default
+    this.router.navigate([
+      `/gestion-institucional/years-academicos/${this.iYAcadId}/config/${targetSegment}`,
+    ]);
+  }
+
+  verYear() {
+    this.yearService
+      .verYear({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.year = data.data;
+          this.setBreadCrumbItems();
+        },
+      });
   }
 
   setBreadCrumbItems() {
@@ -99,7 +110,7 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
             ? '/gestion-institucional/years-academicos'
             : '',
       },
-      { label: this.year.cYearNombre },
+      { label: this.year?.cYearNombre },
       { label: 'Calendario académico' },
     ];
   }

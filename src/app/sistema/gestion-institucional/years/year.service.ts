@@ -27,21 +27,6 @@ export class YearService {
   tipos_periodos: any[];
   tipos_turnos: any[];
   dias_semana: any[];
-  year: any;
-
-  /* Compartir datos entre componentes */
-
-  setYear(year: any[]) {
-    this.year = JSON.stringify(year);
-    localStorage.setItem('year', this.year);
-  }
-
-  getYear(): string | null {
-    if (!this.year) {
-      this.year = localStorage.getItem('year') == 'null' ? null : localStorage.getItem('year');
-    }
-    return JSON.parse(this.year);
-  }
 
   /* Parametros de formularios */
 

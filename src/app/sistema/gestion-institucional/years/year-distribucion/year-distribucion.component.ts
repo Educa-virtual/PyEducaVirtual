@@ -9,7 +9,7 @@ import { YearService } from '../year.service';
 import { FormBuilder } from '@angular/forms';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 
 @Component({
@@ -22,6 +22,7 @@ import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
 export class YearDistribucionComponent implements OnInit {
   formDistribucion: any;
   year: any;
+  iYAcadId: number;
 
   dialogDistribucion: any = {
     visible: false,
@@ -45,15 +46,18 @@ export class YearDistribucionComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     private confirmService: ConfirmationModalService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    this.year = this.yearService.getYear();
+    this.route.paramMap.subscribe(params => {
+      this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
+    });
   }
 
   setBreadCrumbItems() {
     this.breadCrumbItems = [
       { label: 'Años académicos', routerLink: '/gestion-institucional/years-academicos' },
-      { label: this.year.cYearNombre },
+      { label: this.year ? this.year.cYearNombre : '' },
       { label: 'Distribución de bloques' },
     ];
   }
@@ -73,8 +77,21 @@ export class YearDistribucionComponent implements OnInit {
     } catch (error) {
       console.error(error);
     }
-    this.setBreadCrumbItems();
+    this.verYear();
     this.listarDistribuciones();
+  }
+
+  verYear() {
+    this.yearService
+      .verYear({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.year = data.data;
+          this.setBreadCrumbItems();
+        },
+      });
   }
 
   setFormDistribucion(data: any) {
@@ -109,7 +126,7 @@ export class YearDistribucionComponent implements OnInit {
   listarDistribuciones() {
     this.yearService
       .listarDistribucionBloques({
-        iYAcadId: this.year.iYAcadId ?? null,
+        iYAcadId: this.iYAcadId ?? null,
       })
       .subscribe({
         next: (res: any) => {

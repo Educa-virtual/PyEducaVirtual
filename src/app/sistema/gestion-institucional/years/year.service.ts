@@ -87,16 +87,28 @@ export class YearService {
     return this.tipos_distribuciones;
   }
 
-  getDiasSemana() {
-    return [
-      { value: 1, label: 'LUNES' },
-      { value: 2, label: 'MARTES' },
-      { value: 3, label: 'MIÉRCOLES' },
-      { value: 4, label: 'JUEVES' },
-      { value: 5, label: 'VIERNES' },
-      { value: 6, label: 'SÁBADO' },
-      { value: 7, label: 'DOMINGO' },
-    ];
+  getTiposTurnos(data: any) {
+    if (!this.tipos_turnos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_turnos = items.map(item => ({
+        value: Number(item.iTurnoId),
+        label: item.cTurnoNombre,
+      }));
+      return this.tipos_turnos;
+    }
+    return this.tipos_turnos;
+  }
+
+  getDiasSemana(data: any) {
+    if (!this.dias_semana && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.dias_semana = items.map(item => ({
+        value: Number(item.iDiaId),
+        label: item.cDiaNombre,
+      }));
+      return this.dias_semana;
+    }
+    return this.dias_semana;
   }
 
   /* Consultas CRUD */
@@ -151,5 +163,17 @@ export class YearService {
 
   actualizarCalendarioPeriodo(data: any) {
     return this.http.post(`${baseUrl}/acad/actualizarCalendarioPeriodo`, data);
+  }
+
+  verCalendarioTurno(data: any) {
+    return this.http.post(`${baseUrl}/acad/verCalendarioTurno`, data);
+  }
+
+  guardarCalendarioTurno(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarCalendarioTurno`, data);
+  }
+
+  actualizarCalendarioTurno(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarCalendarioTurno`, data);
   }
 }

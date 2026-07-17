@@ -9,6 +9,7 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-year-periodos',
@@ -44,7 +45,8 @@ export class YearPeriodosComponent implements OnInit {
     private yearsService: YearService,
     private messageService: MessageService,
     private formService: ReactiveFormService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.yearsService.setActiveIndex(1);
     this.year = this.yearsService.getYear();
@@ -167,6 +169,19 @@ export class YearPeriodosComponent implements OnInit {
       this.formPeriodo.get('cFasePromNombre').disable();
     } else {
       this.formPeriodo.disable();
+    }
+  }
+
+  cambiarTab(index: number) {
+    this.yearsService.setActiveIndex(index);
+    if (index === 0) {
+      this.router.navigate([
+        `/gestion-institucional/years-academicos/${this.year.iYAcadId}/config/calendario`,
+      ]);
+    } else if (index === 2) {
+      this.router.navigate([
+        `/gestion-institucional/years-academicos/${this.year.iYAcadId}/config/dias`,
+      ]);
     }
   }
 

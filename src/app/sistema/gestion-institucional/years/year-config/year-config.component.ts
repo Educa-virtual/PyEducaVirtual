@@ -5,6 +5,7 @@ import { YearService } from '../year.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { TabMenu } from 'primeng/tabmenu';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-year-config',
@@ -28,10 +29,15 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
     },
   ];
 
+  year: any;
+  perfil: any;
   iSedeId: number;
   iYAcadId: number;
   configuracion: any;
   iConfigId: number = 0;
+
+  breadCrumbHome: MenuItem = { label: '', icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [];
 
   constructor(
     private store: LocalStoreService,
@@ -41,9 +47,11 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private cf: ChangeDetectorRef
   ) {
-    const perfil = this.store.getItem('dremoPerfil');
+    this.perfil = this.store.getItem('dremoPerfil');
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
-    this.iSedeId = perfil.iSedeId;
+    this.iSedeId = this.perfil.iSedeId;
+    this.year = this.yearService.getYear();
+    this.setBreadCrumbItems();
   }
 
   ngOnInit(): void {
@@ -51,18 +59,18 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
       this.iYAcadId = params.get('iYAcadId') ? Number(params.get('iYAcadId')) : this.iYAcadId;
       this.items = [
         {
-          label: 'Calendario académico',
-          icon: 'pi pi-fw pi-cog',
+          label: 'Calendario',
+          icon: 'pi pi-fw pi-calendar',
           route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/calendario`,
         },
         {
           label: 'Periodos',
-          icon: 'pi pi-fw pi-home',
+          icon: 'pi pi-fw pi-cog',
           route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/periodos`,
         },
         {
-          label: 'Días laborables',
-          icon: 'pi pi-fw pi-user',
+          label: 'Turno y días',
+          icon: 'pi pi-fw pi-clock',
           route: `/gestion-institucional/years-academicos/${this.iYAcadId}/config/dias`,
         },
       ];
@@ -80,6 +88,20 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
         `/gestion-institucional/years-academicos/${this.iYAcadId}/config/${targetSegment}`,
       ]);
     });
+  }
+
+  setBreadCrumbItems() {
+    this.breadCrumbItems = [
+      {
+        label: 'Años académicos',
+        routerLink:
+          this.perfil.iPerfilId == ADMINISTRADOR_DREMO
+            ? '/gestion-institucional/years-academicos'
+            : '',
+      },
+      { label: this.year.cYearNombre },
+      { label: 'Calendario académico' },
+    ];
   }
 
   ngAfterViewInit() {

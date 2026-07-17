@@ -21,7 +21,7 @@ export const administradorDremo = [
     items: [
       inicio,
       {
-        label: 'Administrador IE',
+        label: 'Configurar año académico',
         icon: 'pi pi-warehouse',
         items: [
           {
@@ -30,7 +30,7 @@ export const administradorDremo = [
             routerLink: ['/gestion-institucional/fechas-nacionales'],
           },
           {
-            label: 'Gestión del año académico',
+            label: 'Gestión del calendario académico',
             icon: 'pi pi-calendar-clock',
             routerLink: ['/gestion-institucional/years-academicos'],
           },

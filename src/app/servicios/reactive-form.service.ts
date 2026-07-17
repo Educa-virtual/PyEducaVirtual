@@ -20,6 +20,51 @@ export class ReactiveFormService {
   }
 
   /**
+   * Convertir un array de formulario en array con llaves o JSON con llaves
+   * @param form El formulario
+   * @param formJson El control destino del formulario
+   * @param formControlName El control o array de controles origen del formulario
+   * @param groupControl El nombre de la llave, dejar en blanco para no usar, nulo para usar nombre del control
+   * @param devolverArray true para devolver array, false (defecto) para devolver json
+   * @returns
+   */
+  formControlJsonStringify(
+    form: FormGroup,
+    formJson: string,
+    formControlName: string | string[] | null,
+    groupControl: string | null = null,
+    devolverArray: boolean = false
+  ): void {
+    form.get(formJson).setValue(null);
+    if (!formControlName) {
+      return null;
+    }
+    const items = [];
+    if (typeof formControlName === 'string') {
+      formControlName = [formControlName];
+    }
+    formControlName.forEach(control => {
+      if (form.get(control).value === null) {
+        return null;
+      }
+      form.get(control).value.forEach(item => {
+        if (groupControl) {
+          items.push({
+            [groupControl]: String(item),
+          });
+        } else if (groupControl == '') {
+          items.push(item);
+        } else {
+          items.push({
+            [control]: String(item),
+          });
+        }
+      });
+    });
+    form.get(formJson).setValue(devolverArray ? items : JSON.stringify(items));
+  }
+
+  /**
    * Formatear un control de un formulario
    * @param form El formulario
    * @param formControl El control del formulario
@@ -31,7 +76,7 @@ export class ReactiveFormService {
     form: FormGroup,
     formControl: string,
     value: any,
-    tipo: 'number' | 'string' | 'json' | 'boolean' | 'date',
+    tipo: 'number' | 'string' | 'json' | 'boolean' | 'date' | 'time',
     groupControl: string | null = null
   ): void {
     if (tipo === 'number') {
@@ -54,6 +99,12 @@ export class ReactiveFormService {
         fecha = new Date(value + 'T00:00:00');
       }
       form.get(formControl)?.patchValue(fecha);
+    } else if (tipo === 'time') {
+      let time = null;
+      if (value) {
+        time = value.substring(0, 5);
+      }
+      form.get(formControl)?.patchValue(time);
     } else if (tipo === 'json') {
       if (!value) {
         form.get(formControl)?.patchValue(null);

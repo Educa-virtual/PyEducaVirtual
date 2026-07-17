@@ -54,24 +54,21 @@ export class YearDiasComponent implements OnInit {
 
   setFormTurno(data: any) {
     this.formTurno.reset(data);
-    this.formService.formatearFormControl(this.formTurno, 'iTurnoId', data.iTurnoId, 'number');
+    this.formTurno.get('iCalAcadId').setValue(this.year.iCalAcadId);
+    this.formService.formatearFormControl(this.formTurno, 'iTurnoId', data?.iTurnoId, 'number');
     this.formService.formatearFormControl(
       this.formTurno,
       'dtAperTurnoInicio',
-      data.dtAperTurnoInicio,
+      data?.dtAperTurnoInicio,
       'time'
     );
     this.formService.formatearFormControl(
       this.formTurno,
       'dtAperTurnoFin',
-      data.dtAperTurnoFin,
+      data?.dtAperTurnoFin,
       'time'
     );
     this.formService.formatearFormControl(this.formTurno, 'dias', data.dias, 'json', 'iDiaId');
-    if (data.dias) {
-      const dias = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.formTurno.get('dias').setValue(dias);
-    }
   }
 
   verCalendarioTurno() {
@@ -90,8 +87,6 @@ export class YearDiasComponent implements OnInit {
   }
 
   guardarCalendarioTurno() {
-    // const dias = this.formTurno.value.dias.map((dia: any) => ({ iDiaId: dia }));
-    // this.formTurno.get('jsonDiasLaborables').setValue(JSON.stringify(dias));
     this.formService.formControlJsonStringify(
       this.formTurno,
       'jsonDiasLaborables',
@@ -109,27 +104,6 @@ export class YearDiasComponent implements OnInit {
       },
       error: error => {
         console.error('Error guardando turno:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.message ?? 'Error desconocido',
-        });
-      },
-    });
-  }
-
-  actualizarCalendarioTurno() {
-    this.yearsService.actualizarCalendarioTurno(this.formTurno.value).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Se actualizó con éxito',
-        });
-        this.verCalendarioTurno();
-      },
-      error: error => {
-        console.error('Error actualizando turno:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

@@ -117,6 +117,10 @@ export class YearService {
     return this.http.post(`${baseUrl}/grl/listarYears`, data);
   }
 
+  verYear(data: any) {
+    return this.http.post(`${baseUrl}/grl/verYear`, data);
+  }
+
   guardarYear(data: any) {
     return this.http.post(`${baseUrl}/grl/guardarYear`, data);
   }

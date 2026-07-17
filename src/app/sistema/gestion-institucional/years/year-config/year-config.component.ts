@@ -95,7 +95,7 @@ export class YearConfigComponent implements OnInit, AfterViewInit {
       {
         label: 'Años académicos',
         routerLink:
-          this.perfil.iPerfilId == ADMINISTRADOR_DREMO
+          Number(this.perfil.iPerfilId) == ADMINISTRADOR_DREMO
             ? '/gestion-institucional/years-academicos'
             : '',
       },

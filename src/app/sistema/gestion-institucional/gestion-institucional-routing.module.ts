@@ -30,6 +30,7 @@ import {
   ESPECIALISTA_UGEL,
   ESPECIALISTA_DREMO,
   DOCENTE,
+  SUBDIRECTOR_IE,
 } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
@@ -58,7 +59,7 @@ const routes: Routes = [
     component: YearsComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO],
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
     },
   },
   {
@@ -74,7 +75,7 @@ const routes: Routes = [
     component: YearConfigComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [ADMINISTRADOR_DREMO],
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
     },
     children: [
       {
@@ -87,7 +88,7 @@ const routes: Routes = [
         component: YearCalendarioComponent,
         canActivate: [RoleGuard],
         data: {
-          expectedRole: [ADMINISTRADOR_DREMO],
+          expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
         },
       },
       {
@@ -95,7 +96,7 @@ const routes: Routes = [
         component: YearPeriodosComponent,
         canActivate: [RoleGuard],
         data: {
-          expectedRole: [ADMINISTRADOR_DREMO],
+          expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
         },
       },
       {
@@ -103,7 +104,7 @@ const routes: Routes = [
         component: YearDiasComponent,
         canActivate: [RoleGuard],
         data: {
-          expectedRole: [ADMINISTRADOR_DREMO],
+          expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
         },
       },
     ],

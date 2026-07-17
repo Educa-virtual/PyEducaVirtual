@@ -12,6 +12,8 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-years',
@@ -28,6 +30,9 @@ export class YearsComponent implements OnInit {
   bEditar: boolean = false;
   bSoloLectura: boolean = false;
 
+  iYAcadId: any;
+  perfil: any;
+
   dialogYear = {
     title: '',
     visible: false,
@@ -43,8 +48,16 @@ export class YearsComponent implements OnInit {
     private formService: ReactiveFormService,
     private dialogConfirm: ConfirmationModalService,
     public datePipe: DatePipe,
-    private router: Router
-  ) {}
+    private router: Router,
+    private store: LocalStoreService
+  ) {
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    if ([DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId))) {
+      this.verYear(this.iYAcadId);
+      this.router.navigate([`/gestion-institucional/years-academicos/${this.iYAcadId}/config`]);
+    }
+  }
 
   ngOnInit(): void {
     try {
@@ -165,6 +178,18 @@ export class YearsComponent implements OnInit {
       'date'
     );
     this.formService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
+  }
+
+  verYear(iYAcadId: any) {
+    this.yearsService
+      .verYear({
+        iYAcadId: iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.yearsService.setYear(data.data);
+        },
+      });
   }
 
   accionBtnItem({ accion, item }) {

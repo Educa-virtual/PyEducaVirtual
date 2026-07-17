@@ -368,7 +368,7 @@ const administracion = [
           {
             label: 'Configurar calendario escolar',
             icon: 'pi pi-fw pi-lock-open',
-            routerLink: ['/gestion-institucional/calendario-escolar'],
+            routerLink: ['/gestion-institucional/years-academicos'],
           },
           {
             label: 'Configurar año académico',

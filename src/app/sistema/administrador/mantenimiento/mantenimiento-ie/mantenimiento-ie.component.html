@@ -5,6 +5,15 @@
       <div class="m-0 text-2xl font-bold">Mantenimiento de Instituciones Educativas</div>
     </div>
   </ng-template>
+  <ng-template pTemplate="icons">
+    <p-button
+      severity="success"
+      label="Agregar"
+      icon="pi pi-plus"
+      [disabled]="!formMantenimiento.value.iNivelTipoId"
+      (onClick)="agregarInstitucion()"
+    />
+  </ng-template>
 
   <p-tabView [(activeIndex)]="activeTab">
     <p-tabPanel
@@ -17,7 +26,7 @@
           <p-inputGroup>
             <p-inputGroupAddon>Nivel</p-inputGroupAddon>
             <p-dropdown
-              [options]="nivelTipos()"
+              [options]="nivel_tipos"
               [showClear]="true"
               formControlName="iNivelTipoId"
               placeholder="Seleccione un nivel"
@@ -46,27 +55,6 @@
             />
           </p-inputGroup>
         </div>
-        <div class="col flex justify-content-end gap-2">
-          <p-button
-            pRipple
-            severity="primary"
-            label="Buscar"
-            icon="pi pi-search"
-            (onClick)="
-              obtenerInstituciones();
-              institucionSeleccionada.set(null);
-              isLoadingDatosIniciales.set(true)
-            "
-          />
-          <p-button
-            pRipple
-            severity="success"
-            label="Agregar"
-            icon="pi pi-plus"
-            [disabled]="!formMantenimiento.value.iNivelTipoId"
-            (onClick)="accionBtn({ accion: 'agregarIE', item: [] })"
-          />
-        </div>
       </form>
       <app-table-primeng
         [data]="instituciones"
@@ -75,7 +63,7 @@
         [showCaption]="false"
         [showPaginator]="true"
         selectionMode="single"
-        (accionBtnItem)="onAccionBtn($event)"
+        (accionBtnItem)="accionBtnInstituciones($event)"
         [scrollable]="true"
       />
     </p-tabPanel>
@@ -155,12 +143,7 @@
                 severity="success"
                 label="Agregar Sede"
                 icon="pi pi-plus"
-                (onClick)="
-                  accionBtn({
-                    accion: 'agregar',
-                    item: null,
-                  })
-                "
+                (onClick)="agregarSede()"
               />
             </div>
           </div>
@@ -168,10 +151,10 @@
 
         <div class="col-12">
           <app-table-primeng
-            [data]="sedes()"
+            [data]="sedes"
             [columnas]="columnasSedes()"
             [actions]="accionesSedes()"
-            (accionBtnItem)="accionBtn($event)"
+            (accionBtnItem)="accionBtnSedes($event)"
           ></app-table-primeng>
         </div>
       </div>
@@ -184,60 +167,12 @@
     [data]="itemSelected()"
     [iNivelTipoId]="this.formMantenimiento.value.iNivelTipoId"
     (closeModal)="showModal.set(false)"
-    (recargarLista)="actionInstituciones($event)"
-  ></app-agregar-mantenimiento-ie>
+  />
+
   <app-form-sedes
     [showModal]="showModalSedes()"
     [data]="itemSelectedSede()"
     [iIieeId]="this.institucionSeleccionada()?.iIieeId"
     (closeModal)="showModalSedes.set(false)"
-    (recargarLista)="this.sedes.set([]); obtenerSedesIe(this.institucionSeleccionada()?.iIieeId)"
-  ></app-form-sedes>
-
-  <p-dialog
-    header="Generar apertura de año escolar"
-    [(visible)]="showDialogConfirmacion"
-    [modal]="true"
-    [closable]="false"
-    [style]="{ width: '450px' }"
-    [maximizable]="true"
-  >
-    <p>
-      ¿Estás seguro de que deseas aperturar el año de la institución educativa
-      {{ this.sede.cSedeNombre }}?
-    </p>
-
-    <form [formGroup]="formApertura" class="grid mt-2">
-      <div class="col-12 flex flex-column gap-2">
-        <label for="iTipoDistribucionId">Tipo de periodo de evaluación</label>
-        <p-dropdown
-          formControlName="iPerioEvalId"
-          optionLabel="cPeriodoEvalNombre"
-          appendTo="body"
-          styleClass="w-full"
-          placeholder="Seleccione un tipo de distribución de bloque"
-          optionValue="iPeriodoEvalId"
-          [options]="periodos"
-          optionLabel="cPeriodoEvalNombre"
-        />
-      </div>
-    </form>
-
-    <p-footer>
-      <p-button
-        label="Cancelar"
-        icon="pi pi-times"
-        (onClick)="showDialogConfirmacion = false"
-        severity="danger"
-      ></p-button>
-
-      <p-button
-        label="Generar"
-        icon="pi pi-check"
-        (onClick)="generarCalendario()"
-        autoFocus
-        severity="success"
-      ></p-button>
-    </p-footer>
-  </p-dialog>
+  />
 </p-panel>

@@ -182,7 +182,7 @@ export class AgregarMantenimientoIeComponent
     const datosInstitucion: InstitucionEducativa = this.formInstitucion.value;
     datosInstitucion.iEstado = this.formInstitucion.value.iEstado ? 1 : 2;
     this._MantenimientoIeService
-      .crearInstitucionEducativa(datosInstitucion)
+      .guardarInstitucionEducativa(datosInstitucion)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: response => {

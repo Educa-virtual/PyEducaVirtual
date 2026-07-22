@@ -1,11 +1,8 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MenuItem, MessageService } from 'primeng/api';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { GeneralService } from '@/app/servicios/general.service';
-import { ConstantesService } from '@/app/servicios/constantes.service';
-import { GestionUsuariosService } from '../../gestion-usuarios/services/gestion-usuarios.service';
 import {
   IActionTable,
   IColumn,
@@ -32,7 +29,7 @@ export class MantenimientoIeComponent implements OnInit {
   iYAcadId: number;
   perfil: any;
 
-  formMantenimiento: FormGroup;
+  formFiltroIe: FormGroup;
   formApertura: FormGroup;
 
   nivel_tipos: Array<object> = [];
@@ -43,6 +40,7 @@ export class MantenimientoIeComponent implements OnInit {
   distritos: Array<object> = [];
 
   instituciones: any[] = [];
+  instituciones_filtradas: any[] = [];
   sedes: any[] = [];
 
   loading: boolean = false;
@@ -72,10 +70,7 @@ export class MantenimientoIeComponent implements OnInit {
     private ieService: MantenimientoIeService,
     private confirmService: ConfirmationModalService,
     private fb: FormBuilder,
-    private messageService: MessageService,
-    private _GeneralService: GeneralService,
-    private _ConstantesService: ConstantesService,
-    private _GestionUsuariosService: GestionUsuariosService
+    private messageService: MessageService
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
@@ -83,12 +78,11 @@ export class MantenimientoIeComponent implements OnInit {
 
   ngOnInit() {
     try {
-      this.formMantenimiento = this.fb.nonNullable.group({
-        iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
+      this.formFiltroIe = this.fb.nonNullable.group({
         iNivelTipoId: [null],
-        iIieeId: [null],
-        iSedeId: [null],
         iEstado: [null],
+        iUgelId: [null],
+        cTextoBusqueda: [''],
       });
     } catch (error) {
       console.error(error, 'Error al inicializar el formulario');
@@ -104,10 +98,55 @@ export class MantenimientoIeComponent implements OnInit {
     this.listarInstitucionesEducativas();
   }
 
+  filtrarIes() {
+    const textoBusqueda = this.formFiltroIe.value.cTextoBusqueda;
+    const iUgelId = this.formFiltroIe.value.iUgelId;
+    const iNivelTipoId = this.formFiltroIe.value.iNivelTipoId;
+    const iEstado = this.formFiltroIe.value.iEstado;
+    this.instituciones_filtradas = this.instituciones.filter(institucion => {
+      if (iNivelTipoId && Number(institucion.iNivelTipoId) !== Number(iNivelTipoId)) {
+        return null;
+      }
+      if (iUgelId && Number(institucion.iUgelId) !== Number(iUgelId)) {
+        return null;
+      }
+      if (iEstado && Number(institucion.iEstado) !== Number(iEstado)) {
+        return null;
+      }
+      if (textoBusqueda) {
+        if (
+          institucion.cIieeCodigoModular &&
+          institucion.cIieeCodigoModular.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return institucion;
+        if (
+          institucion.cIieeNombre &&
+          institucion.cIieeNombre.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return institucion;
+        if (
+          institucion.cNivelTipoNombre &&
+          institucion.cNivelTipoNombre.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return institucion;
+        if (
+          institucion.cUgelNombre &&
+          institucion.cUgelNombre.toLowerCase().includes(textoBusqueda.toLowerCase())
+        )
+          return institucion;
+        return null;
+      } else {
+        return institucion;
+      }
+    });
+    return null;
+  }
+
   listarInstitucionesEducativas() {
     this.ieService.listarInstitucionesEducativas({}).subscribe({
       next: (data: any) => {
         this.instituciones = data.data;
+        this.instituciones_filtradas = this.instituciones;
       },
       error: (error: any) => {
         console.error(error.error.message);
@@ -194,7 +233,7 @@ export class MantenimientoIeComponent implements OnInit {
   }
 
   agregarInstitucion() {
-    this.formMantenimiento.value.iNivelTipoId ? this.showModal.set(true) : null;
+    this.formFiltroIe.value.iNivelTipoId ? this.showModal.set(true) : null;
     this.isLoadingDatosIniciales.set(true);
     this.itemSelected.set(null);
     this.institucionSeleccionada.set(null);
@@ -259,7 +298,7 @@ export class MantenimientoIeComponent implements OnInit {
   columnas: IColumn[] = [
     {
       type: 'text',
-      width: '20%',
+      width: '15%',
       field: 'cIieeCodigoModular',
       header: 'Codigo modular',
       text_header: 'center',
@@ -275,7 +314,7 @@ export class MantenimientoIeComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '20%',
+      width: '15%',
       field: 'cNivelTipoNombre',
       header: 'Nivel',
       text_header: 'left',
@@ -290,8 +329,16 @@ export class MantenimientoIeComponent implements OnInit {
       text: 'left',
     },
     {
+      type: 'estado-activo',
+      width: '15%',
+      field: 'iEstado',
+      header: 'Estado',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
       type: 'actions',
-      width: '10%',
+      width: '5%',
       field: 'acciones',
       header: 'Acciones',
       text_header: 'left',

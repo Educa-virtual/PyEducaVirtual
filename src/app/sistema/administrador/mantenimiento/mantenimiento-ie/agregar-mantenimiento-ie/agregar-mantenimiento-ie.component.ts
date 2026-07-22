@@ -11,9 +11,8 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
 import { MantenimientoIeService, InstitucionEducativa } from '../mantenimiento-ie.service';
-import { GeneralService } from '@/app/servicios/general.service';
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
-import { catchError, finalize, forkJoin, of } from 'rxjs';
+import { finalize } from 'rxjs';
 import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
@@ -38,14 +37,17 @@ export class AgregarMantenimientoIeComponent
   recargarLista = output<{ action: string }>();
 
   isLoading = signal<boolean>(false);
-  distritos = signal<any[]>([]);
-  zonas = signal<any[]>([]);
-  ugeles = signal<any[]>([]);
-  sectores = signal<any[]>([]);
+  distritos: any[] = [];
+  zonas: any[] = [];
+  ugeles: any[] = [];
+  sectores: any[] = [];
+  estados = [
+    { value: 1, label: 'HABILITADO' },
+    { value: 0, label: 'DESHABILITADO' },
+  ];
 
-  private _GeneralService = inject(GeneralService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
-  private _MantenimientoIeService = inject(MantenimientoIeService);
+  private ieService = inject(MantenimientoIeService);
   private _FormBuilder = inject(FormBuilder);
   private _LocalStoreService = inject(LocalStoreService);
 
@@ -88,22 +90,11 @@ export class AgregarMantenimientoIeComponent
   }
 
   ngOnInit() {
-    this.cargarDatosIniciales();
-  }
-
-  cargarDatosIniciales() {
-    forkJoin({
-      ugeles: this._GeneralService.getUgeles().pipe(catchError(() => of({ data: [] }))),
-      distritos: this._GeneralService.getDistritos().pipe(catchError(() => of({ data: [] }))),
-      zonas: this._GeneralService.getZonas().pipe(catchError(() => of({ data: [] }))),
-      sectores: this._GeneralService.getTipoSector().pipe(catchError(() => of({ data: [] }))),
-    }).subscribe({
-      next: (response: any) => {
-        this.ugeles.set(response.ugeles.data);
-        this.distritos.set(response.distritos.data);
-        this.zonas.set(response.zonas.data);
-        this.sectores.set(response.sectores.data);
-      },
+    this.ieService.crearInstitucionEducativa({}).subscribe((data: any) => {
+      this.zonas = this.ieService.getZonas(data?.zonas);
+      this.sectores = this.ieService.getTiposSectores(data?.tipos_sectores);
+      this.ugeles = this.ieService.getUgeles(data?.ugeles);
+      this.distritos = this.ieService.getDistritos(data?.distritos);
     });
   }
 
@@ -181,7 +172,7 @@ export class AgregarMantenimientoIeComponent
   guardarInstitucion() {
     const datosInstitucion: InstitucionEducativa = this.formInstitucion.value;
     datosInstitucion.iEstado = this.formInstitucion.value.iEstado ? 1 : 2;
-    this._MantenimientoIeService
+    this.ieService
       .guardarInstitucionEducativa(datosInstitucion)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({

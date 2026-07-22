@@ -15,7 +15,7 @@ import {
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MantenimientoIeService, Sede } from '../mantenimiento-ie.service';
 import { PrimengModule } from '@/app/primeng.module';
-import { catchError, finalize, forkJoin, of } from 'rxjs';
+import { finalize } from 'rxjs';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 
@@ -29,18 +29,24 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 export class FormSedesComponent extends MostrarErrorComponent implements OnInit, OnChanges {
   showModal = input<boolean>(false);
   iIieeId = input<string | number>(null);
+  ieSeleccionada = input<any>(null);
   data = input(null);
-
-  turnos: any = [];
 
   closeModal = output<void>();
   recargarLista = output<void>();
 
   isLoading = signal<boolean>(false);
-  serviciosEducativos = signal<any[]>([]);
+
+  turnos: any = [];
+  servicios_educativos: any[] = [];
+  estados: any[] = [
+    { label: 'HABILITADO', value: 1 },
+    { label: 'DESHABILITADO', value: 0 },
+  ];
+
   private _GeneralService = inject(GeneralService);
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
-  private _MantenimientoIeService = inject(MantenimientoIeService);
+  private ieService = inject(MantenimientoIeService);
   private _FormBuilder = inject(FormBuilder);
   private _LocalStoreService = inject(LocalStoreService);
   private _ConstantesService = inject(ConstantesService);
@@ -72,39 +78,29 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
 
   ngOnInit() {
     this.initForm();
-    this.cargarDatosIniciales();
+    this.ieService.crearInstitucionEducativa({}).subscribe((data: any) => {
+      this.turnos = this.ieService.getTurnos(data?.turnos);
+      this.servicios_educativos = this.ieService.getServiciosEducativos(data?.servicios_educativos);
+    });
     this.getTurnos();
   }
 
   initForm() {
     this.formSedes = this._FormBuilder.group({
       iCredEntPerfId: [],
-      iCredId: [1], //iCredId: [],
+      iCredId: [1],
       iSedeId: [null],
       iIieeId: [this.iIieeId()],
-
       iServEdId: [null, Validators.required],
-      iTurnoId: [null, Validators.required],
+      iTurnoId: [null],
       cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
-      cSedeEmail: [null, [Validators.required, Validators.email]],
+      cSedeEmail: [null],
       cSedeDireccion: [null, Validators.required],
       cSedeRslCreacion: [null],
       dSedeRslCreacion: [null],
       iEstado: [1],
       cSedeTelefono: [null],
       cSedeDirector: [null],
-    });
-  }
-
-  cargarDatosIniciales() {
-    forkJoin({
-      serviciosEducativos: this._GeneralService
-        .getServicioEducativos()
-        .pipe(catchError(() => of({ data: [] }))),
-    }).subscribe({
-      next: (response: any) => {
-        this.serviciosEducativos.set(response.serviciosEducativos.data);
-      },
     });
   }
 
@@ -156,7 +152,7 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
   guardarSede() {
     const datosSedes: Sede = this.formSedes.value;
     datosSedes.iEstado = this.formSedes.value.iEstado ? 1 : 0;
-    this._MantenimientoIeService
+    this.ieService
       .crearSede(datosSedes)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({

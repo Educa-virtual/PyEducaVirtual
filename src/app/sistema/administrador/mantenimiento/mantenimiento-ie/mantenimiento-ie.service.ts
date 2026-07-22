@@ -90,6 +90,8 @@ export class MantenimientoIeService {
   ugeles: any[];
   provincias: any[];
   distritos: any[];
+  turnos: any[];
+  servicios_educativos: any[];
 
   crearInstitucionEducativa(data: any) {
     if (this.parametros) {
@@ -179,6 +181,31 @@ export class MantenimientoIeService {
       return this.distritos;
     }
     return this.distritos;
+  }
+
+  getTurnos(data: any) {
+    if (!this.turnos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.turnos = items.map(item => ({
+        value: Number(item.iTurnoId),
+        label: item.cTurnoNombre,
+      }));
+      return this.turnos;
+    }
+    return this.turnos;
+  }
+
+  getServiciosEducativos(data: any) {
+    if (!this.servicios_educativos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.servicios_educativos = items.map(item => ({
+        value: Number(item.iServEdId),
+        label: item.cServEdNombre,
+        iNivelTipoId: item.iNivelTipoId,
+      }));
+      return this.servicios_educativos;
+    }
+    return this.servicios_educativos;
   }
 
   listarInstitucionesEducativas(data: any) {

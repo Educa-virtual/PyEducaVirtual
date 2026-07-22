@@ -10,7 +10,7 @@
       severity="success"
       label="Agregar"
       icon="pi pi-plus"
-      [disabled]="!formMantenimiento.value.iNivelTipoId"
+      [disabled]="!formFiltroIe.value.iNivelTipoId"
       (onClick)="agregarInstitucion()"
     />
   </ng-template>
@@ -21,8 +21,8 @@
       *ngIf="activeTab === 0"
       [disabled]="true"
     >
-      <form [formGroup]="formMantenimiento" class="grid">
-        <div class="col-12 lg:col-5">
+      <form [formGroup]="formFiltroIe" class="grid">
+        <div class="col-12 lg:col-4">
           <p-inputGroup>
             <p-inputGroupAddon>Nivel</p-inputGroupAddon>
             <p-dropdown
@@ -33,10 +33,26 @@
               styleClass="group-element"
               [style]="{ flex: 1, width: '100%' }"
               appendTo="body"
+              (onChange)="filtrarIes()"
             />
           </p-inputGroup>
         </div>
-        <div class="col-12 lg:col-3">
+        <div class="col-12 lg:col-4">
+          <p-inputGroup>
+            <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+            <p-dropdown
+              [options]="ugeles"
+              [showClear]="true"
+              formControlName="iUgelId"
+              placeholder="Seleccione una UGEL"
+              styleClass="group-element"
+              [style]="{ flex: 1, width: '100%' }"
+              appendTo="body"
+              (onChange)="filtrarIes()"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12 lg:col-4">
           <p-inputGroup>
             <p-inputGroupAddon>Estado</p-inputGroupAddon>
             <p-dropdown
@@ -52,12 +68,27 @@
               styleClass="group-element"
               [style]="{ flex: 1, width: '100%' }"
               appendTo="body"
+              (onChange)="filtrarIes()"
+            />
+          </p-inputGroup>
+        </div>
+        <div class="col-12">
+          <p-inputGroup>
+            <p-inputGroupAddon>Buscar</p-inputGroupAddon>
+            <input
+              pInputText
+              formControlName="cTextoBusqueda"
+              type="text"
+              class="group-element"
+              [style]="{ flex: 1, width: '100%' }"
+              appendTo="body"
+              (change)="filtrarIes()"
             />
           </p-inputGroup>
         </div>
       </form>
       <app-table-primeng
-        [data]="instituciones"
+        [data]="instituciones_filtradas"
         [columnas]="columnas"
         [actions]="acciones"
         [showCaption]="false"
@@ -165,7 +196,7 @@
     *ngIf="isLoadingDatosIniciales()"
     [showModal]="showModal()"
     [data]="itemSelected()"
-    [iNivelTipoId]="this.formMantenimiento.value.iNivelTipoId"
+    [iNivelTipoId]="this.formFiltroIe.value.iNivelTipoId"
     (closeModal)="showModal.set(false)"
   />
 

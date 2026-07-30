@@ -6,7 +6,6 @@ import {
   IColumn,
   IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component';
-import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
 import { MessageService, MenuItem } from 'primeng/api';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
@@ -21,10 +20,11 @@ import { NivelPedagogicosService } from '@/app/servicios/cap/nivel-pedagogicos.s
 import { TipoPublicosService } from '@/app/servicios/cap/tipo-publicos.service';
 import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
 import { InstructoresService } from '@/app/servicios/cap/instructores.service';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { AsignarHorarioCapacitacionComponent } from '../asignar-horario-capacitacion/asignar-horario-capacitacion.component';
 import { DatePipe } from '@angular/common';
 import { TipoCapacitacionesService } from '@/app/servicios/cap/tipo-capacitaciones.service';
+import { TipoModalidadService } from '@/app/servicios/cap/tipo-modalidad.service';
 
 interface Image {
   id: number;
@@ -39,7 +39,6 @@ interface Image {
   styleUrls: ['./apertura-curso.component.scss'],
   imports: [
     PrimengModule,
-    ToolbarPrimengComponent,
     TablePrimengComponent,
     GalleriaModule,
     AsignarHorarioCapacitacionComponent,
@@ -63,12 +62,14 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
   private _InstructoresService = inject(InstructoresService);
   private _TipoCapacitacionesService = inject(TipoCapacitacionesService);
+  private _TipoModalidadService = inject(TipoModalidadService);
 
   CAP_EXT = 'CAP-EXT';
   loadingGuardar: boolean = false;
 
   nivelPedagogico: any[] = [];
   publicoObjetivo: any[] = [];
+  tipoModalidad: any[] = [];
   cursos: any[] = [];
   showModalHorarios: boolean = false;
   showModalFormulario: boolean = false;
@@ -101,6 +102,11 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     cLink: [''],
     jsonHorario: [''],
     iCredId: ['', Validators.required],
+
+    iTipoModalId: ['', Validators.required],
+    nNotaMinimo: [''],
+    iTotalCupo: [''],
+    bMostrarTemario: [false],
   });
 
   responsiveOptions: any[] = [
@@ -126,12 +132,9 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
   ];
 
   ngOnInit() {
-    this.obtenerNivelPedagogico();
-    this.obtenerTipodePublico();
     this.obtenerCapacitaciones();
     this.obtenerInstructoresCurso();
-    this.obtenerTipoCapacitacion();
-
+    this.obtenerTipoNivelPublicoModalidadCapacitacion();
     //
     this.responsiveOptions = [
       {
@@ -290,9 +293,14 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
         this.showModalHorarios = true;
         break;
       case 'inscripciones':
-        this._router.navigate([
-          `actualizacion-docente/capacitaciones/${item.iCapacitacionId}/inscripciones`,
-        ]);
+        this._router.navigate(
+          [`actualizacion-docente/capacitaciones/${item.iCapacitacionId}/inscripciones`],
+          {
+            state: {
+              cCapTitulo: item.cCapTitulo,
+            },
+          }
+        );
         break;
       case 'eliminar':
         this.eliminarCapacitacion(item);
@@ -312,13 +320,20 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       dFechaInicio: new Date(item.dFechaInicio + 'T00:00:00'),
       dFechaFin: new Date(item.dFechaFin + 'T00:00:00'),
     };
-    this.formNuevaCapacitacion.patchValue(itemFormateado);
+
     this.selectedImageId = item.cImagenUrl ? JSON.parse(item.cImagenUrl).id : null;
     this.capacitacionExterna(item.iTipoCapId);
     this.showModalFormulario = true;
+
     if (this.modoVista) {
       this.formNuevaCapacitacion.disable();
+    } else {
+      this.formNuevaCapacitacion.enable();
     }
+
+    setTimeout(() => {
+      this.formNuevaCapacitacion.patchValue(itemFormateado);
+    });
   }
 
   agregarCapacitacion() {
@@ -389,6 +404,7 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       dFechaInicio: 'Fecha de inicio',
       dFechaFin: 'Fecha de término',
       iCredId: 'Credencial',
+      iTipoModalId: 'Tipo de modalidad',
     };
 
     const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
@@ -535,25 +551,6 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       },
     });
   }
-
-  // Obtener el nivel pedagógico:
-  obtenerNivelPedagogico() {
-    this._NivelPedagogicosService.obtenerNivelPedagogico().subscribe(data => {
-      this.nivelPedagogico = data;
-    });
-  }
-  // método para obtener el tipo de publico
-  obtenerTipodePublico() {
-    this._TipoPublicosService.obtenerTipoPublicos().subscribe({
-      next: resp => {
-        this.publicoObjetivo = resp.data;
-      },
-      error: error => {
-        this.mostrarErrores(error);
-      },
-    });
-  }
-
   // obtener las capacitaciones
   obtenerCapacitaciones() {
     const iCredId = this._ConstantesService.iCredId;
@@ -561,7 +558,14 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
       iCredId: iCredId,
     };
     this._CapacitacionesService.obtenerCapacitacion(params).subscribe((resp: any) => {
-      this.cursos = resp.data;
+      this.cursos = resp.data.map((curso: any) => ({
+        ...curso,
+        bMostrarTemario:
+          curso.bMostrarTemario === true ||
+          curso.bMostrarTemario === 1 ||
+          curso.bMostrarTemario === '1' ||
+          curso.bMostrarTemario === 'true',
+      }));
     });
   }
 
@@ -642,14 +646,27 @@ export class AperturaCursoComponent extends MostrarErrorComponent implements OnI
     });
   }
 
-  obtenerTipoCapacitacion() {
-    this._TipoCapacitacionesService.obtenerTipoCapacitacion().subscribe(data => {
-      this.tipoCapacitacion = data;
-      this.tipoCapacitacion = [...this.tipoCapacitacion];
-      this.tipoCapacitacion.unshift({
-        iTipoCapId: 0,
-        cTipoCapNombre: 'Todos los tipos',
-      });
+  obtenerTipoNivelPublicoModalidadCapacitacion() {
+    forkJoin({
+      nivelPedagogico: this._NivelPedagogicosService.obtenerNivelPedagogico(),
+      publicoObjetivo: this._TipoPublicosService.obtenerTipoPublicos(),
+      tipoModalidad: this._TipoModalidadService.obtenerTipoModalidades(),
+      tipoCapacitacion: this._TipoCapacitacionesService.obtenerTipoCapacitacion(),
+    }).subscribe({
+      next: respuesta => {
+        this.nivelPedagogico = respuesta.nivelPedagogico;
+        this.publicoObjetivo = respuesta.publicoObjetivo?.data;
+        this.tipoModalidad = respuesta.tipoModalidad?.data;
+        this.tipoCapacitacion = respuesta.tipoCapacitacion;
+        this.tipoCapacitacion = [...this.tipoCapacitacion];
+        this.tipoCapacitacion.unshift({
+          iTipoCapId: 0,
+          cTipoCapNombre: 'Todos los tipos',
+        });
+      },
+      error: error => {
+        console.error('Error obteniendo datos', error);
+      },
     });
   }
 }

@@ -72,11 +72,13 @@ export class DetalleInscripcionComponent extends MostrarErrorComponent implement
 
   ngOnInit(): void {
     const iCapacitacionId = this.route.snapshot.paramMap.get('iCapacitacionId');
-    this.datosCurso = { iCapacitacionId: iCapacitacionId };
+    this.datosCurso = {
+      iCapacitacionId,
+    };
+
+    this.nombreCurso = history.state.cCapTitulo ?? '';
     this.obtenerSolicitudesXCurso();
     this.obtenerTipoIdentificaciones();
-
-    this.nombreCurso = this.datosCurso.cCapTitulo || '';
   }
   // mostrar los headr de las tablas
   public columnasTabla: IColumn[] = [
@@ -367,7 +369,7 @@ export class DetalleInscripcionComponent extends MostrarErrorComponent implement
     this.tituloCurso = [
       {
         severity: 'info',
-        detail: 'Título del curso: ' + this.datosCurso.cCapTitulo,
+        detail: 'Título del curso: ' + this.nombreCurso,
         // life: 5000,
       },
     ];

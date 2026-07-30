@@ -69,7 +69,6 @@
             (onChange)="capacitacionExterna($event.value)"
             appendTo="body"
             [style]="{ flex: '1', width: '100%' }"
-            [disabled]="modoVista"
           ></p-dropdown>
         </p-inputGroup>
       </div>
@@ -88,7 +87,6 @@
                 formNuevaCapacitacion.get('cCapTitulo')?.touched,
             }"
             [style]="{ flex: '1', width: '100%' }"
-            [disabled]="modoVista"
           />
         </p-inputGroup>
         <small
@@ -103,7 +101,7 @@
       </div>
       <div class="col">
         <div class="grid">
-          <div class="col-12 md:col-6">
+          <div class="col-12 md:col-4">
             <p-inputGroup>
               <p-inputGroupAddon>Nivel Pedagógico:</p-inputGroupAddon>
               <p-dropdown
@@ -115,23 +113,36 @@
                 placeholder="Seleccione Nivel"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
-                [disabled]="modoVista"
               ></p-dropdown>
             </p-inputGroup>
           </div>
-          <div class="col-12 md:col-6">
+          <div class="col-12 md:col-4">
             <p-inputGroup>
               <p-inputGroupAddon>Dirigido para:</p-inputGroupAddon>
               <p-dropdown
                 [options]="publicoObjetivo"
                 styleClass="group-element"
                 formControlName="iTipoPubId"
-                placeholder="Seleccione Publico"
+                placeholder="Seleccione Público"
                 optionValue="iTipoPubId"
                 optionLabel="cTipoPubNombre"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
-                [disabled]="modoVista"
+              ></p-dropdown>
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-4">
+            <p-inputGroup>
+              <p-inputGroupAddon>Modalidad:</p-inputGroupAddon>
+              <p-dropdown
+                [options]="tipoModalidad"
+                styleClass="group-element"
+                formControlName="iTipoModalId"
+                placeholder="Seleccione Modalidad"
+                optionValue="iTipoModalId"
+                optionLabel="cTipoModalNombre"
+                appendTo="body"
+                [style]="{ flex: '1', width: '100%' }"
               ></p-dropdown>
             </p-inputGroup>
           </div>
@@ -170,7 +181,6 @@
                     formNuevaCapacitacion.get('iTotalHrs')?.touched,
                 }"
                 [style]="{ flex: '1', width: '100%' }"
-                [disabled]="modoVista"
               />
             </p-inputGroup>
             <small
@@ -196,7 +206,6 @@
                 inputStyleClass="group-element"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
-                [disabled]="modoVista"
               ></p-calendar>
             </p-inputGroup>
           </div>
@@ -213,9 +222,65 @@
                 inputStyleClass="group-element"
                 appendTo="body"
                 [style]="{ flex: '1', width: '100%' }"
-                [disabled]="modoVista"
               ></p-calendar>
             </p-inputGroup>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="grid">
+          <!-- Nota mínima -->
+          <div class="col-12 lg:col-3">
+            <p-inputGroup>
+              <p-inputGroupAddon>Nota mínima:</p-inputGroupAddon>
+              <p-inputNumber
+                formControlName="nNotaMinimo"
+                [min]="0"
+                [max]="20"
+                mode="decimal"
+                [showButtons]="true"
+                [minFractionDigits]="0"
+                [maxFractionDigits]="2"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+
+            <small class="block mt-2 text-500">
+              Si es <b>0</b> o está vacío, se certificará a todos.
+            </small>
+          </div>
+
+          <!-- Cupos -->
+          <div class="col-12 lg:col-4">
+            <p-inputGroup>
+              <p-inputGroupAddon>Cupo:</p-inputGroupAddon>
+              <p-inputNumber
+                formControlName="iTotalCupo"
+                [min]="0"
+                [showButtons]="true"
+                [style]="{ flex: '1', width: '100%' }"
+              >
+              </p-inputNumber>
+            </p-inputGroup>
+
+            <small class="block mt-2 text-500">
+              Opcional. Al alcanzar el cupo no se permitirán nuevas matrículas.
+            </small>
+          </div>
+
+          <!-- Switch -->
+          <div class="col-12 lg:col-5">
+            <div class="border-1 surface-border border-round p-2 h-full">
+              <div class="flex align-items-center justify-content-between">
+                <label for="" class="font-semibold"> Mostrar temario en certificado </label>
+
+                <p-inputSwitch formControlName="bMostrarTemario"> </p-inputSwitch>
+              </div>
+
+              <small class="block mt-2 text-500">
+                El temario se obtendrá automáticamente de las sesiones del aula virtual.
+              </small>
+            </div>
           </div>
         </div>
       </div>
@@ -236,7 +301,6 @@
                   formNuevaCapacitacion.get('cLink')?.touched,
               }"
               [style]="{ flex: '1', width: '100%' }"
-              [disabled]="modoVista"
             />
           </p-inputGroup>
           <small
@@ -267,7 +331,6 @@
                   placeholder="Seleccionar instructor"
                   appendTo="body"
                   [style]="{ flex: '1', width: '100%' }"
-                  [disabled]="modoVista"
                 >
                 </p-dropdown>
               </p-inputGroup>
@@ -275,7 +338,7 @@
             <div class="col">
               <div class="flex align-items-center justify-content-between">
                 <label for="" class="pr-3">¿Tiene Costo?</label>
-                <p-inputSwitch formControlName="iCosto" class="pr-3" [disabled]="modoVista" />
+                <p-inputSwitch formControlName="iCosto" class="pr-3" />
                 <input
                   *ngIf="formNuevaCapacitacion.get('iCosto')?.value"
                   type="text"
@@ -283,13 +346,13 @@
                   placeholder="S/.0.0"
                   class="group-element p-inputtext p-component"
                   [style]="{ flex: '1', width: '100%' }"
-                  [disabled]="modoVista"
                 />
               </div>
             </div>
           </div>
         </div>
       }
+
       <div class="col">
         <div class="border-round w-full btnimag">
           <div class="flex justify-content-between flex-wrap">
@@ -297,11 +360,7 @@
               Añadir imagen de portada del curso
             </div>
             <div class="flex align-items-center justify-content-center m-2">
-              <p-inputSwitch
-                formControlName="iImageAleatorio"
-                class="pr-3"
-                [disabled]="modoVista"
-              />
+              <p-inputSwitch formControlName="iImageAleatorio" class="pr-3" />
             </div>
           </div>
         </div>

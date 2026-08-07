@@ -1,0 +1,93 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Sedes</div>
+      <div class="flex text-sm">{{ ie?.cIieeCodigoModular }} - {{ ie?.cIieeNombre }}</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons">
+    <div class="flex justify-content-end flex-wrap gap-2">
+      <p-button
+        severity="secondary"
+        label="Regresar"
+        size="small"
+        icon="pi pi-arrow-left"
+        (onClick)="regresar()"
+      />
+      <p-button
+        severity="success"
+        label="Agregar"
+        size="small"
+        icon="pi pi-plus"
+        (onClick)="agregarSede()"
+      />
+    </div>
+  </ng-template>
+
+  <div class="p-message p-message-info p-3">
+    <div class="grid p-fluid">
+      <div class="col-12 lg:col-2">
+        <p-avatar
+          [image]="ie?.cIieeLogo || './assets/images/icons/no-image.png'"
+          size="xlarge"
+          shape="circle"
+        />
+      </div>
+      <div class="col-12 lg:col-10">
+        <div class="grid">
+          <div class="col-12 p-0">
+            <h4 class="m-0">
+              {{ ie?.cIieeCodigoModular || '-' }} -
+              {{ ie?.cIieeNombre || '-' }}
+            </h4>
+          </div>
+          <div class="col-12 p-0">
+            <a href="" (click)="abrirEnMaps($event)">
+              <i class="pi pi-map-marker pi-fw mr-2"></i>{{ ie?.cIieeDireccion || '-' }}
+            </a>
+          </div>
+          <div class="col-12 p-0">
+            <p class="text-color-secondary">
+              <i class="pi pi-user pi-fw mr-2"></i>Director(a):
+              {{ ie?.cIieeDirector || '-' }}
+            </p>
+          </div>
+          <div class="col-12 p-0">
+            <p class="text-color-secondary">
+              <i class="pi pi-envelope pi-fw mr-2"></i>{{ ie?.cIieeEmail || '-' }}
+            </p>
+          </div>
+          <div class="col-12 p-0">
+            <p class="text-color-secondary">
+              <i class="pi pi-phone pi-fw mr-2"></i>{{ ie?.cIieeTelefono || '-' }}
+            </p>
+          </div>
+          <div class="col-12 p-0">
+            @if (+ie?.iEstado === 1) {
+              <p-tag severity="success" value="Activo" />
+            } @else {
+              <p-tag severity="success" value="Inactivo" />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-table-primeng
+    [data]="sedes"
+    [columnas]="columnas"
+    [actions]="acciones"
+    (accionBtnItem)="accionBtnSedes($event)"
+  />
+</p-panel>
+
+<app-form-sedes
+  [showModal]="showModal"
+  [data]="sedes"
+  [iIieeId]="iIieeId"
+  (closeModal)="showModal = false"
+/>
+
+<p-toast />

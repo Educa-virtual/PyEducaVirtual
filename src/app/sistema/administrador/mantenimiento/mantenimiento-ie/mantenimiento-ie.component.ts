@@ -10,18 +10,13 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { AgregarMantenimientoIeComponent } from './agregar-mantenimiento-ie/agregar-mantenimiento-ie.component';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { FormSedesComponent } from './form-sedes/form-sedes.component';
 import { MantenimientoIeService } from './mantenimiento-ie.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mantenimiento-ie',
   standalone: true,
-  imports: [
-    PrimengModule,
-    TablePrimengComponent,
-    AgregarMantenimientoIeComponent,
-    FormSedesComponent,
-  ],
+  imports: [PrimengModule, TablePrimengComponent, AgregarMantenimientoIeComponent],
   templateUrl: './mantenimiento-ie.component.html',
   styleUrl: './mantenimiento-ie.component.scss',
 })
@@ -63,14 +58,15 @@ export class MantenimientoIeComponent implements OnInit {
   bUpdateInstitucion = false;
 
   breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
-  breadCrumbItems: MenuItem[] = [{ label: 'Mantenimiento Instituciones Educativas' }];
+  breadCrumbItems: MenuItem[] = [{ label: 'Gestionar Instituciones Educativas' }];
 
   constructor(
     private store: LocalStoreService,
     private ieService: MantenimientoIeService,
     private confirmService: ConfirmationModalService,
     private fb: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.perfil = this.store.getItem('dremoPerfil');
@@ -160,9 +156,9 @@ export class MantenimientoIeComponent implements OnInit {
     //Se agrego una nueva variable
   }
 
-  abrirEnMaps() {
-    if (this.institucionSeleccionada().cIieeNlat && this.institucionSeleccionada().cIieeNlog) {
-      const url = `https://www.google.com/maps?q=${this.institucionSeleccionada().cIieeNlat},${this.institucionSeleccionada().cIieeNlog}`;
+  abrirEnMaps(item: any) {
+    if (item.cIieeNlat && item.cIieeNlog) {
+      const url = `https://www.google.com/maps?q=${item.cIieeNlat},${item.cIieeNlog}`;
       window.open(url, '_blank');
     }
   }
@@ -239,38 +235,6 @@ export class MantenimientoIeComponent implements OnInit {
     this.institucionSeleccionada.set(null);
   }
 
-  agregarSede() {
-    this.itemSelectedSede.set([]);
-    //this.sedes.set([]);
-    this.showModalSedes.set(true);
-    this.institucionSeleccionada().set({});
-  }
-
-  accionBtnSedes({ accion, item }): void {
-    switch (accion) {
-      case 'editar':
-        this.itemSelectedSede.set(item);
-        console.log(this.itemSelectedSede());
-        this.showModalSedes.set(true);
-        break;
-      case 'eliminar':
-        this.confirmService.openConfirm({
-          header: 'Confirmación',
-          message: '¿Realmente desea eliminar la sede seleccionada?',
-          accept: () => {
-            this.eliminarSede(item);
-          },
-        });
-        break;
-      case 'aperturar':
-        this.sede = item;
-        this.formApertura.get('iPerioEvalId')?.setValue(null);
-        this.itemSelectedSede.set(item);
-        this.showDialogConfirmacion = true;
-        break;
-    }
-  }
-
   actualizarItem(itemActualizado: any) {
     const nuevaLista = this.institucionesxiNivelTipoId().map(inst =>
       inst.iIieeId === itemActualizado.iIieeId ? itemActualizado : inst
@@ -280,16 +244,17 @@ export class MantenimientoIeComponent implements OnInit {
 
   accionBtnInstituciones({ accion, item }) {
     switch (accion) {
-      case 'seleccionar':
-        this.institucionSeleccionada.set(item);
-        this.obtenerInformacionIE(item);
-        this.activeTab = 1;
+      case 'sedes':
+        this.router.navigate([`administrador/mantenimiento-ie/${item.iIieeId}/sedes`]);
         break;
       case 'editar':
         this.showModal.set(true);
         this.itemSelected.set(item);
         this.institucionSeleccionada.set(item);
         this.isLoadingDatosIniciales.set(true);
+        break;
+      case 'mapa':
+        this.abrirEnMaps(item);
         break;
     }
   }
@@ -298,7 +263,7 @@ export class MantenimientoIeComponent implements OnInit {
   columnas: IColumn[] = [
     {
       type: 'text',
-      width: '15%',
+      width: '10%',
       field: 'cIieeCodigoModular',
       header: 'Codigo modular',
       text_header: 'center',
@@ -330,7 +295,7 @@ export class MantenimientoIeComponent implements OnInit {
     },
     {
       type: 'estado-activo',
-      width: '15%',
+      width: '10%',
       field: 'iEstado',
       header: 'Estado',
       text_header: 'center',
@@ -338,50 +303,39 @@ export class MantenimientoIeComponent implements OnInit {
     },
     {
       type: 'actions',
-      width: '5%',
+      width: '15%',
       field: 'acciones',
       header: 'Acciones',
-      text_header: 'left',
-      text: 'left',
+      text_header: 'right',
+      text: 'right',
     },
   ];
 
   acciones: IActionTable[] = [
     {
-      labelTooltip: 'Seleccionar',
-      icon: 'pi pi-arrow-right',
-      accion: 'seleccionar',
-      type: 'item',
-      class: 'p-button-rounded p-button-info p-button-text',
-    },
-    {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',
       accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-warning p-button-text',
+    },
+    {
+      labelTooltip: 'Gestionar sedes',
+      icon: 'pi pi-list',
+      accion: 'sedes',
+      type: 'item',
+      class: 'p-button-rounded p-button-primary p-button-text',
+    },
+    {
+      labelTooltip: 'Ver en mapa',
+      icon: 'pi pi-map-marker',
+      accion: 'mapa',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
     },
   ];
 
-  /* Datos de tabla sedes */
-  accionesSedes = signal<any[]>([
-    {
-      labelTooltip: 'Aperturar calendario',
-      icon: 'pi pi-power-off',
-      accion: 'aperturar',
-      type: 'item',
-      class: 'p-button-rounded p-button-succes p-button-text',
-    },
-    {
-      labelTooltip: 'Editar',
-      icon: 'pi pi-pencil',
-      accion: 'editar',
-      type: 'item',
-      class: 'p-button-rounded p-button-warning p-button-text',
-    },
-  ]);
-
-  public columnasSedes = signal<any[]>([
+  columnasSedes: IColumn[] = [
     {
       type: 'item',
       width: '10%',
@@ -430,5 +384,5 @@ export class MantenimientoIeComponent implements OnInit {
       text_header: 'center',
       text: 'center',
     },
-  ]);
+  ];
 }

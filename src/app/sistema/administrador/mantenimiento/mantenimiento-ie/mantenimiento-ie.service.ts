@@ -212,6 +212,10 @@ export class MantenimientoIeService {
     return this.http.post(`${baseUrl}/acad/listarInstitucionesEducativas`, data);
   }
 
+  verInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/verInstitucionEducativa`, data);
+  }
+
   eliminarInstitucionEducativa(data: any) {
     return this.http.post(`${baseUrl}/acad/eliminarInstitucionEducativa`, data);
   }

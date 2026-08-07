@@ -42,20 +42,14 @@ export const administradorDremo = [
         ],
       },
       {
-        label: 'Mantenimiento IE',
+        label: 'Gestionar Instituciones Educativas',
         icon: 'pi pi-sitemap',
-        items: [
-          {
-            label: 'Administrar IE',
-            icon: 'pi pi-tablet',
-            routerLink: ['/administrador/mantenimiento-ie'],
-          },
-          {
-            label: 'Currícula',
-            icon: 'pi pi-folder',
-            routerLink: ['/administrador/mantenimiento-curricula'],
-          },
-        ],
+        routerLink: ['/administrador/mantenimiento-ie'],
+      },
+      {
+        label: 'Gestionar Currícula',
+        icon: 'pi pi-tablet',
+        routerLink: ['/administrador/mantenimiento-curricula'],
       },
       /*{
                 label: 'Sincronizar SIAGIE',

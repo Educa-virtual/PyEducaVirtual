@@ -2,195 +2,100 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column gap-2">
-      <div class="m-0 text-2xl font-bold">Mantenimiento de Instituciones Educativas</div>
+      <div class="m-0 text-2xl font-bold">Gestionar Instituciones Educativas</div>
     </div>
   </ng-template>
   <ng-template pTemplate="icons">
-    <p-button
-      severity="success"
-      label="Agregar"
-      icon="pi pi-plus"
-      [disabled]="!formFiltroIe.value.iNivelTipoId"
-      (onClick)="agregarInstitucion()"
-    />
+    <div pTooltip="Seleccione un nivel para agregar nueva I.E">
+      <p-button
+        severity="success"
+        label="Agregar"
+        size="small"
+        icon="pi pi-plus"
+        [disabled]="!formFiltroIe.value.iNivelTipoId"
+        (onClick)="agregarInstitucion()"
+      />
+    </div>
   </ng-template>
 
-  <p-tabView [(activeIndex)]="activeTab">
-    <p-tabPanel
-      header="Lista de Instituciones Educativas"
-      *ngIf="activeTab === 0"
-      [disabled]="true"
-    >
-      <form [formGroup]="formFiltroIe" class="grid">
-        <div class="col-12 lg:col-4">
-          <p-inputGroup>
-            <p-inputGroupAddon>Nivel</p-inputGroupAddon>
-            <p-dropdown
-              [options]="nivel_tipos"
-              [showClear]="true"
-              formControlName="iNivelTipoId"
-              placeholder="Seleccione un nivel"
-              styleClass="group-element"
-              [style]="{ flex: 1, width: '100%' }"
-              appendTo="body"
-              (onChange)="filtrarIes()"
-            />
-          </p-inputGroup>
-        </div>
-        <div class="col-12 lg:col-4">
-          <p-inputGroup>
-            <p-inputGroupAddon>UGEL</p-inputGroupAddon>
-            <p-dropdown
-              [options]="ugeles"
-              [showClear]="true"
-              formControlName="iUgelId"
-              placeholder="Seleccione una UGEL"
-              styleClass="group-element"
-              [style]="{ flex: 1, width: '100%' }"
-              appendTo="body"
-              (onChange)="filtrarIes()"
-            />
-          </p-inputGroup>
-        </div>
-        <div class="col-12 lg:col-4">
-          <p-inputGroup>
-            <p-inputGroupAddon>Estado</p-inputGroupAddon>
-            <p-dropdown
-              [options]="[
-                { iEstado: '1', cEstado: 'Activo' },
-                { iEstado: '0', cEstado: 'Inactivo' },
-              ]"
-              optionValue="iEstado"
-              optionLabel="cEstado"
-              [showClear]="true"
-              formControlName="iEstado"
-              placeholder="Seleccione un estado"
-              styleClass="group-element"
-              [style]="{ flex: 1, width: '100%' }"
-              appendTo="body"
-              (onChange)="filtrarIes()"
-            />
-          </p-inputGroup>
-        </div>
-        <div class="col-12">
-          <p-inputGroup>
-            <p-inputGroupAddon>Buscar</p-inputGroupAddon>
-            <input
-              pInputText
-              formControlName="cTextoBusqueda"
-              type="text"
-              class="group-element"
-              [style]="{ flex: 1, width: '100%' }"
-              appendTo="body"
-              (change)="filtrarIes()"
-            />
-          </p-inputGroup>
-        </div>
-      </form>
-      <app-table-primeng
-        [data]="instituciones_filtradas"
-        [columnas]="columnas"
-        [actions]="acciones"
-        [showCaption]="false"
-        [showPaginator]="true"
-        selectionMode="single"
-        (accionBtnItem)="accionBtnInstituciones($event)"
-        [scrollable]="true"
-      />
-    </p-tabPanel>
-    <p-tabPanel
-      header="Información de Institución Educativa"
-      *ngIf="activeTab === 1"
-      [disabled]="true"
-    >
-      <p-toolbar styleClass="border-0">
-        <div class="p-toolbar-group-center">
-          <p-avatar
-            [image]="institucionSeleccionada().cIieeLogo || './assets/images/icons/no-image.png'"
-            styleClass="mr-2"
-            size="xlarge"
-            shape="circle"
+  <form [formGroup]="formFiltroIe">
+    <div class="grid mt-2">
+      <div class="col-12 lg:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+          <p-dropdown
+            [options]="nivel_tipos"
+            [showClear]="true"
+            formControlName="iNivelTipoId"
+            placeholder="Seleccione un nivel"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+            (onChange)="filtrarIes()"
           />
-          <div class="flex-1 w-full">
-            <h2 class="m-0 text-xl font-semibold">
-              {{ institucionSeleccionada().cIieeNombre || '-' }} -
-              {{ institucionSeleccionada().cIieeCodigoModular || '-' }}
-            </h2>
-            <p class="m-0 text-sm text-color-secondary">
-              <i class="pi pi-map-marker mr-2"></i
-              >{{ institucionSeleccionada().cIieeDireccion || '-' }}
-            </p>
-            <p class="m-0 text-sm">
-              <i class="pi pi-user mr-2"></i>Director(a):
-              {{ institucionSeleccionada().cIieeDirector || '-' }}
-            </p>
-            <p class="m-0 text-sm">
-              <i class="pi pi-envelope mr-2"></i>{{ institucionSeleccionada().cIieeEmail || '-' }}
-            </p>
-            <p class="m-0 text-sm">
-              <i class="pi pi-phone mr-2"></i>{{ institucionSeleccionada().cIieeTelefono || '-' }}
-            </p>
-          </div>
-        </div>
-        <div class="p-toolbar-group-end">
-          <div class="flex justify-content-center align-items-center">
-            @if (
-              institucionSeleccionada()?.iEstado === '1' || institucionSeleccionada()?.iEstado === 1
-            ) {
-              <div class="border-1 border-green-200 border-round bg-green-50 p-2 text-center">
-                <span class="font-bold text-green-600">ACTIVO</span>
-              </div>
-            } @else {
-              <div class="border-1 border-red-200 border-round bg-red-50 p-2 text-center">
-                <span class="font-bold text-red-600">INACTIVO</span>
-              </div>
-            }
-            <p-button
-              *ngIf="institucionSeleccionada().cIieeNlat && institucionSeleccionada().cIieeNlog"
-              icon="pi pi-map-marker"
-              [rounded]="true"
-              [text]="true"
-              severity="info"
-              (onClick)="abrirEnMaps()"
-            />
-            <p-button
-              icon="pi pi-pencil"
-              [rounded]="true"
-              [text]="true"
-              severity="warning"
-              (onClick)="showModal.set(true); itemSelected.set(institucionSeleccionada())"
-            />
-          </div>
-        </div>
-      </p-toolbar>
-      <div class="grid">
-        <div class="col-12">
-          <div class="flex justify-content-between align-items-center w-full">
-            <div class="text-primary text-lg font-bold ml-2">Sedes</div>
-
-            <div class="flex gap-2">
-              <p-button
-                pRipple
-                severity="success"
-                label="Agregar Sede"
-                icon="pi pi-plus"
-                (onClick)="agregarSede()"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12">
-          <app-table-primeng
-            [data]="sedes"
-            [columnas]="columnasSedes()"
-            [actions]="accionesSedes()"
-            (accionBtnItem)="accionBtnSedes($event)"
-          ></app-table-primeng>
-        </div>
+        </p-inputGroup>
       </div>
-    </p-tabPanel>
-  </p-tabView>
+      <div class="col-12 lg:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>UGEL</p-inputGroupAddon>
+          <p-dropdown
+            [options]="ugeles"
+            [showClear]="true"
+            formControlName="iUgelId"
+            placeholder="Seleccione una UGEL"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+            (onChange)="filtrarIes()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 lg:col-4">
+        <p-inputGroup>
+          <p-inputGroupAddon>Estado</p-inputGroupAddon>
+          <p-dropdown
+            [options]="[
+              { iEstado: '1', cEstado: 'Activo' },
+              { iEstado: '0', cEstado: 'Inactivo' },
+            ]"
+            optionValue="iEstado"
+            optionLabel="cEstado"
+            [showClear]="true"
+            formControlName="iEstado"
+            placeholder="Seleccione un estado"
+            styleClass="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+            (onChange)="filtrarIes()"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Buscar</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cTextoBusqueda"
+            type="text"
+            class="group-element"
+            [style]="{ flex: 1, width: '100%' }"
+            appendTo="body"
+            (change)="filtrarIes()"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <app-table-primeng
+    [data]="instituciones_filtradas"
+    [columnas]="columnas"
+    [actions]="acciones"
+    [showCaption]="false"
+    [showPaginator]="true"
+    (accionBtnItem)="accionBtnInstituciones($event)"
+    [scrollable]="true"
+  />
 
   <app-agregar-mantenimiento-ie
     *ngIf="isLoadingDatosIniciales()"
@@ -198,12 +103,5 @@
     [data]="itemSelected()"
     [iNivelTipoId]="this.formFiltroIe.value.iNivelTipoId"
     (closeModal)="showModal.set(false)"
-  />
-
-  <app-form-sedes
-    [showModal]="showModalSedes()"
-    [data]="itemSelectedSede()"
-    [iIieeId]="this.institucionSeleccionada()?.iIieeId"
-    (closeModal)="showModalSedes.set(false)"
   />
 </p-panel>

@@ -253,20 +253,12 @@ export class MantenimientoIeService {
     return this.http.get<RespuestaApi<InstitucionEducativa[]>>(this.baseUrl, { params });
   }
 
-  guardarInstitucionEducativa(
-    data: InstitucionEducativa
-  ): Observable<RespuestaApi<InstitucionEducativa>> {
-    return this.http.post<RespuestaApi<InstitucionEducativa>>(
-      this.baseUrlIE + '/insertarIntituciones',
-      data
-    );
+  guardarInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarInstitucionEducativa`, data);
   }
 
-  actualizarInstitucionEducativa(
-    id: number,
-    data: InstitucionEducativa
-  ): Observable<RespuestaApi<InstitucionEducativa>> {
-    return this.http.put<RespuestaApi<InstitucionEducativa>>(`${this.baseUrl}/${id}`, data);
+  actualizarInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarInstitucionEducativa`, data);
   }
 
   crearSede(data: Sede): Observable<RespuestaApi<Sede>> {

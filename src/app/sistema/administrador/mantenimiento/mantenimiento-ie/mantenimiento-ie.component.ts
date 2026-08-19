@@ -36,17 +36,10 @@ export class MantenimientoIeComponent implements OnInit {
 
   instituciones: any[] = [];
   instituciones_filtradas: any[] = [];
-  sedes: any[] = [];
 
-  loading: boolean = false;
-  institucionSeleccionada = signal<any>({});
-  itemSelected = signal<any | null>(null);
-  itemSelectedSede = signal<any | null>(null);
+  institucionSeleccionada: any = null;
 
-  institucionesxiNivelTipoId = signal<any[]>([]);
-
-  showModal = signal<boolean>(false);
-  showModalSedes = signal<boolean>(false);
+  showModal: boolean = false;
 
   showDialogConfirmacion: boolean = false;
   sede: any = {};
@@ -142,18 +135,12 @@ export class MantenimientoIeComponent implements OnInit {
     this.ieService.listarInstitucionesEducativas({}).subscribe({
       next: (data: any) => {
         this.instituciones = data.data;
-        this.instituciones_filtradas = this.instituciones;
+        this.filtrarIes();
       },
       error: (error: any) => {
         console.error(error.error.message);
       },
     });
-  }
-
-  obtenerInformacionIE(evn) {
-    this.institucionSeleccionada.set(evn);
-    this.listarSedes();
-    //Se agrego una nueva variable
   }
 
   abrirEnMaps(item: any) {
@@ -188,58 +175,15 @@ export class MantenimientoIeComponent implements OnInit {
       });
   }
 
-  listarSedes() {
-    this.ieService
-      .listarSedes({
-        iIieeId: this.institucionSeleccionada().iIieeId,
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.sedes = data.data;
-        },
-        error: error => {
-          console.error('Error obteniendo datos:', error);
-        },
-      });
-  }
-
-  eliminarSede(item) {
-    this.ieService
-      .eliminarSede({
-        iSedeId: item.iSedeId,
-      })
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Acción exitosa',
-            detail: 'Sede eliminada correctamente',
-          });
-          this.listarSedes();
-        },
-        error: error => {
-          console.error('Error al eliminar la sede:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al eliminar la sede',
-            detail: 'Sede no eliminada',
-          });
-        },
-      });
-  }
-
   agregarInstitucion() {
-    this.formFiltroIe.value.iNivelTipoId ? this.showModal.set(true) : null;
-    this.isLoadingDatosIniciales.set(true);
-    this.itemSelected.set(null);
-    this.institucionSeleccionada.set(null);
+    this.showModal = true;
+    this.formFiltroIe.value.iNivelTipoId ? (this.showModal = true) : null;
+    this.institucionSeleccionada = null;
   }
 
-  actualizarItem(itemActualizado: any) {
-    const nuevaLista = this.institucionesxiNivelTipoId().map(inst =>
-      inst.iIieeId === itemActualizado.iIieeId ? itemActualizado : inst
-    );
-    this.institucionesxiNivelTipoId.set([...nuevaLista]); // 👈 Nueva referencia
+  cerrarModal() {
+    this.showModal = false;
+    this.institucionSeleccionada = null;
   }
 
   accionBtnInstituciones({ accion, item }) {
@@ -248,10 +192,8 @@ export class MantenimientoIeComponent implements OnInit {
         this.router.navigate([`administrador/mantenimiento-ie/${item.iIieeId}/sedes`]);
         break;
       case 'editar':
-        this.showModal.set(true);
-        this.itemSelected.set(item);
-        this.institucionSeleccionada.set(item);
-        this.isLoadingDatosIniciales.set(true);
+        this.showModal = true;
+        this.institucionSeleccionada = item;
         break;
       case 'mapa':
         this.abrirEnMaps(item);

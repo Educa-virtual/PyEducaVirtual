@@ -6,16 +6,13 @@
     </div>
   </ng-template>
   <ng-template pTemplate="icons">
-    <div pTooltip="Seleccione un nivel para agregar nueva I.E">
-      <p-button
-        severity="success"
-        label="Agregar"
-        size="small"
-        icon="pi pi-plus"
-        [disabled]="!formFiltroIe.value.iNivelTipoId"
-        (onClick)="agregarInstitucion()"
-      />
-    </div>
+    <p-button
+      severity="success"
+      label="Agregar"
+      size="small"
+      icon="pi pi-plus"
+      (onClick)="agregarInstitucion()"
+    />
   </ng-template>
 
   <form [formGroup]="formFiltroIe">
@@ -98,10 +95,9 @@
   />
 
   <app-agregar-mantenimiento-ie
-    *ngIf="isLoadingDatosIniciales()"
-    [showModal]="showModal()"
-    [data]="itemSelected()"
-    [iNivelTipoId]="this.formFiltroIe.value.iNivelTipoId"
-    (closeModal)="showModal.set(false)"
+    [showModal]="showModal"
+    (closeModal)="cerrarModal()"
+    [ie]="institucionSeleccionada"
+    (recargarLista)="listarInstitucionesEducativas()"
   />
 </p-panel>

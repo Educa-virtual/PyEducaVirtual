@@ -67,7 +67,7 @@
             @if (+ie?.iEstado === 1) {
               <p-tag severity="success" value="Activo" />
             } @else {
-              <p-tag severity="success" value="Inactivo" />
+              <p-tag severity="danger" value="Inactivo" />
             }
           </div>
         </div>
@@ -85,9 +85,10 @@
 
 <app-form-sedes
   [showModal]="showModal"
-  [data]="sedes"
-  [iIieeId]="iIieeId"
-  (closeModal)="showModal = false"
+  (closeModal)="cerrarModal()"
+  [sede]="sedeSeleccionada"
+  [iNivelTipoId]="ie?.iNivelTipoId"
+  (recargarLista)="listarSedes()"
 />
 
 <p-toast />

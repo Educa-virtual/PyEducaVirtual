@@ -93,11 +93,13 @@
     (accionBtnItem)="accionBtnInstituciones($event)"
     [scrollable]="true"
   />
-
-  <app-agregar-mantenimiento-ie
-    [showModal]="showModal"
-    (closeModal)="cerrarModal()"
-    [ie]="institucionSeleccionada"
-    (recargarLista)="listarInstitucionesEducativas()"
-  />
 </p-panel>
+
+<app-agregar-mantenimiento-ie
+  [showModal]="showModal"
+  (closeModal)="cerrarModal()"
+  [ie]="institucionSeleccionada"
+  (recargarLista)="listarInstitucionesEducativas()"
+/>
+
+<p-toast />

@@ -52,7 +52,6 @@ export class MantenimientoSedesComponent implements OnInit {
       console.error(error, 'Error al inicializar el formulario');
     }
     this.verIe();
-    this.listarSedes();
   }
 
   setBreadCrumbs() {
@@ -61,9 +60,14 @@ export class MantenimientoSedesComponent implements OnInit {
         label: 'Gestionar Instituciones Educativas',
         routerLink: '/administrador/mantenimiento-ie',
       },
-      { label: this.ie.cIieeCodigoModular + ' - ' + this.ie.cIieeNombre },
+      { label: this.ie?.cIieeCodigoModular + ' - ' + this.ie?.cIieeNombre },
       { label: 'Sedes' },
     ];
+  }
+
+  cerrarModal() {
+    this.showModal = false;
+    this.sedeSeleccionada = null;
   }
 
   verIe() {
@@ -74,6 +78,10 @@ export class MantenimientoSedesComponent implements OnInit {
       .subscribe((data: any) => {
         this.ie = data.data;
         this.setBreadCrumbs();
+        this.listarSedes();
+        this.ieService.crearInstitucionEducativa({}).subscribe((data: any) => {
+          this.ieService.getServiciosEducativos(data?.servicios_educativos);
+        });
       });
   }
 
@@ -92,7 +100,10 @@ export class MantenimientoSedesComponent implements OnInit {
       });
   }
 
-  agregarSede() {}
+  agregarSede() {
+    this.showModal = true;
+    this.sedeSeleccionada = null;
+  }
 
   abrirEnMaps(event) {
     event.preventDefault();
@@ -102,30 +113,15 @@ export class MantenimientoSedesComponent implements OnInit {
     }
   }
 
-  setFormSede(data) {
-    this.formSede.patchValue(data);
-  }
-
   regresar() {
-    this.router.navigate(['/sistema/administrador/mantenimiento/mantenimiento-ie']);
-  }
-
-  abrirModal(accion) {
-    if (accion === 'editar') {
-      this.showModal = true;
-      this.sedeSeleccionada = this.ie;
-    }
+    this.router.navigate(['/administrador/mantenimiento-ie']);
   }
 
   accionBtnSedes({ accion, item }) {
     switch (accion) {
-      case 'seleccionar':
-        this.sedeSeleccionada.set(item);
-        this.setFormSede(item);
-        break;
       case 'editar':
         this.showModal = true;
-        this.sedeSeleccionada.set(item);
+        this.sedeSeleccionada = item;
         break;
     }
   }
@@ -183,13 +179,6 @@ export class MantenimientoSedesComponent implements OnInit {
   ];
 
   acciones: IActionTable[] = [
-    {
-      labelTooltip: 'Ver',
-      icon: 'pi pi-eye',
-      accion: 'ver',
-      type: 'item',
-      class: 'p-button-rounded p-button-secondary p-button-text',
-    },
     {
       labelTooltip: 'Editar',
       icon: 'pi pi-pencil',

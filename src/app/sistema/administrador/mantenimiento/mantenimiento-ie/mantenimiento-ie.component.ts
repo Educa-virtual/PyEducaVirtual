@@ -274,6 +274,19 @@ export class MantenimientoIeComponent implements OnInit {
       accion: 'mapa',
       type: 'item',
       class: 'p-button-rounded p-button-warning p-button-text',
+      isVisible: function (data: any) {
+        return data.cIieeNlat && data.cIieeNlog;
+      },
+    },
+    {
+      labelTooltip: 'No hay ubicación',
+      icon: 'pi pi-map-marker',
+      accion: '',
+      type: 'item',
+      class: 'p-button-rounded p-button-secondary p-button-text',
+      isVisible: function (data: any) {
+        return !data.cIieeNlat && !data.cIieeNlog;
+      },
     },
   ];
 

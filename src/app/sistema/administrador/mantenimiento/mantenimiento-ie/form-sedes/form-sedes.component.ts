@@ -1,192 +1,132 @@
-import { GeneralService } from '@/app/servicios/general.service';
-import { ValidacionFormulariosService } from '@/app/servicios/validacion-formularios.service';
-import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
-import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component';
 import {
   Component,
-  inject,
-  input,
-  output,
-  signal,
   OnInit,
   OnChanges,
   SimpleChanges,
+  Input,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MantenimientoIeService, Sede } from '../mantenimiento-ie.service';
+import { MantenimientoIeService } from '../mantenimiento-ie.service';
 import { PrimengModule } from '@/app/primeng.module';
-import { finalize } from 'rxjs';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
-import { ConstantesService } from '@/app/servicios/constantes.service';
+import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
+import { MessageService } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-form-sedes',
   standalone: true,
-  imports: [ModalPrimengComponent, PrimengModule, ReactiveFormsModule],
+  imports: [PrimengModule, ReactiveFormsModule],
   templateUrl: './form-sedes.component.html',
   styleUrl: './form-sedes.component.scss',
 })
-export class FormSedesComponent extends MostrarErrorComponent implements OnInit, OnChanges {
-  showModal = input<boolean>(false);
-  iIieeId = input<string | number>(null);
-  ieSeleccionada = input<any>(null);
-  data = input(null);
+export class FormSedesComponent implements OnInit, OnChanges {
+  @Input() showModal: boolean = false;
+  @Input() sede: any = null;
+  @Input() iNivelTipoId: number = null;
+  @Output() closeModal = new EventEmitter();
+  @Output() recargarLista = new EventEmitter();
 
-  closeModal = output<void>();
-  recargarLista = output<void>();
-
-  isLoading = signal<boolean>(false);
+  perfil: any;
+  formSede: FormGroup;
+  iIieeId: number;
 
   turnos: any = [];
   servicios_educativos: any[] = [];
-  estados: any[] = [
-    { label: 'HABILITADO', value: 1 },
-    { label: 'DESHABILITADO', value: 0 },
+  servicios_educativos_filtrados: any[] = [];
+  estados = [
+    { value: 1, label: 'HABILITADO' },
+    { value: 0, label: 'DESHABILITADO' },
   ];
 
-  private _GeneralService = inject(GeneralService);
-  private _ValidacionFormulariosService = inject(ValidacionFormulariosService);
-  private ieService = inject(MantenimientoIeService);
-  private _FormBuilder = inject(FormBuilder);
-  private _LocalStoreService = inject(LocalStoreService);
-  private _ConstantesService = inject(ConstantesService);
-
-  formSedes: FormGroup;
+  constructor(
+    private formService: ReactiveFormService,
+    private ieService: MantenimientoIeService,
+    private fb: FormBuilder,
+    private store: LocalStoreService,
+    private messageService: MessageService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.route.parent?.paramMap.subscribe(params => {
+      this.iIieeId = Number(params.get('id'));
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['data']) {
-      const data = changes['data'].currentValue;
-      if (!data) return;
-
-      console.log('🔹 Valor recibido de iIieeId:', this.iIieeId());
-
-      data.iEstado = Number(data.iEstado ?? 0);
-
-      if (!this.formSedes) return;
-
-      if (data.iSedeId) {
-        this.formSedes.patchValue(data);
-        //this.formSedes.get('iIieeId')?.clearValidators();
-        this.formSedes.get('iIieeId')?.setValue(this.iIieeId());
+    if (changes['iNivelTipoId'] && this.servicios_educativos.length) {
+      this.filtrarServiciosEducativos();
+    }
+    if (changes['sede'] && this.formSede) {
+      const sede = changes['sede']?.currentValue;
+      if (sede?.iSedeId) {
+        this.setFormSede(sede);
       } else {
-        this.formSedes.reset();
-        // this.formSedes.get('iIieeId')?.setValidators(Validators.required);
+        this.setFormSede(null);
       }
-      this.formSedes.get('iIieeId')?.updateValueAndValidity();
     }
   }
 
   ngOnInit() {
-    this.initForm();
-    this.ieService.crearInstitucionEducativa({}).subscribe((data: any) => {
-      this.turnos = this.ieService.getTurnos(data?.turnos);
-      this.servicios_educativos = this.ieService.getServiciosEducativos(data?.servicios_educativos);
-    });
-    this.getTurnos();
-  }
-
-  initForm() {
-    this.formSedes = this._FormBuilder.group({
-      iCredEntPerfId: [],
-      iCredId: [1],
+    this.formSede = this.fb.group({
+      iIieeId: [this.iIieeId],
       iSedeId: [null],
-      iIieeId: [this.iIieeId()],
-      iServEdId: [null, Validators.required],
+      iServEdId: [null],
       iTurnoId: [null],
       cSedeNombre: ['', [Validators.required, Validators.maxLength(200)]],
       cSedeEmail: [null],
-      cSedeDireccion: [null, Validators.required],
+      cSedeDireccion: [null],
       cSedeRslCreacion: [null],
       dSedeRslCreacion: [null],
       iEstado: [1],
       cSedeTelefono: [null],
       cSedeDirector: [null],
+      cEscNlat: [null],
+      cEscNlog: [null],
+    });
+    this.cargarListasFormulario();
+  }
+
+  cargarListasFormulario() {
+    this.ieService.crearInstitucionEducativa({}).subscribe((data: any) => {
+      this.servicios_educativos =
+        this.ieService.getServiciosEducativos(data?.servicios_educativos) || [];
+      this.filtrarServiciosEducativos();
+      this.turnos = this.ieService.getTurnos(data?.turnos) || [];
     });
   }
 
-  getTurnos() {
-    this._GeneralService.getTurno().subscribe({
-      next: (response: any) => {
-        this.turnos = response.data;
-      },
+  filtrarServiciosEducativos() {
+    this.servicios_educativos_filtrados = this.servicios_educativos.filter(servicio => {
+      return Number(servicio.iNivelTipoId) === Number(this.iNivelTipoId);
     });
   }
-  enviarFormulario() {
-    //if (this.isLoading()) return;
 
-    this.isLoading.set(true);
-
-    const perfil = this._LocalStoreService.getItem('dremoPerfil');
-    console.log('Formulario de sede a enviar:', this.formSedes.value);
-    this.formSedes.patchValue({
-      iIieeId: this.iIieeId(),
-      iCredEntPerfId: perfil?.iCredEntPerfId,
-      iCredId: this._ConstantesService.iCredId,
+  setFormSede(sede: any) {
+    this.formSede.reset({
+      iEstado: 1,
     });
-
-    const nombresCampos: Record<string, string> = {
-      iCredEntPerfId: 'Credencial Entidad',
-      cSedeNombre: 'Nombre de la sede',
-      iServEdId: 'Servicio Educativo',
-      cSedeTelefono: 'Teléfono',
-      cSedeDireccion: 'Dirección',
-      iIieeId: 'Institución Educativa',
-      iCredId: 'Credencial',
-    };
-
-    const { valid, message } = this._ValidacionFormulariosService.validarFormulario(
-      this.formSedes,
-      nombresCampos
-    );
-
-    if (!valid && message) {
-      this.mostrarMensajeToast(message);
-      this.isLoading.set(false);
+    this.formService.validarFormulario(this.formSede);
+    if (!sede) {
       return;
     }
-
-    // return;
-    this.guardarSede();
+    this.formSede.patchValue(sede);
+    this.formService.formatearFormControl(this.formSede, 'iTurnoId', sede.iTurnoId, 'number');
+    this.formService.formatearFormControl(this.formSede, 'iServEdId', sede.iServEdId, 'number');
+    this.formService.formatearFormControl(this.formSede, 'iEstado', sede.iEstado, 'number');
   }
 
-  guardarSede() {
-    const datosSedes: Sede = this.formSedes.value;
-    datosSedes.iEstado = this.formSedes.value.iEstado ? 1 : 0;
-    this.ieService
-      .crearSede(datosSedes)
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: response => {
-          if (response.validated) {
-            this.mostrarMensajeToast({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Institución educativa creada correctamente',
-            });
-            this.formSedes.reset();
-            this.closeModal.emit();
-            this.recargarLista.emit();
-          } else {
-            this.mostrarMensajeToast({
-              severity: 'error',
-              summary: 'Error',
-              detail: response.mensaje || 'Error al crear la sede',
-            });
-          }
-        },
-        error: error => {
-          this.mostrarErrores(error);
-        },
-      });
-  }
   soloNumeros(event: any) {
     const input = event.target;
     const valor = input.value.replace(/[^0-9]/g, '');
     input.value = valor;
 
     const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
-    if (controlName && this.formSedes.get(controlName)) {
-      this.formSedes.get(controlName)?.setValue(valor);
+    if (controlName && this.formSede.get(controlName)) {
+      this.formSede.get(controlName)?.setValue(valor);
     }
   }
 
@@ -196,13 +136,80 @@ export class FormSedesComponent extends MostrarErrorComponent implements OnInit,
     input.value = valor;
 
     const controlName = input.getAttribute('formControlName') || input.getAttribute('id');
-    if (controlName && this.formSedes.get(controlName)) {
-      this.formSedes.get(controlName)?.setValue(valor);
+    if (controlName && this.formSede.get(controlName)) {
+      this.formSede.get(controlName)?.setValue(valor);
     }
   }
 
-  esInvalido(control: string): boolean {
-    const c = this.formSedes.get(control);
-    return !!(c && c.invalid && (c.dirty || c.touched));
+  cerrarModal() {
+    this.closeModal.emit();
+    this.formSede.reset();
+    this.formSede.controls['iEstado'].setValue(1);
+  }
+
+  modalCerrado(visible: boolean) {
+    if (!visible) {
+      this.cerrarModal();
+    }
+  }
+
+  guardarSede() {
+    if (this.formSede.invalid) {
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Adveretencia',
+        detail: 'Complete los campos requeridos',
+      });
+      this.formService.validarFormulario(this.formSede);
+    }
+    this.ieService.guardarSede(this.formSede.value).subscribe({
+      next: () => {
+        this.cerrarModal();
+        this.recargarLista.emit(true);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se realizó la operación correctamente',
+        });
+      },
+      error: error => {
+        console.error(error, 'Error al guardar la sede');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error?.error?.message || 'Ocurrió un error',
+        });
+      },
+    });
+  }
+
+  actualizarSede() {
+    if (this.formSede.invalid) {
+      this.messageService.add({
+        severity: 'warning',
+        summary: 'Adveretencia',
+        detail: 'Complete los campos requeridos',
+      });
+      this.formService.validarFormulario(this.formSede);
+    }
+    this.ieService.actualizarSede(this.formSede.value).subscribe({
+      next: () => {
+        this.cerrarModal();
+        this.recargarLista.emit(true);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se realizó la operación correctamente',
+        });
+      },
+      error: error => {
+        console.error(error, 'Error al guardar la sede');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error?.error?.message || 'Ocurrió un error',
+        });
+      },
+    });
   }
 }

@@ -1,8 +1,8 @@
 <p-dialog
-  [header]="(this.formSedes.value.iIieeId ? 'Actualizar' : 'Nueva') + ' Sede Institucional'"
-  [visible]="showModal()"
+  [header]="(this.formSede.value.iSedeId ? 'Actualizar' : 'Nueva') + ' Sede Institucional'"
+  [visible]="showModal"
+  (visibleChange)="modalCerrado($event)"
   [breakpoints]="{ '960px': '85vw', '640px': '100vw' }"
-  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
   [style]="{
     width: '75vw',
     maxWidth: '100vw',
@@ -10,26 +10,38 @@
   }"
   [modal]="true"
   [closable]="true"
-  (onHide)="closeModal.emit()"
+  (onHide)="cerrarModal()"
   [resizable]="true"
   [maximizable]="true"
 >
-  <form [formGroup]="formSedes" class="mt-3">
+  <form [formGroup]="formSede" class="mt-3">
     <div class="grid">
-      <div class="col-12 md:col-12">
+      <div class="col-12">
         <p-inputGroup>
-          <p-inputGroupAddon>Servicio Educativo (*)</p-inputGroupAddon>
+          <p-inputGroupAddon>Nombre (*)</p-inputGroupAddon>
+          <input
+            type="text"
+            pInputText
+            formControlName="cSedeNombre"
+            (input)="convertirMayusculas($event)"
+            [style]="{ flex: '1', width: '100%' }"
+            class="group-element"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Servicio Educativo</p-inputGroupAddon>
           <p-dropdown
             appendTo="body"
             formControlName="iServEdId"
-            [options]="servicios_educativos"
+            [options]="servicios_educativos_filtrados"
             [showClear]="true"
             [style]="{ flex: '1', width: '100%' }"
             styleClass="group-element"
           />
         </p-inputGroup>
       </div>
-
       <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>Turno</p-inputGroupAddon>
@@ -46,25 +58,12 @@
       </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
-          <p-inputGroupAddon>Nombre (*)</p-inputGroupAddon>
+          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
           <input
             type="text"
             pInputText
-            formControlName="cSedeNombre"
+            formControlName="cSedeDireccion"
             (input)="convertirMayusculas($event)"
-            [style]="{ flex: '1', width: '100%' }"
-            class="group-element"
-          />
-        </p-inputGroup>
-      </div>
-
-      <div class="col-12 md:col-6">
-        <p-inputGroup>
-          <p-inputGroupAddon>Email</p-inputGroupAddon>
-          <input
-            type="email"
-            pInputText
-            formControlName="cSedeEmail"
             [style]="{ flex: '1', width: '100%' }"
             class="group-element"
           />
@@ -83,8 +82,7 @@
           />
         </p-inputGroup>
       </div>
-
-      <div class="col-12">
+      <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>Director</p-inputGroupAddon>
           <input
@@ -97,7 +95,19 @@
           />
         </p-inputGroup>
       </div>
-
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Estado</p-inputGroupAddon>
+          <p-dropdown
+            appendTo="body"
+            formControlName="iEstado"
+            [options]="estados"
+            [style]="{ flex: '1', width: '100%' }"
+            styleClass="group-element"
+          >
+          </p-dropdown>
+        </p-inputGroup>
+      </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
           <p-inputGroupAddon>Resolución</p-inputGroupAddon>
@@ -126,13 +136,12 @@
       </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
-          <p-inputGroupAddon>Dirección</p-inputGroupAddon>
-          <input
-            type="text"
-            pInputText
-            placeholder="Ej: Av. Los Olivos N° 123, San Martín"
-            formControlName="cSedeDireccion"
-            (input)="convertirMayusculas($event)"
+          <p-inputGroupAddon>Latitud</p-inputGroupAddon>
+          <p-inputNumber
+            mode="decimal"
+            minFractionDigits="2"
+            maxFractionDigits="10"
+            formControlName="cEscNlat"
             [style]="{ flex: '1', width: '100%' }"
             class="group-element"
           />
@@ -140,28 +149,34 @@
       </div>
       <div class="col-12 md:col-6">
         <p-inputGroup>
-          <p-inputGroupAddon>Estado</p-inputGroupAddon>
-          <p-dropdown
-            appendTo="body"
-            formControlName="iEstado"
-            [options]="estados"
-            [showClear]="true"
+          <p-inputGroupAddon>Longitud</p-inputGroupAddon>
+          <p-inputNumber
+            mode="decimal"
+            minFractionDigits="2"
+            maxFractionDigits="10"
+            formControlName="cEscNlog"
             [style]="{ flex: '1', width: '100%' }"
-            styleClass="group-element"
-          >
-          </p-dropdown>
+            class="group-element"
+          />
         </p-inputGroup>
       </div>
     </div>
   </form>
   <div footer class="flex justify-content-end gap-2">
-    <p-button label="Cancelar" severity="secondary" (onClick)="closeModal.emit()" />
+    <p-button label="Salir" severity="secondary" (onClick)="cerrarModal()" />
     <p-button
-      [label]="this.formSedes.value.iSedeId ? 'Actualizar' : 'Guardar'"
-      [severity]="this.formSedes.value.iSedeId ? 'warning' : 'success'"
-      (onClick)="enviarFormulario()"
-      [disabled]="formSedes.invalid"
-    ></p-button>
+      *ngIf="this.formSede.value.iSedeId"
+      [disabled]="formSede.invalid"
+      label="Actualizar"
+      severity="warning"
+      (onClick)="actualizarSede()"
+    />
+    <p-button
+      *ngIf="!this.formSede.value.iSedeId"
+      [disabled]="formSede.invalid"
+      label="Guardar"
+      severity="success"
+      (onClick)="guardarSede()"
+    />
   </div>
 </p-dialog>
-<p-toast />

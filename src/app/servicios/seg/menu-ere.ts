@@ -57,7 +57,7 @@ export const administradorDremo = [
                 routerLink: ['/evaluaciones'],
             },*/
       {
-        label: 'ERE',
+        label: 'Evaluciones Regionales',
         icon: 'pi pi-pen-to-square',
         items: [
           {

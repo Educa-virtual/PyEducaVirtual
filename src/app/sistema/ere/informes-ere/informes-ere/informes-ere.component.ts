@@ -65,6 +65,9 @@ export class InformesEreComponent implements OnInit {
   ugeles: Array<object>;
   tipos_reportes: Array<object>;
 
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [{ label: 'Resultados de Evaluaciones Regionales' }];
+
   private _MessageService = inject(MessageService);
 
   constructor(

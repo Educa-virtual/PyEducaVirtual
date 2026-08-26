@@ -675,10 +675,7 @@ export class PreguntasComponent implements OnInit {
         this.totalPregunta = 0;
         this.breadCrumbItems = [
           {
-            label: 'ERE',
-          },
-          {
-            label: 'Evaluaciones',
+            label: 'Evaluaciones Regionales',
             routerLink: '/ere/evaluaciones',
           },
           {

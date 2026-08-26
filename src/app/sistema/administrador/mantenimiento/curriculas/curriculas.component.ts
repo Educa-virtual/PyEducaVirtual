@@ -358,7 +358,7 @@ export class CurriculasComponent implements OnInit {
     },
     {
       type: 'text',
-      width: '45%',
+      width: '40%',
       field: 'cCurrDescripcion',
       header: 'Nombre',
       text_header: 'center',
@@ -382,10 +382,10 @@ export class CurriculasComponent implements OnInit {
     },
     {
       type: 'actions',
-      width: '10%',
+      width: '15%',
       field: 'actions',
       header: 'Acciones',
-      text_header: 'center',
+      text_header: 'right',
       text: 'right',
     },
   ];

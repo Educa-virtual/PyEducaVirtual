@@ -25,19 +25,19 @@
           <div class="formgrid grid flex">
             <div class="field flex flex-column col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon> Tipo de evaluación </p-inputGroupAddon>
+                <p-inputGroupAddon>Tipo de evaluación *</p-inputGroupAddon>
                 <p-dropdown
-                  styleClass="w-full"
                   optionValue="idTipoEvalId"
                   placeholder="Seleccionar"
                   formControlName="idTipoEvalId"
                   [options]="tipoEvaluacion"
                   optionLabel="cTipoEvalDescripcion"
+                  [style]="{ flex: '1', width: '100%' }"
                   [styleClass]="
                     evaluacionFormGroup.get('idTipoEvalId')?.invalid &&
                     evaluacionFormGroup.get('idTipoEvalId')?.touched
-                      ? 'w-full ng-dirty ng-invalid p-invalid'
-                      : 'w-full '
+                      ? 'group-element ng-dirty ng-invalid p-invalid'
+                      : 'group-element '
                   "
                 ></p-dropdown>
               </p-inputGroup>
@@ -53,19 +53,19 @@
             </div>
             <div class="field flex flex-column col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon> Nivel de evaluación</p-inputGroupAddon>
+                <p-inputGroupAddon>Nivel de evaluación *</p-inputGroupAddon>
                 <p-dropdown
-                  styleClass="w-full"
                   placeholder="Seleccionar"
                   optionValue="iNivelEvalId"
                   formControlName="iNivelEvalId"
                   [options]="nivelEvaluacion"
                   optionLabel="cNivelEvalNombre"
+                  [style]="{ flex: '1', width: '100%' }"
                   [styleClass]="
                     evaluacionFormGroup.get('iNivelEvalId')?.invalid &&
                     evaluacionFormGroup.get('iNivelEvalId')?.touched
-                      ? 'w-full ng-dirty ng-invalid p-invalid'
-                      : 'w-full'
+                      ? 'group-element ng-dirty ng-invalid p-invalid'
+                      : 'group-element'
                   "
                 ></p-dropdown>
               </p-inputGroup>
@@ -82,37 +82,46 @@
           </div>
           <div class="formgrid grid">
             <div class="field col">
-              <app-common-input controlKey="cEvaluacionNombre" label="Nombre"></app-common-input>
+              <p-inputGroup>
+                <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
+                <input
+                  pInputText
+                  [style]="{ flex: '1', width: '100%' }"
+                  class="group-element"
+                  formControlName="cEvaluacionNombre"
+                  placeholder="Escribe un nombre"
+                />
+              </p-inputGroup>
             </div>
           </div>
           <div class="formgrid grid">
             <div class="field col">
-              <label for="descripcion" class="mt-1"
-                >Descripción <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-              >
-              <div class="mt-2">
+              <p-inputGroup class="vertical-group">
+                <p-inputGroupAddon>Descripción *</p-inputGroupAddon>
                 <textarea
-                  class="w-full"
+                  class="group-element"
+                  [style]="{ flex: '1', width: '100%', resize: 'none' }"
                   rows="4"
                   placeholder="Escribe una Descripción"
                   pInputText
                   formControlName="cEvaluacionDescripcion"
                 ></textarea>
-              </div>
+              </p-inputGroup>
             </div>
           </div>
           <div class="formgrid grid flex">
             <div class="field col">
-              <label for="descripcion" class="mt-1">Enlace a carpeta compartida </label>
-              <div class="mt-2">
+              <p-inputGroup>
+                <p-inputGroupAddon>Carpeta compartida *</p-inputGroupAddon>
                 <input
                   pInputText
-                  class="w-full"
+                  [style]="{ flex: '1', width: '100%' }"
+                  class="group-element"
                   formControlName="cEvaluacionUrlDrive"
                   placeholder="Campo opcional. Ruta que empiece con http:// o https://"
                   pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                 />
-              </div>
+              </p-inputGroup>
               <div
                 *ngIf="
                   evaluacionFormGroup.controls.cEvaluacionUrlDrive.invalid &&
@@ -127,12 +136,13 @@
           <div class="formgrid grid flex">
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon> Fecha de inicio </p-inputGroupAddon>
+                <p-inputGroupAddon>Fecha de inicio *</p-inputGroupAddon>
                 <p-calendar
                   formControlName="dtEvaluacionFechaInicio"
                   [iconDisplay]="'input'"
                   dateFormat="dd/mm/yy"
-                  styleClass="w-full"
+                  inputStyleClass="group-element"
+                  [style]="{ flex: '1', width: '100%' }"
                   [showIcon]="true"
                   type="date"
                   inputId="dtEvaluacionFechaInicio"
@@ -142,12 +152,13 @@
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>
-                <p-inputGroupAddon> Fecha fin </p-inputGroupAddon>
+                <p-inputGroupAddon>Fecha de cierre *</p-inputGroupAddon>
                 <p-calendar
                   formControlName="dtEvaluacionFechaFin"
                   [iconDisplay]="'input'"
                   dateFormat="dd/mm/yy"
-                  styleClass="w-full"
+                  inputStyleClass="group-element"
+                  [style]="{ flex: '1', width: '100%' }"
                   [showIcon]="true"
                   type="date"
                   inputId="dtEvaluacionFechaFin"

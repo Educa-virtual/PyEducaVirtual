@@ -1,39 +1,18 @@
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service';
 import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-/*BOTONES */
-import { ButtonModule } from 'primeng/button';
-/*MODAL */
-import { DialogModule } from 'primeng/dialog';
-/*INPUT TEXT */
-import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-//TAB
-import { TabViewModule } from 'primeng/tabview';
-import { DropdownModule } from 'primeng/dropdown';
-import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component'; //Referencia Componente IE
+import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component';
 import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas.component';
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-//Uso para separar y poner en vertical o horizonal
-import { DividerModule } from 'primeng/divider';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component';
-import { StepperModule } from 'primeng/stepper';
-import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
-import { StepsModule } from 'primeng/steps';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Stepper } from 'primeng/stepper';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
-import { CalendarModule } from 'primeng/calendar';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { InputSwitchModule } from 'primeng/inputswitch';
-import { EditorModule } from 'primeng/editor';
 import { PrimengModule } from '@/app/primeng.module';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 interface TipoEvaluacion {
   idTipoEvalId: number;
@@ -47,30 +26,7 @@ interface NivelEvaluacion {
 @Component({
   selector: 'app-evaluaciones-form',
   standalone: true,
-  imports: [
-    InputSwitchModule,
-    EditorModule,
-    ScrollPanelModule,
-    StepsModule,
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    InputTextareaModule,
-    FormsModule,
-    TabViewModule,
-    IeparticipaComponent,
-    DropdownModule,
-    CommonInputComponent,
-    ReactiveFormsModule,
-    EvaluacionAreasComponent,
-    StepperModule,
-    CommonModule,
-    DividerModule,
-    CardModule,
-    ToastModule,
-    CalendarModule,
-    PrimengModule,
-  ],
+  imports: [IeparticipaComponent, EvaluacionAreasComponent, PrimengModule, CdkTextareaAutosize],
   templateUrl: './evaluaciones-form.component.html',
   styleUrl: './evaluaciones-form.component.scss',
 })

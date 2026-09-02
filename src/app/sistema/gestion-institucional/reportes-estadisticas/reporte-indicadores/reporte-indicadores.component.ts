@@ -1,7 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-primeng.component';
+import { Component, OnInit, signal } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
-import { MostrarErrorComponent } from '@/app/shared/components/mostrar-error/mostrar-error.component';
 import { GeneralService } from '@/app/servicios/general.service';
 import { ConstantesService } from '@/app/servicios/constantes.service';
 import {
@@ -13,7 +11,7 @@ import { TabsPrimengComponent } from '@/app/shared/tabs-primeng/tabs-primeng.com
 import { ActivatedRoute, Router } from '@angular/router';
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
 import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { GestionUsuariosService } from '@/app/sistema/administrador/gestion-usuarios/services/gestion-usuarios.service';
 
@@ -31,42 +29,25 @@ import { CAMPOS_INDICADOR, COLORES_BASE, MAPEO_COLUMNAS } from './indicadores-ma
 import * as XLSX from 'xlsx-js-style';
 
 import { ChartOptions } from 'chart.js';
+import { MessageService } from 'primeng/api';
+import { DatosIndicadoresService } from '../../services/datos-indicadores-service';
 
 @Component({
   selector: 'app-reporte-indicadores',
   standalone: true,
-  imports: [
-    ToolbarPrimengComponent,
-    PrimengModule,
-    TabsPrimengComponent,
-    TablePrimengComponent,
-    NoDataComponent,
-  ],
+  imports: [PrimengModule, TabsPrimengComponent, TablePrimengComponent, NoDataComponent],
   templateUrl: './reporte-indicadores.component.html',
   styleUrl: './reporte-indicadores.component.scss',
 })
-export class ReporteIndicadoresComponent extends MostrarErrorComponent implements OnInit {
-  private _GeneralService = inject(GeneralService);
-  private _ConstantesService = inject(ConstantesService);
-  private _Router = inject(Router);
-  private _ActivatedRoute = inject(ActivatedRoute);
-  private _FormBuilder = inject(FormBuilder);
-  private _LocalStoreService = inject(LocalStoreService);
-  private _GestionUsuariosService = inject(GestionUsuariosService);
-  private _DatosInformesService = inject(DatosInformesService);
+export class ReporteIndicadoresComponent implements OnInit {
+  nivel_tipos: any[] = [];
+  instituciones_educativas: any[] = [];
+  sedes: any[] = [];
+  nivel_grados: any[] = [];
+  secciones: any[] = [];
 
-  isAdminDremo = signal<boolean>(
-    this._ConstantesService.iPerfilId === ADMINISTRADOR_DREMO ||
-      this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO ||
-      this._ConstantesService.iPerfilId === ESPECIALISTA_UGEL
-  );
-  nivelTipos = signal<any[]>([]);
-  instituciones = signal<any[]>([]);
-  institucionesxiNivelTipoId = signal<any[]>([]);
-  sedes = signal<any[]>([]);
-  gradosSecciones = signal<any[]>([]);
-  grados = signal<any[]>([]);
-  secciones = signal<any[]>([]);
+  breadCrumbHome: any = { icon: 'pi pi-home' };
+  breadCrumbItems: any[] = [{ label: 'Reportes y estadísticas' }, { label: 'Indicadores' }];
 
   _total: number = 0;
 
@@ -117,50 +98,122 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       tab: 'resumen-bajo-rendimiento',
       opcion: indicadorBajoRendimiento,
     },
-    // {
-    //   title: 'Vacantes',
-    //   icon: 'pi pi-id-card',
-    //   tab: 'resumen-vacantes',
-    //   opcion: indicadorVacantes,
-    // },
   ]);
 
+  perfil: any;
+  iYAcadId: number;
+  esAdminDremo: boolean = false;
   reportes = signal<any>(reportes);
 
-  perfil = this._LocalStoreService.getItem('dremoPerfil');
+  formIndicadores: FormGroup;
 
-  formIndicadores = this._FormBuilder.nonNullable.group({
-    iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
-    iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
-    iNivelTipoId: [null],
-    iIieeId: [null],
-    iSedeId: [null],
-    iNivelGradoId: [null],
-    iSeccionId: [null],
-  });
-
-  ngOnInit(): void {
-    if (this.isAdminDremo()) {
-      this.getNivelTipos();
-      this.getIntitucionEducativa();
-    } else {
-      this.formIndicadores.controls.iSedeId.setValue(this._ConstantesService.iSedeId);
-      this.obtenerGradoSeccion();
-    }
-    this._ActivatedRoute.queryParams.subscribe(params => {
+  constructor(
+    private _GeneralService: GeneralService,
+    private _ConstantesService: ConstantesService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private store: LocalStoreService,
+    private usuarioService: GestionUsuariosService,
+    private informeService: DatosInformesService,
+    private messageService: MessageService,
+    private indicadorService: DatosIndicadoresService
+  ) {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.esAdminDremo = [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO, ESPECIALISTA_UGEL].includes(
+      Number(this.perfil.iPerfilId)
+    );
+    this.route.queryParams.subscribe(params => {
       const tabParam = params['tab'];
-
       if (tabParam) {
         this.tabSeleccionado.set(tabParam);
         const index = this.tabs().findIndex(t => t.tab === this.tabSeleccionado());
-
         this.selectTab.set(index !== -1 ? index : 0);
       }
     });
+  }
 
-    setInterval(() => {
-      this.fechaActual = new Date();
-    }, 1000); // Actualiza cada 1 segundo
+  ngOnInit(): void {
+    try {
+      this.formIndicadores = this.fb.nonNullable.group({
+        iCredEntPerfId: [this.perfil?.iCredEntPerfId ?? null, Validators.required],
+        iYAcadId: [this._ConstantesService.iYAcadId ?? null, Validators.required],
+        iNivelTipoId: [null],
+        iIieeId: [null],
+        iSedeId: [null],
+        iNivelGradoId: [null],
+        iSeccionId: [null],
+        cSexo: [null],
+      });
+    } catch (error) {
+      console.error(error, 'Error de formulario');
+    }
+    this.indicadorService
+      .crearIndicadores({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe((data: any) => {
+        this.nivel_tipos = this.indicadorService.getNivelTipos(data?.nivel_tipos);
+        this.sedes = this.indicadorService.getSedeGradoSeccion(data?.sedes);
+        this.nivel_grados = this.indicadorService.getNivelGrados(data?.nivel_grados);
+        this.secciones = this.indicadorService.getSecciones(data?.secciones);
+        this.filterIes();
+      });
+  }
+
+  filterIes() {
+    const nivel_tipo = Number(this.formIndicadores.value.iNivelTipoId);
+    let sedes = this.sedes;
+    if (nivel_tipo) {
+      sedes = this.sedes.filter(item => item.iNivelTipoId === nivel_tipo);
+    }
+    this.instituciones_educativas = sedes.map(item => ({
+      value: item.iIieeId,
+      label: item.cIieeNombre + ' - ' + item.cIieeCodigoModular,
+    }));
+  }
+
+  filterSede() {
+    const ie = Number(this.formIndicadores.value.iIieeId);
+    if (!ie) {
+      this.sedes = [];
+      return;
+    }
+    this.sedes = this.sedes
+      .filter(item => item.iIieeId === ie)
+      .map(item => ({
+        value: item.iSedeId,
+        label: item.cSedeNombre,
+      }));
+  }
+
+  filterGrados() {
+    const sede = Number(this.formIndicadores.value.iSedeId);
+    if (!sede) {
+      this.nivel_grados = [];
+      return;
+    }
+    this.nivel_grados = this.sedes
+      .filter(item => item.iSedeId === sede)
+      .map(item => ({
+        value: item.iNivelGradoId,
+        label: item.cGradoAbreviacion + ' ' + item.cGradoNombre,
+      }));
+  }
+
+  filterSecciones() {
+    const grado = Number(this.formIndicadores.value.iNivelGradoId);
+    if (!grado) {
+      this.secciones = [];
+      return;
+    }
+    this.secciones = this.sedes
+      .filter(item => item.iNivelGradoId === grado)
+      .map(item => ({
+        value: item.iSeccionId,
+        label: item.cSeccionNombre,
+      }));
   }
 
   obtenerOpcion() {
@@ -253,7 +306,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       return;
     }
 
-    const esAdmin = this.isAdminDremo();
+    const esAdmin = this.esAdminDremo;
     const columnas = esAdmin ? columnasConfig.admin : columnasConfig.director;
     this.columnasTabla.set(columnas);
   }
@@ -262,140 +315,13 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
     this.tabSeleccionado.set(event.tab);
     this.selectTab.set(this.tabs().findIndex(t => t.tab === this.tabSeleccionado()));
 
-    this._Router.navigate([], {
+    this.router.navigate([], {
       queryParams: { tab: this.tabSeleccionado() },
       queryParamsHandling: 'merge',
     });
     this.data.set([]);
     this.columnasTabla.set([]);
     this.obtenerResultadosxIndicador();
-  }
-
-  getNivelTipos() {
-    this._DatosInformesService
-      .obtenerParametros(this.formIndicadores.value)
-      .subscribe((data: any) => {
-        this.nivelTipos.set(this._DatosInformesService.getNivelesTipos(data?.nivel_tipos));
-      });
-  }
-  getIntitucionEducativa() {
-    this._GeneralService
-      .searchCalAcademico({
-        esquema: 'acad',
-        tabla: 'institucion_educativas',
-        campos: '*',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          const instituciones = (data.data ?? []).map((institucion: any) => ({
-            ...institucion,
-            cNombre:
-              institucion.cIieeCodigoModular +
-              ' - ' +
-              institucion.cIieeNombre +
-              ' - ' +
-              (Number(institucion.iNivelTipoId) === 3 ? 'PRIMARIA' : 'SECUNDARIA'),
-          }));
-
-          this.instituciones.set(instituciones);
-        },
-        error: error => {
-          console.error('Error fetching Tipo documentos:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje',
-            detail: 'Error en ejecución',
-          });
-        },
-      });
-  }
-
-  obtenerSedesIe() {
-    this.sedes.set([]);
-    this.grados.set([]);
-    this.secciones.set([]);
-    this.formIndicadores.controls.iSedeId.setValue(null);
-    this.formIndicadores.controls.iNivelGradoId.setValue(null);
-    this.formIndicadores.controls.iSeccionId.setValue(null);
-
-    if (!this.formIndicadores.value.iIieeId) return;
-    this.data.set([]);
-    this._GestionUsuariosService
-      .obtenerSedesInstitucionEducativa(this.formIndicadores.value.iIieeId)
-      .subscribe({
-        next: (respuesta: any) => {
-          this.sedes.set(
-            respuesta.data.map(sede => ({
-              value: sede.iSedeId,
-              label: sede.cSedeNombre,
-            }))
-          );
-        },
-        error: error => {
-          let message = error?.error?.message || 'Sin conexión a la bd';
-          const match = message.match(/]([^\]]+?)\./);
-          if (match && match[1]) {
-            message = match[1].trim() + '.';
-          }
-          message = decodeURIComponent(message);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Mensaje del sistema',
-            detail: message,
-          });
-        },
-      });
-  }
-
-  obtenerInstituciones() {
-    this.sedes.set([]);
-    this.grados.set([]);
-    this.secciones.set([]);
-    this.institucionesxiNivelTipoId.set([]);
-
-    this.formIndicadores.controls.iIieeId.setValue(null);
-    this.formIndicadores.controls.iSedeId.setValue(null);
-    this.formIndicadores.controls.iNivelGradoId.setValue(null);
-    this.formIndicadores.controls.iSeccionId.setValue(null);
-    if (!this.formIndicadores.value.iNivelTipoId) return;
-    this.institucionesxiNivelTipoId.set(
-      this.instituciones().filter(
-        item => Number(item.iNivelTipoId) === this.formIndicadores.value.iNivelTipoId
-      )
-    );
-  }
-
-  obtenerGradoSeccion() {
-    this.grados.set([]);
-    this.secciones.set([]);
-    this.formIndicadores.controls.iNivelGradoId.setValue(null);
-    this.formIndicadores.controls.iSeccionId.setValue(null);
-
-    if (!this.formIndicadores.value.iSedeId) return;
-    this.data.set([]);
-    this._GeneralService
-      .searchCalendario({
-        json: JSON.stringify({
-          iSedeId: this.formIndicadores.value.iSedeId,
-          iYAcadId: this._ConstantesService.iYAcadId,
-        }),
-        _opcion: 'getGradoSeccionXiSedeIdXiYAcadId',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.gradosSecciones.set(data.data || []);
-          this.grados.set(this.removeDuplicatesByiGradoId(this.gradosSecciones()));
-        },
-        error: error => {
-          this.messageService.add({
-            summary: 'Mensaje de sistema',
-            detail: 'Error al cargar secciones de IE.' + error.error.message,
-            life: 3000,
-            severity: 'error',
-          });
-        },
-      });
   }
 
   removeDuplicatesByiGradoId(array: any[]): any[] {
@@ -407,17 +333,6 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
       seen.add(item.iGradoId);
       return true;
     });
-  }
-
-  obtenerSecciones() {
-    this.secciones.set([]);
-    this.formIndicadores.controls.iSeccionId.setValue(null);
-    if (!this.formIndicadores.value.iNivelGradoId) return;
-    this.secciones.set(
-      this.gradosSecciones().filter(
-        item => item.iNivelGradoId === this.formIndicadores.value.iNivelGradoId
-      )
-    );
   }
 
   generarGraficoDinamicoPie() {
@@ -665,7 +580,7 @@ export class ReporteIndicadoresComponent extends MostrarErrorComponent implement
   showGrafica() {
     const { iIieeId, iSedeId } = this.formIndicadores.value;
 
-    return this.isAdminDremo() ? !!(iIieeId && iSedeId) : !!iSedeId;
+    return this.esAdminDremo ? !!(iIieeId && iSedeId) : !!iSedeId;
   }
 
   generarExcel() {

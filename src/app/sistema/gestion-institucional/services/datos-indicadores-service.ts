@@ -43,14 +43,23 @@ export class DatosIndicadoresService {
   getSedeGradoSeccion(data: any) {
     if (!this.sede_grado_seccion && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.sede_grado_seccion = items.map(item => ({
-        iIieeId: Number(item.iIieeId),
-        iSedeId: Number(item.iSedeId),
-        cIieeCodigoModular: item.cIieeCodigoModular,
-        cIieeNombre: item.cIieeNombre,
-        cSedeNombre: item.cSedeNombre,
-        iNivelGradoId: Number(item.iNivelGradoId),
-        iSeccionId: Number(item.iSeccionId),
+      this.sede_grado_seccion = (items ?? []).map(ie => ({
+        iNivelTipoId: Number(ie.iNivelTipoId),
+        iIieeId: Number(ie.iIieeId),
+        iDsstId: Number(ie.iDsstId),
+        iUgelId: Number(ie.iUgelId),
+        cIieeCodigoModular: ie.cIieeCodigoModular,
+        cIieeNombre: ie.cIieeNombre,
+        sedes: (ie.sedes ?? []).map(sede => ({
+          iSedeId: Number(sede.iSedeId),
+          cSedeNombre: sede.cSedeNombre,
+          grados: (sede.grados ?? []).map(grado => ({
+            iNivelGradoId: Number(grado.iNivelGradoId),
+            secciones: (grado.secciones ?? []).map(sec => ({
+              iSeccionId: Number(sec.iSeccionId),
+            })),
+          })),
+        })),
       }));
       return this.sede_grado_seccion;
     }
@@ -96,27 +105,18 @@ export class DatosIndicadoresService {
   getNivelGrados(data: any) {
     if (!this.nivel_grados && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
-      this.nivel_grados = items.reduce((prev: any, current: any) => {
-        const x = prev.find(item => item.value === current.iNivelGradoId);
-        if (!x) {
-          return prev.concat([
-            {
-              value: Number(current.iNivelGradoId),
-              label: current.cGradoAbreviacion + ' ' + current.cGradoNombre,
-            },
-          ]);
-        } else {
-          return prev;
-        }
-      }, []);
-      return this.nivel_grados;
+      this.nivel_grados = items.map(item => ({
+        value: Number(item.iNivelGradoId),
+        label: item.cGradoAbreviacion + ' ' + item.cGradoNombre,
+      }));
     }
     return this.nivel_grados;
   }
 
   getSecciones(data: any) {
     if (!this.secciones && data) {
-      const secciones = data.map(item => ({
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      const secciones = items.map(item => ({
         label: item.cSeccionNombre,
         value: item.iSeccionId,
       }));
@@ -139,12 +139,20 @@ export class DatosIndicadoresService {
     return this.secciones;
   }
 
-  getSexos() {
+  getSexos(data: any = null) {
     if (!this.sexos) {
-      this.sexos = [
-        { label: 'MASCULINO', value: 'M' },
-        { label: 'FEMENINO', value: 'F' },
-      ];
+      if (data) {
+        const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+        this.sexos = items.map(item => ({
+          value: item.cSexo,
+          label: item.cSexoNombre ?? item.cSexoDescripcion ?? item.cSexo,
+        }));
+      } else {
+        this.sexos = [
+          { label: 'MASCULINO', value: 'M' },
+          { label: 'FEMENINO', value: 'F' },
+        ];
+      }
     }
     return this.sexos;
   }

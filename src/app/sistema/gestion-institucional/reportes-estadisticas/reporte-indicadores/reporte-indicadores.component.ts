@@ -43,8 +43,12 @@ export class ReporteIndicadoresComponent implements OnInit {
   nivel_tipos: any[] = [];
   instituciones_educativas: any[] = [];
   sedes: any[] = [];
+  sedes_grados_secciones: any[] = [];
+  sexos: any[] = [];
   nivel_grados: any[] = [];
+  nivel_grados_filtrados: any[] = [];
   secciones: any[] = [];
+  secciones_filtradas: any[] = [];
 
   breadCrumbHome: any = { icon: 'pi pi-home' };
   breadCrumbItems: any[] = [{ label: 'Reportes y estadísticas' }, { label: 'Indicadores' }];
@@ -155,65 +159,109 @@ export class ReporteIndicadoresComponent implements OnInit {
       })
       .subscribe((data: any) => {
         this.nivel_tipos = this.indicadorService.getNivelTipos(data?.nivel_tipos);
-        this.sedes = this.indicadorService.getSedeGradoSeccion(data?.sedes);
+        this.sedes_grados_secciones = this.indicadorService.getSedeGradoSeccion(
+          data?.sedes_grados_secciones
+        );
         this.nivel_grados = this.indicadorService.getNivelGrados(data?.nivel_grados);
         this.secciones = this.indicadorService.getSecciones(data?.secciones);
+        this.sexos = this.indicadorService.getSexos(data?.sexos);
+        this.mapearGradosSecciones();
         this.filterIes();
       });
   }
 
-  filterIes() {
-    const nivel_tipo = Number(this.formIndicadores.value.iNivelTipoId);
-    let sedes = this.sedes;
-    if (nivel_tipo) {
-      sedes = this.sedes.filter(item => item.iNivelTipoId === nivel_tipo);
+  mapearGradosSecciones() {
+    this.sedes_grados_secciones.forEach(ie => {
+      ie.sedes.forEach(sede => {
+        sede.grados.forEach(grado => {
+          const gradoInfo = this.nivel_grados.find(x => Number(x.value) === grado.iNivelGradoId);
+          grado.cGradoAbreviacionNombre = gradoInfo?.label;
+          grado.secciones.forEach(sec => {
+            const secInfo = this.secciones.find(x => Number(x.value) === sec.iSeccionId);
+            sec.cSeccionNombre = secInfo?.label ?? '';
+          });
+        });
+      });
+    });
+    if (this.nivel_tipos.length === 1) {
+      this.formIndicadores.patchValue({ iNivelTipoId: this.nivel_tipos[0].value });
+      this.filterIes();
     }
-    this.instituciones_educativas = sedes.map(item => ({
-      value: item.iIieeId,
-      label: item.cIieeNombre + ' - ' + item.cIieeCodigoModular,
+  }
+
+  filterIes() {
+    this.formIndicadores.patchValue({
+      iIieeId: null,
+      iSedeId: null,
+      iNivelGradoId: null,
+      iSeccionId: null,
+    });
+    const iNivelTipoId = Number(this.formIndicadores.value.iNivelTipoId);
+    let data = this.sedes_grados_secciones;
+    if (iNivelTipoId) {
+      data = data.filter(item => Number(item.iNivelTipoId) === iNivelTipoId);
+    }
+    this.instituciones_educativas = data.map(item => ({
+      value: Number(item.iIieeId),
+      label: item.cIieeCodigoModular + ' - ' + item.cIieeNombre,
     }));
+    if (this.instituciones_educativas.length === 1) {
+      this.formIndicadores.patchValue({ iIieeId: this.instituciones_educativas[0].value });
+      this.filterSede();
+    }
   }
 
   filterSede() {
-    const ie = Number(this.formIndicadores.value.iIieeId);
-    if (!ie) {
-      this.sedes = [];
-      return;
+    this.formIndicadores.patchValue({
+      iSedeId: null,
+      iNivelGradoId: null,
+      iSeccionId: null,
+    });
+    this.formIndicadores.get('iSedeId').setValue(null);
+    const iIieeId = Number(this.formIndicadores.value.iIieeId);
+    const ie = this.sedes_grados_secciones.find(x => Number(x.iIieeId) === iIieeId);
+    this.sedes = (ie?.sedes ?? []).map(sede => ({ value: sede.iSedeId, label: sede.cSedeNombre }));
+    if (this.sedes.length === 1) {
+      this.formIndicadores.patchValue({ iSedeId: this.sedes[0].value });
+      this.filterGrados();
     }
-    this.sedes = this.sedes
-      .filter(item => item.iIieeId === ie)
-      .map(item => ({
-        value: item.iSedeId,
-        label: item.cSedeNombre,
-      }));
   }
 
   filterGrados() {
-    const sede = Number(this.formIndicadores.value.iSedeId);
-    if (!sede) {
-      this.nivel_grados = [];
-      return;
+    this.formIndicadores.patchValue({
+      iNivelGradoId: null,
+      iSeccionId: null,
+    });
+    const ie = this.sedes_grados_secciones.find(
+      x => x.iIieeId === Number(this.formIndicadores.value.iIieeId)
+    );
+    const sede = ie?.sedes?.find(s => s.iSedeId === Number(this.formIndicadores.value.iSedeId));
+    this.nivel_grados_filtrados = (sede?.grados ?? []).map(g => ({
+      value: g.iNivelGradoId,
+      label: g.cGradoAbreviacionNombre,
+    }));
+    if (this.nivel_grados_filtrados.length === 1) {
+      this.formIndicadores.patchValue({ iNivelGradoId: this.nivel_grados_filtrados[0].value });
+      this.filterSecciones();
     }
-    this.nivel_grados = this.sedes
-      .filter(item => item.iSedeId === sede)
-      .map(item => ({
-        value: item.iNivelGradoId,
-        label: item.cGradoAbreviacion + ' ' + item.cGradoNombre,
-      }));
   }
 
   filterSecciones() {
-    const grado = Number(this.formIndicadores.value.iNivelGradoId);
-    if (!grado) {
-      this.secciones = [];
-      return;
+    this.formIndicadores.get('iSeccionId').setValue(null);
+    const ie = this.sedes_grados_secciones.find(
+      x => x.iIieeId === Number(this.formIndicadores.value.iIieeId)
+    );
+    const sede = ie?.sedes?.find(s => s.iSedeId === Number(this.formIndicadores.value.iSedeId));
+    const grado = sede?.grados?.find(
+      g => g.iNivelGradoId === Number(this.formIndicadores.value.iNivelGradoId)
+    );
+    this.secciones_filtradas = (grado?.secciones ?? []).map(sec => ({
+      value: sec.iSeccionId,
+      label: sec.cSeccionNombre,
+    }));
+    if (this.secciones_filtradas.length === 1) {
+      this.formIndicadores.patchValue({ iSeccionId: this.secciones_filtradas[0].value });
     }
-    this.secciones = this.sedes
-      .filter(item => item.iNivelGradoId === grado)
-      .map(item => ({
-        value: item.iSeccionId,
-        label: item.cSeccionNombre,
-      }));
   }
 
   obtenerOpcion() {

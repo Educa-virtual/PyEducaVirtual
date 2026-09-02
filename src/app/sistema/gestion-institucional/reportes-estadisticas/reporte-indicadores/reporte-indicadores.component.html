@@ -8,55 +8,53 @@
   </ng-template>
 
   <form [formGroup]="formIndicadores" class="grid">
-    @if (esAdminDremo) {
-      <div class="col-12 lg:col-3">
-        <p-inputGroup>
-          <p-inputGroupAddon>Nivel</p-inputGroupAddon>
-          <p-dropdown
-            [options]="nivel_tipos"
-            [showClear]="true"
-            formControlName="iNivelTipoId"
-            styleClass="group-element"
-            [style]="{ flex: '1', width: '100%' }"
-            appendTo="body"
-            (onChange)="filterIes()"
-            (onClear)="filterIes()"
-          />
-        </p-inputGroup>
-      </div>
-      <div class="col-12 lg:col-6">
-        <p-inputGroup>
-          <p-inputGroupAddon>IE</p-inputGroupAddon>
-          <p-dropdown
-            [options]="instituciones_educativas"
-            styleClass="group-element"
-            [style]="{ flex: '1', width: '100%' }"
-            [filter]="true"
-            [showClear]="true"
-            formControlName="iIieeId"
-            (onChange)="filterSede()"
-            (onClear)="filterSede()"
-          >
-          </p-dropdown>
-        </p-inputGroup>
-      </div>
-      <div class="col-12 lg:col-3">
-        <p-inputGroup>
-          <p-inputGroupAddon>Sede</p-inputGroupAddon>
-          <p-dropdown
-            appendTo="body"
-            [options]="sedes"
-            formControlName="iSedeId"
-            [showClear]="true"
-            styleClass="group-element"
-            [style]="{ flex: '1', width: '100%' }"
-            (onChange)="filterGrados()"
-            (onClear)="filterGrados()"
-          >
-          </p-dropdown>
-        </p-inputGroup>
-      </div>
-    }
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Nivel</p-inputGroupAddon>
+        <p-dropdown
+          [options]="nivel_tipos"
+          [showClear]="esAdminDremo"
+          formControlName="iNivelTipoId"
+          styleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+          (onChange)="filterIes()"
+          (onClear)="filterIes()"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>IE</p-inputGroupAddon>
+        <p-dropdown
+          [options]="instituciones_educativas"
+          styleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          [filter]="esAdminDremo"
+          [showClear]="esAdminDremo"
+          formControlName="iIieeId"
+          (onChange)="filterSede()"
+          (onClear)="filterSede()"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+    <div class="col-12 lg:col-3">
+      <p-inputGroup>
+        <p-inputGroupAddon>Sede</p-inputGroupAddon>
+        <p-dropdown
+          appendTo="body"
+          [options]="sedes"
+          formControlName="iSedeId"
+          [showClear]="esAdminDremo"
+          styleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          (onChange)="filterGrados()"
+          (onClear)="filterGrados()"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
     <div class="col-12 lg:col-3">
       <p-inputGroup>
         <p-inputGroupAddon>Grado</p-inputGroupAddon>
@@ -64,7 +62,7 @@
           styleClass="group-element"
           [style]="{ flex: '1', width: '100%' }"
           [showClear]="true"
-          [options]="nivel_grados"
+          [options]="nivel_grados_filtrados"
           formControlName="iNivelGradoId"
           (onChange)="filterSecciones()"
           (onClear)="filterSecciones()"
@@ -78,7 +76,7 @@
           styleClass="group-element"
           [style]="{ flex: '1', width: '100%' }"
           [showClear]="true"
-          [options]="secciones"
+          [options]="secciones_filtradas"
           formControlName="iSeccionId"
         />
       </p-inputGroup>
@@ -90,8 +88,7 @@
           styleClass="group-element"
           [style]="{ flex: '1', width: '100%' }"
           [showClear]="true"
-          optionValue="cSexo"
-          [options]="secciones"
+          [options]="sexos"
           formControlName="cSexo"
         />
       </p-inputGroup>

@@ -14,7 +14,6 @@ import { httpService } from '@/app/servicios/httpService';
 })
 export class ApiEvaluacionesService {
   private baseUrlApi = environment.backendApi;
-  private baseUrl = environment.backend;
   private http = inject(HttpClient);
   constructor(private http2: httpService) {}
 
@@ -227,9 +226,6 @@ export class ApiEvaluacionesService {
       .pipe(map(resp => resp.data));
   }
 
-  getPeriodosEvaluacion() {
-    return this.http.get<any>('/api/evaluaciones/periodos-evaluacion');
-  }
   obtenerTodasLasCompetencias(params?) {
     return this.http
       .get<ApiResponse>(`${this.baseUrlApi}/evaluaciones/competencias`, { params })

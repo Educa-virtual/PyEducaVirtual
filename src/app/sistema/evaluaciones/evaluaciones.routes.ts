@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { EstudiantesLogroAlcanzadoComponent } from './logro-alcanzado/estudiantes-logro-alcanzado/estudiantes-logro-alcanzado.component';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { DOCENTE } from '@/app/servicios/seg/perfiles';
+import { LogroAlcanzadoComponent } from './logro-alcanzado/logro-alcanzado.component';
 
 const routes: Routes = [
   {
@@ -52,35 +56,24 @@ const routes: Routes = [
         c => c.EvaluacionExamenEreComponent
       ),
   },
-
   {
     path: 'registro-logro',
-    loadComponent: () =>
-      import('./logro-alcanzado/logro-alcanzado.component').then(c => c.LogroAlcanzadoComponent),
+    component: LogroAlcanzadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DOCENTE],
+      breadcrumb: 'Reporte de Logros Alcanzados',
+    },
   },
-  // {
-  //     path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-  //     loadComponent: () =>
-  //         import(
-  //             './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
-  //         ).then((c) => c.ExamenEreComponent),
-  // },
-  // {
-  //     path: 'sub-evaluaciones/evaluacion-examen-ere',
-  //     loadComponent: () =>
-  //         import(
-  //             './sub-evaluaciones/evaluacion-examen-ere/evaluacion-examen-ere.component'
-  //         ).then((c) => c.EvaluacionExamenEreComponent),
-  //     children: [
-  //         {
-  //             path: 'examen-ere', // Ruta hija
-  //             loadComponent: () =>
-  //                 import(
-  //                     './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
-  //                 ).then((c) => c.ExamenEreComponent),
-  //         },
-  //     ],
-  // },
+  {
+    path: 'registro-logro/:idDocCursoId/estudiantes',
+    component: EstudiantesLogroAlcanzadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DOCENTE],
+      breadcrumb: 'Estudiantes',
+    },
+  },
 ];
 
 export class AppRoutingModule {}

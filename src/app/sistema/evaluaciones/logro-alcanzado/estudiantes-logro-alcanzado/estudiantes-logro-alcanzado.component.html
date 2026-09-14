@@ -65,13 +65,19 @@
   </div>
   <!-- Registrar Logro Alcanzado-->
   <p-dialog
-    [draggable]="false"
-    [maximizable]="true"
-    [(visible)]="dialogRegistrarLogroAlcanzado"
-    [style]="{ width: '70vw' }"
-    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+    [(visible)]="showModalRegistro"
+    (visibleChange)="modalCerrado($event)"
+    [breakpoints]="{ '960px': '85vw', '640px': '100vw' }"
+    [style]="{
+      width: '75vw',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+    }"
     [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
+    [closable]="true"
+    (onHide)="cerrarModalBoleta()"
+    [resizable]="true"
+    [maximizable]="true"
   >
     <ng-template pTemplate="header">
       <div class="flex flex-column">
@@ -84,20 +90,25 @@
       [escalas]="escalas"
       [competencias]="competencias"
       [iPeriodoId]="iPeriodoId"
-      [iDetMatrId]="iDetMatrId"
-      [cCursoNombre]="ie_curso?.cCursoNombre"
-      (registraLogroAlcanzado)="dialogRegistrarLogroAlcanzado = $event"
+      [estudiante]="estudianteSeleccionado"
+      [ie_curso]="ie_curso"
+      (registraLogroAlcanzado)="showModalRegistro = $event"
     />
   </p-dialog>
   <p-dialog
-    [draggable]="false"
-    [maximizable]="true"
     [header]="boletaTitleModal"
-    [(visible)]="dialogBoletaLogroAlcanzado"
-    [style]="{ width: '60rem', height: '670px' }"
+    [(visible)]="showModalBoleta"
+    [breakpoints]="{ '960px': '85vw', '640px': '100vw' }"
+    [style]="{
+      width: '75vw',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+    }"
     [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+    [closable]="true"
+    (onHide)="cerrarModalBoleta()"
+    [resizable]="true"
+    [maximizable]="true"
   >
     <app-boleta-logro
       [selectedItem]="selectedItem"

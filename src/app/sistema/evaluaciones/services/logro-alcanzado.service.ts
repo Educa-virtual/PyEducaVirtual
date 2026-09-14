@@ -25,11 +25,12 @@ export class LogroAlcanzadoService {
     if (!this.periodos_evaluacion && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.periodos_evaluacion = items.map(item => ({
-        value: Number(item.iPeriodoEvalAperId),
-        label: item.cPeriovoEvalOrden,
-        bHabilitado: item.bHabilitado,
-        dtPeriodoEvalAperInicio: item.dtPeriodoEvalAperInicio,
-        dtPeriodoEvalAperFin: item.dtPeriodoEvalAperFin,
+        value: Number(item.iOrden),
+        label: item?.cPeriovoEvalOrden,
+        iPeriodoEvalAperId: item?.iPeriodoEvalAperId,
+        bHabilitado: item?.bHabilitado,
+        dtPeriodoEvalAperInicio: item?.dtPeriodoEvalAperInicio,
+        dtPeriodoEvalAperFin: item?.dtPeriodoEvalAperFin,
       }));
       return this.periodos_evaluacion;
     }
@@ -40,9 +41,9 @@ export class LogroAlcanzadoService {
     if (!this.escala_calificacion && data) {
       const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
       this.escala_calificacion = items.map(item => ({
-        value: Number(item.iEscalaCalifId),
-        label: item.cEscalaCalifLetra,
-        nEscalaCalifEquivalente: item.nEscalaCalifEquivalente,
+        value: Number(item?.iEscalaCalifId),
+        label: item?.cEscalaCalifLetra,
+        nEscalaCalifEquivalente: item?.nEscalaCalifEquivalente,
       }));
       return this.escala_calificacion;
     }
@@ -99,8 +100,12 @@ export class LogroAlcanzadoService {
     return this.http.post(`${baseUrl}/evaluaciones/verCursoEstudiantesCompetencias`, params);
   }
 
-  obtenerLogrosEstudiante(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerLogrosEstudiante`, params);
+  verLogrosEstudiante(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/verLogrosEstudiante`, params);
+  }
+
+  verResultadosCompetencias(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/verResultadosCompetencias`, params);
   }
 
   actualizarLogro(params) {

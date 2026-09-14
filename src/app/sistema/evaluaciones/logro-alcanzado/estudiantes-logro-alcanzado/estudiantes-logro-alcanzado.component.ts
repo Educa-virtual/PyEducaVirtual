@@ -24,11 +24,11 @@ import { LogroAlcanzadoService } from '../../services/logro-alcanzado.service';
   styleUrl: './estudiantes-logro-alcanzado.component.scss',
 })
 export class EstudiantesLogroAlcanzadoComponent implements OnInit {
-  dialogRegistrarLogroAlcanzado: boolean = false;
+  showModalRegistro: boolean = false;
   registroTitleModal: string;
   registroSubTitleModal: string;
 
-  dialogBoletaLogroAlcanzado: boolean = false;
+  showModalBoleta: boolean = false;
   boletaTitleModal: string;
 
   // Estudiante seleccionado
@@ -46,7 +46,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   };
 
   // Periodo seleccionado
-  iPeriodoId: string = '1';
+  iPeriodoId: number;
 
   // Listados de datos
   areas: any[] = [];
@@ -66,6 +66,8 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
 
   breadCrumbItems: MenuItem[];
   breadCrumbHome: MenuItem;
+
+  estudianteSeleccionado: any;
 
   constructor(
     private logroService: LogroAlcanzadoService,
@@ -101,16 +103,22 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
     this.logroService
       .obtenerDatosCursoDocente({
         idDocCursoId: this.idDocCursoId,
+        iYAcadId: this.iYAcadId,
       })
       .subscribe({
         next: (data: any) => {
           const ie_curso = data.data?.ie_curso;
           const estudiantes = data.data?.estudiantes;
+          const competencias = data.data?.competencias;
           this.ie_curso = ie_curso ? JSON.parse(ie_curso.replace(/^"(.*)"$/, '$1'))[0] : [];
           this.estudiantes = estudiantes ? JSON.parse(estudiantes.replace(/^"(.*)"$/, '$1')) : [];
+          this.competencias = competencias
+            ? JSON.parse(competencias.replace(/^"(.*)"$/, '$1'))
+            : [];
           this.periodos = this.logroService.getPeriodosEvaluacion(data.data?.periodos_evaluacion);
           this.escalas = this.logroService.getEscalaCalificacion(data.data?.escalas_calificacion);
           this.setBreadCrumbs();
+          this.setPeriodoHabilitado();
         },
         error: (error: any) => {
           console.error(error);
@@ -124,6 +132,11 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
           }, 3000);
         },
       });
+  }
+
+  setPeriodoHabilitado() {
+    const habilitado = this.periodos.find(periodo => Number(periodo.bHabilitado) == 1);
+    this.iPeriodoId = habilitado?.value;
   }
 
   setBreadCrumbs() {
@@ -143,7 +156,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
             this.ie_curso.cGradoAbreviacion +
             ' ' +
             this.ie_curso.cSeccionNombre
-          : 'Área´y Sección',
+          : 'Área y Sección',
       },
       {
         label: 'Estudiantes',
@@ -160,24 +173,24 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
     this.registroSubTitleModal = `GRADO: ${gradoEstudiante} - SECCIÓN: ${seccionEstudiante}`;
     setTimeout(() => {
       this.iDetMatrId = estudiante?.iDetMatrId;
-      this.dialogRegistrarLogroAlcanzado = true;
+      this.showModalRegistro = true;
     }, 100);
   }
 
   listenDialogRegistrarLogro(event: boolean) {
     if (event == false) {
-      this.dialogRegistrarLogroAlcanzado = false;
+      this.showModalRegistro = false;
     }
   }
 
   boletaLogroImprimir() {
     this.boletaTitleModal = 'BOLETA DE LOGROS DE';
-    this.dialogBoletaLogroAlcanzado = true;
+    this.showModalBoleta = true;
   }
 
   listenDialogBoleta(event: boolean) {
     if (event == false) {
-      this.dialogBoletaLogroAlcanzado = false;
+      this.showModalBoleta = false;
     }
   }
 
@@ -309,9 +322,21 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
       });
   }
 
+  cerrarModalBoleta() {
+    this.showModalBoleta = false;
+    this.estudianteSeleccionado = null;
+  }
+
+  modalCerrado(visible: boolean) {
+    if (!visible) {
+      this.cerrarModalBoleta();
+    }
+  }
+
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'Resistrar':
+        this.estudianteSeleccionado = item;
         this.registrarLogroAlcanzado(item);
         break;
       case 'Imprimir':

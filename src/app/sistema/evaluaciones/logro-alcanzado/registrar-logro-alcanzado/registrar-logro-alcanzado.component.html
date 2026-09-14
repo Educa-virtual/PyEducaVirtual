@@ -1,10 +1,14 @@
-<br />
-
 <div class="grid">
   <div class="col-12 md:col-6">
     <p-inputGroup>
       <p-inputGroupAddon> Área </p-inputGroupAddon>
-      <input class="group-element" disabled type="text" pInputText [value]="cCursoNombre" />
+      <input
+        class="group-element"
+        disabled
+        type="text"
+        pInputText
+        [value]="ie_curso?.cCursoNombre"
+      />
     </p-inputGroup>
   </div>
   <div class="col-12 md:col-6">
@@ -13,8 +17,6 @@
       <p-dropdown
         [(ngModel)]="iPeriodoId"
         [options]="periodos"
-        optionLabel="cPeriodoNombre"
-        optionValue="iPeriodoOrden"
         placeholder="Seleccionar"
         [disabled]="true"
         [style]="{ flex: '1', width: '100%' }"
@@ -44,42 +46,21 @@
             <td width="40%">
               {{ competencias.cCompetenciaNombre }}
             </td>
-            <td width="15%" *ngIf="!bTieneEscalaNumerica">
-              <p-dropdown
-                [formControl]="$any(controles_logros.at(i))?.controls['iEscalaCalifId']"
-                [options]="escalas"
-                optionLabel="cEscalaCalifLetra"
-                optionValue="iEscalaCalifId"
-                placeholder="Seleccionar"
+            <td width="15%">
+              <p-autoComplete
+                [formControl]="$any(controles_logros.at(i))?.controls['cEscalaCalifLetra']"
+                [suggestions]="escalas_filtradas"
+                (completeMethod)="filtrarEscala($event)"
+                [dropdown]="escalas_filtradas.length < 6 ? true : false"
+                [minLength]="999"
+                [showEmptyMessage]="false"
                 [style]="{ flex: '1', width: '100%' }"
                 styleClass="group-element"
-                (onBlur)="validarCambios(i)"
+                optionLabel="label"
+                (onBlur)="mantenerValorSeleccionado(i)"
+                (onKeyup)="mantenerValorSeleccionado(i)"
+                (onSelect)="seleccionarEscala($event, i)"
               />
-            </td>
-            <td width="15%" *ngIf="bTieneEscalaNumerica">
-              <div class="flex gap-1">
-                <p-inputNumber
-                  [formControl]="$any(controles_logros.at(i))?.controls['iResultado']"
-                  [inputStyle]="{ 'text-align': 'left', width: '60px' }"
-                  mode="decimal"
-                  [showButtons]="false"
-                  inputId="minmax-buttons"
-                  [min]="0"
-                  [max]="20"
-                  [minFractionDigits]="2"
-                  [maxFractionDigits]="2"
-                  (onBlur)="obtenerLogroEquivalente(i)"
-                />
-                <input
-                  type="text"
-                  [formControl]="$any(controles_logros.at(i))?.controls['cNivelLogro']"
-                  [style]="{ 'text-align': 'center', width: '45px' }"
-                  pInputText
-                  pattern="^(AD|A|B|C)$"
-                  [readOnly]="true"
-                  maxlength="2"
-                />
-              </div>
             </td>
             <td width="40%">
               <textarea

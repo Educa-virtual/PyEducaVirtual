@@ -14,6 +14,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { ActivatedRoute } from '@angular/router';
 import { LogroAlcanzadoService } from '../../services/logro-alcanzado.service';
 import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
@@ -27,9 +28,9 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   @Input() periodos: any[] = [];
   @Input() escalas: any[] = [];
   @Input() competencias: any = [];
-  @Input() iDetMatrId: number;
-  @Input() cCursoNombre: string = '';
-  @Input() iPeriodoId: string = '0';
+  @Input() estudiante: any;
+  @Input() ie_curso: any;
+  @Input() iPeriodoId: number = 0;
   @Input() mostrarDialog: boolean = false;
   @Input() bTieneEscalaNumerica: boolean = false;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
@@ -42,6 +43,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   forms_competencias: FormArray;
 
   logros_iniciales: any;
+  escalas_filtradas: any[] = [];
 
   get controles_logros(): FormArray {
     return this.formCompetencias.get('controles_logros') as FormArray;
@@ -49,13 +51,19 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
 
   mostrarBotonFinalizar: boolean = false;
 
+  perfil: any;
+  iYAcadId: number;
+
   constructor(
     private messageService: MessageService,
     private logroAlcanzadoService: LogroAlcanzadoService,
     private formService: ReactiveFormService,
     private fb: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: LocalStoreService
   ) {
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
     this.route.params.subscribe(params => {
       this.idDocCursoId = params['idDocCursoId'];
     });
@@ -70,6 +78,14 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
       console.error('Error al inicializar el formulario:', e);
     }
     this.crearControlesLogros([]);
+  }
+
+  filtrarEscala(event: any) {
+    const texto = event.query ?? '';
+    this.escalas_filtradas = this.escalas.filter(item => {
+      const label = item.label ?? '';
+      return label.toLowerCase().includes(texto.toLowerCase());
+    });
   }
 
   validarCambios(index: number) {
@@ -88,21 +104,16 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
           Number(logro_inicial?.iEscalaCalifId) !== Number(logro?.iEscalaCalifId) ||
           String(logro_inicial?.cDescripcion ?? '') !== String(logro?.cDescripcion ?? ''))
       ) {
-        console.log('HUBO cambio');
-        console.log(logro_inicial, 'inicial');
-        console.log(logro, 'actual');
         control.patchValue({ bMostrarBoton: true }, { emitEvent: false });
       } else {
-        console.log('SIN cambio');
-        console.log(logro_inicial?.cDescripcion, 'inicial');
-        console.log(logro?.cDescripcion, 'actual');
         control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
       }
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['iDetMatrId'] && this.iDetMatrId) {
+    this.escalas_filtradas = this.escalas;
+    if (changes['estudiante'] && this.estudiante) {
       this.logros_iniciales = [];
       this.formCompetencias.reset();
       this.obtenerLogrosRegistrados();
@@ -134,11 +145,11 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
         iCompetenciaId: [param.iCompetenciaId],
         iResultadoCompId: [logro_periodo ? logro_periodo['iResultadoCompId'] : null],
         iPeriodoId: [this.iPeriodoId],
-        iDetMatrId: [this.iDetMatrId],
+        iDetMatrId: [this.estudiante?.iDetMatrId],
         iResultado: [logro_periodo ? logro_periodo['iResultado'] : null],
         iEscalaCalifId: [logro_periodo ? logro_periodo['iEscalaCalifId'] : null],
+        cEscalaCalifLetra: [logro_periodo ? logro_periodo['cEscalaCalifLetra'] : ''],
         cDescripcion: [logro_periodo ? logro_periodo['cDescripcion'] : ''],
-        cNivelLogro: [logro_periodo ? logro_periodo['cNivelLogro'] : null],
         bMostrarBoton: [false],
       });
       formArray.push(grupo);
@@ -160,13 +171,15 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   obtenerLogrosRegistrados() {
     this.messageService.clear();
     this.logroAlcanzadoService
-      .obtenerLogrosEstudiante({
-        idDocCursoId: this.idDocCursoId,
-        iDetMatrId: this.iDetMatrId,
+      .verResultadosCompetencias({
+        iYAcadId: this.iYAcadId,
+        iEstudianteId: this.estudiante?.iEstudianteId,
+        iPeriodoId: this.iPeriodoId,
+        iDetMatrId: this.estudiante?.iDetMatrId,
       })
       .subscribe({
-        next: (response: any) => {
-          this.crearControlesLogros(response.data);
+        next: (data: any) => {
+          this.crearControlesLogros(data.data);
         },
         error: error => {
           console.error('Error al buscar logros:', error);
@@ -196,12 +209,11 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
       .actualizarLogro({
         idDocCursoId: this.idDocCursoId,
         iPeriodoId: this.iPeriodoId,
-        iDetMatrId: this.iDetMatrId,
+        iDetMatrId: this.estudiante?.iDetMatrId,
         iCompetenciaId: form.iCompetenciaId,
         iResultadoCompId: form.iResultadoCompId,
         iResultado: form.iResultado,
         cDescripcion: form.cDescripcion,
-        cNivelLogro: form.cNivelLogro,
         iEscalaCalifId: form.iEscalaCalifId,
       })
       .subscribe({
@@ -242,28 +254,49 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
       });
   }
 
-  obtenerLogroEquivalente(index) {
-    const formArray = this.formCompetencias.get('controles_logros') as FormArray;
-    const logro = formArray.at(index).value as FormGroup;
+  seleccionarEscala(event: any, index: number) {
     const control = this.controles_logros.at(index);
-    this.escalas.map((escala: any) => {
-      if (!logro['iResultado'] || logro['iResultado'] === null) {
-        control.patchValue(
-          { iEscalaCalifId: null, cNivelLogro: null, iResultado: null },
-          { emitEvent: false }
-        );
-      } else {
-        if (
-          Number(logro['iResultado']) >= Number(escala.nEscalaCalifMin) &&
-          Number(logro['iResultado']) <= Number(escala.nEscalaCalifMax)
-        ) {
-          control.patchValue(
-            { iEscalaCalifId: escala.iEscalaCalifId, cNivelLogro: escala.cEscalaCalifLetra },
-            { emitEvent: false }
-          );
-        }
-      }
-    });
+    const escala = event.value;
+    control.patchValue(
+      { iEscalaCalifId: Number(escala.value), cEscalaCalifLetra: escala.label },
+      { emitEvent: false }
+    );
+    this.validarCambios(index);
+  }
+
+  mantenerValorSeleccionado(index: number) {
+    const control = this.controles_logros.at(index);
+    const valorActual = control.value?.cEscalaCalifLetra;
+    // Si valor es nulo o texto en blanco se valida
+    if (valorActual === undefined || valorActual === null || !String(valorActual ?? '').trim()) {
+      this.validarCambios(index);
+      return;
+    }
+    // Si es texto, buscar id correspondiente si existe o restablecer
+    const escalaEncontrada = this.escalas.find(
+      escala =>
+        String(escala?.label ?? '')
+          .toLowerCase()
+          .trim() === String(valorActual).toLowerCase().trim()
+    );
+    this.escalas_filtradas = this.escalas;
+    if (escalaEncontrada) {
+      control.patchValue(
+        {
+          iEscalaCalifId: Number(escalaEncontrada.value),
+          cEscalaCalifLetra: escalaEncontrada.label,
+        },
+        { emitEvent: false }
+      );
+    } else {
+      control.patchValue(
+        {
+          iEscalaCalifId: null,
+          cEscalaCalifLetra: '',
+        },
+        { emitEvent: false }
+      );
+    }
     this.validarCambios(index);
   }
 

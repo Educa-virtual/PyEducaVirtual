@@ -63,14 +63,14 @@ export class ConfHorariosComponent implements OnChanges {
   }
 
   agregarRemoverHorario(horario, accion) {
-    if (!this.cursoSeleccionado) {
-      this._ConfirmationModalService.openAlert({
-        header: '¡Atención!, debe seleccionar un curso',
-      });
-      return;
-    }
     switch (accion) {
       case 'agregar-horario':
+        if (!this.cursoSeleccionado) {
+          this._ConfirmationModalService.openAlert({
+            header: '¡Atención!, debe seleccionar un curso',
+          });
+          return;
+        }
         horario.idDocCursoId = this.cursoSeleccionado.idDocCursoId;
         break;
       case 'remover-horario':

@@ -11,6 +11,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 // import { catchError, map, throwError } from 'rxjs';
 import { InformacionService } from './service/informacion.service';
+import { environment } from '@/environments/environment';
 
 @Component({
   selector: 'app-informacion',
@@ -30,6 +31,7 @@ export class InformacionComponent implements OnInit {
   anioEscolar: string;
   iYAcadId: string;
   escudo: any;
+  baseUrl = environment.backend + '/storage/';
 
   //Para importar imagen
   typesFiles = {
@@ -56,9 +58,12 @@ export class InformacionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // throw new Error('Method not implemented.')
-    //const iNivelTipoId = this.perfil.iNivelTipoId
-    this.logo = this.perfil.cIieeLogo || 'assets/images/logo-proyecto.svg'; // cambia la imagen si esta vacio
+    const verificar = this.verificarImagen(this.perfil.cIieeLogo);
+    const tipoImagen = verificar
+      ? this.perfil.cIieeLogo
+      : this.baseUrl + this.perfil.cIieeLogo || 'assets/images/logo-proyecto.svg'; // cambia la imagen si esta vacio
+    this.logo = tipoImagen;
+
     this.iIieeId = this.perfil.iIieeId;
     const codigoModular = this.perfil.cIieeCodigoModular;
     const cYAcadNombre = this.anioEscolar;
@@ -90,6 +95,12 @@ export class InformacionComponent implements OnInit {
     //   class: 'p-button-primary',
     // },
   ];
+
+  verificarImagen(imagen: any) {
+    const regex = /^data:.*;base64,[A-Za-z0-9+/]+={0,2}$/;
+    return regex.test(imagen);
+  }
+
   getInstitucion() {
     const params = ' iIieeId = ' + this.iIieeId;
     this.query
@@ -226,12 +237,25 @@ export class InformacionComponent implements OnInit {
   subirImagen(event: any, id: any) {
     const archivo = event.files[0];
     this.escudo = archivo;
+    this.logo = archivo.objectURL;
     id.clear();
   }
   guardarEscudo() {
+    if (this.escudo.size > 500000) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'El archivo es demasiado grande',
+      });
+      return;
+    }
+
     const enviar = new FormData();
     enviar.append('escudo', this.escudo);
     enviar.append('iYAcadId', this.iYAcadId);
+    enviar.append('iIieeId', this.perfil.iIieeId);
+    enviar.append('iSedeId', this.perfil.iSedeId);
+    enviar.append('iPersId', this.perfil.iPersId);
     enviar.append('iCredEntPerfId', this.perfil.iCredEntPerfId);
 
     this.informacionService.subirImagen(enviar).subscribe({

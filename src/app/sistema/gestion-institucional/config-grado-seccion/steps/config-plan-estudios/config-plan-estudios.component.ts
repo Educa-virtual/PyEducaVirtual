@@ -38,10 +38,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   esCursoMinedu: boolean = false;
 
   nivel_grados: any[] = null;
+
   areas: any[] = [];
   areas_curricula: any[] = [];
 
   gradoSeleccionado: boolean = false;
+
+  iNivelGradoId: any = null;
 
   constructor(
     private _confirmService: ConfirmationModalService,
@@ -88,7 +91,16 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         iConfigId: this.iConfigId,
       })
       .subscribe((data: any) => {
-        this.nivel_grados = this.stepService.getNivelGrados(data?.nivel_grados);
+        const grados = this.stepService.getNivelGrados(data?.nivel_grados) ?? [];
+
+        this.nivel_grados = [
+          {
+            iTotalHorasMinimo: 0,
+            label: 'SELECCIONAR GRADO',
+            value: null,
+          },
+          ...grados,
+        ];
         this.areas = this.stepService.getCursos(data?.cursos);
         this.areas_curricula = this.stepService.getCursosCurricula(data?.cursos_curricula);
       });
@@ -96,27 +108,24 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     this.listarIeCursos();
   }
 
-  listarIeCursos(iNivelGradoId: any = null) {
+  listarIeCursos() {
     this.stepService
       .listarIeCursos({
         iConfigId: this.iConfigId,
       })
       .subscribe({
         next: (data: any) => {
-          this.ie_cursos = data.data;
-          if (iNivelGradoId) {
-            this.ie_cursos_filtrado = this.ie_cursos.filter(
-              item => Number(item.iNivelGradoId) === Number(iNivelGradoId)
-            );
-          }
+          this.ie_cursos = [...data.data];
         },
         error: error => {
-          console.error('Error al obtener datos:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error.message,
           });
+        },
+        complete: () => {
+          this.filtrarTabla();
         },
       });
   }
@@ -202,7 +211,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
           this.listarIeCursos();
         },
         error: error => {
-          console.error('Error al actualizar estado:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -213,8 +221,8 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   }
 
   filtrarTabla() {
-    const iNivelGradoId = Number(this.formBusqueda.value.iNivelGradoId);
-    if (!iNivelGradoId || Number(iNivelGradoId) == 0) {
+    this.iNivelGradoId = Number(this.formBusqueda.value.iNivelGradoId);
+    if (!this.iNivelGradoId || this.iNivelGradoId == 0) {
       this.areas_curricula = this.stepService.filtrarCursosCurricula(null);
       this.areas = this.stepService.filtrarCursos(null);
       this.gradoSeleccionado = false;
@@ -223,31 +231,28 @@ export class ConfigPlanEstudiosComponent implements OnInit {
       this.mensajeSeverity = 'info';
       this.mensajeTexto = 'Seleccione un grado para ver sus horas';
     } else {
-      this.areas_curricula = this.stepService.filtrarCursosCurricula(iNivelGradoId);
-      this.areas = this.stepService.filtrarCursos(iNivelGradoId);
+      this.areas_curricula = this.stepService.filtrarCursosCurricula(this.iNivelGradoId);
+      this.areas = this.stepService.filtrarCursos(this.iNivelGradoId);
       this.gradoSeleccionado = true;
       this.ie_cursos_filtrado = this.ie_cursos.filter(
-        item => Number(item.iNivelGradoId) === Number(iNivelGradoId)
+        item => item.iNivelGradoId == this.iNivelGradoId
       );
-      const nivel_grado = this.nivel_grados.filter(
-        item => Number(item.value) === Number(iNivelGradoId)
-      );
+      const nivel_grado = this.nivel_grados.filter(item => item.value == this.iNivelGradoId);
       this.iTotalHorasMinimo = nivel_grado[0].iTotalHorasMinimo ?? 0;
       this.contarHorasMinedu();
     }
   }
 
   contarHorasMinedu() {
-    this.iTotalHorasAprobadas = this.ie_cursos_filtrado.reduce((acc, item) => {
-      return acc + Number(item.iTotalHorasAporte || 0);
-    }, 0);
-    if (this.iTotalHorasAprobadas < this.iTotalHorasMinimo) {
-      this.mensajeSeverity = 'error';
-      this.mensajeTexto = `No llega al mínimo de ${this.iTotalHorasMinimo} horas`;
-    } else {
-      this.mensajeSeverity = 'success';
-      this.mensajeTexto = `Cumple el mínimo de ${this.iTotalHorasMinimo} horas`;
-    }
+    this.iTotalHorasAprobadas = this.ie_cursos_filtrado.reduce(
+      (acc, item) => acc + (Number(item.iTotalHorasAporte) || 0),
+      0
+    );
+
+    const aprobar = this.iTotalHorasAprobadas < this.iTotalHorasMinimo;
+    this.mensajeSeverity = aprobar ? 'error' : 'success';
+    const cumplir = aprobar ? 'No llega al ' : 'Cumple el';
+    this.mensajeTexto = `${cumplir} mínimo de ${this.iTotalHorasMinimo} horas - ${this.iTotalHorasAprobadas} Actual`;
   }
 
   validarHorasMinimas() {
@@ -294,16 +299,16 @@ export class ConfigPlanEstudiosComponent implements OnInit {
           detail: 'Registro guardado exitosamente',
         });
         this.cerrarDialogo();
-        const iNivelGradoId = this.formBusqueda.value.iNivelGradoId;
-        this.listarIeCursos(iNivelGradoId);
       },
       error: error => {
-        console.error('Error al guardar:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
           detail: error.error.message,
         });
+      },
+      complete: () => {
+        this.listarIeCursos();
       },
     });
   }
@@ -325,16 +330,16 @@ export class ConfigPlanEstudiosComponent implements OnInit {
           detail: 'Registro actualizado exitosamente',
         });
         this.cerrarDialogo();
-        const iNivelGradoId = this.formBusqueda.value.iNivelGradoId;
-        this.listarIeCursos(iNivelGradoId);
       },
       error: error => {
-        console.error('Error al actualizar estado:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
           detail: error.error.message,
         });
+      },
+      complete: () => {
+        this.listarIeCursos();
       },
     });
   }
@@ -378,6 +383,14 @@ export class ConfigPlanEstudiosComponent implements OnInit {
   ];
 
   columns = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'index',
+      header: 'Nro',
+      text_header: 'center',
+      text: 'center',
+    },
     {
       type: 'text',
       width: '15%',

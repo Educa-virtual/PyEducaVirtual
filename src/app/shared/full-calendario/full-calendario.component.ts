@@ -46,12 +46,10 @@ export class FullCalendarioComponent implements OnChanges, OnInit, AfterViewInit
     const calendarApi = this.calendarComponent.getApi();
     const currentDate = calendarApi.getDate();
     this.mesSeleccionado = currentDate.getMonth();
-    // this.fixCalendar();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
       this.calendarOptions.events = changes['events'].currentValue;
-      // this.fixCalendar();
     }
   }
 

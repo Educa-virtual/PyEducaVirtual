@@ -3,6 +3,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service';
 import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { TokenStorageService } from '@/app/servicios/token.service';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { environment } from '@/environments/environment';
 
 @Component({
   selector: 'app-form-perfiles',
@@ -20,6 +21,8 @@ export class FormPerfilesComponent {
   name: string;
   name1: string;
   ModalPermanente: boolean = false;
+  baseUrl = environment.backend + '/storage/';
+
   constructor(
     private store: LocalStoreService,
     private ConstantesService: ConstantesService,
@@ -39,8 +42,6 @@ export class FormPerfilesComponent {
     const found = (this.perfilSeleccionado = perfiles);
     this.ls.setItem('dremoPerfil', found);
     this.store.setItem('dremoModalPerfil', false);
-    // this.store.setItem('dremoPerfil', perfiles)
-    console.log('Datos de perfil', found);
     setTimeout(() => {
       window.location.reload();
     }, 200);
@@ -52,5 +53,10 @@ export class FormPerfilesComponent {
     this.store.clear();
     this.tokenStorageService.signOut();
     window.location.reload();
+  }
+
+  verificarImagen(imagen: any) {
+    const regex = /^data:.*;base64,[A-Za-z0-9+/]+={0,2}$/;
+    return regex.test(imagen);
   }
 }

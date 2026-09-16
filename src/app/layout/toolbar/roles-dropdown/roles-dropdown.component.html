@@ -2,7 +2,15 @@
 <p-button [text]="true" severity="secondary" (onClick)="showModal = true">
   <div class="flex align-items-center gap-2">
     @if (selectedPerfil?.cIieeLogo) {
-      <p-avatar size="large" [image]="selectedPerfil?.cIieeLogo" alt="Logo de la institución" />
+      <p-avatar
+        size="large"
+        [image]="
+          verificarImagen(selectedPerfil?.cIieeLogo)
+            ? selectedPerfil?.cIieeLogo
+            : baseUrl + selectedPerfil?.cIieeLogo
+        "
+        alt="Logo de la institución"
+      />
 
       <div class="flex flex-column text-xs text-left">
         @if (!isAdminOrEspecialistaDremo()) {

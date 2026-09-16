@@ -115,15 +115,13 @@
       </div>
     </form>
     @if (option === 'editar') {
-      <p-card>
-        <app-block-horario
-          [iConfBloqueId]="formHorario.value.iConfBloqueId"
-          [iNumBloque]="formHorario.value.iNumBloque"
-          [iIntervalo]="formHorario.value.iBloqueInter"
-          [iEstado]="formHorario.value.iEstado"
-          (act_iConfBloqueId)="accionBtnItemTable($event)"
-        ></app-block-horario>
-      </p-card>
+      <app-block-horario
+        [iConfBloqueId]="formHorario.value.iConfBloqueId"
+        [iNumBloque]="formHorario.value.iNumBloque"
+        [iIntervalo]="formHorario.value.iBloqueInter"
+        [iEstado]="formHorario.value.iEstado"
+        (act_iConfBloqueId)="accionBtnItemTable($event)"
+      ></app-block-horario>
     }
   </p-dialog>
   @if (option === 'bloques') {
@@ -136,15 +134,13 @@
       [resizable]="true"
       [maximizable]="true"
     >
-      <p-card>
-        <app-block-horario
-          [iConfBloqueId]="formHorario.value.iConfBloqueId"
-          [iNumBloque]="formHorario.value.iNumBloque"
-          [iIntervalo]="formHorario.value.iBloqueInter"
-          [iEstado]="formHorario.value.iEstado"
-          (act_iConfBloqueId)="accionBtnItemTable($event)"
-        ></app-block-horario>
-      </p-card>
+      <app-block-horario
+        [iConfBloqueId]="formHorario.value.iConfBloqueId"
+        [iNumBloque]="formHorario.value.iNumBloque"
+        [iIntervalo]="formHorario.value.iBloqueInter"
+        [iEstado]="formHorario.value.iEstado"
+        (act_iConfBloqueId)="accionBtnItemTable($event)"
+      ></app-block-horario>
     </p-dialog>
   }
 </app-container-page>

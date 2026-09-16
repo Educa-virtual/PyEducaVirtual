@@ -24,8 +24,10 @@
               styleClass="block mb-1"
               name="escudo"
               accept="image/*"
-              maxFileSize="1000000"
+              maxFileSize="500000"
               (onSelect)="subirImagen($event, escudo)"
+              invalidFileSizeMessageSummary="Archivo demasiado grande"
+              invalidFileSizeMessageDetail="Máximo permitido: 500 KB."
             >
             </p-fileUpload>
             <p-button

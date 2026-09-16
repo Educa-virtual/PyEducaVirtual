@@ -105,7 +105,7 @@ export class AppTopBarComponent implements OnInit {
 
     this.perfiles;
     const iPerfilId = this._ConstantesService.iPerfilId;
-    if (!iPerfilId) {
+    if (iPerfilId) {
       this.notificacion();
     }
   }

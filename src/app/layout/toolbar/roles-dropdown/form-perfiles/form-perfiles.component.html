@@ -31,7 +31,9 @@
                   <p-avatar
                     size="xlarge"
                     *ngIf="item?.cIieeLogo"
-                    [image]="item?.cIieeLogo"
+                    [image]="
+                      verificarImagen(item.cIieeLogo) ? item.cIieeLogo : baseUrl + item.cIieeLogo
+                    "
                     alt="Avatar image"
                     [style]="{
                       position: 'absolute',

@@ -34,7 +34,6 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   // Estudiante seleccionado
   selectedItem: any;
   estudiante: any;
-  iDetMatrId: number;
 
   // Area curricular seleccionada
   idDocCursoId: number;
@@ -165,14 +164,12 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   }
 
   registrarLogroAlcanzado(estudiante: any) {
-    this.iDetMatrId = null;
     const nombreEstudiante = estudiante?.cPersApeNombres || 'ESTUDIANTE';
     const gradoEstudiante = this.ie_curso.cGradoAbreviacion || 'GRADO';
     const seccionEstudiante = this.ie_curso.cSeccionNombre || 'SECCIÓN';
     this.registroTitleModal = `REGISTRO : ${nombreEstudiante}`;
     this.registroSubTitleModal = `GRADO: ${gradoEstudiante} - SECCIÓN: ${seccionEstudiante}`;
     setTimeout(() => {
-      this.iDetMatrId = estudiante?.iDetMatrId;
       this.showModalRegistro = true;
     }, 100);
   }
@@ -336,6 +333,7 @@ export class EstudiantesLogroAlcanzadoComponent implements OnInit {
   accionBtnItemTable({ accion, item }) {
     switch (accion) {
       case 'Resistrar':
+        console.log(item, 'estudiante');
         this.estudianteSeleccionado = item;
         this.registrarLogroAlcanzado(item);
         break;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@/environments/environment';
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 
 const baseUrl = environment.backendApi;
 
@@ -54,23 +54,19 @@ export class LogroAlcanzadoService {
     return this.http.post(`${baseUrl}/acad/listarDocenteCurso`, data);
   }
 
-  crearResultadosCompetencias(data) {
-    if (this.parametros) {
-      return of(this.parametros);
-    }
-
-    if (!this.parametros$) {
-      this.parametros$ = this.http.post(`${baseUrl}/eval/crearResultadosCompetencias`, data).pipe(
-        map((data: any) => {
-          this.parametros = data.data;
-          return this.parametros;
-        }),
-        shareReplay(1)
-      );
-    }
-
-    return this.parametros$;
+  obtenerDatosCursoDocente(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/verCursoEstudiantesCompetencias`, params);
   }
+
+  actualizarResultadosCompetencias(data) {
+    return this.http.post(`${baseUrl}/evaluaciones/actualizarResultadosCompetencias`, data);
+  }
+
+  verResultadosCompetencias(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/verResultadosCompetencias`, params);
+  }
+
+  /** Funciones antiguas */
 
   obtenerTiposCalificacion() {
     return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerTiposCalificacion`, null);
@@ -96,16 +92,8 @@ export class LogroAlcanzadoService {
     return this.http.post(`${baseUrl}/acad/docente/docente_curso`, params);
   }
 
-  obtenerDatosCursoDocente(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/verCursoEstudiantesCompetencias`, params);
-  }
-
   verLogrosEstudiante(params) {
     return this.http.post(`${baseUrl}/evaluaciones/verLogrosEstudiante`, params);
-  }
-
-  verResultadosCompetencias(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/verResultadosCompetencias`, params);
   }
 
   actualizarLogro(params) {

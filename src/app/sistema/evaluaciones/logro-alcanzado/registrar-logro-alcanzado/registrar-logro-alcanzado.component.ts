@@ -95,8 +95,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
       control.patchValue({ bMostrarBoton: false }, { emitEvent: false });
     } else {
       const logro_inicial: any = this.logros_iniciales.find(
-        (logro_inicial: any) =>
-          Number(logro_inicial?.iCompetenciaId) === Number(logro?.iCompetenciaId)
+        (logro_inicial: any) => Number(logro_inicial?.iCompCursoId) === Number(logro?.iCompCursoId)
       );
       if (
         control &&
@@ -124,35 +123,25 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
     const formArray = this.formCompetencias.get('controles_logros') as FormArray;
     formArray.clear();
     this.competencias.map((param: any) => {
-      const logro_competencia: any = logros_competencias
+      const logro_competencia = logros_competencias
         ? logros_competencias.find(
-            (registro: any) => Number(registro?.iCompetenciaId) === Number(param?.iCompetenciaId)
+            (registro: any) => Number(registro?.iCompCursoId) === Number(param?.iCompCursoId)
           )
         : null;
-      let logro_periodo: any = null;
-      if (logro_competencia && logro_competencia?.periodos) {
-        const periodos = JSON.parse(logro_competencia?.periodos);
-        if (Array.isArray(periodos)) {
-          logro_periodo = periodos.find(
-            (periodo: any) => Number(periodo.iPeriodoId) === Number(this.iPeriodoId)
-          );
-        } else {
-          logro_periodo = null;
-        }
-      }
       let grupo: FormGroup = null;
       grupo = this.fb.group({
-        iCompetenciaId: [param.iCompetenciaId],
-        iResultadoCompId: [logro_periodo ? logro_periodo['iResultadoCompId'] : null],
+        iCompCursoId: [param.iCompCursoId],
+        iResultadoCompId: [logro_competencia ? logro_competencia['iResultadoCompId'] : null],
         iPeriodoId: [this.iPeriodoId],
         iDetMatrId: [this.estudiante?.iDetMatrId],
-        iResultado: [logro_periodo ? logro_periodo['iResultado'] : null],
-        iEscalaCalifId: [logro_periodo ? logro_periodo['iEscalaCalifId'] : null],
-        cEscalaCalifLetra: [logro_periodo ? logro_periodo['cEscalaCalifLetra'] : ''],
-        cDescripcion: [logro_periodo ? logro_periodo['cDescripcion'] : ''],
+        iResultado: [logro_competencia ? logro_competencia['iResultado'] : null],
+        iEscalaCalifId: [logro_competencia ? logro_competencia['iEscalaCalifId'] : null],
+        cEscalaCalifLetra: [logro_competencia ? logro_competencia['cEscalaCalifLetra'] : ''],
+        cDescripcion: [logro_competencia ? logro_competencia['cDescripcion'] : ''],
         bMostrarBoton: [false],
       });
       formArray.push(grupo);
+      this.formService.validarFormulario(grupo);
     });
     this.logros_iniciales = JSON.parse(JSON.stringify(formArray.value));
   }
@@ -193,7 +182,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   }
 
   /* Función para guardar nuevo logro y actualizar logro existente */
-  actualizarLogro(index: number) {
+  actualizarLogrosRegistrados(index: number) {
     this.messageService.clear();
     const form = this.formCompetencias.get('controles_logros').value[index];
     if (form.iResultado === null && form.iEscalaCalifId === null) {
@@ -206,13 +195,13 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
       return;
     }
     this.logroAlcanzadoService
-      .actualizarLogro({
-        idDocCursoId: this.idDocCursoId,
+      .actualizarResultadosCompetencias({
+        iYAcadId: this.iYAcadId,
+        iEstudianteId: this.estudiante?.iEstudianteId,
         iPeriodoId: this.iPeriodoId,
         iDetMatrId: this.estudiante?.iDetMatrId,
-        iCompetenciaId: form.iCompetenciaId,
+        iCompCursoId: form.iCompCursoId,
         iResultadoCompId: form.iResultadoCompId,
-        iResultado: form.iResultado,
         cDescripcion: form.cDescripcion,
         iEscalaCalifId: form.iEscalaCalifId,
       })
@@ -225,16 +214,14 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
           });
           // Actualizar logros_iniciales con datos actualizados
           this.logros_iniciales.forEach((logro_inicial: any, index: number) => {
-            if (Number(logro_inicial.iCompetenciaId) === Number(form.iCompetenciaId)) {
-              logro_inicial.iResultado = form.iResultado;
+            if (Number(logro_inicial.iCompCursoId) === Number(form.iCompCursoId)) {
               logro_inicial.iEscalaCalifId = form.iEscalaCalifId;
               logro_inicial.cDescripcion = form.cDescripcion;
               logro_inicial.iResultadoCompId =
                 form.iResultadoCompId ?? response.data.iResultadoCompId;
               this.controles_logros.at(index).patchValue(
                 {
-                  iResultado: logro_inicial.iResultado,
-                  iEscalaCalifId: logro_inicial.iEscalaCalifId,
+                  cEscalaCalifLetra: logro_inicial.cEscalaCalifLetra,
                   cDescripcion: logro_inicial.cDescripcion,
                   iResultadoCompId: logro_inicial.iResultadoCompId,
                   bMostrarBoton: false,
@@ -303,8 +290,7 @@ export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   restaurarInicial(index) {
     const logro = this.controles_logros.at(index).value;
     const logro_inicial = this.logros_iniciales.find(
-      (logro_inicial: any) =>
-        Number(logro_inicial?.iCompetenciaId) === Number(logro?.iCompetenciaId)
+      (logro_inicial: any) => Number(logro_inicial?.iCompCursoId) === Number(logro?.iCompCursoId)
     );
     this.controles_logros.at(index).patchValue(
       {

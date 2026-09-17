@@ -47,19 +47,43 @@
           <th pSortableColumn="dtComunicadoHasta" class="text-center" width="10%">
             Finalización <p-sortIcon field="dtComunicadoHasta" />
           </th>
-          <th class="text-center" width="10%">Estado</th>
+          <th class="text-center" width="10%"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-index="rowIndex" let-com>
         <tr
           [pSelectableRow]="com"
           [pSelectableRowIndex]="index"
-          [style]="{ 'background-color': com.cColor }"
+          [style]="
+            com.iEstado === '1'
+              ? { 'background-color': '#E6E6E6' }
+              : { 'background-color': '#FFFFFF' }
+          "
         >
           <td class="text-center" width="5%">{{ index + 1 }}</td>
           <td class="text-center" width="15%">{{ com.emisor | slice: 0 : 15 }}...</td>
-          <td class="text-center" width="20%">{{ com.cComunicadoTitulo | slice: 0 : 25 }}...</td>
-          <td class="text-center" width="30%">
+          <td class="text-left" width="20%">
+            <p-tag
+              *ngIf="com.iPrioridadId === '1'"
+              severity="info"
+              [value]="com.cPrioridadNombre"
+              [rounded]="true"
+            />
+            <p-tag
+              *ngIf="com.iPrioridadId === '2'"
+              severity="success"
+              [value]="com.cPrioridadNombre"
+              [rounded]="true"
+            />
+            <p-tag
+              *ngIf="com.iPrioridadId === '3'"
+              severity="danger"
+              [value]="com.cPrioridadNombre"
+              [rounded]="true"
+            />
+            {{ com.cComunicadoTitulo | slice: 0 : 25 }}...
+          </td>
+          <td class="text-left" width="30%">
             {{ filtrarHtml(com.cComunicadoDescripcion) | slice: 0 : 50 }}...
           </td>
           <td class="text-center" width="10%">
@@ -67,8 +91,7 @@
           </td>
           <td class="text-center" width="10%">{{ com.dtComunicadoHasta | date: 'dd/MM/yyyy' }}</td>
           <td class="text-center" width="10%">
-            <!-- <i class="pi pi-circle-off"></i> -->
-            <i [class]="com.iRecepcionId ? 'pi pi-check-circle' : 'pi pi-circle-off'"></i>
+            <i [class]="com.iEstado === '1' ? 'pi pi-check-circle' : 'pi pi-circle-off'"></i>
           </td>
         </tr>
       </ng-template>

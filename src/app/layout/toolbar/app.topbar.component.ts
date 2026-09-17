@@ -226,8 +226,7 @@ export class AppTopBarComponent implements OnInit {
             lista.cComunicadoDescripcion = this.filtrarHtml(lista.cComunicadoDescripcion);
           });
 
-          const recibidos = this.comunicados.filter(i => !i.iRecepcionId);
-
+          const recibidos = this.comunicados.filter(i => i.iEstado == 0 || i.iEstado == null);
           this.totalComunicados = recibidos.length;
         },
         error: error => {

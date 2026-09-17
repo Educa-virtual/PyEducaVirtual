@@ -158,9 +158,9 @@ export class ListaComunicadosComponent implements OnInit {
     this.mensaje = datos;
     this.bBandeja = true;
 
-    const verificado = this.mensaje.iRecepcionId;
-    if (!verificado) {
-      this.comunicadosService.recepcionarComunicado(datos).subscribe({
+    const verificado = this.mensaje.iEstado;
+    if (verificado == 0) {
+      this.comunicadosService.recepcionarComunicado(this.mensaje).subscribe({
         next: () => {
           this.listarComunicados();
         },

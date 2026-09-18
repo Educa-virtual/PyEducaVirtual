@@ -16,7 +16,12 @@
       style="color: var(--surface-menu)"
       (click)="op.toggle($event)"
     >
-      <i class="pi pi-bell" pBadge style="font-size: 2rem" [value]="totalComunicados"></i>
+      <i
+        class="pi pi-bell"
+        pBadge
+        style="font-size: 2rem"
+        [value]="totalComunicados ? totalComunicados : null"
+      ></i>
     </button>
     <app-anio-escolar
       class="ml-5 mr-1"
@@ -47,7 +52,11 @@
 <p-overlayPanel #op>
   <div class="flex flex-column gap-3 w-25rem">
     <span class="font-bold text-900 block mb-2">Notificaciones</span>
-    <p-scroller [items]="comunicados" [itemSize]="50" scrollHeight="500px">
+    <p-scroller
+      [items]="comunicados"
+      [itemSize]="50"
+      [scrollHeight]="totalComunicados < 5 ? 'auto' : '500px'"
+    >
       <ng-template pTemplate="item" let-lista let-options="options">
         <div stylecClass="flex align-items-center w-100">
           <a

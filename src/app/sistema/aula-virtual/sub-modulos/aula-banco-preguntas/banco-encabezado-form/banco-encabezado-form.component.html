@@ -39,70 +39,89 @@
         [formGroupName]="i"
         class="mb-3"
       >
-        <p class="font-bold">
-          Pregunta #{{ i + 1 }} :
-          {{ pregunta.value?.iTipoPregId === 1 ? 'Opción única' : 'Opción múltiple' }}
-        </p>
-        <p-button icon="pi pi-trash" class="p-button-danger" size="small" />
-        <p-editor
-          formControlName="cBancoPregunta"
-          [style]="{ height: 'auto' }"
-          placeholder="Ingrese la pregunta"
-        ></p-editor>
+        <div class="card surface-100">
+          <p-inputGroup class="mb-2">
+            <input
+              type="text"
+              pInputText
+              [value]="
+                'Pregunta #' +
+                (i + 1) +
+                ' : ' +
+                (pregunta.value?.iTipoPregId === 1 ? 'Opción única' : 'Opción múltiple')
+              "
+              placeholder="Keyword"
+              readonly
+            />
+            <button
+              type="button"
+              pButton
+              class="p-button-danger"
+              (click)="eliminarPregunta(pregunta)"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </p-inputGroup>
+          <p-editor
+            formControlName="cBancoPregunta"
+            [style]="{ height: 'auto' }"
+            placeholder="Ingrese la pregunta"
+          ></p-editor>
 
-        <div class="mt-3" formArrayName="jsonAlternativas">
-          <div
-            *ngFor="let alt of pregunta.get('jsonAlternativas').controls; let j = index"
-            [formGroupName]="j"
-            class="mb-2"
-          >
-            <p-inputGroup>
-              <p-inputGroupAddon>
-                {{ alt.value?.cBancoAltLetra || j + 1 }}
-              </p-inputGroupAddon>
-              <input
-                type="text"
-                pInputText
-                formControlName="cBancoAltDescripcion"
-                placeholder="Alternativa"
-                class="w-full"
-              />
-              <button
-                type="button"
-                pButton
-                [text]="true"
-                icon="pi pi-trash"
-                class="p-button-danger"
-                size="small"
-                (click)="eliminarAlternativa(alt, i)"
-              >
-                &nbsp;
-              </button>
-              <p-checkbox
-                *ngIf="pregunta.value?.iTipoPregId === 1"
-                [binary]="true"
-                formControlName="bBancoAltRptaCorrecta"
-                [class]="'ml-2'"
-                [label]="'Respuesta correcta'"
-                (onChange)="marcarCorrecta(i, j)"
-              />
-              <p-checkbox
-                *ngIf="pregunta.value?.iTipoPregId === 2"
-                [binary]="true"
-                formControlName="bBancoAltRptaCorrecta"
-                [class]="'ml-2'"
-                [label]="'Respuesta correcta'"
-              />
-            </p-inputGroup>
-            <p-inputGroup class="mt-1 mb-1" *ngIf="alt.value.bBancoAltRptaCorrecta">
-              <p-inputGroupAddon>Explicación</p-inputGroupAddon>
-              <input
-                type="text"
-                pInputText
-                placeholder="Explicación"
-                formControlName="cBancoAltExplicacionRpta"
-              />
-            </p-inputGroup>
+          <div class="mt-3" formArrayName="jsonAlternativas">
+            <div
+              *ngFor="let alt of pregunta.get('jsonAlternativas').controls; let j = index"
+              [formGroupName]="j"
+              class="mb-2"
+            >
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  {{ alt.value?.cBancoAltLetra || j + 1 }}
+                </p-inputGroupAddon>
+                <input
+                  type="text"
+                  pInputText
+                  formControlName="cBancoAltDescripcion"
+                  placeholder="Alternativa"
+                  class="w-full"
+                />
+                <!-- <button
+                  type="button"
+                  pButton
+                  [text]="true"
+                  icon="pi pi-trash"
+                  class="p-button-danger"
+                  size="small"
+                  (click)="eliminarAlternativa(alt, i)"
+                >
+                  &nbsp;
+                </button> -->
+                <p-checkbox
+                  *ngIf="pregunta.value?.iTipoPregId === 1"
+                  [binary]="true"
+                  formControlName="bBancoAltRptaCorrecta"
+                  [class]="'ml-2'"
+                  [label]="'Respuesta correcta'"
+                  (onChange)="marcarCorrecta(i, j)"
+                />
+                <p-checkbox
+                  *ngIf="pregunta.value?.iTipoPregId === 2"
+                  [binary]="true"
+                  formControlName="bBancoAltRptaCorrecta"
+                  [class]="'ml-2'"
+                  [label]="'Respuesta correcta'"
+                />
+              </p-inputGroup>
+              <p-inputGroup class="mt-1 mb-1" *ngIf="alt.value.bBancoAltRptaCorrecta">
+                <p-inputGroupAddon>Explicación</p-inputGroupAddon>
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Explicación"
+                  formControlName="cBancoAltExplicacionRpta"
+                />
+              </p-inputGroup>
+            </div>
           </div>
         </div>
       </div>

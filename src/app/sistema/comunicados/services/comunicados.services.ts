@@ -58,6 +58,10 @@ export class ComunicadosService implements OnDestroy {
     return this.http.post(`${baseUrl}/com/subirDocumento`, data);
   }
 
+  listarNoticaciones(data: any) {
+    return this.http.post(`${baseUrl}/com/notificarComunicados`, data);
+  }
+
   listarComunicados(data: any) {
     return this.http.post(`${baseUrl}/com/listarComunicados`, data);
   }

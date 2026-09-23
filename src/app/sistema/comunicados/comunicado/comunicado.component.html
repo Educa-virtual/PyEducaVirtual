@@ -59,12 +59,30 @@
             </div>
             <div class="col-12">
               <app-subir-documento
+                *ngIf="puede_editar"
                 [nameFile]="enviarDatos"
                 [nameOption]="'Comunicados'"
                 [typesFiles]="typesFiles"
                 (actionTypesFileUpload)="accionBtn($event)"
                 [filesUrl]="adjuntar"
               ></app-subir-documento>
+
+              <div class="card surface-50" *ngIf="!puede_editar">
+                <div class="p-1 font-bold mb-2">Archivos Multimedia:</div>
+                <div class="grid">
+                  <div class="col-3" *ngFor="let lista of adjuntar; let i = index">
+                    <p-button
+                      label="{{ lista.name | slice: 0 : 20 }}..."
+                      [icon]="lista.extension ? 'pi pi-download' : 'pi pi-link'"
+                      class="p-button-rounded p-button-text mr-3 bg-white"
+                      size="small"
+                      [text]="true"
+                      [raised]="true"
+                      (click)="descargarArchivo(lista)"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-12 md:col-6">
               <p-inputGroup>

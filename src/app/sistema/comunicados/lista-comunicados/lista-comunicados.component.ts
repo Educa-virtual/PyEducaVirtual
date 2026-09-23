@@ -158,9 +158,9 @@ export class ListaComunicadosComponent implements OnInit {
     this.mensaje = datos;
     this.bBandeja = true;
 
-    const verificado = this.mensaje.iRecepcionId;
-    if (!verificado) {
-      this.comunicadosService.recepcionarComunicado(datos).subscribe({
+    const verificado = this.mensaje.iEstado;
+    if (verificado == 0) {
+      this.comunicadosService.recepcionarComunicado(this.mensaje).subscribe({
         next: () => {
           this.listarComunicados();
         },
@@ -197,5 +197,25 @@ export class ListaComunicadosComponent implements OnInit {
     } else {
       window.open(archivo.name, '_blank');
     }
+  }
+
+  descargarImagen(archivo: any) {
+    const datos = {
+      archivo: archivo.file,
+    };
+
+    this.comunicadosService.descargarDocumento(datos).subscribe({
+      next: async (response: Blob) => {
+        const blob = new Blob([response], { type: response.type });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = archivo.file.split('/').pop();
+        link.click();
+
+        URL.revokeObjectURL(url);
+      },
+    });
   }
 }

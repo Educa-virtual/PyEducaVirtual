@@ -15,7 +15,7 @@ import { MessageService } from 'primeng/api';
 import { provideIcons } from '@ng-icons/core';
 import { mat10k } from '@ng-icons/material-icons/baseline';
 import { ConstantesService } from '@/app/servicios/constantes.service';
-import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
+//import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes';
 import { ComunicadosService } from '@/app/sistema/comunicados/services/comunicados.services';
 
 @Component({
@@ -103,14 +103,10 @@ export class AppTopBarComponent implements OnInit {
     this.modulos = user.modulos;
     this.selectedModulo = modulo ? modulo.iModuloId : null;
 
+    this.perfiles;
     const iPerfilId = this._ConstantesService.iPerfilId;
-    switch (iPerfilId) {
-      case ESTUDIANTE:
-        this.notificacionEstudiante();
-        break;
-      case DOCENTE:
-        this.notificacionDocente();
-        break;
+    if (iPerfilId) {
+      this.notificacion();
     }
   }
 
@@ -218,11 +214,10 @@ export class AppTopBarComponent implements OnInit {
         break;
     }
   }
-  notificacionDocente() {
+  notificacion() {
     this.comunicadosService
-      .listarComunicados({
+      .listarNoticaciones({
         iYAcadId: this.iYAcadId,
-        iTipoUsuario: this.USUARIO_RECIPIENTE,
       })
       .subscribe({
         next: (data: any) => {
@@ -230,7 +225,9 @@ export class AppTopBarComponent implements OnInit {
           this.comunicados.forEach(lista => {
             lista.cComunicadoDescripcion = this.filtrarHtml(lista.cComunicadoDescripcion);
           });
-          this.totalComunicados = this.comunicados.length;
+
+          const recibidos = this.comunicados.filter(i => i.iEstado == 0 || i.iEstado == null);
+          this.totalComunicados = recibidos.length;
         },
         error: error => {
           console.warn('Error obteniendo lista de comunicados:', error);

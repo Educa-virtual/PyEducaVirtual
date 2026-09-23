@@ -265,6 +265,12 @@ export class BancoPreguntasFormComponent implements OnChanges {
         }
         this.isLoading = false;
       },
+      complete: () => {
+        this.accionBtnItem.emit({
+          accion: 'actualizar-preguntas',
+          item: [],
+        });
+      },
     });
   }
 
@@ -336,6 +342,12 @@ export class BancoPreguntasFormComponent implements OnChanges {
             detail: error?.error?.message || 'Ocurrió un error inesperado',
           });
         }
+      },
+      complete: () => {
+        this.accionBtnItem.emit({
+          accion: 'actualizar-preguntas',
+          item: [],
+        });
       },
     });
   }

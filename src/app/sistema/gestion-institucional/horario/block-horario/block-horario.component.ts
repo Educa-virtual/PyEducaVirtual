@@ -121,31 +121,6 @@ export class BlockHorarioComponent implements OnChanges {
   }
 
   agregarBloque() {
-    /*
-    this.sumarIntervalo();
-    //validar que no sea menor--------------------------------
-    const tInicio: any = this.toHHMMSS(this.formGenerador.get('tBloqueInicio')?.value);
-    const bloqueMax = this.bloques.reduce((prev, current) =>
-      prev.tFin > current.tFin ? prev : current
-    );
-
-    const dtfin = bloqueMax.tBloqueFin;
-    const hFin = dtfin.substring(0, 8);
-
-    if (this.toSeconds(hFin) > this.toSeconds(tInicio)) {
-      this._confirmService.openAlert({
-        header: 'El bloque seleccionado no puede ser menor al anterior.',
-      });
-      const [hours, minutes, seconds] = hFin.split(':').map(Number);
-      const date = new Date();
-      date.setHours(hours, minutes, seconds || 0);
-
-      this.formGenerador.get('tBloqueInicio')?.setValue(date);
-      return;
-    }
-   
-   */
-
     this.sumarIntervalo();
 
     // obtener inicio desde formulario

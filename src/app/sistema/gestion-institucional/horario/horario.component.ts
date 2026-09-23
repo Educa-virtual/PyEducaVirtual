@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GeneralService } from '@/app/servicios/general.service';
 import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
@@ -7,13 +7,13 @@ import {
   TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import {
   ContainerPageComponent,
   IActionContainer,
 } from '../../../shared/container-page/container-page.component';
 import { BlockHorarioComponent } from './block-horario/block-horario.component';
-
+import { HorarioService } from './services/horario.service';
+import { ConstantesService } from '@/app/servicios/constantes.service';
 @Component({
   selector: 'app-gestion-institucional',
   standalone: true,
@@ -32,7 +32,7 @@ export class HorarioComponent implements OnInit {
 
   //Variables
   horarios: any[] = [];
-
+  iSedeId: any;
   visible: boolean = false;
   visible_detalle: boolean = false;
   caption: string = 'Formulario de configuración de horarios';
@@ -40,12 +40,15 @@ export class HorarioComponent implements OnInit {
 
   iConfBloqueId: number = 0; // ID del bloque de horario seleccionado para editar o eliminar
 
-  private _confirmService = inject(ConfirmationModalService);
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private query: GeneralService
-  ) {}
+    private query: GeneralService,
+    private horarioConfiguracion: HorarioService,
+    private local: ConstantesService
+  ) {
+    this.iSedeId = this.local.iSedeId;
+  }
 
   async ngOnInit() {
     try {
@@ -70,71 +73,64 @@ export class HorarioComponent implements OnInit {
   }
 
   getHorario() {
-    this.query
-      .searchCalAcademico({
-        esquema: 'hor',
-        tabla: 'configuracion_bloques',
-        campos: '*',
-        condicion: '1=1',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.horarios = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'danger',
-            summary: 'Mensaje del Sistema',
-            detail: 'Error. al cargar los datos del horario: ' + error.error.message,
-          });
-        },
-        complete: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Mensaje del Sistema',
-            detail: 'Se cargaron los registros del horario correctamente',
-          });
-        },
-      });
+    const datos = {
+      iSedeId: this.iSedeId,
+    };
+
+    this.horarioConfiguracion.buscarHorario(datos).subscribe({
+      next: (data: any) => {
+        this.horarios = data.data;
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'danger',
+          summary: 'Mensaje del Sistema',
+          detail: 'Error. al cargar los datos del horario: ' + error.error.message,
+        });
+      },
+      complete: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Mensaje del Sistema',
+          detail: 'Se cargaron los registros del horario correctamente',
+        });
+      },
+    });
   }
 
   accionBtnItem(accion: string) {
     if (accion === 'guardar') {
-      const params = JSON.stringify({
+      const datos = {
         iConfBloqueId: this.formHorario.get('iConfBloqueId')?.value || 0, // Aseguramos que sea un número
         cDescripcion: this.formHorario.get('cDescripcion')?.value || '',
         iNumBloque: this.formHorario.get('iNumBloque')?.value || 0, // Aseguramos que sea un número
         iBloqueInter: this.formHorario.get('iBloqueInter')?.value || 0, // Aseguramos que sea un número
-        iEstado: 0, //this.formHorario.get('iEstado')?.value || 0, // Aseguramos que sea un número
         //tInicio: this.formHorario.get('tInicio')?.value ? this.formHorario.get('tInicio')?.value.toTimeString().slice(0, 8) : '',
+        iSedeId: this.iSedeId,
         tInicio: this.toHHMMSS(this.formHorario.get('tInicio')?.value),
         tFin: this.toHHMMSS(this.formHorario.get('tFin')?.value),
         //tFin: this.formHorario.get('tFin')?.value ? this.formHorario.get('tFin')?.value.toTimeString().slice(0, 8) : '',
-      });
-      this.query
-        .addCalAcademico({
-          json: params, //this.formHorario.getRawValue(),
-          _opcion: 'addConfigBloque',
-        })
-        .subscribe({
-          error: error => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Mensaje del sistema',
-              detail: 'Error. No se proceso petición de registro: ' + error.message,
-            });
-          },
-          complete: () => {
-            this.getHorario();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Mensaje del sistema',
-              detail: 'Proceso exitoso',
-            });
+      };
 
-            this.visible = false; // Ocultar el formulario después de guardar
-          },
-        });
+      this.horarioConfiguracion.addCalAcademico(datos).subscribe({
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Mensaje del sistema',
+            detail: 'Error. No se proceso petición de registro: ' + error.message,
+          });
+        },
+        complete: () => {
+          this.getHorario();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Mensaje del sistema',
+            detail: 'Proceso exitoso',
+          });
+
+          this.visible = false; // Ocultar el formulario después de guardar
+        },
+      });
     }
 
     if (accion === 'editar') {

@@ -111,6 +111,48 @@
             />
           </p-inputGroup>
         </div>
+        <div class="col-12" *ngIf="item['cDetCargaNoLectEvidencias']?.length > 0">
+          <div class="card">
+            <div class="p-1 font-bold">Archivos Multimedia:</div>
+            <div class="grid">
+              <div
+                class="col-3"
+                *ngFor="let lista of item['cDetCargaNoLectEvidencias']; let i = index"
+              >
+                <button
+                  type="button"
+                  *ngIf="lista.type === 1"
+                  class="flex bg-blue-600 text-white align-items-start gap-1 border-1 m-1 border-round p-2 cursor-pointer shadow-1 transition-duration-200 hover:shadow-5"
+                  (click)="descargarArchivo(lista.ruta)"
+                >
+                  {{ i + 1 }}.
+                  <div class="pi pi-file-pdf"></div>
+                  <div class="text-sm">{{ lista.name | slice: 0 : 15 }}...</div>
+                </button>
+                <a
+                  *ngIf="lista.type === 2"
+                  class="flex bg-blue-600 text-white align-items-start gap-1 border-1 m-1 border-round p-2 cursor-pointer shadow-1 transition-duration-200 hover:shadow-5"
+                  [href]="lista.ruta"
+                  target="_blank"
+                >
+                  {{ i + 1 }}.
+                  <div class="pi pi-link"></div>
+                  <div class="text-sm">{{ lista.name | slice: 0 : 15 }}...</div>
+                </a>
+                <button
+                  type="button"
+                  *ngIf="lista.type === 5"
+                  class="flex bg-blue-600 text-white align-items-start gap-1 border-1 m-1 border-round p-2 cursor-pointer shadow-1 transition-duration-200 hover:shadow-5"
+                  (click)="descargarImagen(lista.ruta)"
+                >
+                  {{ i + 1 }}.
+                  <div class="pi pi-image"></div>
+                  <div class="text-sm">{{ lista.name | slice: 0 : 15 }}...</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       }
       <div class="col-12 xl:col-12 lg:col-12 md:col-12 sm:col-12">
         <p-inputGroup class="w-full">

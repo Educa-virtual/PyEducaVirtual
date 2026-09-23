@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { EstudiantesLogroAlcanzadoComponent } from './logro-alcanzado/estudiantes-logro-alcanzado/estudiantes-logro-alcanzado.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
-import { DOCENTE } from '@/app/servicios/seg/perfiles';
+import { ADMINISTRADOR_DREMO, DOCENTE } from '@/app/servicios/seg/perfiles';
 import { LogroAlcanzadoComponent } from './logro-alcanzado/logro-alcanzado.component';
+import { TipoEscalaComponent } from './escala-calificacion/tipo-escala/tipo-escala.component';
+import { EscalaCalificacionComponent } from './escala-calificacion/escala-calificaciones/escala-calificaciones.component';
 
 const routes: Routes = [
   {
@@ -72,6 +74,24 @@ const routes: Routes = [
     data: {
       expectedRole: [DOCENTE],
       breadcrumb: 'Estudiantes',
+    },
+  },
+  {
+    path: 'tipo-escala',
+    component: TipoEscalaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+      breadcrumb: 'Tipo de escala',
+    },
+  },
+  {
+    path: 'tipo-escala/:iTipoEscalaId/escalas',
+    component: EscalaCalificacionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+      breadcrumb: 'Tipo de escala',
     },
   },
 ];

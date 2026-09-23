@@ -1,0 +1,154 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-toast />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Tipo de escala de calificación</div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex flex-column flex-1">
+    <div class="flex flex-wrap gap-2 justify-content-end">
+      <p-button
+        size="small"
+        pTooltip="Agregar"
+        tooltipPosition="top"
+        (click)="crearTipoEscala()"
+        severity="success"
+      >
+        <i class="pi pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Agregar</span>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <app-table-primeng
+    [columnas]="columns"
+    [actions]="acciones"
+    [data]="tipos_escalas"
+    (accionBtnItem)="accionBtnItem($event)"
+  />
+</p-panel>
+
+<p-dialog
+  [(visible)]="visible"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  [style]="{
+    width: '89rem',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+  }"
+  [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  [styleClass]="'dialog-responsive'"
+  (onHide)="limpiarModal()"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold white-space-nowrap">
+        {{ titulo }}
+      </span>
+    </div>
+  </ng-template>
+  <br />
+
+  <p-messages [closable]="true" severity="info">
+    <ng-template pTemplate="content">
+      <p>Los campos con (*) son obligatorios</p>
+    </ng-template>
+  </p-messages>
+  <form [formGroup]="formTipoEscala">
+    <div class="grid">
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Nombre (*)</p-inputGroupAddon>
+          <input
+            pInputText
+            id="name"
+            formControlName="cTipoEscalaNombre"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+            maxlength="100"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12">
+        <p-inputGroup>
+          <p-inputGroupAddon>Resolución</p-inputGroupAddon>
+          <input
+            pInputText
+            id="name"
+            formControlName="cTipoEscalaResolucion"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+            maxlength="100"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Año</p-inputGroupAddon>
+          <p-inputNumber
+            [useGrouping]="false"
+            placeholder="YYYY"
+            styleClass="group-element"
+            formControlName="cTipoEscalaAnio"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Estado *</p-inputGroupAddon>
+          <p-dropdown
+            [options]="estados"
+            formControlName="bHabilitado"
+            styleClass="group-element"
+            appendTo="body"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <p-button
+        pButton
+        type="button"
+        label="Salir"
+        icon="pi pi-times-circle"
+        severity="danger"
+        class="p-button-rounded p-button-text"
+        (onClick)="cerrarModal()"
+      />
+      <p-button
+        *ngIf="bEditar"
+        pButton
+        type="button"
+        icon="pi pi-save"
+        label="Editar"
+        class="p-button-rounded p-button-text"
+        (click)="actualizarTipoEscala()"
+        severity="warning"
+        [disabled]="formTipoEscala.invalid"
+      />
+      <p-button
+        *ngIf="!bEditar"
+        pButton
+        type="button"
+        icon="pi pi-save"
+        label="Guardar"
+        class="p-button-rounded p-button-text"
+        (click)="guardarTipoEscala()"
+        severity="primary"
+        [disabled]="formTipoEscala.invalid"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

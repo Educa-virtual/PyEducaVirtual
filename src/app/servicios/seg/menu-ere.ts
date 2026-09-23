@@ -51,6 +51,11 @@ export const administradorDremo = [
         icon: 'pi pi-tablet',
         routerLink: ['/administrador/mantenimiento-curricula'],
       },
+      {
+        label: 'Gestionar Calificación',
+        icon: 'pi pi-book',
+        routerLink: ['/evaluaciones/tipo-escala'],
+      },
       /*{
                 label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-sync',

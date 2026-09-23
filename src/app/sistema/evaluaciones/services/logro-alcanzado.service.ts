@@ -66,38 +66,38 @@ export class LogroAlcanzadoService {
     return this.http.post(`${baseUrl}/evaluaciones/verResultadosCompetencias`, params);
   }
 
+  listarTipoEscala(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/listarTipoEscala`, params);
+  }
+
+  guardarTipoEscala(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/guardarTipoEscala`, params);
+  }
+
+  actualizarTipoEscala(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/actualizarTipoEscala`, params);
+  }
+
+  verTipoEscala(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/verTipoEscala`, params);
+  }
+
+  listarEscalaCalificaciones(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/listarEscalaCalificaciones`, params);
+  }
+
+  guardarEscalaCalificaciones(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/guardarEscalaCalificaciones`, params);
+  }
+
+  actualizarEscalaCalificaciones(params) {
+    return this.http.post(`${baseUrl}/evaluaciones/actualizarEscalaCalificaciones`, params);
+  }
+
   /** Funciones antiguas */
-
-  obtenerTiposCalificacion() {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerTiposCalificacion`, null);
-  }
-
-  listarTiposCalificacion() {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/listarTiposCalificacion`, null);
-  }
-
-  obtenerEscalasCalificacion(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerEscalasCalificacion`, params);
-  }
-
-  actualizarEscalaCalificacion(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/actualizarEscalaCalificacion`, params);
-  }
 
   obtenerPeriodosEvaluacionSede(params) {
     return this.http.post(`${baseUrl}/evaluaciones/logros/obtenerPeriodosEvaluacionSede`, params);
-  }
-
-  listarCursos(params) {
-    return this.http.post(`${baseUrl}/acad/docente/docente_curso`, params);
-  }
-
-  verLogrosEstudiante(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/verLogrosEstudiante`, params);
-  }
-
-  actualizarLogro(params) {
-    return this.http.post(`${baseUrl}/evaluaciones/logros/actualizarLogro`, params);
   }
 
   exportarBoletas(params) {

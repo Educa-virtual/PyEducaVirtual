@@ -1,0 +1,78 @@
+<form [formGroup]="formTurno">
+  <div class="grid mt-4">
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Turno *</p-inputGroupAddon>
+        <p-dropdown
+          [options]="tipos_turnos"
+          formControlName="iTurnoId"
+          [showClear]="true"
+          appendTo="body"
+          styleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-message
+        severity="info"
+        text="Si tiene más de un turno, indique el horario completo"
+        [style]="{ flex: '1', width: '100%' }"
+      />
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Horario Entrada *</p-inputGroupAddon>
+        <p-calendar
+          formControlName="dtAperTurnoInicio"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          [showIcon]="true"
+          dataType="string"
+          dateFormat="HH:mm"
+          [timeOnly]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Horario Salida *</p-inputGroupAddon>
+        <p-calendar
+          formControlName="dtAperTurnoFin"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          [showIcon]="true"
+          dataType="string"
+          dateFormat="HH:mm"
+          [timeOnly]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon>Días laborables *</p-inputGroupAddon>
+        <p-multiSelect
+          [options]="dias_semana"
+          placeholder="Seleccione los días laborables"
+          formControlName="dias"
+          [style]="{ flex: '1', width: '100%' }"
+          display="chip"
+          showToggleAll="false"
+          appendTo="body"
+          [maxSelectedLabels]="undefined"
+          styleClass="group-element text-left"
+        />
+      </p-inputGroup>
+    </div>
+  </div>
+</form>
+
+<div class="flex justify-content-end gap-2">
+  <p-button label="Regresar" severity="secondary" (onClick)="cambiarTab(1)" />
+  <p-button
+    label="Aplicar"
+    severity="success"
+    (onClick)="guardarCalendarioTurno()"
+    [disabled]="formTurno.invalid"
+  />
+</div>

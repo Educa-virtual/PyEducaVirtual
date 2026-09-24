@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MantenimientoIeComponent } from './mantenimiento/mantenimiento-ie/mantenimiento-ie.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
 import { ADMINISTRADOR_DREMO } from '@/app/servicios/seg/perfiles';
+import { MantenimientoSedesComponent } from './mantenimiento/mantenimiento-sedes/mantenimiento-sedes.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,14 @@ const routes: Routes = [
   {
     path: 'mantenimiento-ie',
     component: MantenimientoIeComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'mantenimiento-ie/:id/sedes',
+    component: MantenimientoSedesComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [ADMINISTRADOR_DREMO],

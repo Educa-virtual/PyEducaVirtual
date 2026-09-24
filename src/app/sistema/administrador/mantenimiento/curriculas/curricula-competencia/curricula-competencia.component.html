@@ -3,9 +3,8 @@
 <p-panel>
   <ng-template pTemplate="header">
     <div class="flex flex-column">
-      <div class="flex text-2xl font-bold">
-        Competencias de: {{ curricula.cCurrDescripcion ?? '' }}
-      </div>
+      <div class="flex text-2xl font-bold">Competencias</div>
+      <div class="flex text-sm">CURRICULA: {{ curricula?.cCurrDescripcion ?? '' }}</div>
     </div>
   </ng-template>
   <ng-template pTemplate="icons" class="flex flex-column flex-1">
@@ -71,7 +70,7 @@
   <ng-template pTemplate="content">
     <p-messages severity="info" [closable]="true">
       <ng-template pTemplate="content">
-        <p>Los parámetros en (*) son obligatorios</p>
+        <p>Los campos con (*) son obligatorios</p>
       </ng-template>
     </p-messages>
     <form [formGroup]="formCompetencia" class="flex flex-column gap-3 w-full">

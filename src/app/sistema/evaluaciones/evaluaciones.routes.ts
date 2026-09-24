@@ -1,4 +1,10 @@
 import { Routes } from '@angular/router';
+import { EstudiantesLogroAlcanzadoComponent } from './logro-alcanzado/estudiantes-logro-alcanzado/estudiantes-logro-alcanzado.component';
+import { RoleGuard } from '@/app/shared/_guards/role.guard';
+import { ADMINISTRADOR_DREMO, DOCENTE } from '@/app/servicios/seg/perfiles';
+import { LogroAlcanzadoComponent } from './logro-alcanzado/logro-alcanzado.component';
+import { TipoEscalaComponent } from './escala-calificacion/tipo-escala/tipo-escala.component';
+import { EscalaCalificacionComponent } from './escala-calificacion/escala-calificaciones/escala-calificaciones.component';
 
 const routes: Routes = [
   {
@@ -52,35 +58,42 @@ const routes: Routes = [
         c => c.EvaluacionExamenEreComponent
       ),
   },
-
   {
     path: 'registro-logro',
-    loadComponent: () =>
-      import('./logro-alcanzado/logro-alcanzado.component').then(c => c.LogroAlcanzadoComponent),
+    component: LogroAlcanzadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DOCENTE],
+      breadcrumb: 'Reporte de Logros Alcanzados',
+    },
   },
-  // {
-  //     path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-  //     loadComponent: () =>
-  //         import(
-  //             './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
-  //         ).then((c) => c.ExamenEreComponent),
-  // },
-  // {
-  //     path: 'sub-evaluaciones/evaluacion-examen-ere',
-  //     loadComponent: () =>
-  //         import(
-  //             './sub-evaluaciones/evaluacion-examen-ere/evaluacion-examen-ere.component'
-  //         ).then((c) => c.EvaluacionExamenEreComponent),
-  //     children: [
-  //         {
-  //             path: 'examen-ere', // Ruta hija
-  //             loadComponent: () =>
-  //                 import(
-  //                     './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
-  //                 ).then((c) => c.ExamenEreComponent),
-  //         },
-  //     ],
-  // },
+  {
+    path: 'registro-logro/:idDocCursoId/estudiantes',
+    component: EstudiantesLogroAlcanzadoComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [DOCENTE],
+      breadcrumb: 'Estudiantes',
+    },
+  },
+  {
+    path: 'tipo-escala',
+    component: TipoEscalaComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+      breadcrumb: 'Tipo de escala',
+    },
+  },
+  {
+    path: 'tipo-escala/:iTipoEscalaId/escalas',
+    component: EscalaCalificacionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+      breadcrumb: 'Tipo de escala',
+    },
+  },
 ];
 
 export class AppRoutingModule {}

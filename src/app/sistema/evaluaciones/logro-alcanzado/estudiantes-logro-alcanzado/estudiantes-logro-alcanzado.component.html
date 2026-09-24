@@ -1,0 +1,121 @@
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-xl font-bold">REGISTRAR LOGROS ALCANZADOS</div>
+      <div class="flex text-sm">
+        GRADO: {{ ie_curso?.cGradoAbreviacion }} SECCIÓN: {{ ie_curso?.cSeccionNombre }}
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icons" class="flex justify-content-center">
+    <p-button size="small" severity="success" (onClick)="listarAreas()">
+      <i class="pi pi-arrow-left"></i>
+      <span class="hidden md:inline ml-2">Ver Áreas</span>
+    </p-button>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12 md:col-fixed" style="width: auto">
+      <p-toast />
+      <p-menu #menu [model]="btn_exportar" [popup]="true" />
+      <p-button (onClick)="menu.toggle($event)" pRipple severity="success">
+        <i class="pi pi-download"></i>
+        <span class="hidden md:inline ml-2">Exportar</span>
+      </p-button>
+    </div>
+    <div class="col">
+      <p-inputGroup>
+        <p-inputGroupAddon> Área </p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          [value]="ie_curso?.cCursoNombre"
+          disabled
+          class="group-element"
+          pInputText
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-5">
+      <p-inputGroup>
+        <p-inputGroupAddon> Periodo </p-inputGroupAddon>
+        <p-dropdown
+          [(ngModel)]="iPeriodoId"
+          [options]="periodos"
+          placeholder="Seleccionar"
+          [style]="{ flex: '1', width: '100%' }"
+          styleClass="group-element"
+        >
+        </p-dropdown>
+      </p-inputGroup>
+    </div>
+  </div>
+  <br />
+  <div>
+    <app-table-primeng
+      [data]="estudiantes"
+      [columnas]="columnsEstudiantes"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [showAdvancedFilter]="false"
+      [showCaption]="false"
+      [actions]="actions"
+    />
+  </div>
+  <!-- Registrar Logro Alcanzado-->
+  <p-dialog
+    [(visible)]="showModalRegistro"
+    (visibleChange)="modalCerrado($event)"
+    [breakpoints]="{ '960px': '85vw', '640px': '100vw' }"
+    [style]="{
+      width: '75vw',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+    }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+    [closable]="true"
+    (onHide)="cerrarModalBoleta()"
+    [resizable]="true"
+    [maximizable]="true"
+  >
+    <ng-template pTemplate="header">
+      <div class="flex flex-column">
+        <div class="flex text-xl font-bold">{{ registroTitleModal }}</div>
+        <div class="flex text-sm">{{ registroSubTitleModal }}</div>
+      </div>
+    </ng-template>
+    <app-registrar-logro-alcanzado
+      [periodos]="periodos"
+      [escalas]="escalas"
+      [competencias]="competencias"
+      [iPeriodoId]="iPeriodoId"
+      [estudiante]="estudianteSeleccionado"
+      [ie_curso]="ie_curso"
+      (registraLogroAlcanzado)="showModalRegistro = $event"
+    />
+  </p-dialog>
+  <p-dialog
+    [header]="boletaTitleModal"
+    [(visible)]="showModalBoleta"
+    [breakpoints]="{ '960px': '85vw', '640px': '100vw' }"
+    [style]="{
+      width: '75vw',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+    }"
+    [modal]="true"
+    [closable]="true"
+    (onHide)="cerrarModalBoleta()"
+    [resizable]="true"
+    [maximizable]="true"
+  >
+    <app-boleta-logro
+      [selectedItem]="selectedItem"
+      (boletaLogroImprimir)="listenDialogBoleta($event)"
+    />
+  </p-dialog>
+</p-panel>
+<p-toast />
+ 

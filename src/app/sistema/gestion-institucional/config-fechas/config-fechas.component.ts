@@ -1,19 +1,18 @@
 import { PrimengModule } from '@/app/primeng.module';
 import { BtnFileUploadComponent } from '@/app/shared/btn-file-upload/btn-file-upload.component';
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
-import { Component, OnInit } from '@angular/core';
+import { IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarModule } from 'primeng/calendar';
-import { nationalHolidayStructureImport } from './config/date-special-import';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MenuItem, MessageService } from 'primeng/api';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
 import { nationalHolidayService } from './service/national-holiday.service';
-import { nationalHoliday } from './table/national-holiday-table-columns';
 import { DatePipe } from '@angular/common';
-import { editar, eliminar } from '@/app/shared/actions/actions.table';
 import { ToastModule } from 'primeng/toast';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { LeerExcelService } from '@/app/servicios/leer-excel.service';
 
 @Component({
   selector: 'app-config-fechas',
@@ -32,80 +31,404 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
   providers: [DatePipe],
 })
 export class ConfigFechasComponent implements OnInit {
-  collection = nationalHolidayStructureImport;
-  file: any;
   form: FormGroup;
-  option: string;
-  dialogs = {
-    importNationalHolyday: {
-      title: '',
-      visible: false,
-    },
-    nationalHoliday: {
-      title: '',
-      visible: false,
-    },
+
+  feriados: any[] = [];
+  importados: any[] = [];
+
+  importLoading: boolean = false;
+  bEditar: boolean = false;
+
+  dialogImportar = {
+    title: '',
+    visible: false,
   };
+  dialogFeriado = {
+    title: '',
+    visible: false,
+  };
+
+  opciones = [
+    { label: 'SI', value: 1 },
+    { label: 'NO', value: 0 },
+  ];
+
+  breadCrumbHome: MenuItem = { icon: 'pi pi-home', routerLink: '/' };
+  breadCrumbItems: MenuItem[] = [{ label: 'Feriados nacionales' }];
+
+  @ViewChild('fileUpload') fileUpload!: BtnFileUploadComponent;
+
+  iYAcadId: number;
+  datosExcel: any | null = null;
 
   constructor(
     private fb: FormBuilder,
     public messageService: MessageService,
     public dialog: ConfirmationModalService,
     public nationalHolidayService: nationalHolidayService,
-    public datePipe: DatePipe
+    public datePipe: DatePipe,
+    private store: LocalStoreService,
+    private leerExcel: LeerExcelService
   ) {
-    this.form = this.fb.group({
-      iFeriadoId: [''],
-      cFeriadoNombre: [''],
-      iYAcadId: [''],
-      dtFeriado: [''],
-      bFeriadoEsRecuperable: [''],
-      cDocumento: [''],
-    });
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
   }
 
   ngOnInit(): void {
-    this.nationalHolidayService.getFeriadosNacionales().subscribe({
-      next: (data: any) => {
-        this.nationalHolyday.table.data.core = data.data.map(item => ({
-          ...item,
-          dtFeriado: this.datePipe.transform(item.dtFeriado, 'dd/MM/yyyy'),
-        }));
+    try {
+      this.form = this.fb.group({
+        iFeriadoId: [''],
+        cFeriadoNombre: ['', [Validators.required]],
+        iYAcadId: [this.iYAcadId],
+        dtFeriado: ['', [Validators.required]],
+        bFeriadoEsRecuperable: [0, [Validators.required]],
+        cDocumento: [''],
+      });
+    } catch (error) {
+      console.error(error, 'error de formulario');
+    }
+    this.listarFeriadosNacionales();
+  }
+
+  listarFeriadosNacionales(): void {
+    this.nationalHolidayService
+      .listarFeriadosNacionales({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.feriados = data.data;
+        },
+        error: error => {
+          console.error('Error obteniendo feriados nacionales:', error);
+        },
+      });
+  }
+
+  setForm(item) {
+    this.form.reset(item);
+    this.nationalHolidayService.formatearFormControl(
+      this.form,
+      'dtFeriado',
+      item?.dtFeriado,
+      'date',
+      null
+    );
+    this.nationalHolidayService.formatearFormControl(
+      this.form,
+      'bFeriadoEsRecuperable',
+      item ? item.bFeriadoEsRecuperable : 0,
+      'number',
+      null
+    );
+  }
+
+  accionBtnItem({ accion, item }): void {
+    switch (accion) {
+      case 'agregar':
+        this.bEditar = false;
+        this.dialogFeriado = {
+          title: 'Agregar feriado nacional',
+          visible: true,
+        };
+        this.form.get('dtFeriado').enable();
+        this.setForm({
+          iYAcadId: this.iYAcadId,
+          bFeriadoEsRecuperable: 0,
+        });
+        break;
+      case 'editar':
+        this.bEditar = true;
+        this.setForm(item);
+        this.form.get('dtFeriado').disable();
+        this.dialogFeriado = {
+          title: 'Editar feriado nacional',
+          visible: true,
+        };
+        break;
+      case 'eliminar':
+        this.dialog.openConfirm({
+          header: 'Eliminar Registro',
+          accept: () => {
+            this.borrarFeriadoNacional(item);
+          },
+        });
+        break;
+      case 'sincronizar':
+        this.dialog.openConfirm({
+          header: 'Aplicar feriados nacionales',
+          accept: () => {
+            this.aplicarFeriadosNacionales();
+          },
+        });
+        break;
+      case 'importar':
+        this.dialogImportar = {
+          title: 'Importar feriados nacionales',
+          visible: true,
+        };
+        break;
+    }
+  }
+
+  borrarFeriadoNacional(item) {
+    this.nationalHolidayService
+      .borrarFeriadoNacional({
+        iFeriadoId: item.iFeriadoId,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Exito',
+            detail: 'Se ha eliminado el feriado nacional',
+          });
+          this.listarFeriadosNacionales();
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message ?? 'Error desconocido',
+          });
+        },
+      });
+  }
+
+  aplicarFeriadosNacionales() {
+    this.nationalHolidayService
+      .aplicarFeriadosNacionales({
+        iYAcadId: this.iYAcadId,
+      })
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Exito',
+            detail: 'Se han aplicado los feriados nacionales',
+          });
+        },
+        error: error => {
+          console.error('Error aplicando feriados nacionales:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Feriados nacionales',
+            detail: error.error.message ?? 'Error desconocido',
+          });
+        },
+      });
+  }
+
+  guardarFeriadoNacional(): void {
+    this.nationalHolidayService.guardarFeriadoNacional(this.form.value).subscribe({
+      next: () => {
+        this.dialogFeriado.visible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Los datos se han guardado correctamente',
+        });
+        this.listarFeriadosNacionales();
       },
       error: error => {
-        console.error('Error fetching Años Académicos:', error);
-      },
-      complete: () => {
-        console.log('Request completed');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message ?? 'Error desconocido',
+        });
       },
     });
   }
-  // ESTRUCTURA DE TABLA
-  nationalHolyday = {
-    table: {
-      columns: {
-        core: nationalHoliday.columns.map(column => ({
-          ...column,
-          field: column.field.split('/')[1] || column.field,
-        })),
-        import: nationalHoliday.columns.slice(0, -1),
+
+  actualizarFeriadoNacional() {
+    this.nationalHolidayService.actualizarFeriadoNacional(this.form.value).subscribe({
+      next: () => {
+        this.dialogFeriado.visible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Los datos se han actualizado correctamente',
+        });
+        this.listarFeriadosNacionales();
       },
-      data: {
-        core: [],
-        import: [],
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message ?? 'Error desconocido',
+        });
       },
-      actions: [editar, eliminar],
-      accionBtnItem: nationalHoliday.accionBtnItem.bind(this),
+    });
+  }
+
+  async handleArchivo(file: File) {
+    this.datosExcel = await this.leerExcel.leerArchivo(file, ['Feriados']);
+  }
+
+  guardarFeriadoNacionalMasivo() {
+    this.nationalHolidayService
+      .guardarFeriadoNacionalMasivo({
+        iYAcadId: this.iYAcadId,
+        jsonFeriadosNacionales: JSON.stringify(this.datosExcel),
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.listarFeriadosNacionales;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Se procesaron los datos importados',
+          });
+          this.importados = data.data;
+          this.fileUpload?.resetFile();
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message ?? 'Error desconocido',
+            life: 3000,
+          });
+        },
+      });
+  }
+
+  cerrarDialogFeriado() {
+    this.setForm({
+      iYAcadId: this.iYAcadId,
+      bFeriadoEsRecuperable: 0,
+    });
+  }
+
+  cerrarDialogImportar() {
+    this.datosExcel = null;
+    this.fileUpload?.resetFile();
+  }
+
+  // Datos para tablas
+  columns: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: '',
+      header: '#',
+      text_header: 'center',
+      text: 'left',
     },
-    container: nationalHoliday.container,
-    saveData: nationalHoliday.saveData.bind(this),
-    import: {
-      loading: false,
-      downloadTemplate: this.nationalHolidayService.downloadTemplate.bind(
-        this.nationalHolidayService
-      ),
-      saveData: nationalHoliday.importData.bind(this),
-      fileChange: nationalHoliday.fileChange.bind(this),
+    {
+      type: 'date',
+      width: '15%',
+      field: 'dtFeriado',
+      header: 'Fecha',
+      text_header: 'center',
+      text: 'center',
     },
-  };
+    {
+      type: 'text',
+      width: '60%',
+      field: 'cFeriadoNombre',
+      header: 'Nombre',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'estado-activo',
+      width: '15%',
+      field: 'bFeriadoEsRecuperable',
+      header: '¿Es recuperable?',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'actions',
+      width: '5%',
+      field: 'actions',
+      header: 'Acciones',
+      text_header: 'center',
+      text: 'center',
+    },
+  ];
+
+  columnsImport: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'item',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '10%',
+      field: 'dtFeriado',
+      header: 'Fecha',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '35%',
+      field: 'cFeriadoNombre',
+      header: 'Nombre',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'estado-activo',
+      width: '15%',
+      field: 'bImportado',
+      header: '¿Fue importado?',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '35%',
+      field: 'cImportadoObs',
+      header: 'Observación',
+      text_header: 'left',
+      text: 'left',
+    },
+  ];
+
+  actions = [
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-button-rounded p-button-warning p-button-text',
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-button-rounded p-button-danger p-button-text',
+    },
+  ];
+
+  containerActions = [
+    {
+      labelTooltip: 'Aplicar feriados a todas las IEs',
+      text: 'Aplicar',
+      icon: 'pi pi-sync',
+      accion: 'sincronizar',
+      class: 'p-button-warning',
+    },
+    {
+      labelTooltip: 'Importar desde plantilla',
+      text: 'Importar',
+      icon: 'pi pi-file-import',
+      accion: 'importar',
+      class: 'p-button-success',
+    },
+    {
+      labelTooltip: 'Agregar nuevo feriado',
+      text: 'Agregar',
+      icon: 'pi pi-plus',
+      accion: 'agregar',
+      class: 'p-button-primary',
+    },
+  ];
 }

@@ -1,122 +1,124 @@
 import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    forwardRef,
-    Input,
-    Output,
-    ViewChild,
-} from '@angular/core'
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { ButtonModule } from 'primeng/button'
-import { CommonModule } from '@angular/common'
-import { EventEmitter } from '@angular/core'
+  AfterViewInit,
+  Component,
+  ElementRef,
+  forwardRef,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
+import { EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'app-btn-file-upload',
-    standalone: true,
-    imports: [ButtonModule, CommonModule],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => BtnFileUploadComponent),
-            multi: true,
-        },
-    ],
-    templateUrl: './btn-file-upload.component.html',
-    styleUrl: './btn-file-upload.component.scss',
+  selector: 'app-btn-file-upload',
+  standalone: true,
+  imports: [ButtonModule, CommonModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => BtnFileUploadComponent),
+      multi: true,
+    },
+  ],
+  templateUrl: './btn-file-upload.component.html',
+  styleUrl: './btn-file-upload.component.scss',
 })
-export class BtnFileUploadComponent
-    implements ControlValueAccessor, AfterViewInit
-{
-    @Input() label: string = 'Cargar archivo'
-    @Input() icon: string = 'pi pi-upload'
-    @Input() accept: string = '*'
-    @Input() disabled: boolean = false
+export class BtnFileUploadComponent implements ControlValueAccessor, AfterViewInit {
+  @Input() label: string = 'Cargar archivo';
+  @Input() icon: string = 'pi pi-upload';
+  @Input() accept: string = '*';
+  @Input() disabled: boolean = false;
 
-    @Output() fileChange = new EventEmitter<any>()
+  @Output() fileChange = new EventEmitter<any>();
 
-    isAttachedFile = false
+  isAttachedFile = false;
 
-    @ViewChild('FileInput', { static: false })
-    fileInput: ElementRef<HTMLInputElement>
+  @ViewChild('FileInput', { static: false })
+  fileInput: ElementRef<HTMLInputElement>;
 
-    @ViewChild('FileView', { static: false })
-    fileView: ElementRef<HTMLInputElement>
-    file: File | null = null
-    isDisabled = false
+  @ViewChild('FileView', { static: false })
+  fileView: ElementRef<HTMLInputElement>;
+  file: File | null = null;
+  isDisabled = false;
 
-    ngAfterViewInit(): void {
-        if (this.file) {
-            this.attachFileInput(this.file)
-        }
+  ngAfterViewInit(): void {
+    if (this.file) {
+      this.attachFileInput(this.file);
+    }
+  }
+
+  attachFileInput(file: File): void {
+    console.log('file');
+    console.log(file);
+
+    if (!file) {
+      this.fileInput.nativeElement.value = '';
+      this.fileView.nativeElement.value = this.label;
+      this.isAttachedFile = false;
+    } else {
+      this.fileView.nativeElement.value = file.name;
+      this.isAttachedFile = true;
     }
 
-    attachFileInput(file: File): void {
-        console.log('file')
-        console.log(file)
+    this.onChange(file);
+    this.onTouched();
+    this.fileChange.emit(file);
+  }
 
-        if (!file) {
-            this.fileInput.nativeElement.value = ''
-            this.fileView.nativeElement.value = this.label
-            this.isAttachedFile = false
-        } else {
-            this.fileView.nativeElement.value = file.name
-            this.isAttachedFile = true
-        }
+  // Métodos de ControlValueAccessor
+  private onChange = (file: File | null) => {
+    console.log('   ');
+    console.log(file);
+  };
+  onTouched: () => void = () => {};
 
-        this.onChange(file)
-        this.onTouched()
-        this.fileChange.emit(file)
+  writeValue(file): void {
+    console.log('this.file');
+    console.log(this.file);
+
+    if (this.fileInput?.nativeElement) {
+      this.attachFileInput(file);
     }
+  }
 
-    // Métodos de ControlValueAccessor
-    private onChange = (file: File | null) => {
-        console.log('   ')
-        console.log(file)
-    }
-    onTouched: () => void = () => {}
+  registerOnChange(fn: (file: File | null) => void): void {
+    this.onChange = fn;
+  }
 
-    writeValue(file): void {
-        console.log('this.file')
-        console.log(this.file)
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
 
-        if (this.fileInput?.nativeElement) {
-            this.attachFileInput(file)
-        }
-    }
+  setDisabledState?(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
+  }
 
-    registerOnChange(fn: (file: File | null) => void): void {
-        this.onChange = fn
-    }
+  onFileSelected(): void {
+    this.file = this.fileInput.nativeElement.files[0];
 
-    registerOnTouched(fn: () => void): void {
-        this.onTouched = fn
-    }
+    console.log('this.file.name');
+    console.log(this.file.name);
 
-    setDisabledState?(isDisabled: boolean): void {
-        this.isDisabled = isDisabled
-    }
+    this.fileView.nativeElement.value = this.file.name;
 
-    onFileSelected(): void {
-        this.file = this.fileInput.nativeElement.files[0]
+    this.isAttachedFile = true;
 
-        console.log('this.file.name')
-        console.log(this.file.name)
+    this.attachFileInput(this.file);
+  }
+  resetFile(): void {
+    this.onDeletedFile();
+  }
 
-        this.fileView.nativeElement.value = this.file.name
-
-        this.isAttachedFile = true
-
-        this.attachFileInput(this.file)
-    }
-    onDeletedFile() {
-        this.fileView.nativeElement.value = this.label
-        this.fileInput.nativeElement.value = null
-        this.file = null
-        this.isAttachedFile = false
-        this.fileChange.emit(this.file)
-        this.onChange(null)
-        this.onTouched()
-    }
+  onDeletedFile() {
+    this.fileView.nativeElement.value = this.label;
+    this.fileInput.nativeElement.value = null;
+    this.file = null;
+    this.isAttachedFile = false;
+    this.fileChange.emit(this.file);
+    this.onChange(null);
+    this.onTouched();
+  }
 }

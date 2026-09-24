@@ -1,449 +1,353 @@
 import {
   Component,
   Input,
-  OnChanges,
   SimpleChanges,
   EventEmitter,
   Output,
-  inject,
+  OnInit,
+  OnChanges,
 } from '@angular/core';
 import { PrimengModule } from '@/app/primeng.module';
 import { MessageService } from 'primeng/api';
-import { FormsModule } from '@angular/forms';
-//periodo Service
-import { CalendarioPeriodosEvalacionesService } from '@/app/servicios/acad/calendario-periodos-evaluaciones.service';
-import { DatosMatriculaService } from '@/app/sistema/gestion-institucional/services/datos-matricula.service';
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service';
-import { AulaVirtualComponent } from '../../aula-virtual/aula-virtual.component';
-import { GeneralService } from '@/app/servicios/general.service';
-import { NoDataComponent } from '@/app/shared/no-data/no-data.component';
+import { FormArray, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { LogroAlcanzadoService } from '../../services/logro-alcanzado.service';
+import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
 
 @Component({
   selector: 'app-registrar-logro-alcanzado',
   standalone: true,
-  imports: [PrimengModule, FormsModule, AulaVirtualComponent, NoDataComponent],
+  imports: [PrimengModule, FormsModule, TextFieldModule],
   templateUrl: './registrar-logro-alcanzado.component.html',
   styleUrl: './registrar-logro-alcanzado.component.scss',
   providers: [MessageService],
 })
-export class RegistrarLogroAlcanzadoComponent implements OnChanges {
-  @Input() selectedItem: any;
-  //variables para las competencias
-  @Input() competencias: any = [];
-  @Input() area: any = [];
-  @Input() iCredId: number; // Variable para almacenar el crédito seleccionado
-  //@Input() curso: any = [];
+export class RegistrarLogroAlcanzadoComponent implements OnInit, OnChanges {
   @Input() periodos: any[] = [];
-  @Input() iPeriodoId: string = '0'; // Variable para almacenar el periodo seleccionado
-  @Input() mostrarDialog: boolean = false;
+  @Input() escalas: any[] = [];
+  @Input() competencias: any = [];
+  @Input() estudiante: any;
+  @Input() ie_curso: any;
+  @Input() iPeriodoId: number = 0;
   @Output() registraLogroAlcanzado = new EventEmitter<boolean>();
-  //periodo array
 
-  cargarPeriodo: boolean = true;
-  public bHabilitado: boolean = false;
+  formCompetencias: FormGroup;
 
-  detalleActividades: any[] = []; // agregados para aula virtual
-  contenidoSemanas: any[] = []; // agregados para aula virtual
-  tituloCompetencia: string = '';
+  /** Copia inicial (pristina) de cada fila, indexada igual que controles_logros */
+  logros_iniciales: any[] = [];
+  escalas_filtradas: any[] = [];
 
-  area_nombre: string = ''; // Variable para almacenar el área del curso seleccionado
-  conversion: any[] = [
-    // tabla de conversion
-    {
-      iCalifId: 1,
-      logro: 'AD',
-      max: 20,
-      min: 18,
-      descripcion: 'Logro Destacado, Excelente, Muy Bueno.',
-    },
-    {
-      iCalifId: 2,
-      logro: 'A',
-      max: 17.99,
-      min: 14,
-      descripcion: 'Bueno, Satisfactorio, Logro Esperado.',
-    },
-    { iCalifId: 3, logro: 'B', max: 13.99, min: 11, descripcion: 'En Proceso, Regular.' },
-    {
-      iCalifId: 4,
-      logro: 'C',
-      max: 10.99,
-      min: 0,
-      descripcion: 'Deficiente, En Inicio, Reprobado.',
-    },
-  ];
+  iYAcadId: number;
 
-  mostrarBotonFinalizar: boolean = false;
-  iDetMatrId: number = 0; // Variable para almacenar el periodo seleccionado
-  //variables
-  nCalifIdPeriodo1: number = 0; // Variable para almacenar el periodo seleccionado
-  nCalifIdPeriodo2: number = 0; // Variable para almacenar el periodo seleccionado
-  nCalifIdPeriodo3: number = 0; // Variable para almacenar el periodo seleccionado
-  nCalifIdPeriodo4: number = 0; // Variable para almacenar el periodo seleccionado
+  get controles_logros(): FormArray {
+    return this.formCompetencias.get('controles_logros') as FormArray;
+  }
 
-  iCalifIdPeriodo1: string = ''; // Variable para almacenar el periodo seleccionado
-  iCalifIdPeriodo2: string = ''; // Variable para almacenar el periodo seleccionado
-  iCalifIdPeriodo3: string = ''; // Variable para almacenar el periodo seleccionado
-  iCalifIdPeriodo4: string = ''; // Variable para almacenar el periodo seleccionado
-  iPromedio: string = ''; // Variable para almacenar el periodo seleccionado
-  nPromedio: number;
-
-  cDetMatrConclusionDesc1: string = ''; // Variable para almacenar el periodo seleccionado
-  cDetMatrConclusionDesc2: string = ''; // Variable para almacenar el periodo seleccionado
-  cDetMatrConclusionDesc3: string = ''; // Variable para almacenar el periodo seleccionado
-  cDetMatrConclusionDesc4: string = ''; // Variable para almacenar el periodo seleccionado
-  cDetMatrConclusionDescPromedio: string = ''; // Variable para almacenar el periodo seleccionado
-
-  private _confirmService = inject(ConfirmationModalService);
-  public query = inject(GeneralService);
   constructor(
     private messageService: MessageService,
-    private calendarioPeriodosService: CalendarioPeriodosEvalacionesService,
-    private DatosMatriculaService: DatosMatriculaService,
-    private ApiEvaluacionesService: ApiEvaluacionesService
-    //private DetalleMatriculasServic: DetalleMatriculasService,
-    //private ConstantesService: ConstantesService,
-  ) {}
+    private logroAlcanzadoService: LogroAlcanzadoService,
+    private formService: ReactiveFormService,
+    private fb: FormBuilder,
+    private store: LocalStoreService
+  ) {
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+  }
+
+  ngOnInit() {
+    try {
+      this.formCompetencias = this.fb.group({
+        controles_logros: this.fb.array([]),
+      });
+    } catch (e) {
+      console.error('Error al inicializar el formulario:', e);
+    }
+    this.crearControlesLogros([]);
+    // Cuando ngOnChanges se ejecuta antes de ngOnInit (estudiante ya asignado) los logros se cargan aquí
+    if (this.estudiante) {
+      this.obtenerLogrosRegistrados();
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // if (changes['selectedItem']) {
-    //   if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
-    //     this.limpiarVariables();
-    //   }
-    //   // this.filtrarArea();
-    // }
-    if (changes['competencias']) {
-      if (Array.isArray(this.competencias) && this.competencias.length > 0) {
-        this.actualizarArea(); //actualizar los valores de las variables con los datos del selectedItem
-        this.iDetMatrId = this.competencias[0].iDetMatrId ?? 0;
-      }
-    }
-    if (changes['selectedItem']) {
-      if (Array.isArray(this.selectedItem) && this.selectedItem.length > 0) {
-        this.limpiarVariables();
-      }
-      // this.filtrarArea();
-    }
-    // if (changes['periodos']) {
-    //   if (Array.isArray(this.periodos) && this.periodos.length > 0) {
-
-    //     console.log(this.periodos, 'periodos cambiados');
-    //   }
-    //   // this.filtrarArea();
-    // }
-    if (changes['iPeriodoId']) {
-      if (Number(this.iPeriodoId) > 0) {
-        const seleccionadoPeriodo = this.periodos.find(
-          p => Number(p.iNumeroPeriodo) === Number(this.iPeriodoId)
-        );
-
-        if (!seleccionadoPeriodo) {
-          console.warn('No se encontró información del período');
-          return;
-        }
-
-        this.bHabilitado = seleccionadoPeriodo.bHabilitado === '1';
-
-        this.limpiarVariables();
-      }
+    this.reiniciarSugerencias();
+    if (changes['estudiante'] && this.estudiante && this.formCompetencias) {
+      this.logros_iniciales = [];
+      this.formCompetencias.reset();
+      this.obtenerLogrosRegistrados();
     }
   }
 
-  actualizarArea() {
-    this.iCalifIdPeriodo1 = this.selectedItem[0].iCalifIdPeriodo1 ?? '';
-    this.iCalifIdPeriodo2 = this.selectedItem[0].iCalifIdPeriodo2 ?? '';
-    this.iCalifIdPeriodo3 = this.selectedItem[0].iCalifIdPeriodo3 ?? '';
-    this.iCalifIdPeriodo4 = this.selectedItem[0].iCalifIdPeriodo4 ?? '';
-    this.iPromedio = this.selectedItem[0].iPromedio ?? '';
-    this.nPromedio = this.selectedItem[0].nDetMatrPromedio ?? 0;
-
-    this.nCalifIdPeriodo1 = this.selectedItem[0].nDetMatrPeriodo1 ?? 0;
-    this.nCalifIdPeriodo2 = this.selectedItem[0].nDetMatrPeriodo2 ?? 0;
-    this.nCalifIdPeriodo3 = this.selectedItem[0].nDetMatrPeriodo3 ?? 0;
-    this.nCalifIdPeriodo4 = this.selectedItem[0].nDetMatrPeriodo4 ?? 0;
-
-    this.cDetMatrConclusionDesc1 = this.selectedItem[0].cDetMatrConclusionDesc1 ?? '';
-    this.cDetMatrConclusionDesc2 = this.selectedItem[0].cDetMatrConclusionDesc2 ?? '';
-    this.cDetMatrConclusionDesc3 = this.selectedItem[0].cDetMatrConclusionDesc3 ?? '';
-    this.cDetMatrConclusionDesc4 = this.selectedItem[0].cDetMatrConclusionDesc4 ?? '';
-    this.cDetMatrConclusionDescPromedio = this.selectedItem[0].cDetMatConclusionDescPromedio ?? '';
+  /* Sugerencias del autocomplete de escalas (si no hay texto se muestra el catálogo completo) */
+  filtrarEscala(event: any) {
+    const texto = String(event?.query ?? '')
+      .trim()
+      .toLowerCase();
+    const catalogo = this.escalas ?? [];
+    // Siempre se asigna un arreglo nuevo: PrimeNG solo refresca el panel de sugerencias
+    // (y quita el indicador de carga) cuando cambia la referencia de [suggestions]
+    this.escalas_filtradas = texto
+      ? catalogo.filter(item =>
+          String(item?.label ?? '')
+            .toLowerCase()
+            .includes(texto)
+        )
+      : catalogo.slice();
   }
 
-  cerrarDialog() {
-    this.registraLogroAlcanzado.emit(false);
+  /* Al abrir el panel se muestra siempre el catálogo completo de escalas */
+  reiniciarSugerencias() {
+    // Arreglo nuevo para que PrimeNG refresque el panel de sugerencias
+    this.escalas_filtradas = (this.escalas ?? []).slice();
   }
 
-  finalizarRegistro() {
-    this.registraLogroAlcanzado.emit(false);
-    this.mostrarBotonFinalizar = false;
+  /* Normaliza un valor para comparar: null, undefined y cadena vacía se consideran el mismo valor */
+  normalizarValor(valor: any): any {
+    if (valor === undefined || valor === null) return null;
+    if (typeof valor === 'string' && valor.trim() === '') return null;
+    return valor;
   }
 
-  // BUSCADOR DE PAOLO EN FRONT
-  // buscarLogrosDelEstudiante(iMatriculaId: number) {
-  //   this.DatosMatriculaService.searchGradoSeccionTurno(iMatriculaId).subscribe({
-  //     next: (response: any) => {
-  //       if (response.validated && response.data) {
-  //         console.log('Logros encontrados:', response.data);
-  //         // Mapea la respuesta a tus arrays de competencias
-  //         // Ejemplo: this.competenciasMatematica = response.data.matematica;
-  //       } else {
-  //         console.warn('No se encontraron logros para este estudiante.');
-  //       }
-  //     },
-  //     error: error => {
-  //       console.error('Error al buscar logros:', error);
-  //       this.messageService.add({
-  //         severity: 'error',
-  //         summary: 'Error',
-  //         detail: 'No se pudo obtener la información de logros.',
-  //         life: 3000,
-  //       });
-  //     },
-  //   });
-  // }
-
-  insertarResultadoXcompetencias(json: any, iCredId: number, option: string) {
-    this.ApiEvaluacionesService.insertarResultadoXcompetencias({
-      json: JSON.stringify(json),
-      opcion: option,
-      iCredId: iCredId,
-    }).subscribe({
-      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'No se pudo guardar el logro.' + error.message,
-          life: 3000,
-        });
-      },
-      complete: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Logro guardado exitosamente.',
-          life: 3000,
-        });
-      },
-    });
+  /* Compara dos valores de los controles evitando falsos positivos por formato ('', null, undefined) */
+  sonIguales(valorA: any, valorB: any): boolean {
+    const a = this.normalizarValor(valorA);
+    const b = this.normalizarValor(valorB);
+    if (a === null || b === null) return a === b;
+    if (!isNaN(Number(a)) && !isNaN(Number(b))) return Number(a) === Number(b);
+    return String(a).trim() === String(b).trim();
   }
 
-  convertirLogroCompetencias(event: any, index: number, competencia: any) {
-    //this.nPromedio = parseFloat(this.nPromedio.toFixed(2));
-
-    let json: any;
-    let valor: any;
-    let rango: any;
-
-    this._confirmService.openConfiSave({
-      message: 'Desea procesar el Nivel de logro',
-      header: 'Advertencia de  procesamiento',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        switch (this.iPeriodoId) {
-          case '1':
-            valor = this.competencias[index].iResultado_1;
-            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
-            //sctualizar
-            // this.competencias[index].cDescripcion_1 = (this.competencias[index].cDescripcion_1 ?? '') +
-            //   ' ' +  (rango ? rango.descripcion : '');
-            this.competencias[index].cNivelLogro_1 = rango ? rango.logro : '';
-            this.competencias[index].iResultado_1 = parseFloat(parseFloat(valor).toFixed(2));
-            //procesar
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
-              iCompetenciaId: Number(competencia.iCompetenciaId),
-              iPeriodoId: Number(this.iPeriodoId),
-              iResultado: this.competencias[index].iResultado_1,
-              cNivelLogro: this.competencias[index].cNivelLogro_1,
-              cDescripcion: this.competencias[index].cDescripcion_1,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
-            break;
-          case '2':
-            valor = this.competencias[index].iResultado_2;
-            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
-            // this.competencias[index].cDescripcion_2 = (this.competencias[index].cDescripcion_2 ?? '') +
-            //   ' ' +  (rango ? rango.descripcion : '');
-            this.competencias[index].cNivelLogro_2 = rango ? rango.logro : '';
-            this.competencias[index].iResultado_2 = parseFloat(parseFloat(valor).toFixed(2));
-            //procesar
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
-              iCompetenciaId: Number(competencia.iCompetenciaId),
-              iPeriodoId: Number(this.iPeriodoId),
-              iResultado: this.competencias[index].iResultado_2,
-              cNivelLogro: this.competencias[index].cNivelLogro_2,
-              cDescripcion: this.competencias[index].cDescripcion_2,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
-            break;
-
-          case '3':
-            valor = this.competencias[index].iResultado_3;
-            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
-            // this.competencias[index].cDescripcion_3 = (this.competencias[index].cDescripcion_3 ?? '') +
-            // ' ' +  (rango ? rango.descripcion : '');
-            this.competencias[index].cNivelLogro_3 = rango ? rango.logro : '';
-            this.competencias[index].iResultado_3 = parseFloat(parseFloat(valor).toFixed(2));
-            //procesar
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
-              iCompetenciaId: Number(competencia.iCompetenciaId),
-              iPeriodoId: Number(this.iPeriodoId),
-              iResultado: this.competencias[index].iResultado_3,
-              cNivelLogro: this.competencias[index].cNivelLogro_3,
-              cDescripcion: this.competencias[index].cDescripcion_3,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
-            break;
-
-          case '4':
-            valor = this.competencias[index].iResultado_4;
-            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
-            // this.competencias[index].cDescripcion_4 = (this.competencias[index].cDescripcion_4 ?? '') +
-            // ' ' +  (rango ? rango.descripcion : '');
-            this.competencias[index].cNivelLogro_4 = rango ? rango.logro : '';
-            this.competencias[index].iResultado_4 = parseFloat(parseFloat(valor).toFixed(2));
-            //procesar
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
-              iCompetenciaId: Number(competencia.iCompetenciaId),
-              iPeriodoId: Number(this.iPeriodoId),
-              iResultado: this.competencias[index].iResultado_4,
-              cNivelLogro: this.competencias[index].cNivelLogro_4,
-              cDescripcion: this.competencias[index].cDescripcion_4,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
-            break;
-
-          case '5':
-            valor = this.competencias[index].iResultado_5;
-            rango = this.conversion.find(item => valor >= item.min && valor <= item.max);
-            // this.competencias[index].cDescripcion_4 = (this.competencias[index].cDescripcion_4 ?? '') +
-            // ' ' +  (rango ? rango.descripcion : '');
-            this.competencias[index].cNivelLogro_5 = rango ? rango.logro : '';
-            this.competencias[index].iResultado_5 = parseFloat(parseFloat(valor).toFixed(2));
-            //procesar
-            json = {
-              iResultadoCompId: 0,
-              iDetMatrId: Number(competencia.iDetMatrId ?? 0),
-              iCompetenciaId: Number(competencia.iCompetenciaId),
-              iPeriodoId: Number(this.iPeriodoId),
-              iResultado: this.competencias[index].iResultado_5,
-              cNivelLogro: this.competencias[index].cNivelLogro_5,
-              cDescripcion: this.competencias[index].cDescripcion_5,
-            };
-            this.insertarResultadoXcompetencias(json, this.iCredId, 'full');
-            break;
-        }
-      },
-      reject: () => {
-        // Mensaje de cancelación (opcional)
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje de sistema',
-          detail: 'Acción cancelada',
-        });
-      },
-    });
+  /* Obtiene la copia inicial de una fila; se indexa igual que controles_logros y si no existe se busca por competencia */
+  obtenerInicial(index: number): any {
+    const inicial = this.logros_iniciales ? this.logros_iniciales[index] : null;
+    if (inicial) return inicial;
+    const logro = this.controles_logros.at(index)?.value;
+    return (
+      this.logros_iniciales?.find(item =>
+        this.sonIguales(item?.iCompCursoId, logro?.iCompCursoId)
+      ) ?? null
+    );
   }
 
-  actualizarResultadoXperiodoDetMatricula(json) {
-    this.ApiEvaluacionesService.actualizarResultadoXperiodoDetMatricula({
-      json: JSON.stringify(json),
-      iCredId: this.iCredId,
-    }).subscribe({
-      // 3. Esto se ejecuta cuando el servicio devuelve una respuesta exitosa.
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Mensaje del sistema',
-          detail: 'No se pudo guardar el logro.' + error.message,
-          life: 3000,
-        });
-      },
-      complete: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Mensaje del sistema',
-          detail: 'Logro guardado exitosamente.',
-          life: 3000,
-        });
-      },
-    });
+  /* Determina si la fila tiene cambios respecto a su estado inicial (solo campos editables) */
+  hayCambios(index: number): boolean {
+    const control = this.controles_logros.at(index);
+    const inicial = this.obtenerInicial(index);
+    if (!control || !inicial) return false;
+    const logro = control.value;
+    return (
+      !this.sonIguales(inicial.iEscalaCalifId, logro?.iEscalaCalifId) ||
+      !this.sonIguales(inicial.cEscalaCalifLetra, logro?.cEscalaCalifLetra) ||
+      !this.sonIguales(inicial.cDescripcion, logro?.cDescripcion)
+    );
   }
 
-  buscarResultados(competencia: any) {
-    this.obteneSemanasxiPeriodoEvalAperId(competencia);
+  /* Activa o desactiva los botones de guardar/deshacer de la fila según sus cambios */
+  validarCambios(index: number) {
+    const control = this.controles_logros.at(index);
+    if (!control) return;
+    const bMostrarBoton = this.hayCambios(index);
+    if (control.value?.bMostrarBoton !== bMostrarBoton) {
+      control.patchValue({ bMostrarBoton }, { emitEvent: false });
+    }
+  }
 
-    this.tituloCompetencia = null;
-    this.tituloCompetencia = competencia.cCompetenciaNombre;
-
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          iDetMatrId: this.iDetMatrId,
-          iPeriodo: Number(this.iPeriodoId),
-          iCompetenciaId: Number(competencia.iCompetenciaId),
-        }),
-        _opcion: 'competenciaXiDetMatrId',
-      })
-      .subscribe({
-        next: (data: any) => {
-          this.detalleActividades = [];
-          this.detalleActividades = data.data;
-        },
-        error: error => {
-          this.messageService.add({
-            summary: 'Mensaje de sistema',
-            detail: error.error.message,
-            life: 3000,
-            severity: 'error',
-          });
-        },
-        // complete: () => {
-        //   this.obteneSemanasxiPeriodoEvalAperId()
-        // }
+  crearControlesLogros(logros_competencias: Array<object>) {
+    const formArray = this.formCompetencias.get('controles_logros') as FormArray;
+    formArray.clear();
+    (this.competencias ?? []).forEach((param: any) => {
+      const logro_competencia = logros_competencias
+        ? logros_competencias.find(
+            (registro: any) => Number(registro?.iCompCursoId) === Number(param?.iCompCursoId)
+          )
+        : null;
+      // Se usa la letra del catálogo de escalas para que el autocomplete y el id queden consistentes
+      const escala_catalogo = (this.escalas ?? []).find(
+        (escala: any) => Number(escala?.value) === Number(logro_competencia?.['iEscalaCalifId'])
+      );
+      const grupo: FormGroup = this.fb.group({
+        iCompCursoId: [param.iCompCursoId],
+        iResultadoCompId: [logro_competencia ? logro_competencia['iResultadoCompId'] : null],
+        iPeriodoId: [this.iPeriodoId],
+        iDetMatrId: [this.estudiante?.iDetMatrId],
+        iResultado: [logro_competencia ? logro_competencia['iResultado'] : null],
+        iEscalaCalifId: [logro_competencia ? logro_competencia['iEscalaCalifId'] : null],
+        cEscalaCalifLetra: [
+          escala_catalogo
+            ? escala_catalogo.label
+            : logro_competencia
+              ? (logro_competencia['cEscalaCalifLetra'] ?? '')
+              : '',
+        ],
+        cDescripcion: [logro_competencia ? (logro_competencia['cDescripcion'] ?? '') : ''],
+        bMostrarBoton: [false],
       });
+      formArray.push(grupo);
+    });
+    this.reiniciarSugerencias();
+    // Copia inicial por fila, respetando el mismo índice que controles_logros
+    this.logros_iniciales = formArray.controls.map(control => ({ ...control.getRawValue() }));
   }
 
-  obteneSemanasxiPeriodoEvalAperId(competencia: any) {
-    this.query
-      .searchCalendario({
-        json: JSON.stringify({
-          iDetMatrId: this.iDetMatrId,
-          iPeriodo: Number(this.iPeriodoId),
-          iCompetenciaId: Number(competencia.iCompetenciaId),
-        }),
-        _opcion: 'obteneSemanasxiPeriodoEvalAperId',
+  obtenerLogrosRegistrados() {
+    this.messageService.clear();
+    this.logroAlcanzadoService
+      .verResultadosCompetencias({
+        iYAcadId: this.iYAcadId,
+        iEstudianteId: this.estudiante?.iEstudianteId,
+        iPeriodoId: this.iPeriodoId,
+        iDetMatrId: this.estudiante?.iDetMatrId,
       })
       .subscribe({
         next: (data: any) => {
-          this.contenidoSemanas = [];
-          this.contenidoSemanas = data.data;
+          this.crearControlesLogros(data.data);
         },
         error: error => {
+          console.error('Error al buscar logros:', error);
+          // Se reconstruyen las filas vacías para que el docente pueda registrar los logros
+          this.crearControlesLogros([]);
           this.messageService.add({
-            summary: 'Mensaje de sistema',
-            detail: 'Error al cargar secciones de IE.' + error.error.message,
-            life: 3000,
             severity: 'error',
+            summary: 'Ocurrió un error',
+            detail: error.message ?? 'No se pudo obtener la información de logros.',
           });
         },
       });
   }
 
-  limpiarVariables() {
-    this.detalleActividades = []; // agregados para aula virtual
-    this.contenidoSemanas = []; // agregados para aula virtual
-    this.tituloCompetencia = '';
+  /* Normaliza el texto del autocomplete con el catálogo de escalas; si no coincide restaura el valor inicial */
+  mantenerValorSeleccionado(index: number) {
+    const control = this.controles_logros.at(index);
+    if (!control) return;
+    const valorActual = control.value?.cEscalaCalifLetra;
+    // Cuando el autocomplete entrega la opción completa (objeto) no se modifica nada
+    if (valorActual && typeof valorActual === 'object') return;
+    const texto = String(valorActual ?? '')
+      .trim()
+      .toLowerCase();
+    const escala = texto
+      ? (this.escalas ?? []).find(
+          item =>
+            String(item?.label ?? '')
+              .trim()
+              .toLowerCase() === texto
+        )
+      : null;
+    this.reiniciarSugerencias();
+    if (escala) {
+      control.patchValue(
+        { iEscalaCalifId: Number(escala.value), cEscalaCalifLetra: escala.label },
+        { emitEvent: false }
+      );
+    } else {
+      // Texto vacío o no reconocido: se restaura la escala inicial para no perder el registro
+      const inicial = this.obtenerInicial(index);
+      control.patchValue(
+        {
+          iEscalaCalifId: inicial?.iEscalaCalifId ?? null,
+          cEscalaCalifLetra: inicial?.cEscalaCalifLetra ?? '',
+        },
+        { emitEvent: false }
+      );
+    }
+    this.validarCambios(index);
   }
 
-  //this.iDetMatrId
+  /* Permite escribir el nivel de logro y confirmarlo con Enter (Tab y clic ya se resuelven en onBlur) */
+  mantenerValorSeleccionadoTeclado(event: Event, index: number) {
+    if (String((event as KeyboardEvent)?.key ?? '').toLowerCase() !== 'enter') return;
+    // Evita el envío implícito del formulario al presionar Enter
+    event.preventDefault();
+    this.mantenerValorSeleccionado(index);
+  }
+
+  seleccionarEscala(event: any, index: number) {
+    const control = this.controles_logros.at(index);
+    const escala = event?.value;
+    if (!control || !escala) return;
+    control.patchValue(
+      { iEscalaCalifId: Number(escala.value), cEscalaCalifLetra: escala.label },
+      { emitEvent: false }
+    );
+    this.reiniciarSugerencias();
+    this.validarCambios(index);
+  }
+
+  /* Función para guardar nuevo logro y actualizar logro existente */
+  actualizarLogrosRegistrados(index: number) {
+    this.messageService.clear();
+    const control = this.controles_logros.at(index) as FormGroup;
+    if (!control) return;
+    const form = control.value;
+    if (form.iResultado === null && form.iEscalaCalifId === null) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe indicar el nivel de logro alcanzado.',
+      });
+      this.formService.validarFormulario(control);
+      return;
+    }
+    this.logroAlcanzadoService
+      .actualizarResultadosCompetencias({
+        iYAcadId: this.iYAcadId,
+        iEstudianteId: this.estudiante?.iEstudianteId,
+        iPeriodoId: this.iPeriodoId,
+        iDetMatrId: this.estudiante?.iDetMatrId,
+        iCompCursoId: form.iCompCursoId,
+        iResultadoCompId: form.iResultadoCompId,
+        cDescripcion: form.cDescripcion,
+        iEscalaCalifId: form.iEscalaCalifId,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Registro exitoso',
+            detail: 'Logro guardado exitosamente.',
+          });
+          // La copia inicial de la misma fila queda con los datos recién guardados (incluye la letra de la escala)
+          const logro_inicial = {
+            ...control.getRawValue(),
+            iResultadoCompId: form.iResultadoCompId ?? response?.data?.iResultadoCompId,
+            bMostrarBoton: false,
+          };
+          this.logros_iniciales[index] = logro_inicial;
+          control.patchValue(
+            {
+              iResultadoCompId: logro_inicial.iResultadoCompId,
+              bMostrarBoton: false,
+            },
+            { emitEvent: false }
+          );
+        },
+        error: error => {
+          console.error('Error al guardar el logro:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ocurrió un error',
+            detail: error.message ?? 'No se pudo guardar el logro.',
+          });
+        },
+      });
+  }
+
+  /* Devuelve la fila a su estado inicial (incluye la letra de la escala del autocomplete) */
+  restaurarInicial(index: number) {
+    const control = this.controles_logros.at(index);
+    if (!control) return;
+    const inicial = this.obtenerInicial(index);
+    control.patchValue(
+      {
+        iResultado: inicial?.iResultado ?? null,
+        iResultadoCompId: inicial?.iResultadoCompId ?? null,
+        iEscalaCalifId: inicial?.iEscalaCalifId ?? null,
+        cEscalaCalifLetra: inicial?.cEscalaCalifLetra ?? '',
+        cDescripcion: inicial?.cDescripcion ?? '',
+        bMostrarBoton: false,
+      },
+      { emitEvent: false }
+    );
+    this.validarCambios(index);
+  }
 }

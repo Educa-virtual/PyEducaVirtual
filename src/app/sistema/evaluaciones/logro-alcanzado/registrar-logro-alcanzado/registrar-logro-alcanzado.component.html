@@ -1,375 +1,135 @@
-<br />
-<div class="card grid p-fluid">
-  <div class="col-12 md:col-7">
+<div class="grid">
+  <div class="col-12 md:col-6">
     <p-inputGroup>
-      <p-inputGroupAddon> ÁREA: </p-inputGroupAddon>
+      <p-inputGroupAddon> Área </p-inputGroupAddon>
       <input
-        class="disabled"
+        class="group-element"
         disabled
         type="text"
         pInputText
-        [value]="selectedItem?.[0]?.cCursoNombre ?? 'sin area seleccionada'"
+        [value]="ie_curso?.cCursoNombre"
       />
     </p-inputGroup>
   </div>
-  <div class="col-12 md:col-5">
+  <div class="col-12 md:col-6">
     <p-inputGroup>
-      <p-inputGroupAddon> Periodo: </p-inputGroupAddon>
+      <p-inputGroupAddon> Periodo </p-inputGroupAddon>
       <p-dropdown
-        styleClass="w-full"
         [(ngModel)]="iPeriodoId"
         [options]="periodos"
-        optionLabel="cNombrePeriodoH"
-        optionValue="iNumeroPeriodo"
         placeholder="Seleccionar"
         [disabled]="true"
+        [style]="{ flex: '1', width: '100%' }"
+        styleClass="group-element"
       >
       </p-dropdown>
     </p-inputGroup>
   </div>
-  <div class="col-12 md:col-7 lg:col-7 xl:col-7">
-    <p-table
-      [value]="competencias"
-      [scrollable]="true"
-      [scrollable]="true"
-      scrollDirection="horizontal"
-      [style]="{ 'min-width': '0' }"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th pFrozenColumn>Competencias</th>
-          <th colspan="2">Nivel de logro</th>
-          <th>Conclusión descriptiva</th>
-          <th>Action</th>
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="body" let-competencias let-i="rowIndex">
-        @if (iPeriodoId === '1') {
-          <tr>
-            <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-            <td>
-              <p-inputNumber
-                [(ngModel)]="competencias.iResultado_1"
-                mode="decimal"
-                [showButtons]="false"
-                inputId="minmax-buttons"
-                [min]="0"
-                [max]="20"
-                [inputStyle]="{ width: '60px' }"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-              />
-            </td>
-            <td iPeriodoId="1" disabled>
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="competencias.cNivelLogro_1"
-                name="cNivelLogro_1_{{ i }}"
-                style="width: 45px"
-                pattern="^(AD|A|B|C)$"
-                [disabled]="true"
-                maxlength="2"
-              />
-            </td>
-            <td>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="competencias.cDescripcion_1"
-                name="mat_{{ i }}_b1_desc"
-                rows="2"
-                style="width: 100%"
-              ></textarea>
-            </td>
-            <td>
-              <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                *ngIf="
-                  competencias.iResultado_1 !== null &&
-                  competencias.iResultado_1 !== undefined &&
-                  bHabilitado
-                "
-                (click)="convertirLogroCompetencias($event, i, competencias)"
-              >
-              </p-button>
-              <p-button
-                icon="pi pi-search"
-                [rounded]="true"
-                [text]="true"
-                (click)="buscarResultados(competencias)"
-                severity="success"
-              />
-            </td>
-          </tr>
-        }
-        @if (iPeriodoId === '2') {
-          <tr>
-            <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-            <td>
-              <p-inputNumber
-                [(ngModel)]="competencias.iResultado_2"
-                mode="decimal"
-                [showButtons]="false"
-                inputId="minmax-buttons"
-                [min]="0"
-                [max]="20"
-                [inputStyle]="{ width: '60px' }"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-              />
-            </td>
-            <td iPeriodoId="1" disabled>
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="competencias.cNivelLogro_2"
-                name="cNivelLogro_1_{{ i }}"
-                style="width: 45px"
-                pattern="^(AD|A|B|C)$"
-                [disabled]="true"
-                maxlength="2"
-              />
-            </td>
-            <td>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="competencias.cDescripcion_2"
-                name="mat_{{ i }}_b1_desc"
-                rows="2"
-                style="width: 100%"
-              ></textarea>
-            </td>
-            <td>
-              <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                *ngIf="
-                  competencias.iResultado_2 !== null &&
-                  competencias.iResultado_2 !== undefined &&
-                  bHabilitado
-                "
-                (click)="convertirLogroCompetencias($event, i, competencias)"
-              >
-              </p-button>
-              <p-button
-                icon="pi pi-search"
-                [rounded]="true"
-                [text]="true"
-                (click)="buscarResultados(competencias)"
-                severity="success"
-              />
-            </td>
-          </tr>
-        }
-        @if (iPeriodoId === '3') {
-          <tr>
-            <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-            <td>
-              <p-inputNumber
-                [(ngModel)]="competencias.iResultado_3"
-                mode="decimal"
-                [showButtons]="false"
-                inputId="minmax-buttons"
-                [min]="0"
-                [max]="20"
-                [inputStyle]="{ width: '60px' }"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-              />
-            </td>
-            <td iPeriodoId="1" disabled>
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="competencias.cNivelLogro_3"
-                name="cNivelLogro_1_{{ i }}"
-                style="width: 45px"
-                pattern="^(AD|A|B|C)$"
-                [disabled]="true"
-                maxlength="2"
-              />
-            </td>
-            <td>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="competencias.cDescripcion_3"
-                name="mat_{{ i }}_b1_desc"
-                rows="2"
-                style="width: 100%"
-              ></textarea>
-            </td>
-            <td>
-              <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                *ngIf="
-                  competencias.iResultado_3 !== null &&
-                  competencias.iResultado_3 !== undefined &&
-                  bHabilitado
-                "
-                (click)="convertirLogroCompetencias($event, i, competencias)"
-              >
-              </p-button>
-              <p-button
-                icon="pi pi-search"
-                [rounded]="true"
-                [text]="true"
-                (click)="buscarResultados(competencias)"
-                severity="success"
-              />
-            </td>
-          </tr>
-        }
-        @if (iPeriodoId === '4') {
-          <tr>
-            <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-            <td>
-              <p-inputNumber
-                [(ngModel)]="competencias.iResultado_4"
-                mode="decimal"
-                [showButtons]="false"
-                inputId="minmax-buttons"
-                [min]="0"
-                [max]="20"
-                [inputStyle]="{ width: '60px' }"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-              />
-            </td>
-            <td iPeriodoId="1" disabled>
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="competencias.cNivelLogro_4"
-                name="cNivelLogro_1_{{ i }}"
-                style="width: 45px"
-                pattern="^(AD|A|B|C)$"
-                [disabled]="true"
-                maxlength="2"
-              />
-            </td>
-            <td>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="competencias.cDescripcion_4"
-                name="mat_{{ i }}_b1_desc"
-                rows="2"
-                style="width: 100%"
-              ></textarea>
-            </td>
-            <td>
-              <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                *ngIf="
-                  competencias.iResultado_4 !== null &&
-                  competencias.iResultado_4 !== undefined &&
-                  bHabilitado
-                "
-                (click)="convertirLogroCompetencias($event, i, competencias)"
-              >
-              </p-button>
-              <p-button
-                icon="pi pi-search"
-                [rounded]="true"
-                [text]="true"
-                (click)="buscarResultados(competencias)"
-                severity="success"
-              />
-            </td>
-          </tr>
-        }
-        @if (iPeriodoId === '5') {
-          <tr>
-            <td pFrozenColumn>{{ competencias.cCompetenciaNombre }}</td>
-            <td>
-              <p-inputNumber
-                [(ngModel)]="competencias.iResultado_5"
-                mode="decimal"
-                [showButtons]="false"
-                inputId="minmax-buttons"
-                [min]="0"
-                [max]="20"
-                [inputStyle]="{ width: '60px' }"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-              />
-            </td>
-            <td iPeriodoId="1" disabled>
-              <input
-                type="text"
-                pInputText
-                [(ngModel)]="competencias.cNivelLogro_5"
-                name="cNivelLogro_1_{{ i }}"
-                style="width: 45px"
-                pattern="^(AD|A|B|C)$"
-                [disabled]="true"
-                maxlength="2"
-              />
-            </td>
-            <td>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="competencias.cDescripcion_5"
-                name="mat_{{ i }}_b1_desc"
-                rows="2"
-                style="width: 100%"
-              ></textarea>
-            </td>
-            <td>
-              <p-button
-                icon="pi pi-file-edit"
-                [rounded]="true"
-                [text]="true"
-                severity="warning"
-                *ngIf="
-                  competencias.iResultado_5 !== null &&
-                  competencias.iResultado_5 !== undefined &&
-                  bHabilitado
-                "
-                (click)="convertirLogroCompetencias($event, i, competencias)"
-              >
-              </p-button>
-              <p-button
-                icon="pi pi-search"
-                [rounded]="true"
-                [text]="true"
-                (click)="buscarResultados(competencias)"
-                severity="success"
-              />
-            </td>
-          </tr>
-        }
-      </ng-template>
-
-      <ng-template pTemplate="footer"> </ng-template>
-    </p-table>
-  </div>
-  <div class="col-12 md:col-5 aula-container" style="min-width: 320px">
-    <div *ngIf="contenidoSemanas?.length > 0; else noData">
-      <app-aula-virtual
-        [contenidoSemanas]="contenidoSemanas"
-        [detalleActividades]="detalleActividades"
-        [competencia]="tituloCompetencia"
-      />
-    </div>
-
-    <ng-template #noData>
-      <app-no-data
-        [showIcon]="'NO-DATA'"
-        [mensaje]="'No ha seleccionado la competencia para visualizar las actividades'"
-      ></app-no-data>
-    </ng-template>
-  </div>
 </div>
-<p-toast></p-toast>
+<br />
+
+<form [formGroup]="formCompetencias">
+  <div class="grid" *ngIf="controles_logros.length > 0">
+    <div class="col-12">
+      <p-table [value]="competencias">
+        <ng-template pTemplate="header">
+          <tr>
+            <th width="40%">Competencias</th>
+            <th width="15%">Nivel de logro</th>
+            <th width="40%">Conclusión descriptiva</th>
+            <th width="5%"></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-competencias let-i="rowIndex">
+          <tr>
+            <td width="40%">
+              {{ competencias.cCompetenciaNombre }}
+            </td>
+            <td width="15%">
+              <p-autoComplete
+                [formControl]="$any(controles_logros.at(i))?.controls['cEscalaCalifLetra']"
+                [suggestions]="escalas_filtradas"
+                (completeMethod)="filtrarEscala($event)"
+                (onShow)="reiniciarSugerencias()"
+                [dropdown]="true"
+                [minLength]="999"
+                [completeOnFocus]="true"
+                [showEmptyMessage]="false"
+                optionLabel="label"
+                (onBlur)="mantenerValorSeleccionado(i)"
+                (keydown.enter)="mantenerValorSeleccionadoTeclado($event, i)"
+                (onSelect)="seleccionarEscala($event, i)"
+                appendTo="body"
+              />
+            </td>
+            <td width="40%">
+              <textarea
+                [formControl]="$any(controles_logros.at(i))?.controls['cDescripcion']"
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                pInputTextarea
+                rows="2"
+                [style]="{ 'min-width': '200px', width: '100%', flex: '1', resize: 'vertical' }"
+                [minLength]="10"
+                [maxlength]="350"
+                [style.minHeight]="2"
+                [style.maxHeight]="4"
+                cdkAutosizeMinRows="2.5"
+                cdkAutosizeMaxRows="4"
+                (blur)="validarCambios(i)"
+              ></textarea>
+            </td>
+            <td width="10%">
+              <div class="flex gap-1">
+                <p-button
+                  size="small"
+                  [disabled]="!controles_logros.at(i).value.bMostrarBoton"
+                  icon="pi pi-undo"
+                  severity="secondary"
+                  pTooltip="Deshacer cambios"
+                  tooltipPosition="top"
+                  (click)="restaurarInicial(i)"
+                />
+                <p-button
+                  size="small"
+                  *ngIf="
+                    !controles_logros.at(i).value.iResultadoCompId &&
+                    !controles_logros.at(i).value.bMostrarBoton
+                  "
+                  icon="pi pi-pencil"
+                  severity="danger"
+                  pTooltip="Falta registrar"
+                  tooltipPosition="top"
+                  disabled
+                />
+                <p-button
+                  size="small"
+                  *ngIf="
+                    controles_logros.at(i).value.iResultadoCompId &&
+                    !controles_logros.at(i).value.bMostrarBoton
+                  "
+                  icon="pi pi-check"
+                  severity="primary"
+                  pTooltip="Logro registrado"
+                  tooltipPosition="top"
+                  disabled
+                />
+                <p-button
+                  size="small"
+                  *ngIf="controles_logros.at(i).value.bMostrarBoton"
+                  icon="pi pi-save"
+                  severity="success"
+                  pTooltip="Cambios pendientes"
+                  tooltipPosition="top"
+                  (click)="actualizarLogrosRegistrados(i)"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <p-toast></p-toast>
+</form>

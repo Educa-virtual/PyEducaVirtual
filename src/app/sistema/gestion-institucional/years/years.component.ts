@@ -1,262 +1,334 @@
-import { Component, inject, OnInit } from '@angular/core'; //OnChanges, OnDestroy
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component';
-import { ButtonModule } from 'primeng/button';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { CalendarModule } from 'primeng/calendar';
-import { ChipsModule } from 'primeng/chips';
-import { TagModule } from 'primeng/tag';
-import { ToastModule } from 'primeng/toast';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-
-import { MessageService } from 'primeng/api';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-
-import { FormsModule } from '@angular/forms';
-
-import { GeneralService } from '@/app/servicios/general.service';
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
-import { StepConfirmationService } from '@/app/servicios/confirm.service';
+import { Component, OnInit } from '@angular/core';
+import {
+  IActionTable,
+  IColumn,
+  TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component';
+import { MenuItem, MessageService } from 'primeng/api';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PrimengModule } from '@/app/primeng.module';
-import { years } from './config/table/year.table';
-import { YearService } from './config/service/year.service';
+import { YearService } from './year.service';
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service';
-import { distribucionBloques } from './config/table/distribucion-bloque.table';
-import { DistribucionBloquesService } from './config/service/distribucion-bloques.service';
 import { DatePipe } from '@angular/common';
-import { PeriodoEvaluacionesService } from './config/service/periodoEvaluaciones.service';
-import { LocalStoreService } from '@/app/servicios/local-store.service';
 import { Router } from '@angular/router';
-import { TokenStorageService } from '@/app/servicios/token.service';
-
-import { GlobalStateService } from 'src/app/servicios/global-state.service';
+import { ReactiveFormService } from '@/app/servicios/reactive-form.service';
+import { LocalStoreService } from '@/app/servicios/local-store.service';
+import { DIRECTOR_IE, SUBDIRECTOR_IE } from '@/app/servicios/seg/perfiles';
 
 @Component({
   selector: 'app-years',
   standalone: true,
-  imports: [
-    TablePrimengComponent,
-    ButtonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    DialogModule,
-    ToggleButtonModule,
-    ContainerPageComponent,
-    CalendarModule,
-    ChipsModule,
-    ToastModule,
-    PrimengModule,
-    TagModule,
-    InputTextareaModule,
-  ],
-  providers: [MessageService, GeneralService, StepConfirmationService, DatePipe],
+  imports: [TablePrimengComponent, PrimengModule],
+  providers: [DatePipe],
   templateUrl: './years.component.html',
   styleUrl: './years.component.scss',
-}) //, OnChanges, OnDestroy
+})
 export class YearsComponent implements OnInit {
-  forms: {
-    year: FormGroup;
-    distribucionBloque: FormGroup;
-    procesarPeriodos: FormGroup;
-  } = {
-    year: new FormGroup({}),
-    distribucionBloque: new FormGroup({}),
-    procesarPeriodos: new FormGroup({}),
+  formYear: FormGroup;
+  years: any;
+
+  bEditar: boolean = false;
+  bSoloLectura: boolean = false;
+
+  iYAcadId: any;
+  perfil: any;
+
+  dialogYear = {
+    title: '',
+    visible: false,
   };
 
-  private _LocalStoreService = inject(LocalStoreService);
-  perfil = this._LocalStoreService.getItem('dremoPerfil');
-
-  dialogs = {
-    year: {
-      title: '',
-      visible: false,
-    },
-    distribucionBloques: {
-      title: '',
-      visible: false,
-    },
-    distribucionBloque: {
-      title: '',
-      visible: false,
-    },
-    procesarPeriodo: {
-      title: '',
-      visible: false,
-    },
-  };
-
-  periodoEvaluaciones = {
-    types: [],
-    processData: () => {
-      const iPeriodoEvalId = this.forms.procesarPeriodos.get('iPeriodoEvalId').value;
-      const iYAcadId = this.forms.year.get('iYAcadId').value;
-
-      if (!iPeriodoEvalId || !iYAcadId) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Calendario académico',
-          detail: 'Falta información para procesar el calendario',
-          life: 3000,
-        });
-
-        return;
-      }
-
-      this.periodoEvaluacionesService
-        .processConfigCalendario({
-          iCredEntPerfId: this.perfil.iCredEntPerfId ?? null,
-          iCredId: this.perfil.iCredId ?? null,
-          iPerioEvalId: iPeriodoEvalId,
-          iYAcadId: iYAcadId,
-        })
-        .subscribe({
-          next: (res: any) => {
-            const result = res.data[0];
-            const isSuccess = result.Message === 'true';
-
-            this.messageService.add({
-              severity: isSuccess ? 'success' : 'warn',
-              summary: 'Calendario académico',
-              detail: result.resultado,
-              life: 3000,
-            });
-
-            this.dialogs.procesarPeriodo.visible = !isSuccess;
-          },
-        });
-    },
-  };
-
-  years = {
-    accionBtnItem: years.accionBtnItem.bind(this),
-    table: {
-      columns: years.table.columns,
-      data: [],
-      actions: years.table.actions,
-    },
-    container: years.container,
-    saveData: years.saveData.bind(this),
-  };
-
-  distribucionBloques = {
-    types: [],
-    accionBtnItem: distribucionBloques.accionBtnItem.bind(this),
-    table: {
-      columns: distribucionBloques.table.columns,
-      data: [],
-      actions: distribucionBloques.table.actions.call(this),
-    },
-    saveData: distribucionBloques.saveData.bind(this),
-  };
+  breadCrumbHome: MenuItem = { label: '', icon: 'pi pi-home' };
+  breadCrumbItems: MenuItem[] = [{ label: 'Años académicos' }];
 
   constructor(
-    public messageService: MessageService,
-    public query: GeneralService,
+    private messageService: MessageService,
     private fb: FormBuilder,
-    public yearsService: YearService,
-    public distribucionBloquesService: DistribucionBloquesService,
-    private msg: StepConfirmationService,
-    public dialogConfirm: ConfirmationModalService,
-    private router: Router,
-    private tokenStorageService: TokenStorageService,
-
+    private yearsService: YearService,
+    private formService: ReactiveFormService,
+    private dialogConfirm: ConfirmationModalService,
     public datePipe: DatePipe,
-    public periodoEvaluacionesService: PeriodoEvaluacionesService,
-    private globalState: GlobalStateService
+    private router: Router,
+    private store: LocalStoreService
   ) {
-    this.forms.year = this.fb.group({
-      iYearId: [''],
-      cYearNombre: [''],
-      cYearOficial: [''],
-      iYearEstado: [''],
-      iYAcadId: [''],
-    });
-
-    this.forms.distribucionBloque = this.fb.group({
-      iDistribucionBloqueId: [''],
-      iYAcadId: [''],
-      iTipoDistribucionId: [''],
-      iSesionId: [''],
-      dtInicioBloque: [''],
-      dtFinBloque: [''],
-      iEstado: [''],
-    });
-
-    this.forms.procesarPeriodos = this.fb.group({
-      iPeriodoEvalId: [''],
-    });
+    this.perfil = this.store.getItem('dremoPerfil');
+    this.iYAcadId = this.store.getItem('dremoiYAcadId');
+    if ([DIRECTOR_IE, SUBDIRECTOR_IE].includes(Number(this.perfil.iPerfilId))) {
+      // Si es director ver solo el año seleccionado
+      this.router.navigate([`/gestion-institucional/years-academicos/${this.iYAcadId}/config`]);
+    }
   }
 
   ngOnInit(): void {
-    this.yearsService.getYears().subscribe({
-      next: (res: any) => {
-        this.years.table.data = res.data;
-      },
-    });
-
-    this.distribucionBloquesService.getTipoDistribucion().subscribe({
-      next: (res: any) => {
-        this.distribucionBloques.types = res.data.map(item => ({
-          code: item.iTipoDistribucionId,
-          name: item.cBloqueNombre,
-        }));
-      },
-    });
-
-    this.periodoEvaluacionesService.getPeriodosEvaluaciones().subscribe({
-      next: (res: any) => {
-        this.periodoEvaluaciones.types = res.data.map(item => ({
-          code: item.iPeriodoEvalId,
-          name: item.cPeriodoEvalNombre,
-        }));
-      },
-    });
-  }
-  actualizarTolbarAnio(data: any) {
-    // O eliminar todo
-    // localStorage.clear();
-    // sessionStorage.clear();
-
-    /* para leer reactivamente
-    this.globalState.years$.subscribe(years => {
-    console.log('Años disponibles:', years);
-  });
-
-  this.globalState.selectedYear$.subscribe(year => {
-    console.log('Año seleccionado:', year);
-  });
-   
-   */
-    //Se asignan los nuevos años
-    this.globalState.updateYears(data);
-
-    //Asigna el año agregado
-    const year_actual = data.find(year => year.iYearEstado === '1');
-
-    this.globalState.setSelectedYear(year_actual);
-    return;
-    //return;
-    // Mostrar el diálogo de confirmación
-    /* this.dialogConfirm.openAlert({
-      header: 'Se reiniciará  para aplicar los cambios del nuevo año',
-    
+    try {
+      this.formYear = this.fb.group({
+        iYearId: [''],
+        cYearNombre: [new Date().getFullYear(), [Validators.required]],
+        cYearOficial: ['', [Validators.required]],
+        iYearEstado: [''],
+        dtYAcadInicio: ['', [Validators.required]],
+        dYAcadFin: ['', [Validators.required]],
+        iYAcadId: [''],
       });
-    // Esperar 5 segundos (5000 ms)
-      setTimeout(() => {
-        window.location.reload();
-        /*   const user = localStorage.getItem('dremoToken')
-
-        const accessToken = localStorage.getItem('auth-token')
-        const refreshToken = localStorage.getItem('auth-refreshtoken')
-        if (user) {
-            this.tokenStorageService.saveUser(user.replaceAll('"', ''))
-            this.tokenStorageService.saveToken(accessToken)
-            this.tokenStorageService.saveRefreshToken(refreshToken)
-        } else {
-            localStorage.clear()
-            this.tokenStorageService.signOut()
-        }
-    }, 2000);*/
+    } catch (error) {
+      console.error(error);
+    }
+    this.listarYears();
   }
+
+  agregarYear() {
+    this.bSoloLectura = false;
+    this.bEditar = false;
+    this.dialogYear.title = 'Agregar año académico';
+    this.dialogYear.visible = true;
+    this.setFormYear({
+      iYearEstado: true,
+      iYearId: new Date().getFullYear(),
+    });
+  }
+
+  listarYears() {
+    this.yearsService.listarYears({}).subscribe({
+      next: (res: any) => {
+        this.years = res.data;
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  guardarYear() {
+    this.yearsService.guardarYear(this.formYear.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se guardó con éxito',
+        });
+        this.dialogYear.visible = false;
+        this.listarYears();
+      },
+      error: error => {
+        console.error('Error guardando año académico:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  actualizarYear() {
+    this.yearsService.actualizarYear(this.formYear.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Se actualizó con éxito',
+        });
+        this.dialogYear.visible = false;
+        this.listarYears();
+      },
+      error: error => {
+        console.error('Error actualizando año académico:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  eliminarYear(item: any) {
+    this.yearsService.borrarYear(item).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Eliminado con éxito',
+        });
+        this.listarYears();
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
+    });
+  }
+
+  setFormYear(data: any) {
+    console.log(data);
+    this.formYear.reset(data);
+    this.formService.formatearFormControl(
+      this.formYear,
+      'dtYAcadInicio',
+      data.dtYAcadInicio,
+      'date'
+    );
+    this.formService.formatearFormControl(this.formYear, 'dYAcadFin', data.dYAcadFin, 'date');
+  }
+
+  accionBtnItem({ accion, item }) {
+    switch (accion) {
+      case 'ver':
+        this.bSoloLectura = true;
+        this.formYear.disable();
+        this.dialogYear = {
+          title: 'Año académico',
+          visible: true,
+        };
+        this.setFormYear(item);
+        break;
+      case 'editar':
+        this.bSoloLectura = false;
+        this.bEditar = true;
+        this.dialogYear = {
+          title: 'Editar año académico',
+          visible: true,
+        };
+        this.formYear.get('iYearEstado').disable();
+        this.setFormYear(item);
+        break;
+      case 'eliminar':
+        this.dialogConfirm.openConfirm({
+          header: 'Confirmación',
+          message: `¿Realmente desea eliminar el año seleecionado?`,
+          accept: () => {
+            this.eliminarYear(item);
+          },
+        });
+        break;
+      case 'distribucion':
+        this.router.navigate([
+          `/gestion-institucional/years-academicos/${item.iYAcadId}/distribucion`,
+        ]);
+        break;
+      case 'calendario':
+        this.router.navigate([`/gestion-institucional/years-academicos/${item.iYAcadId}/config`]);
+        break;
+    }
+  }
+
+  /* Datos de tabla */
+  columns: IColumn[] = [
+    {
+      type: 'item',
+      width: '5%',
+      field: 'item',
+      header: 'Item',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '10%',
+      field: 'cYearNombre',
+      header: 'Año',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'text',
+      width: '35%',
+      field: 'cYearOficial',
+      header: 'Nombre oficial',
+      text_header: 'left',
+      text: 'left',
+    },
+    {
+      type: 'estado-activo',
+      width: '5%',
+      field: 'iYearEstado',
+      header: 'Activo',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '10%',
+      field: 'dtYAcadInicio',
+      header: 'Inicio',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'date',
+      width: '10%',
+      field: 'dYAcadFin',
+      header: 'Fin',
+      text_header: 'center',
+      text: 'center',
+    },
+    {
+      type: 'dropdown-actions',
+      width: '5%',
+      field: 'actions',
+      header: 'Acciones',
+      text_header: 'right',
+      text: 'right',
+    },
+  ];
+
+  actions: IActionTable[] = [
+    {
+      labelTooltip: 'Gestionar semanas lectivas',
+      icon: 'pi pi-calendar',
+      accion: 'distribucion',
+      type: 'item',
+      class: 'p-menuitem-link text-primary',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+    {
+      labelTooltip: 'Ver semanas lectivas',
+      icon: 'pi pi-calendar',
+      accion: 'distribucion',
+      type: 'item',
+      class: 'p-menuitem-link text-primary',
+      isVisible: rowData => Number(rowData.iYearEstado) == 0,
+    },
+    {
+      labelTooltip: 'Configurar calendario académico',
+      icon: 'pi pi-sync',
+      accion: 'calendario',
+      type: 'item',
+      class: 'p-menuitem-link text-purple-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+    {
+      labelTooltip: 'Ver',
+      icon: 'pi pi-eye',
+      accion: 'ver',
+      type: 'item',
+      class: 'p-menuitem-link text-gray-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 0,
+    },
+    {
+      labelTooltip: 'Editar',
+      icon: 'pi pi-pencil',
+      accion: 'editar',
+      type: 'item',
+      class: 'p-menuitem-link text-orange-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+    {
+      labelTooltip: 'Eliminar',
+      icon: 'pi pi-trash',
+      accion: 'eliminar',
+      type: 'item',
+      class: 'p-menuitem-link text-red-500',
+      isVisible: rowData => Number(rowData.iYearEstado) == 1,
+    },
+  ];
 }

@@ -19,14 +19,9 @@ export const reportesEre = {
 export const administradorDremo = [
   {
     items: [
+      inicio,
       {
-        label: 'Administracion',
-        icon: 'pi pi-fw pi-home',
-        // routerLink: [''],
-      },
-      // inicio,
-      {
-        label: 'Administrador IE',
+        label: 'Configurar año académico',
         icon: 'pi pi-warehouse',
         items: [
           {
@@ -35,7 +30,7 @@ export const administradorDremo = [
             routerLink: ['/gestion-institucional/fechas-nacionales'],
           },
           {
-            label: 'Gestión del año académico',
+            label: 'Gestión del calendario académico',
             icon: 'pi pi-calendar-clock',
             routerLink: ['/gestion-institucional/years-academicos'],
           },
@@ -47,20 +42,19 @@ export const administradorDremo = [
         ],
       },
       {
-        label: 'Mantenimiento IE',
+        label: 'Gestionar Instituciones Educativas',
         icon: 'pi pi-sitemap',
-        items: [
-          {
-            label: 'Administrar IE',
-            icon: 'pi pi-tablet',
-            routerLink: ['/administrador/mantenimiento-ie'],
-          },
-          {
-            label: 'Currícula',
-            icon: 'pi pi-folder',
-            routerLink: ['/administrador/mantenimiento-curricula'],
-          },
-        ],
+        routerLink: ['/administrador/mantenimiento-ie'],
+      },
+      {
+        label: 'Gestionar Currícula',
+        icon: 'pi pi-tablet',
+        routerLink: ['/administrador/mantenimiento-curricula'],
+      },
+      {
+        label: 'Gestionar Calificación',
+        icon: 'pi pi-book',
+        routerLink: ['/evaluaciones/tipo-escala'],
       },
       /*{
                 label: 'Sincronizar SIAGIE',
@@ -68,7 +62,7 @@ export const administradorDremo = [
                 routerLink: ['/evaluaciones'],
             },*/
       {
-        label: 'ERE',
+        label: 'Evaluciones Regionales',
         icon: 'pi pi-pen-to-square',
         items: [
           {

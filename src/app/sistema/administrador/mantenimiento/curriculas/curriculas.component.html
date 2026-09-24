@@ -20,16 +20,6 @@
         <i class="pi pi-plus"></i>
         <span class="ml-2 hidden sm:block">Agregar</span>
       </p-button>
-      <p-button
-        size="small"
-        pTooltip="Regresar"
-        tooltipPosition="top"
-        (click)="accionBtnItem({ accion: 'regresar' })"
-        severity="secondary"
-      >
-        <i class="pi pi-arrow-left"></i>
-        <span class="ml-2 hidden sm:block">Regresar</span>
-      </p-button>
     </div>
   </ng-template>
 
@@ -60,7 +50,7 @@
 
   <p-messages [closable]="true" severity="info">
     <ng-template pTemplate="content">
-      <p>Los parámetros en (*) son obligatorios</p>
+      <p>Los campos con (*) son obligatorios</p>
     </ng-template>
   </p-messages>
   <form [formGroup]="frmCurriculas">

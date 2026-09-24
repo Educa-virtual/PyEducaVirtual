@@ -83,8 +83,7 @@ export class EvaluacionExclusionesComponent implements OnInit {
 
   setBreadCrumbs(evaluacion: any | null = null) {
     this.breadCrumbItems = [
-      { label: 'ERE' },
-      { label: 'Evaluaciones', routerLink: ['/ere/evaluaciones'] },
+      { label: 'Evaluaciones Regionales', routerLink: ['/ere/evaluaciones'] },
       {
         label: this.evaluacion
           ? this.evaluacion.cEvaluacionNombre + ' - ' + evaluacion.cNivelEvalNombre

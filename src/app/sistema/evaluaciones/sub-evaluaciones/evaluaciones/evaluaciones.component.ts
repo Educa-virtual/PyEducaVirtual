@@ -117,7 +117,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
   resetSelect: boolean = false;
 
   setBreadCrumbs() {
-    this.breadCrumbItems = [{ label: 'ERE' }, { label: 'Evaluaciones' }];
+    this.breadCrumbItems = [{ label: 'Evaluaciones Regionales' }];
     this.breadCrumbHome = { icon: 'pi pi-home', routerLink: '/' };
   }
 

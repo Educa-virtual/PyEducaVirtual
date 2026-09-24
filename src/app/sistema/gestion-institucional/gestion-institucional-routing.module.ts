@@ -20,9 +20,6 @@ import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados
 import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component';
 import { InformacionComponent } from './informacion/informacion.component';
 import { SincronizarArchivoComponent } from './sincronizar-archivo/sincronizar-archivo.component';
-
-//import { HorarioComponent } from './horario/horario.component'
-//import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component';
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component';
 import { FechasImportentesComponent as FechasImportantesComponent } from './fechas-importantes/fechas-importantes.component';
@@ -33,6 +30,7 @@ import {
   ESPECIALISTA_UGEL,
   ESPECIALISTA_DREMO,
   DOCENTE,
+  SUBDIRECTOR_IE,
 } from '@/app/servicios/seg/perfiles';
 import { CalendarioEscolarComponent } from './calendario-escolar/calendario-escolar.component';
 import { RoleGuard } from '@/app/shared/_guards/role.guard';
@@ -42,6 +40,11 @@ import { GestionDesercionComponent } from './gestion-desercion/gestion-desercion
 import { GestionMatriculasComponent } from './matriculas/gestionar-matriculas/gestionar-matriculas.component';
 import { GestionMeritosComponent } from './gestion-meritos/gestion-meritos.component';
 import { ListaUsuariosComponent } from '../administrador/gestion-usuarios/lista-usuarios/lista-usuarios.component';
+import { YearDistribucionComponent } from './years/year-distribucion/year-distribucion.component';
+import { YearCalendarioComponent } from './years/year-calendario/year-calendario.component';
+import { YearConfigComponent } from './years/year-config/year-config.component';
+import { YearPeriodosComponent } from './years/year-periodos/year-periodos.component';
+import { YearDiasComponent } from './years/year-dias/year-dias.component';
 const routes: Routes = [
   {
     path: 'calendarioAcademico',
@@ -56,8 +59,55 @@ const routes: Routes = [
     component: YearsComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [DIRECTOR_IE, ADMINISTRADOR_DREMO],
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
     },
+  },
+  {
+    path: 'years-academicos/:iYAcadId/distribucion',
+    component: YearDistribucionComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO],
+    },
+  },
+  {
+    path: 'years-academicos/:iYAcadId/config',
+    component: YearConfigComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
+    },
+    children: [
+      {
+        path: '',
+        redirectTo: 'calendario',
+        pathMatch: 'full',
+      },
+      {
+        path: 'calendario',
+        component: YearCalendarioComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
+        },
+      },
+      {
+        path: 'periodos',
+        component: YearPeriodosComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
+        },
+      },
+      {
+        path: 'dias',
+        component: YearDiasComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: [ADMINISTRADOR_DREMO, DIRECTOR_IE, SUBDIRECTOR_IE],
+        },
+      },
+    ],
   },
   {
     path: 'config',
@@ -139,7 +189,7 @@ const routes: Routes = [
           expectedRole: [DIRECTOR_IE],
         },
       },
-    ]
+    ],
   },
   {
     path: 'fechas-nacionales',

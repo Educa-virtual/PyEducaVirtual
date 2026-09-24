@@ -1,0 +1,122 @@
+<div class="grid mt-2">
+  <div class="col-12">
+    <p-button
+      label="Re-procesar periodos"
+      (onClick)="procesarPeriodos()"
+      severity="warning"
+      class="w-full"
+    />
+  </div>
+  <div class="col-12">
+    <app-table-primeng
+      [columnas]="columnas"
+      [data]="periodos"
+      (accionBtnItem)="accionBtnItemTable($event)"
+      [(selectedRowData)]="selectedItem"
+      [actions]="actions"
+      [showPaginator]="false"
+      [showCaption]="false"
+    />
+  </div>
+</div>
+
+<div class="flex justify-content-end gap-2">
+  <p-button label="Regresar" severity="secondary" (onClick)="cambiarTab(0)" />
+  <p-button label="Continuar" severity="success" (onClick)="cambiarTab(2)" />
+</div>
+
+<p-dialog
+  [header]="dialogPeriodo.title"
+  [(visible)]="dialogPeriodo.visible"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{ width: '50vw', maxWidth: '100vw', maxHeight: '100vh' }"
+  [modal]="true"
+  [closable]="true"
+  (onHide)="setFormPeriodo({})"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <form [formGroup]="formPeriodo">
+    <input type="hidden" formControlName="iPeriodoEvalAperId" />
+    <div class="grid mt-2">
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Periodo</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cPeriodoEvalNombre"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fase</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="cFasePromNombre"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Orden</p-inputGroupAddon>
+          <input
+            pInputText
+            formControlName="iOrden"
+            class="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Habilitado</p-inputGroupAddon>
+          <p-dropdown
+            formControlName="bHabilitado"
+            [options]="opciones"
+            styleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+          <p-calendar
+            formControlName="dtPeriodoEvalAperInicio"
+            inputStyleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+            [showIcon]="true"
+          />
+        </p-inputGroup>
+      </div>
+      <div class="col-12 md:col-6">
+        <p-inputGroup>
+          <p-inputGroupAddon>Fin</p-inputGroupAddon>
+          <p-calendar
+            formControlName="dtPeriodoEvalAperFin"
+            inputStyleClass="group-element"
+            [style]="{ flex: '1', width: '100%' }"
+            [showIcon]="true"
+          />
+        </p-inputGroup>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-end gap-2 mt-3">
+    <p-button label="Cancelar" severity="secondary" (onClick)="dialogPeriodo.visible = false" />
+    <p-button
+      *ngIf="bEditable"
+      label="Actualizar"
+      severity="warning"
+      (onClick)="actualizarPeriodo()"
+      [disabled]="formPeriodo.invalid"
+    />
+  </div>
+</p-dialog>
+
+<p-toast />

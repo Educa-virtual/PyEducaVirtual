@@ -1,0 +1,176 @@
+<form [formGroup]="formCalendario">
+  <div class="grid mt-2">
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Inicio *</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtCalAcadInicio"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fin *</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtCalAcadFin"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Inicio Matriculas *</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtCalAcadMatriculaInicio"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fin Matriculas *</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtCalAcadMatriculaFin"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fin Rezagados *</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtCalAcadMatriculaResagados"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>
+          <a
+            role="button"
+            class="p-button p-button-secondary mr-2"
+            (click)="panel.toggle($event)"
+            (keypress)="panel.toggle($event)"
+            tabindex="0"
+          >
+            <i class="pi pi-question-circle"></i>
+          </a>
+          <p-overlayPanel #panel [showCloseIcon]="true" appendTo="body">
+            <div class="w-15rem">
+              Los periodos (bimestral, trimestral, semestral) agrupan los bloques lectivos oficiales
+              del MINEDU, sin cambiar sus fechas, solo organizando evaluaciones dentro de ellos.
+            </div>
+          </p-overlayPanel>
+          <span>Periodos *</span>
+        </p-inputGroupAddon>
+        <p-dropdown
+          formControlName="iPeriodoEvalId"
+          appendTo="body"
+          styleClass="group-element"
+          placeholder="Seleccione"
+          [options]="tipos_periodos"
+          [style]="{ flex: '1', width: '100%' }"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <p-fieldset legend="Fase regular" class="mt-2">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                pTooltip="Inicio de la fase regular"
+                tooltipPosition="top"
+                inputStyleClass="group-element"
+                formControlName="dtFaseInicioRegular"
+                [showIcon]="true"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Fin</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                pTooltip="Fin de la fase regular"
+                tooltipPosition="top"
+                inputStyleClass="group-element"
+                formControlName="dtFaseFinRegular"
+                [showIcon]="true"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+    <div class="col-12">
+      <p-fieldset legend="Fase de recuperación" class="mt-2">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                pTooltip="Inicio de la fase de recuperación"
+                tooltipPosition="top"
+                inputStyleClass="group-element"
+                formControlName="dtFaseInicioRecuperacion"
+                [showIcon]="true"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+          <div class="col-12 md:col-6">
+            <p-inputGroup>
+              <p-inputGroupAddon>Fin</p-inputGroupAddon>
+              <p-calendar
+                appendTo="body"
+                pTooltip="Fin de la fase de recuperación"
+                tooltipPosition="top"
+                inputStyleClass="group-element"
+                formControlName="dtFaseFinRecuperacion"
+                [showIcon]="true"
+                [style]="{ flex: '1', width: '100%' }"
+              />
+            </p-inputGroup>
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+  </div>
+  <div class="flex justify-content-end mt-2 gap-2">
+    <p-button label="Regresar" severity="secondary" (onClick)="volver()" />
+    <p-button
+      [disabled]="formCalendario.invalid"
+      label="Aplicar y continuar"
+      severity="success"
+      (onClick)="actualizarCalendario()"
+    />
+  </div>
+</form>

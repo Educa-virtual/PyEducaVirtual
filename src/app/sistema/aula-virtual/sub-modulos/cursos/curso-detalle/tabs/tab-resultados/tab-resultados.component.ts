@@ -502,7 +502,7 @@ export class TabResultadosComponent extends MostrarErrorComponent implements OnI
   obtenerEscalaCalificaciones() {
     this._EscalaCalificacionesService.obtenerEscalaCalificaciones().subscribe({
       next: resp => {
-        if (resp.validated) this.calificacion = resp.data;
+        this.calificacion = resp.data;
       },
       error: error => this.mostrarErrores(error),
     });

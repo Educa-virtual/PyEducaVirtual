@@ -253,7 +253,7 @@ const registro_asistencia = [
 
 const administracion = [
   {
-    label: 'Administración',
+    inicio,
     items: [
       {
         label: 'Administracion de tablas maestras',

@@ -194,10 +194,7 @@ export class VistaPreviaEreComponent implements OnInit {
   generarBreadCrumb() {
     this.breadCrumbItems = [
       {
-        label: 'ERE',
-      },
-      {
-        label: 'Evaluaciones',
+        label: 'Evaluaciones Regionales',
         routerLink: '/ere/evaluaciones',
       },
       {

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, map, shareReplay } from 'rxjs';
 import { environment } from '@/environments/environment';
+
+const baseUrl = environment.backendApi;
 
 export interface InstitucionEducativa {
   iIieeId?: number;
@@ -79,6 +81,161 @@ export class MantenimientoIeService {
 
   constructor(private http: HttpClient) {}
 
+  parametros: any;
+  parametros$?: Observable<any>;
+
+  nivel_tipos: any[];
+  zonas: any[];
+  tipos_sectores: any[];
+  ugeles: any[];
+  provincias: any[];
+  distritos: any[];
+  turnos: any[];
+  servicios_educativos: any[];
+
+  crearInstitucionEducativa(data: any) {
+    if (this.parametros) {
+      return of(this.parametros);
+    }
+
+    if (!this.parametros$) {
+      this.parametros$ = this.http.post(`${baseUrl}/acad/crearInstitucionEducativa`, data).pipe(
+        map((data: any) => {
+          this.parametros = data.data;
+          return this.parametros;
+        }),
+        shareReplay(1)
+      );
+    }
+
+    return this.parametros$;
+  }
+
+  getNivelTipos(data: any) {
+    if (!this.nivel_tipos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.nivel_tipos = items.map(item => ({
+        value: Number(item.iNivelTipoId),
+        label: item.cNivelTipoNombre,
+      }));
+      return this.nivel_tipos;
+    }
+    return this.nivel_tipos;
+  }
+
+  getZonas(data: any) {
+    if (!this.zonas && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.zonas = items.map(item => ({
+        value: Number(item.iZonaId),
+        label: item.cZonaNombre,
+      }));
+      return this.zonas;
+    }
+    return this.zonas;
+  }
+
+  getTiposSectores(data: any) {
+    if (!this.tipos_sectores && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.tipos_sectores = items.map(item => ({
+        value: Number(item.iTipoSectorId),
+        label: item.cTipoSectorNombre,
+      }));
+      return this.tipos_sectores;
+    }
+    return this.tipos_sectores;
+  }
+
+  getUgeles(data: any) {
+    if (!this.ugeles && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.ugeles = items.map(item => ({
+        value: Number(item.iUgelId),
+        label: item.cUgelNombre,
+      }));
+      return this.ugeles;
+    }
+    return this.ugeles;
+  }
+
+  getProvincias(data: any) {
+    if (!this.provincias && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.provincias = items.map(item => ({
+        value: Number(item.iPrvnId),
+        label: item.cProvNombre,
+      }));
+      return this.provincias;
+    }
+    return this.provincias;
+  }
+
+  getDistritos(data: any) {
+    if (!this.distritos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.distritos = items.map(item => ({
+        value: Number(item.iDsttId),
+        label: item.cDsttNombre,
+      }));
+      return this.distritos;
+    }
+    return this.distritos;
+  }
+
+  getTurnos(data: any) {
+    if (!this.turnos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.turnos = items.map(item => ({
+        value: Number(item.iTurnoId),
+        label: item.cTurnoNombre,
+      }));
+      return this.turnos;
+    }
+    return this.turnos;
+  }
+
+  getServiciosEducativos(data: any) {
+    if (!this.servicios_educativos && data) {
+      const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'));
+      this.servicios_educativos = items.map(item => ({
+        value: Number(item.iServEdId),
+        label: item.cServEdNombre,
+        iNivelTipoId: item.iNivelTipoId,
+      }));
+      return this.servicios_educativos;
+    }
+    return this.servicios_educativos;
+  }
+
+  listarInstitucionesEducativas(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarInstitucionesEducativas`, data);
+  }
+
+  verInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/verInstitucionEducativa`, data);
+  }
+
+  eliminarInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/eliminarInstitucionEducativa`, data);
+  }
+
+  listarSedes(data: any) {
+    return this.http.post(`${baseUrl}/acad/listarSedes`, data);
+  }
+
+  guardarSede(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarSede`, data);
+  }
+
+  actualizarSede(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarSede`, data);
+  }
+
+  eliminarSede(data: any) {
+    return this.http.post(`${baseUrl}/acad/eliminarSede`, data);
+  }
+
   obtenerInstitucionEducativa(
     filtros?: FiltrosIE
   ): Observable<RespuestaApi<InstitucionEducativa[]>> {
@@ -96,50 +253,13 @@ export class MantenimientoIeService {
     return this.http.get<RespuestaApi<InstitucionEducativa[]>>(this.baseUrl, { params });
   }
 
-  crearInstitucionEducativa(
-    data: InstitucionEducativa
-  ): Observable<RespuestaApi<InstitucionEducativa>> {
-    return this.http.post<RespuestaApi<InstitucionEducativa>>(
-      this.baseUrlIE + '/insertarIntituciones',
-      data
-    );
+  guardarInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/guardarInstitucionEducativa`, data);
   }
 
-  actualizarInstitucionEducativa(
-    id: number,
-    data: InstitucionEducativa
-  ): Observable<RespuestaApi<InstitucionEducativa>> {
-    return this.http.put<RespuestaApi<InstitucionEducativa>>(`${this.baseUrl}/${id}`, data);
+  actualizarInstitucionEducativa(data: any) {
+    return this.http.post(`${baseUrl}/acad/actualizarInstitucionEducativa`, data);
   }
-
-  eliminarInstitucionEducativa(id: number, iSesionId: number): Observable<RespuestaApi<any>> {
-    return this.http.delete<RespuestaApi<any>>(`${this.baseUrl}/${id}`, {
-      body: { iSesionId },
-    });
-  }
-  // obtenerDistritos(): Observable<RespuestaApi<Distrito[]>> {
-  //   return this.http.get<RespuestaApi<Distrito[]>>(`${this.urlBackendApi}/catalogos/distritos`);
-  // }
-
-  // obtenerUgeles(): Observable<RespuestaApi<Ugel[]>> {
-  //   return this.http.get<RespuestaApi<Ugel[]>>(`${this.urlBackendApi}/catalogos/ugeles`);
-  // }
-
-  // obtenerZonas(): Observable<RespuestaApi<any[]>> {
-  //   return this.http.get<RespuestaApi<any[]>>(`${this.urlBackendApi}/catalogos/zonas`);
-  // }
-
-  // obtenerSectores(): Observable<RespuestaApi<any[]>> {
-  //   return this.http.get<RespuestaApi<any[]>>(`${this.urlBackendApi}/catalogos/sectores`);
-  // }
-
-  // obtenerNiveles(): Observable<RespuestaApi<any[]>> {
-  //   return this.http.get<RespuestaApi<any[]>>(`${this.urlBackendApi}/catalogos/niveles`);
-  // }
-
-  // obtenerSedes(): Observable<RespuestaApi<any[]>> {
-  //   return this.http.get<RespuestaApi<any[]>>(`${this.urlBackendApi}/catalogos/sedes`);
-  // }
 
   crearSede(data: Sede): Observable<RespuestaApi<Sede>> {
     return this.http.post<RespuestaApi<Sede>>(this.baseUrlIE + '/insertarSedes', data);

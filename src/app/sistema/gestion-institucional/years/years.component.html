@@ -1,256 +1,129 @@
-<app-container-page
-  title="Registro del año académico"
-  [actions]="years.container.actions"
-  (accionBtnItem)="years.accionBtnItem($event)"
-  ><p-toast />
-  <div class="card">
-    <app-table-primeng
-      [columnas]="years.table.columns"
-      [showCaption]="true"
-      [data]="years.table.data"
-      (accionBtnItem)="years.accionBtnItem($event)"
-      [showPaginator]="true"
-      [actions]="years.table.actions"
-    >
-    </app-table-primeng>
-    <ng-container slot="caption-content"> </ng-container>
-  </div>
-</app-container-page>
+<p-breadcrumb class="max-w-full" [model]="breadCrumbItems" [home]="breadCrumbHome" />
+<p-toast />
 
-<p-dialog
-  [header]="dialogs.year.title"
-  [(visible)]="dialogs.year.visible"
-  [style]="{ width: '56rem' }"
-  [modal]="true"
->
-  <form class="grid mt-2" [formGroup]="forms.year">
-    <div class="col grid">
-      <div class="col-12 flex flex-column gap-2">
-        <label for="cYearNombre">Nombre</label>
-        <input
-          pInputText
-          input
-          pStyleClass="w-full"
-          id="cYearNombre"
-          placeholder="Ingrese el nombre del año académico"
-          formControlName="cYearNombre"
-        />
-      </div>
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column">
+      <div class="flex text-2xl font-bold">Años académicos</div>
     </div>
-
-    <div class="col-12 flex flex-column gap-2">
-      <label for="cYearOficial">Nombre oficial</label>
-      <input pInputText pStyleClass="w-full" id="cYearOficial" formControlName="cYearOficial" />
-    </div>
-  </form>
-  <!-- 
-    <form class="grid mt-2" [formGroup]="forms.yearAcademico">
-        <div class="col grid">
-            <div class="col-6 flex flex-column gap-2">
-                <label for="dtYAcadInicio">Inicio</label>
-                <p-calendar
-                    appendTo="body"
-                    [showOnFocus]="false"
-                    inputStyleClass="w-full"
-                    styleClass="w-full"
-                    formControlName="dtYAcadInicio"
-                    [iconDisplay]="'input'"
-                    [showIcon]="true"
-                    inputId="dtYAcadInicio"
-                />
-            </div>
-            <div class="col-6 flex flex-column gap-2">
-                <label for="dYAcadFin">Fin</label>
-                <p-calendar
-                    appendTo="body"
-                    [showOnFocus]="false"
-                    inputStyleClass="w-full"
-                    styleClass="w-full"
-                    formControlName="dYAcadFin"
-                    [iconDisplay]="'input'"
-                    [showIcon]="true"
-                    inputId="dYAcadFin"
-                />
-            </div>
-        </div>
-    </form> -->
-
-  <ng-template pTemplate="footer">
-    @if (this.forms.year.enabled) {
-      <div class="flex justify-content-between gap-2">
-        <p-button
-          label="Cancelar"
-          [text]="true"
-          severity="secondary"
-          (onClick)="dialogs.year.visible = false"
-        />
-        <p-button
-          label="Guardar"
-          [outlined]="true"
-          severity="secondary"
-          (onClick)="years.saveData()"
-        />
-      </div>
-    }
   </ng-template>
-</p-dialog>
-
-<p-dialog
-  #dialogSemanasLectivas
-  [header]="dialogs.distribucionBloques.title"
-  [(visible)]="dialogs.distribucionBloques.visible"
-  [style]="{ width: '56rem' }"
-  [modal]="true"
-  (onShow)="dialogSemanasLectivas.maximize()"
->
-  <div class="grid mt-2">
-    <div class="col-12">
+  <ng-template pTemplate="icons">
+    <div class="flex flex-wrap gap-2 justify-content-end">
       <p-button
-        styleClass="w-full"
-        icon="pi pi-plus"
-        label="Agregar bloque"
-        [disabled]="forms.year.disabled"
-        severity="primary"
-        (onClick)="
-          distribucionBloques.accionBtnItem({
-            accion: 'agregar',
-            item: undefined,
-          })
-        "
-      />
-    </div>
-
-    <div class="col-12">
-      <app-table-primeng
-        (accionBtnItem)="distribucionBloques.accionBtnItem($event)"
-        [actions]="distribucionBloques.table.actions"
-        [columnas]="distribucionBloques.table.columns"
-        [data]="distribucionBloques.table.data"
+        size="small"
+        severity="success"
+        pTooltip="Aperturar nuevo año"
+        tooltipPosition="top"
+        (click)="agregarYear()"
       >
-      </app-table-primeng>
+        <i class="pi pi-fw pi-plus"></i>
+        <span class="ml-2 hidden sm:block">Aperturar</span>
+      </p-button>
     </div>
+  </ng-template>
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="years"
+    (accionBtnItem)="accionBtnItem($event)"
+    [showPaginator]="true"
+    [actions]="actions"
+  />
+</p-panel>
+
+<p-dialog
+  [header]="dialogYear.title"
+  [(visible)]="dialogYear.visible"
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{
+    width: '50vw',
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+  }"
+  [modal]="true"
+  [closable]="true"
+  [contentStyle]="{ overflow: 'auto', padding: '1rem' }"
+  (onHide)="setFormYear({})"
+  [resizable]="true"
+  [maximizable]="true"
+>
+  <form class="grid mt-2" [formGroup]="formYear">
+    <div class="col-12">
+      <p-inputGroup>
+        <p-inputGroupAddon>Nombre *</p-inputGroupAddon>
+        <p-inputNumber
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+          formControlName="iYearId"
+          min="2000"
+          max="2100"
+          [useGrouping]="false"
+          [showButtons]="true"
+          placeholder="Ingrese el año académico"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12">
+      <p-inputGroup class="vertical-group">
+        <p-inputGroupAddon>Nombre oficial *</p-inputGroupAddon>
+        <input
+          type="text"
+          pInputText
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          appendTo="body"
+          formControlName="cYearOficial"
+          placeholder="Ingrese el nombre oficial"
+          maxlength="512"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Inicio</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dtYAcadInicio"
+          inputId="dtYAcadInicio"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-inputGroup>
+        <p-inputGroupAddon>Fin</p-inputGroupAddon>
+        <p-calendar
+          appendTo="body"
+          [showOnFocus]="false"
+          inputStyleClass="group-element"
+          [style]="{ flex: '1', width: '100%' }"
+          formControlName="dYAcadFin"
+          inputId="dYAcadFin"
+          [showIcon]="true"
+        />
+      </p-inputGroup>
+    </div>
+  </form>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancelar" severity="secondary" (onClick)="dialogYear.visible = false" />
+    <p-button
+      *ngIf="!bEditar && !bSoloLectura"
+      label="Guardar"
+      severity="primary"
+      (onClick)="guardarYear()"
+      [disabled]="formYear.invalid"
+    />
+    <p-button
+      *ngIf="bEditar && bSoloLectura"
+      label="Actualizar"
+      severity="warning"
+      (onClick)="actualizarYear()"
+      [disabled]="formYear.invalid"
+    />
   </div>
-</p-dialog>
-
-<p-dialog
-  [header]="dialogs.distribucionBloque.title"
-  [(visible)]="dialogs.distribucionBloque.visible"
-  [style]="{ width: '56rem' }"
-  [modal]="true"
->
-  <form class="grid mt-2" [formGroup]="forms.distribucionBloque">
-    <div class="col-12 grid">
-      <div class="col-10 flex flex-column gap-2">
-        <label for="iTipoDistribucionId">Tipo de distribución de bloque</label>
-        <p-dropdown
-          formControlName="iTipoDistribucionId"
-          optionLabel="name"
-          styleClass="w-full"
-          placeholder="Seleccione un tipo de distribución de bloque"
-          optionValue="code"
-          [options]="distribucionBloques.types"
-          optionLabel="name"
-        />
-      </div>
-
-      <div class="col flex flex-column gap-2">
-        <label for="iEstado">Estado</label>
-        <p-toggleButton
-          formControlName="iEstado"
-          styleClass="w-full"
-          onLabel="Activo"
-          offLabel="Inactivo"
-        />
-      </div>
-    </div>
-    <div class="col-12 grid">
-      <div class="col-6 flex flex-column gap-2">
-        <label for="dtInicioBloque">Inicio del bloque</label>
-        <p-calendar
-          appendTo="body"
-          [showOnFocus]="false"
-          inputStyleClass="w-full"
-          styleClass="w-full"
-          formControlName="dtInicioBloque"
-          [iconDisplay]="'input'"
-          [showIcon]="true"
-          inputId="dtInicioBloque"
-        />
-      </div>
-      <div class="col-6 flex flex-column gap-2">
-        <label for="dtFinBloque">Fin del bloque</label>
-        <p-calendar
-          appendTo="body"
-          [showOnFocus]="false"
-          inputStyleClass="w-full"
-          styleClass="w-full"
-          formControlName="dtFinBloque"
-          [iconDisplay]="'input'"
-          [showIcon]="true"
-          inputId="dtFinBloque"
-        />
-      </div>
-    </div>
-  </form>
-
-  <ng-template pTemplate="footer">
-    @if (this.forms.distribucionBloque.enabled) {
-      <div class="flex justify-content-between gap-2">
-        <p-button
-          label="Cancelar"
-          [text]="true"
-          severity="secondary"
-          (onClick)="dialogs.distribucionBloque.visible = false"
-        />
-        <p-button
-          label="Guardar"
-          [outlined]="true"
-          severity="secondary"
-          (onClick)="distribucionBloques.saveData()"
-        />
-      </div>
-    }
-  </ng-template>
-</p-dialog>
-
-<p-dialog
-  [header]="dialogs.procesarPeriodo.title"
-  [(visible)]="dialogs.procesarPeriodo.visible"
-  [style]="{ width: '56rem' }"
-  [modal]="true"
->
-  <form [formGroup]="forms.procesarPeriodos" class="grid mt-2">
-    <div class="col-12 flex flex-column gap-2">
-      <label for="iTipoDistribucionId">Tipo de periodo de evaluación</label>
-      <p-dropdown
-        formControlName="iPeriodoEvalId"
-        optionLabel="name"
-        appendTo="body"
-        styleClass="w-full"
-        placeholder="Seleccione un tipo de distribución de bloque"
-        optionValue="code"
-        [options]="periodoEvaluaciones.types"
-        optionLabel="name"
-      />
-    </div>
-  </form>
-
-  <ng-template pTemplate="footer">
-    @if (this.forms.procesarPeriodos.enabled) {
-      <div class="flex justify-content-between gap-2">
-        <p-button
-          label="Cancelar"
-          [text]="true"
-          severity="secondary"
-          (onClick)="dialogs.procesarPeriodo.visible = false"
-        />
-        <p-button
-          label="Iniciar"
-          [outlined]="true"
-          severity="secondary"
-          (onClick)="periodoEvaluaciones.processData()"
-        />
-      </div>
-    }
-  </ng-template>
 </p-dialog>

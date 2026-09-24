@@ -31,6 +31,7 @@ import {
 })
 export class AsistenciasComponent implements OnInit {
   private servicioGeneral = inject(GeneralService);
+  iMarcar: any = false;
   dremoiYAcadId: any;
   dremoPerfil: any;
   grado: any;
@@ -250,6 +251,8 @@ export class AsistenciasComponent implements OnInit {
             }
             return a.cSeccionNombre.localeCompare(b.cSeccionNombre);
           });
+
+          this.iMarcar = this.alumnos.length > 0 ? true : false;
         },
         error: () => {
           this.mensajeError('Mensaje del sistema', 'Error al buscar alumnos');

@@ -5,18 +5,16 @@
 >
   <p-toast />
 
-  <div class="card">
-    <app-table-primeng
-      [columnas]="columns"
-      [showCaption]="true"
-      [data]="horarios"
-      (accionBtnItem)="accionBtnItemTable($event)"
-      [showPaginator]="true"
-      [(selectedRowData)]="accionBtnItemTable"
-      [actions]="actions"
-    >
-    </app-table-primeng>
-  </div>
+  <app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="horarios"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    [(selectedRowData)]="accionBtnItemTable"
+    [actions]="actions"
+  >
+  </app-table-primeng>
 
   <p-dialog
     header="{{ caption }}"

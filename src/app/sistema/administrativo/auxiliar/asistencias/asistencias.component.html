@@ -8,9 +8,86 @@
   </ng-template>
   <ng-template pTemplate="content">
     <p-tabView>
+      <p-tabPanel header="Registrar por QR">
+        <div class="grid">
+          <div class="col-12 xl:col-5 lg:col-5 md:col-5 sm:col-12">
+            <zxing-scanner
+              *ngIf="scanner"
+              [torch]="false"
+              (scanSuccess)="escaner($event)"
+              (camerasFound)="camaraEncontrada()"
+            >
+            </zxing-scanner>
+            <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
+          </div>
+          <div class="col-12 xl:col-7 lg:col-7 md:col-7 sm:col-12 card">
+            <div class="grid">
+              <div class="col-12">
+                <p-messages [(value)]="messages" [enableService]="false" [closable]="false" />
+              </div>
+              <!-- <div class="col-12">
+                <p-calendar
+                  appendTo="body"
+                  styleClass="w-full"
+                  inputId="calendar-24h"
+                  [(ngModel)]="marcador"
+                  [showIcon]="true"
+                  [showTime]="true"
+                />
+              </div> -->
+              <div class="col-12 xl:col-6">
+                <p-button
+                  [disabled]="scanner"
+                  class="expandir"
+                  severity="success"
+                  label="Registrar"
+                  icon="pi pi-qrcode"
+                  (click)="scanner = true; progreso = true; estado = true"
+                ></p-button>
+              </div>
+              <div class="col-12 xl:col-6">
+                <p-button
+                  class="expandir"
+                  severity="primary"
+                  label="Cerrar Registro"
+                  icon="pi pi-lock"
+                  (click)="scanner = false; progreso = false; estado = false"
+                ></p-button>
+              </div>
+              <div class="col-12">
+                <p-table
+                  [value]="temporal"
+                  [paginator]="true"
+                  [rows]="50"
+                  [rowsPerPageOptions]="[5, 10, 20, 50]"
+                  class="w-full"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="text-center" style="width: 5%">#</th>
+                      <th class="text-center" style="width: 60%">Apellidos y Nombres</th>
+                      <th class="text-center" style="width: 35%">Fecha y Hora</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-temporal let-rowIndex="rowIndex">
+                    <tr>
+                      <td>{{ rowIndex + 1 }}</td>
+                      <td>{{ temporal.completo }}</td>
+                      <td class="hidden md:table-cell">
+                        {{ temporal.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
+                      </td>
+                      <td></td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
       <p-tabPanel header="Registro de Asistencia">
         <div class="grid">
-          <div class="col-6 md:col-6 lg:col-6">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12">
             <p-inputGroup>
               <p-inputGroupAddon>Busqueda Por</p-inputGroupAddon>
               <p-dropdown
@@ -23,7 +100,7 @@
               />
             </p-inputGroup>
           </div>
-          <div class="col-4 lg:col-4">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12">
             <p-calendar
               styleClass="w-full"
               appendTo="body"
@@ -34,9 +111,7 @@
               appendTo="body"
             />
           </div>
-        </div>
-        <div class="grid" *ngIf="tipoBusqueda === 1">
-          <div class="col-12 md:col-6 lg:col-3">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 1">
             <p-inputGroup>
               <p-inputGroupAddon>Grado</p-inputGroupAddon>
               <p-dropdown
@@ -49,7 +124,7 @@
               />
             </p-inputGroup>
           </div>
-          <div class="col-12 md:col-6 lg:col-3">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 1">
             <p-inputGroup>
               <p-inputGroupAddon>Sección</p-inputGroupAddon>
               <p-dropdown
@@ -61,7 +136,7 @@
               />
             </p-inputGroup>
           </div>
-          <div class="col-6 md:col-6 lg:col-2">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 1">
             <p-button
               class="expandir"
               severity="primary"
@@ -71,7 +146,7 @@
               (onClick)="buscarGrupo()"
             />
           </div>
-          <div class="col-6 md:col-6 lg:col-2">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 1">
             <p-button
               class="expandir"
               severity="success"
@@ -81,9 +156,10 @@
               (click)="guardarAsistenciaAula()"
             />
           </div>
-        </div>
-        <div class="grid" *ngIf="tipoBusqueda === 1">
-          <div class="col-2">
+          <div
+            class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12"
+            *ngIf="tipoBusqueda === 1 && iMarcar"
+          >
             <p-inputGroup>
               <p-inputGroupAddon>Marcar</p-inputGroupAddon>
               <p-selectButton
@@ -100,7 +176,10 @@
               </p-selectButton>
             </p-inputGroup>
           </div>
-          <div class="col-2 lg:col-2">
+          <div
+            class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12"
+            *ngIf="tipoBusqueda === 1 && iMarcar"
+          >
             <p-button
               class="expandir"
               severity="primary"
@@ -109,9 +188,7 @@
               (click)="aplicarHora()"
             />
           </div>
-        </div>
-        <div class="grid" *ngIf="tipoBusqueda === 2">
-          <div class="col-12 md:col-6 lg:col-3">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 2">
             <p-inputGroup>
               <p-inputGroupAddon>Cod. de Est.</p-inputGroupAddon>
               <input
@@ -123,7 +200,7 @@
               />
             </p-inputGroup>
           </div>
-          <div class="col-12 md:col-6 lg:col-3">
+          <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 2">
             <p-inputGroup>
               <p-inputGroupAddon>DNI</p-inputGroupAddon>
               <input
@@ -135,7 +212,7 @@
               />
             </p-inputGroup>
           </div>
-          <div class="col-6 md:col-6 lg:col-2">
+          <div class="xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 2">
             <p-button
               class="expandir"
               severity="primary"
@@ -145,7 +222,7 @@
               (click)="buscarCodigo()"
             />
           </div>
-          <div class="col-6 md:col-6 lg:col-2">
+          <div class="xl:col-3 lg:col-6 md:col-6 sm:col-12" *ngIf="tipoBusqueda === 2">
             <p-button
               class="expandir"
               severity="success"
@@ -419,84 +496,6 @@
           </div>
         </div>
       </p-tabPanel>
-
-      <p-tabPanel header="Registrar por QR">
-        <div class="grid">
-          <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12">
-            <zxing-scanner
-              *ngIf="scanner"
-              [torch]="false"
-              (scanSuccess)="escaner($event)"
-              (camerasFound)="camaraEncontrada()"
-            >
-            </zxing-scanner>
-            <p-progressSpinner styleClass="w-full" ariaLabel="loading" *ngIf="estado" />
-          </div>
-          <div class="col-12 xl:col-6 lg:col-6 md:col-6 sm:col-12 card">
-            <div class="grid">
-              <div class="col-12">
-                <p-messages [(value)]="messages" [enableService]="false" [closable]="false" />
-              </div>
-              <div class="col-12">
-                <p-calendar
-                  appendTo="body"
-                  styleClass="w-full"
-                  inputId="calendar-24h"
-                  [(ngModel)]="marcador"
-                  [showIcon]="true"
-                  [showTime]="true"
-                />
-              </div>
-              <div class="col-12 xl:col-6">
-                <p-button
-                  [disabled]="scanner"
-                  class="expandir"
-                  severity="success"
-                  label="Registrar"
-                  icon="pi pi-qrcode"
-                  (click)="scanner = true; progreso = true; estado = true"
-                ></p-button>
-              </div>
-              <div class="col-12 xl:col-6">
-                <p-button
-                  class="expandir"
-                  severity="primary"
-                  label="Cerrar Registro"
-                  icon="pi pi-lock"
-                  (click)="scanner = false; progreso = false; estado = false"
-                ></p-button>
-              </div>
-              <div class="col-12">
-                <p-table
-                  [value]="temporal"
-                  [paginator]="true"
-                  [rows]="50"
-                  [rowsPerPageOptions]="[5, 10, 20, 50]"
-                  class="w-full"
-                >
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th class="text-center" style="width: 5%">#</th>
-                      <th class="text-center" style="width: 60%">Apellidos y Nombres</th>
-                      <th class="text-center" style="width: 35%">Fecha y Hora</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-temporal let-rowIndex="rowIndex">
-                    <tr>
-                      <td>{{ rowIndex + 1 }}</td>
-                      <td>{{ temporal.completo }}</td>
-                      <td class="hidden md:table-cell">
-                        {{ temporal.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss' }}
-                      </td>
-                      <td></td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </p-tabPanel>
     </p-tabView>
   </ng-template>
 </p-panel>
@@ -505,20 +504,20 @@
   header="Información del Estudiante"
   [modal]="true"
   [(visible)]="visible"
-  [style]="{ width: '35rem' }"
+  [style]="{ width: '45rem' }"
 >
   <div class="flex align-items-center mt-3 mb-3">
-    <div class="font-semibold">
+    <div class="font-semibold text-xl">
       Nombre Completo: {{ codigo?.completo ? codigo.completo : 'No encontrado' }}
     </div>
   </div>
   <div class="flex align-items-center mb-3">
-    <div class="font-semibold">
+    <div class="font-semibold text-xl">
       DNI: {{ codigo?.cPersDocumento ? codigo.cPersDocumento : 'No encontrado' }}
     </div>
   </div>
   <div class="flex align-items-center mb-5">
-    <div class="font-semibold">
+    <div class="font-semibold text-xl">
       Fecha y Hora de Registro:
       {{
         codigo?.dtAsistencia ? (codigo.dtAsistencia | date: 'dd/MM/yyyy HH:mm:ss') : 'No encontrado'
